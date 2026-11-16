@@ -55,7 +55,7 @@
         <label class="keyword-match-label" for="keyword-match">Match <select id="keyword-match"><option value="any">any</option><option value="all">all</option></select></label>
         <button type="button" class="clear-mini" id="clear-keywords">Clear</button>
       </div>
-      <div class="results-toolbar"><span id="results-summary" aria-live="polite">Loading jobs…</span><label>Sort <select id="sort"><option value="newest">Newest posted</option><option value="az">Job title</option><option value="company">Employer</option></select></label></div>
+      <div class="results-toolbar"><span id="results-summary" aria-live="polite">Loading jobs…</span><label>Sort <select id="sort"><option value="relevant">Best match</option><option value="newest">Newest posted</option><option value="az">Job title</option><option value="company">Employer</option></select></label></div>
       
       <div id="job-link-message" class="system-message" role="status" hidden></div>
       <div id="system-message" class="system-message" role="status">Fetching jobs…</div>
@@ -175,7 +175,7 @@
 </aside>
 
 <template id="job-template"><article class="job-row">
-  <div class="job-head"><button type="button" class="job-open-head" aria-haspopup="dialog"><span class="job-title"></span><span class="job-company"></span></button><div class="job-keywords" aria-label="Job keywords"></div></div>
+  <div class="job-head"><button type="button" class="job-open-head" aria-haspopup="dialog"><span class="job-title"></span></button><time class="job-age" hidden></time><button type="button" class="job-open-company" aria-haspopup="dialog"><span class="job-company"></span></button><div class="job-keywords" aria-label="Job keywords"></div></div>
   <button type="button" class="job-open job-open-details" aria-haspopup="dialog">
   <span class="job-meta"><span class="job-location"></span><span class="job-divider" aria-hidden="true">|</span><span class="job-mode"></span><span class="job-divider" aria-hidden="true">|</span><span class="job-type"></span></span>
   <span class="job-bottom"><span class="job-salary"></span><span class="job-notice" hidden></span></span>

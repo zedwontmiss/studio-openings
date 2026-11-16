@@ -179,3 +179,15 @@ body.drawer-open{overflow:hidden}
 #apply-panel form>label input,#apply-panel form>label textarea{width:100%;display:block;border:1px solid #c5c5c5;background:#fff;padding:8px;font:12px/1.5 Arial,Helvetica,sans-serif;margin-top:5px;border-radius:0}
 #apply-panel form>label textarea{resize:vertical}
 #drawer-apply[hidden]{display:none}
+
+/* v0.6.4: compact two-row listing header.
+   Title | age / Employer | keywords. Do not push keywords down. */
+.job-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,42%);grid-template-rows:auto auto;column-gap:10px;row-gap:1px;align-items:start;padding:7px 12px 0}
+.job-open-head{grid-row:1;grid-column:1;display:block;min-width:0;flex:none}
+.job-age{grid-row:1;grid-column:2;justify-self:end;align-self:start;font-size:10px;line-height:1.45;color:#777;white-space:nowrap}
+.job-age[hidden]{display:none}
+.job-open-company{grid-row:2;grid-column:1;display:block;min-width:0;border:0;background:none;padding:0;cursor:pointer;text-align:left;color:inherit;font-family:inherit}
+.job-open-company:hover .job-company,.job-open-company:focus-visible .job-company{text-decoration:underline;text-underline-offset:2px}
+.job-company{display:block;margin:0;font-size:12.5px;line-height:1.25;color:#555}
+.job-keywords{grid-row:2;grid-column:2;justify-self:end;align-self:center;max-width:100%;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;padding:0}
+@media(max-width:540px){.job-head{padding:7px 8px 0;grid-template-columns:minmax(0,1fr) minmax(0,46%);column-gap:7px;row-gap:1px}.job-age{font-size:9.5px}.job-company{font-size:12px}.job-keywords{gap:3px}}
