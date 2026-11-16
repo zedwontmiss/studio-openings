@@ -129,11 +129,13 @@
   }
   function dateLabel(job) {
     var src=trim(job.posted), d=src?new Date(src):null;
-    if(d&&!isNaN(d.getTime()))return {label:'Posted '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'}),date:src};
+    var action=job.dateKind==='updated'?'Updated':job.dateKind==='added'||/direct|curated/i.test(trim(job.source))?'Added':'Posted';
+    if(d&&!isNaN(d.getTime())&&d.getTime()<=Date.now()+86400000)
+      return {label:action+' '+d.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}),date:src};
     var checked=trim(job.verifiedAt);
     d=checked?new Date(checked+'T12:00:00'):null;
     if(d&&!isNaN(d.getTime()))return {label:'Checked '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'}),date:checked};
-    return {label:'Date not given',date:''};
+    return {label:'Date unavailable',date:''};
   }
   // Compact eligibility labels are display-only. Preserve the original source text
   // in the title attribute; never infer citizenship or broad regional eligibility
@@ -200,6 +202,8 @@
     if(state.sort==='company')return a.company.localeCompare(b.company);
     if(state.sort==='relevant'){
       var score=function(job){
+        var quality=Number(job.qualityScore);
+        if(isFinite(quality)&&quality>0)return quality;
         var n=Number(job.relevance);
         if(isFinite(n)&&n>0)return n;
         return /direct|curated/i.test(trim(job.source))?96:0;
@@ -207,7 +211,7 @@
       var diff=score(b)-score(a);
       if(diff!==0)return diff;
     }
-    var ad=a.posted?new Date(a.posted).getTime():0, bd=b.posted?new Date(b.posted).getTime():0;
+    var ad=a.posted?Date.parse(a.posted):0, bd=b.posted?Date.parse(b.posted):0;
     return (isFinite(bd)?bd:0)-(isFinite(ad)?ad:0);
   }
   var activeJob=null,lastOpener=null;
@@ -263,7 +267,7 @@
     $('drawer-title').textContent=job.title;
     $('drawer-company').textContent=job.company;
     var meta=$('drawer-meta');meta.textContent='';
-    [trim(job.location)||'Location not stated',niceMode(job.mode),trim(job.type)||'Employment not stated'].forEach(function(value,i){
+    [trim(job.location)||'Region not stated',niceMode(job.mode),trim(job.type)].filter(function(v){return v&&v!=='Not specified';}).forEach(function(value,i){
       if(i){var separator=document.createElement('span');separator.textContent='|';separator.className='drawer-divider';meta.appendChild(separator);}
       var item=document.createElement('span');item.textContent=value;meta.appendChild(item);
     });
@@ -328,8 +332,9 @@
         var diff=Date.now()-milliseconds;
         if(diff>=-24*60*60*1000){
           var days=Math.max(0,Math.floor(diff/86400000));
-          age.textContent=days<30?days+'d':days<365?Math.floor(days/30)+'mo':Math.floor(days/365)+'y';
-          age.dateTime=date.toISOString();age.title='Posted '+date.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+          age.textContent=days===0?'Today':days<30?days+'d':days<365?Math.floor(days/30)+'mo':Math.floor(days/365)+'y';
+          age.dateTime=date.toISOString();
+          age.title=dateLabel(job).label;
           age.setAttribute('aria-label',age.title);age.hidden=false;
         }
       }
@@ -344,9 +349,15 @@
       chip.addEventListener('click',function(event){event.stopPropagation();toggleKeyword(word);});
       keywordContainer.appendChild(chip);
     });
-    open.querySelector('.job-location').textContent=trim(job.location)||'Location not stated';
-    open.querySelector('.job-mode').textContent=niceMode(job.mode);
-    open.querySelector('.job-type').textContent=trim(job.type)||'Type not stated';
+    // Omit unverified metadata rather than repeating "Not specified" on every row.
+    var meta=open.querySelector('.job-meta');meta.textContent='';
+    var items=[trim(job.location)||'Region not stated',niceMode(job.mode),trim(job.type)]
+      .filter(function(value){return value&&value!=='Not specified';});
+    items.forEach(function(value,index){
+      if(index){var divider=document.createElement('span');divider.className='job-divider';divider.textContent='|';divider.setAttribute('aria-hidden','true');meta.appendChild(divider);}
+      var span=document.createElement('span');span.textContent=value;meta.appendChild(span);
+      if(index===0&&job.locationKind==='eligibility')span.title='Remote applicant eligibility region; not the employer office address';
+    });
     var salary=open.querySelector('.job-salary');salary.textContent=trim(job.salary)||'Salary not disclosed';
     if(!trim(job.salary))salary.classList.add('missing');
     var notice=eligibilityLabel(job);

@@ -114,12 +114,52 @@ function tagsFor(title,description,role){
   return tags.slice(0,3);
 }
 
-function published(value){
+// The date means something different depending on the upstream:
+// Jobicy pubDate: source posting date. Himalayas pubDate: last update.
+// Never use our feed-fetch time as an employer's posting date.
+function published(value,now=Date.now()){
   if(value===null||value===undefined||value==='')return '';
-  const n=Number(value);
-  const d=typeof value==='number'||(typeof value==='string'&&/^\d+$/.test(value))?new Date(n<100000000000?n*1000:n):new Date(value);
-  return Number.isNaN(d.getTime())?'':d.toISOString();
+  const numeric=typeof value==='number'||(typeof value==='string'&&/^\d{10,13}$/.test(value));
+  const num=Number(value);
+  const date=numeric?new Date(num<1e12?num*1000:num):new Date(value);
+  const time=date.getTime();
+  if(!Number.isFinite(time)||time>now+24*60*60*1000||time<946684800000)return '';
+  return date.toISOString();
 }
+function employmentType(raw){
+  const value=(Array.isArray(raw)?raw.join(' / '):String(raw||'')).trim();
+  if(!value||/^not specified$/i.test(value))return '';
+  return value.replace(/full[\s-]?time/gi,'Full-time').replace(/part[\s-]?time/gi,'Part-time')
+    .replace(/\b(?:intern|internship)\b/gi,'Internship')
+    .replace(/\bcontractor\b/gi,'Contract').slice(0,65);
+}
+function geoJobicy(value){
+  const s=String(value||'').replace(/<[^>]*>/g,'').trim().slice(0,100);
+  if(!s)return 'Region not stated';
+  if(/^(anywhere|worldwide|global|any location)$/i.test(s))return 'Worldwide';
+  return 'Eligible: '+s;
+}
+function geoHimalayas(restrictions){
+  const list=Array.isArray(restrictions)?restrictions:[];
+  if(!list.length)return 'Worldwide';
+  const names=list.map(x=>String(x&&typeof x==='object'?(x.name||x.alpha2||''):x||'').trim())
+    .filter(Boolean);
+  return names.length?'Eligible: '+names.slice(0,3).join(', ')+(names.length>3?' +'+(names.length-3):''):'Region not stated';
+}
+function qualityScore(job){
+  // 70% of the classification confidence + up to 30 points for actual metadata.
+  // Unknown fields earn ZERO points. Salary is a small bonus, never mandatory.
+  const detail=String(job.description||'').length;
+  const region=String(job.location||'');
+  const mode=String(job.mode||'').trim().toLowerCase();
+  return Math.min(100,Math.round(Number(job.relevance||0)*0.7)+
+    (detail>=160?10:detail>=70?6:0)+
+    (job.posted?7:0)+
+    (region&&!/^region not stated$/i.test(region)?5:0)+
+    (mode==='remote'||mode==='onsite'||mode==='hybrid'?4:0)+
+    (job.type?3:0)+(job.salary?4:0)+(job.url?2:0));
+}
+function finishJob(job){return {...job,qualityScore:qualityScore(job)};}
 function salary(min,max,currency,period){
   const a=Number(min),b=Number(max);
   if((!a&&!b)||(!Number.isFinite(a)&&!Number.isFinite(b)))return '';
@@ -134,32 +174,41 @@ function safeLink(value,source){
     if(source==='Himalayas'&&(u.hostname==='himalayas.app'||u.hostname.endsWith('.himalayas.app')))return u.href;
   }catch(_){}return '';
 }
-function normJobicy(j){
+function normJobicy(j,now){
   const title=String(j.jobTitle||'').trim();
   const description=plainText(j.jobDescription||j.jobExcerpt);
   const decision=classify({title,description,categories:j.jobIndustry});if(!decision)return null;
   const url=safeLink(j.url,'Jobicy');if(!url)return null;
-  return {id:'jobicy-'+String(j.id||j.jobSlug||url),title,company:String(j.companyName||'Undisclosed').trim(),
-    location:String(j.jobGeo||'Not specified').trim(),type:Array.isArray(j.jobType)?j.jobType.join(' / '):String(j.jobType||'Not specified'),
+  return finishJob({id:'jobicy-'+String(j.id||j.jobSlug||url),title,company:String(j.companyName||'Undisclosed').trim(),
+    // This is a *remote eligibility region*, not a physical office address.
+    location:geoJobicy(j.jobGeo),locationKind:'eligibility',mode:'remote',
+    type:employmentType(j.jobType),
     salary:salary(j.salaryMin??j.annualSalaryMin,j.salaryMax??j.annualSalaryMax,j.salaryCurrency,j.salaryPeriod),
-    posted:published(j.pubDate),role:decision.role,relevance:decision.relevance,tags:tagsFor(title,description,decision.role),source:'Jobicy',url,
-    description,seniority:String(j.jobLevel||'').slice(0,55)};
+    posted:published(j.pubDate,now),dateKind:'posted',role:decision.role,relevance:decision.relevance,
+    tags:tagsFor(title,description,decision.role),source:'Jobicy',url,description,
+    seniority:String(j.jobLevel||'').slice(0,55)});
 }
 function normHimalayas(j,now){
   const title=String(j.title||'').trim();
   const description=plainText(j.description||j.excerpt);
   const decision=classify({title,description,categories:[...(j.categories||[]),...(j.parentCategories||[])]});if(!decision)return null;
   const url=safeLink(j.applicationLink,'Himalayas');if(!url)return null;
-  if(j.expiryDate&&String(j.expiryDate)!=='0'){const x=Number(j.expiryDate);const expiry=Number.isFinite(x)&&x>0?(x<1e12?x*1000:x):Date.parse(j.expiryDate);if(Number.isFinite(expiry)&&expiry<now)return null;}
-  const locs=Array.isArray(j.locationRestrictions)?j.locationRestrictions:[];
-  const location=locs.length?locs.slice(0,3).map(x=>x&&x.name||x&&x.alpha2||'').filter(Boolean).join(', ')+(locs.length>3?' +'+(locs.length-3):''):'Worldwide';
+  if(j.expiryDate&&String(j.expiryDate)!=='0'){
+    const x=Number(j.expiryDate),expiry=Number.isFinite(x)&&x>0?(x<1e12?x*1000:x):Date.parse(j.expiryDate);
+    if(Number.isFinite(expiry)&&expiry<now)return null;
+  }
   const seniority=Array.isArray(j.seniority)?j.seniority.join(' / '):String(j.seniority||'');
-  return {id:'himalayas-'+String(j.guid||url),title,company:String(j.companyName||'Undisclosed').trim(),
-    location,type:String(j.employmentType||'Not specified'),salary:salary(j.minSalary,j.maxSalary,j.currency,j.salaryPeriod),
-    posted:published(j.pubDate),role:decision.role,relevance:decision.relevance,tags:tagsFor(title,description,decision.role),source:'Himalayas',url,description,seniority:seniority.slice(0,55)};
+  return finishJob({id:'himalayas-'+String(j.guid||url),title,company:String(j.companyName||'Undisclosed').trim(),
+    location:geoHimalayas(j.locationRestrictions),locationKind:'eligibility',mode:'remote',
+    type:employmentType(j.employmentType),
+    salary:salary(j.minSalary,j.maxSalary,j.currency,j.salaryPeriod),
+    // Official Himalayas API defines pubDate as the LAST UPDATED date.
+    posted:published(j.pubDate,now),dateKind:'updated',role:decision.role,relevance:decision.relevance,
+    tags:tagsFor(title,description,decision.role),source:'Himalayas',url,description,
+    seniority:seniority.slice(0,55)});
 }
 function jobKey(j){return [j.company,j.title,j.location].map(x=>String(x||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim()).join('|');}
-function quality(j){return j.relevance+(j.description.length>=70?2:0)+(j.salary?1:0);}
+function quality(j){return j.qualityScore||0;}
 async function getSource([name,url]){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
   try{const res=await fetch(url,{headers:{Accept:'application/json','User-Agent':'studio-openings/0.6 (+creative design job board)'},signal:controller.signal});if(!res.ok)throw new Error(name+' '+res.status);const data=await res.json();return {name,jobs:Array.isArray(data.jobs)?data.jobs:[]};}
@@ -168,7 +217,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // v2 key prevents an old 3-hour cached response reappearing after the update.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v3-tags',request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v07-quality',request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));
@@ -177,7 +226,7 @@ export async function onRequestGet({request}){
       if(res.status!=='fulfilled')return;
       loaded.push(SOURCES[i][0]);
       res.value.jobs.forEach(raw=>{
-        const job=SOURCES[i][0]==='Jobicy'?normJobicy(raw):normHimalayas(raw,now);
+        const job=SOURCES[i][0]==='Jobicy'?normJobicy(raw,now):normHimalayas(raw,now);
         if(!job||!job.tags.length)return;
         const key=jobKey(job),old=unique.get(key);
         if(!old||quality(job)>quality(old))unique.set(key,job);
@@ -185,7 +234,7 @@ export async function onRequestGet({request}){
     });
     if(!loaded.length)return new Response(JSON.stringify({error:'All upstream job feeds unavailable'}),{status:503,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}});
     const jobs=Array.from(unique.values()).sort((a,b)=>{
-      if(b.relevance!==a.relevance)return b.relevance-a.relevance;
+      if(b.qualityScore!==a.qualityScore)return b.qualityScore-a.qualityScore;
       return (Date.parse(b.posted)||0)-(Date.parse(a.posted)||0);
     }).slice(0,180);
     const body=JSON.stringify({jobs,updatedAt:new Date(now).toISOString(),sources:Array.from(new Set(loaded))});
