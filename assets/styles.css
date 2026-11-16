@@ -191,3 +191,36 @@ body.drawer-open{overflow:hidden}
 .job-company{display:block;margin:0;font-size:12.5px;line-height:1.25;color:#555}
 .job-keywords{grid-row:2;grid-column:2;justify-self:end;align-self:center;max-width:100%;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;padding:0}
 @media(max-width:540px){.job-head{padding:7px 8px 0;grid-template-columns:minmax(0,1fr) minmax(0,46%);column-gap:7px;row-gap:1px}.job-age{font-size:9.5px}.job-company{font-size:12px}.job-keywords{gap:3px}}
+
+/* v0.6.5: job titles are a SINGLE scannable line, with full text still
+   accessible through the details panel and a browser hover tooltip.
+   This applies at all viewport widths and keeps the tag column untouched. */
+.job-head .job-open-head{
+  /* Title may use the WHOLE first row; only the small age at right is reserved.
+     The second row keeps its own columns for company and tags. */
+  grid-row:1;
+  grid-column:1 / -1;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  padding-right:40px;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.job-head .job-age{
+  grid-row:1;
+  grid-column:2;
+  position:relative;
+  z-index:1;
+  pointer-events:none;
+}
+.job-head .job-title{
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  line-height:1.35;
+}

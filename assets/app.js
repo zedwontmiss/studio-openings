@@ -317,6 +317,8 @@
     var frag=$('job-template').content.cloneNode(true),row=frag.querySelector('.job-row'),open=row.querySelector('.job-open'),head=row.querySelector('.job-open-head');
     row.setAttribute('data-swatch',swatchFor(job));
     head.querySelector('.job-title').textContent=job.title;
+    // Preserve the complete title on hover; existing aria-label already gives the full title and company.
+    head.title=job.title;
     var employer=row.querySelector('.job-open-company');
     employer.querySelector('.job-company').textContent=job.company;
     var age=row.querySelector('.job-age'),dateValue=trim(job.posted);
