@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Find design and creative jobs in product design, branding, 3D, architecture, interiors and creative technology. A straightforward list of individual openings.">
+  <meta property="og:title" content="studio openings — design & creative jobs">
+  <meta property="og:description" content="Browse design, creative and architecture jobs. Search roles, filter results, and apply at the source.">
+  <meta property="og:type" content="website">
+  <title>studio openings — design & creative jobs</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header" id="top">
+    <div class="shell nav-inner">
+      <a href="#top" class="wordmark" aria-label="studio openings home">studio openings</a>
+      <nav class="nav-links" aria-label="Main navigation"><a href="#jobs">jobs</a><a href="#about">about</a></nav>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="directory" id="jobs" aria-labelledby="jobs-heading">
+      <div class="list-intro">
+        <h1 id="jobs-heading">design &amp; creative jobs</h1>
+        <span class="updated" id="updated-label">Checking job feeds…</span>
+      </div>
+      <div class="filters-search">
+        <label for="search" class="search-label">Search</label>
+        <div class="search-wrap"><input id="search" type="search" placeholder="Job title, company, keyword…" autocomplete="off" aria-label="Search jobs"><span class="key-hint" aria-hidden="true">/</span></div>
+      </div>
+      <div class="content-grid">
+        <aside class="sidebar" aria-label="Job filters">
+          <div class="side-section">
+            <div class="filter-title">Categories</div>
+            <div class="category-links" id="category-links" role="group" aria-label="Categories">
+              <button type="button" class="category active" data-role="all"><span>All jobs</span></button>
+              <button type="button" class="category" data-role="product"><span>Product / UX / UI</span></button>
+              <button type="button" class="category" data-role="visual"><span>Graphic / branding</span></button>
+              <button type="button" class="category" data-role="motion"><span>Motion / 3D / games</span></button>
+              <button type="button" class="category" data-role="web"><span>Web / creative tech</span></button>
+              <button type="button" class="category" data-role="architecture"><span>Architecture / BIM</span></button>
+              <button type="button" class="category" data-role="interior"><span>Interior / spatial</span></button>
+              <button type="button" class="category" data-role="other"><span>Other creative</span></button>
+            </div>
+          </div>
+          <div class="side-section secondary-filters">
+            <label for="region" class="filter-title">Eligible location</label>
+            <select id="region"><option value="all">Any location</option><option value="us">United States</option><option value="worldwide">Worldwide</option></select>
+          </div>
+          <div class="side-section secondary-filters">
+            <label class="filter-title" for="job-type">Employment type</label>
+            <select id="job-type"><option value="all">Any type</option><option value="full-time">Full-time</option><option value="contract">Contract / freelance</option><option value="part-time">Part-time</option><option value="internship">Internship</option></select>
+          </div>
+          <div class="side-section saved-section">
+            <button type="button" class="saved-toggle" id="saved-toggle" aria-pressed="false">Saved jobs <span id="saved-count">0</span></button>
+          </div>
+          <button type="button" class="reset-link" id="reset">Clear filters</button>
+        </aside>
+        <div class="results-panel">
+          <div class="results-toolbar"><span class="results-summary" id="results-summary" aria-live="polite">Loading jobs…</span><label class="sort-control">Sort <select id="sort"><option value="newest">Newest</option><option value="az">Title A–Z</option><option value="company">Company A–Z</option></select></label></div>
+          <div class="row-head" aria-hidden="true"><span>Job / employer</span><span>Location / type</span><span>Pay</span><span>Posted</span></div>
+          <div class="system-message" id="system-message" role="status"><span class="loading-bar" aria-hidden="true"></span><span>Fetching jobs…</span></div>
+          <div id="job-list" class="job-list" aria-label="Individual job openings"></div>
+          <div class="empty-state" id="empty-state" hidden><strong>No matching jobs.</strong><p>Try another keyword or remove a filter.</p><button type="button" id="empty-reset">Clear filters</button></div>
+          <div class="load-more"><button type="button" id="more" hidden>Show more jobs</button></div>
+          <p class="list-footnote" id="list-footnote">Jobs link to their original sources. Always confirm the posting is current before applying.</p>
+        </div>
+      </div>
+    </section>
+    <section class="about-section" id="about" aria-labelledby="about-heading">
+      <h2 id="about-heading">about studio openings</h2>
+      <p>A straightforward index of individual openings in design, architecture, interiors and creative technology. Search by title, company or discipline; follow the original link to apply. No registration required.</p>
+      <p>Live listings currently come from remote-job feeds by <a href="https://jobicy.com" rel="noopener noreferrer" target="_blank">Jobicy</a> and <a href="https://himalayas.app" rel="noopener noreferrer" target="_blank">Himalayas</a>. Architecture, interior and on-site coverage will grow as authorized additional feeds are connected. The offline preview contains example jobs only.</p>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="shell footer-inner"><span>studio openings © 2026 · v0.4</span><a href="#top">back to top</a></div></footer>
+  <template id="job-template"><article class="job-row"><div class="job-primary"><a class="job-title" target="_blank" rel="noopener noreferrer"></a><div class="job-company"></div><div class="job-extra"></div></div><div class="job-secondary"><div class="job-location"></div><div class="job-type"></div></div><div class="job-salary"></div><div class="job-tertiary"><time class="job-date"></time><button class="save-button" type="button" aria-label="Save job" title="Save job"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12v17l-6-4-6 4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg></button></div></article></template>
+</body>
+</html>
