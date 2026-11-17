@@ -56,6 +56,8 @@ function plainText(value, limit = 1800) {
   const clean=String(value||'')
     .replace(/\r\n?/g,'\n')
     .replace(/<br\b[^>]*\/?\s*>/gi,'\n')
+    .replace(/<hr\b[^>]*\/?\s*>/gi,'\n\n')
+    .replace(/<(?:p|div|section|article|h[1-6])\b[^>]*>/gi,'\n\n')
     .replace(/<li\b[^>]*>/gi,'\n• ')
     .replace(/<\/li\s*>/gi,'\n')
     .replace(/<\/(?:p|div|section|article|h[1-6]|ul|ol|blockquote)\s*>/gi,'\n\n')
@@ -63,12 +65,17 @@ function plainText(value, limit = 1800) {
     .replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&')
     .replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'")
     .replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
+    .replace(/&(?:bull|middot);/gi,'•').replace(/&(?:mdash|ndash);/gi,'—')
+    .replace(/&(?:hellip);/gi,'…').replace(/&(?:rsquo|lsquo);/gi,"'")
+    .replace(/&(?:ldquo|rdquo);/gi,'\"')
     .replace(/&#(x[0-9a-f]+|[0-9]+);/gi,(m,n)=>{
       const code=n[0].toLowerCase()==='x'?parseInt(n.slice(1),16):parseInt(n,10);
       return code>=32&&code<=0x10ffff?String.fromCodePoint(code):' ';
     })
     .replace(/[^\S\n]+/g,' ').replace(/ *\n */g,'\n')
-    .replace(/\n{3,}/g,'\n\n').trim();
+    .replace(/\n{3,}/g,'\n\n')
+    .replace(/\n\n(?=•)/g,'\n')
+    .replace(/([.!?][\"'’”)]?)([A-Z][a-z])/g,'$1\n\n$2').trim();
   return excerptText(clean,limit);
 }
 function contains(re, title, body) {return re.test(title) || re.test(body);}
@@ -261,7 +268,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v083-readable-excerpts&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v084-structured-excerpts&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));

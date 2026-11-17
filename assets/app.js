@@ -275,6 +275,84 @@
     $('drawer-save').textContent=selected?'Saved ✓':'Save job';
     $('drawer-save').setAttribute('aria-pressed',String(selected));
   }
+  // Structured, safe job details. The API returns plain text, not trusted HTML.
+  // Keep original paragraph/bullet boundaries; reconstruct cautious breaks in
+  // flattened upstream excerpts without changing job requirements or claims.
+  function descriptionParagraphs(raw){
+    var text=String(raw||'').replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ');
+    // Some copied descriptions glue a new sentence directly to a full stop.
+    // Only split before a capitalized ordinary word; avoid .NET, version IDs, URLs.
+    text=text.replace(/([.!?]["'’”)]?)([A-Z][a-z])/g,'$1\n\n$2');
+    // Separate common vacancy section labels even in flattened feed text.
+    text=text.replace(/([.!?])\s*((?:Key |Main |Minimum |Preferred )?(?:Responsibilities|Duties|Requirements|Qualifications|Benefits|Role overview|Overview|About the role|About you|What you[’']ll do|What we offer|How to apply)\s*:)/gi,'$1\n\n$2\n');
+    text=text.replace(/[ \t]*\n[ \t]*/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+    var result=[];
+    if(!text)return result;
+    function pieces(line){
+      // Only infer a paragraph when a collapsed block is noticeably long.
+      if(line.length<350)return [line];
+      var spans=[],last=0,rx=/([.!?]["'’”)]?)(\s+)(?=[A-Z])/g,m;
+      while((m=rx.exec(line))!==null){
+        var before=line.slice(Math.max(0,m.index-15),m.index+1);
+        // Ignore abbreviations, initials and short technical notation.
+        if(/(?:\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|No|Fig|Inc|Ltd|Co|etc|e\.g|i\.e|U\.S|U\.K)\.|\b[A-Z]\.)$/i.test(before))continue;
+        var part=line.slice(last,m.index+m[1].length).trim();
+        if(part)spans.push(part);
+        last=m.index+m[0].length;
+      }
+      var tail=line.slice(last).trim();if(tail)spans.push(tail);
+      if(spans.length<3)return [line];
+      var grouped=[],chunk='';
+      spans.forEach(function(sentence){
+        if(chunk&&chunk.length+sentence.length>285){grouped.push(chunk);chunk='';}
+        chunk+=(chunk?' ':'')+sentence;
+      });
+      if(chunk)grouped.push(chunk);
+      return grouped;
+    }
+    text.split(/\n\n+/).forEach(function(block){
+      var lines=block.split('\n'),list=[];
+      function flushList(){if(list.length){result.push({type:'list',items:list});list=[];}}
+      lines.forEach(function(rawLine){
+        var line=rawLine.trim();if(!line)return;
+        var bullet=line.match(/^(?:[•*\-–]\s+|\d{1,2}[.)]\s+)(.+)$/);
+        if(bullet){list.push(bullet[1]);return;}
+        flushList();
+        if(line.length<82 && /^(?:Key |Main |Minimum |Preferred )?(?:Responsibilities|Duties|Requirements|Qualifications|Benefits|Role overview|Overview|About(?: the role| you| us)?|What you[’']ll do|What we offer|How to apply)\s*:?$/i.test(line)){
+          result.push({type:'heading',text:line.replace(/:$/,'')});return;
+        }
+        pieces(line).forEach(function(part){result.push({type:'paragraph',text:part});});
+      });
+      flushList();
+    });
+    return result;
+  }
+  function renderJobDescription(raw){
+    var target=$('drawer-description-text');
+    if(!target)return;
+    // Existing index.html uses a <p>. Swap to <div> at runtime to support
+    // semantic paragraphs and lists without changing the About-section HTML.
+    if(target.tagName.toLowerCase()==='p'){
+      var replacement=document.createElement('div');replacement.id=target.id;
+      replacement.className='so-description-body';target.parentNode.replaceChild(replacement,target);
+      target=replacement;
+    }
+    target.textContent='';
+    var items=descriptionParagraphs(raw);
+    if(!items.length){
+      var none=document.createElement('p');none.textContent='A detailed description is not included in this listing data.';target.appendChild(none);return;
+    }
+    items.forEach(function(item){
+      var node;
+      if(item.type==='heading'){
+        node=document.createElement('h4');node.textContent=item.text;
+      }else if(item.type==='list'){
+        node=document.createElement('ul');
+        item.items.forEach(function(value){var li=document.createElement('li');li.textContent=value;node.appendChild(li);});
+      }else{node=document.createElement('p');node.textContent=item.text;}
+      target.appendChild(node);
+    });
+  }
   function openDrawer(job,opener,fromUrl){
     var method=job.applicationMethod||'external';
     if(method==='external'&&!safeUrl(job.url))return;
@@ -301,7 +379,7 @@
       p.appendChild(strong);p.appendChild(document.createTextNode(trim(entry[0])));aux.appendChild(p);
     });
     var excerpt=trim(job.description||job.summary);
-    $('drawer-description-text').textContent=excerpt||'A detailed description is not included in this listing data.';
+    renderJobDescription(excerpt);
     $('drawer-description-note').textContent=excerpt?(job.descriptionKind==='editorial-summary'?'Editorial summary based on the linked vacancy. Always check the full original job description and eligibility.':'This is a source-provided excerpt. See the original listing for requirements and full details.'):'Read the original vacancy for responsibilities, qualifications, eligibility and application instructions.';
     $('drawer-check-date').textContent=dateLabel(job).label;
     $('drawer-source-label').textContent=trim(job.source)?'Source: '+trim(job.source):'';

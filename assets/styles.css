@@ -268,3 +268,10 @@ body.drawer-open{overflow:hidden}
   max-width:100%;
 }
 .drawer-description #drawer-description-note{line-height:1.6;margin-top:14px}
+
+/* v0.8.4: semantic description sections rendered as safe text nodes. */
+.drawer-description .so-description-body{display:block;max-width:100%;font-size:13px;line-height:1.75;color:#262626;overflow-wrap:break-word;word-break:normal;hyphens:none}
+.drawer-description .so-description-body p{font-size:13px;line-height:1.75;margin:0 0 15px;color:inherit;white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;hyphens:none}
+.drawer-description .so-description-body h4{font-size:13px;line-height:1.45;font-weight:700;margin:19px 0 9px;color:#161616}
+.drawer-description .so-description-body ul{margin:4px 0 16px;padding-left:22px;list-style:disc}
+.drawer-description .so-description-body li{font-size:13px;line-height:1.7;padding-left:2px;margin:0 0 7px;overflow-wrap:break-word;word-break:normal}
