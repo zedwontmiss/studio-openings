@@ -27,9 +27,24 @@ const strongTechEvidence = /\b(?:enterprise software|sap|s\/4hana|salesforce|aws
 const nonCreativeTitle = /\b(?:account manager|sales manager|product manager|project manager|business development|human resources|recruiter|customer support|finance manager|marketing manager|social media manager|software engineer|backend engineer|devops engineer|frontend engineer|data engineer|design engineer|qa engineer|security engineer)\b/i;
 
 function plainText(value, limit = 1800) {
-  return String(value || '').replace(/<\/?[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&')
+  // Preserve paragraphs and list items from source HTML, but NEVER render HTML.
+  // The browser displays the returned text with textContent and white-space:pre-wrap.
+  return String(value || '')
+    .replace(/\r\n?/g,'\n')
+    .replace(/<br\b[^>]*\/?\s*>/gi,'\n')
+    .replace(/<li\b[^>]*>/gi,'\n• ')
+    .replace(/<\/li\s*>/gi,'\n')
+    .replace(/<\/(?:p|div|section|article|h[1-6]|ul|ol|blockquote)\s*>/gi,'\n\n')
+    .replace(/<\/?[^>]+>/g,' ')
+    .replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&')
     .replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'")
-    .replace(/\s+/g,' ').trim().slice(0, limit);
+    .replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
+    .replace(/&#(x[0-9a-f]+|[0-9]+);/gi,(m,n)=>{
+      const code=n[0].toLowerCase()==='x'?parseInt(n.slice(1),16):parseInt(n,10);
+      return code>=32&&code<=0x10ffff?String.fromCodePoint(code):' ';
+    })
+    .replace(/[^\S\n]+/g,' ').replace(/ *\n */g,'\n')
+    .replace(/\n{3,}/g,'\n\n').trim().slice(0,limit);
 }
 function contains(re, title, body) {return re.test(title) || re.test(body);}
 

@@ -55,7 +55,7 @@
    if(!$('job-drawer').hidden)$('drawer-close').click();
    lastFocus=document.activeElement;
    panel.hidden=false;backdrop.hidden=false;document.body.classList.add('submission-open');
-   form.hidden=false;$('submission-result').hidden=true;message('');$('submission-close').focus();
+   form.hidden=false;$('submission-result').hidden=true;resetValidation();message('');$('submission-close').focus();
    initializeConfig();
  }
  function close(){
@@ -80,15 +80,74 @@
    var f=new FormData(form),v=function(k){return String(f.get(k)||'').trim();};
    return {schema:'studio-openings-submission-v1',kind:mode,applicationMethod:updateApplicationMethod(),applicationEmail:v('applicationEmail'),title:v('title'),company:v('company'),location:v('location'),mode:v('mode'),type:v('type'),role:v('role'),url:urlHttps(v('url')),companyWebsite:v('companyWebsite')?urlHttps(v('companyWebsite')):'',contactEmail:v('contactEmail'),salary:v('salary'),closesOn:v('closesOn'),eligibility:v('eligibility'),description:v('description'),permissionChecked:f.get('permission')==='on'};
  }
- function validate(data){
-   if(data.title.length<3||!data.company||!data.location||!data.mode||!data.role)return 'Complete all required job details.';
-   if(data.applicationMethod==='external'&&!data.url)return 'Use a public HTTPS job application URL.';
-   if(data.applicationMethod==='email'&&!/^[^\s@]+@[^\s@]+\.[a-z]{2,24}$/i.test(data.applicationEmail))return 'Enter a receiving email for applications.';
-   if(!/^[^\s@]+@[^\s@]+\.[a-z]{2,24}$/i.test(data.contactEmail))return 'Enter a valid contact email.';
-   if(!data.permissionChecked)return 'Please confirm the submission declaration.';
-   if(data.closesOn&&data.closesOn<new Date().toISOString().slice(0,10))return 'The closing date cannot be in the past.';
-   return '';
+ // Inline, accessible validation. The form uses novalidate intentionally so we can
+ // show every issue at once and focus the first affected field.
+ var validationAttempted=false;
+ function inputFor(name){return form.elements.namedItem(name);}
+ function emailValid(value){return /^[^\s@]+@[^\s@]+\.[a-z]{2,24}$/i.test(value||'');}
+ function fieldErrors(data){
+   var issues=[];
+   function add(name,text){issues.push({name:name,text:text});}
+   if(data.title.length<3)add('title',data.title?'Enter at least 3 characters.':'Job title is required.');
+   if(data.company.length<2)add('company',data.company?'Enter at least 2 characters.':'Company / studio is required.');
+   if(!data.location)add('location','Location is required. Enter a city and country, or Worldwide.');
+   if(!data.mode)add('mode','Select a work arrangement.');
+   if(!data.role)add('role','Select a discipline.');
+   if(data.applicationMethod==='external'&&!data.url)add('url','Enter a valid HTTPS application link (https://…).');
+   if(data.applicationMethod==='email'&&!emailValid(data.applicationEmail))add('applicationEmail','Enter a valid application email address.');
+   if(!emailValid(data.contactEmail))add('contactEmail',data.contactEmail?'Enter a valid contact email address.':'Contact email is required.');
+   var site=inputFor('companyWebsite');
+   if(site&&site.value.trim()&&!urlHttps(site.value.trim()))add('companyWebsite','Enter a valid HTTPS website address, or leave this blank.');
+   var closes=inputFor('closesOn');
+   if(closes&&closes.value&&closes.value<new Date().toISOString().slice(0,10))add('closesOn','The closing date cannot be in the past.');
+   if(!data.permissionChecked)add('permission','Please confirm that you have permission to submit this vacancy.');
+   return issues;
  }
+ function clearFieldErrors(){
+   form.querySelectorAll('[aria-invalid="true"]').forEach(function(el){
+     el.removeAttribute('aria-invalid');
+     var previous=el.getAttribute('data-so-original-describedby');
+     if(previous){el.setAttribute('aria-describedby',previous);}else{el.removeAttribute('aria-describedby');}
+     el.removeAttribute('data-so-original-describedby');
+   });
+   form.querySelectorAll('.so-invalid-field').forEach(function(el){el.classList.remove('so-invalid-field');});
+   form.querySelectorAll('.so-field-error').forEach(function(el){el.remove();});
+ }
+ function showFieldError(issue){
+   var input=inputFor(issue.name);
+   if(!input)return;
+   var outer=issue.name==='permission'?form.querySelector('.submission-consent'):input.closest('label');
+   if(!outer)return;
+   outer.classList.add('so-invalid-field');
+   input.setAttribute('aria-invalid','true');
+   var id='so-error-'+issue.name;
+   input.setAttribute('data-so-original-describedby',input.getAttribute('aria-describedby')||'');
+   input.setAttribute('aria-describedby',((input.getAttribute('data-so-original-describedby')||'')+' '+id).trim());
+   var note=document.createElement('span');note.className='so-field-error';note.id=id;
+   note.textContent=issue.text;
+   outer.appendChild(note);
+ }
+ function showValidation(data,focusFirst){
+   var issues=fieldErrors(data);
+   clearFieldErrors();
+   issues.forEach(showFieldError);
+   if(issues.length){
+     message('Please correct the '+issues.length+' highlighted field'+(issues.length===1?'':'s')+' before sending.',true);
+     if(focusFirst){
+       var first=inputFor(issues[0].name);
+       if(first){
+         try{first.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){first.scrollIntoView();}
+         try{first.focus({preventScroll:true});}catch(e){first.focus();}
+       }
+     }
+     return false;
+   }
+   message('');return true;
+ }
+ function resetValidation(){validationAttempted=false;clearFieldErrors();}
+ function liveValidation(){if(validationAttempted)showValidation(collect(),false);}
+ form.addEventListener('input',liveValidation);
+ form.addEventListener('change',liveValidation);
  function download(data){
    if(!data)return;
    var copy=Object.assign({},data);delete copy.turnstileToken;
@@ -109,7 +168,7 @@
  }
  async function send(e){
    e.preventDefault();
-   var data=collect(),error=validate(data);if(error){message(error,true);return;}
+   var data=collect();validationAttempted=true;if(!showValidation(data,true))return;
    lastPrepared=data;
    if(preview||!configuration?.enabled){
      localSave(data);
@@ -128,7 +187,7 @@
      if(widgetId!==null&&window.turnstile){window.turnstile.reset(widgetId);token='';}
    }finally{setSending(true);}
  }
- function newSubmission(){form.reset();form.hidden=false;lastPrepared=null;token='';$('submission-result').hidden=true;setMode('employer');message('');if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);}
+ function newSubmission(){form.reset();form.hidden=false;lastPrepared=null;token='';$('submission-result').hidden=true;setMode('employer');resetValidation();message('');if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);}
  $('nav-submit').addEventListener('click',function(e){e.preventDefault();open();});
  $('mode-employer').addEventListener('click',function(){setMode('employer');});
  $('mode-suggest').addEventListener('click',function(){setMode('suggest');});
