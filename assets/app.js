@@ -137,6 +137,55 @@
     if(source===null&&oldSource!==null)persist();
   }catch(e){saved=[];savedStorageOk=false;}
   function savedIndex(id){for(var n=0;n<saved.length;n++)if(saved[n].id===String(id))return n;return -1;}
+  // v0.9.2: per-browser job states. Viewed = details opened; Opened = application action clicked.
+  // Show only the highest-priority state: Saved > Opened > Viewed.
+  var VIEWED_KEY='studio-openings.viewed.v092', OPENED_KEY='studio-openings.opened.v092';
+  function readJobHistory(key){
+    var ids=[];
+    try{
+      var raw=JSON.parse(localStorage.getItem(key)||'[]');
+      if(Array.isArray(raw))raw.slice(-300).forEach(function(value){
+        if(typeof value==='string'&&value.length<=240&&ids.indexOf(value)<0)ids.push(value);
+      });
+    }catch(e){}
+    return ids;
+  }
+  var viewedIds=readJobHistory(VIEWED_KEY), openedIds=readJobHistory(OPENED_KEY);
+  function jobStatus(id){
+    id=String(id);
+    if(savedIndex(id)>=0)return 'Saved';
+    if(openedIds.indexOf(id)>=0)return 'Opened';
+    if(viewedIds.indexOf(id)>=0)return 'Viewed';
+    return '';
+  }
+  function updateJobMarker(row,id){
+    var marker=row.querySelector('.job-state-marker');
+    if(!marker)return;
+    var status=jobStatus(id);
+    marker.textContent=status;
+    marker.className='job-state-marker'+(status?' is-'+status.toLowerCase():'');
+    marker.hidden=!status;
+    row.classList.toggle('has-status',!!status);
+    var age=row.querySelector('.job-age');
+    var ageGroup=row.querySelector('.job-age-group');
+    if(ageGroup)ageGroup.hidden=!status&&(!age||age.hidden);
+  }
+  function refreshJobMarkers(){
+    Array.prototype.forEach.call(document.querySelectorAll('.job-row[data-job-id]'),function(row){
+      updateJobMarker(row,row.getAttribute('data-job-id'));
+    });
+  }
+  function recordJobHistory(key,ids,id){
+    id=String(id||'');if(!id)return;
+    var old=ids.indexOf(id);
+    if(old>=0)ids.splice(old,1);
+    ids.push(id);
+    if(ids.length>300)ids.splice(0,ids.length-300);
+    try{localStorage.setItem(key,JSON.stringify(ids));}catch(e){}
+    refreshJobMarkers();
+  }
+  function markJobViewed(id){recordJobHistory(VIEWED_KEY,viewedIds,id);}
+  function markJobOpened(id){recordJobHistory(OPENED_KEY,openedIds,id);}
   function snapshotForJob(job,old){
     var link=String(job.url||'');
     return {id:String(job.id),title:String(job.title||'').slice(0,160),company:String(job.company||'').slice(0,120),
@@ -533,6 +582,7 @@
     document.body.style.paddingRight=scrollbarWidth?scrollbarWidth+'px':'';
     document.body.classList.add('drawer-open');
     $('drawer-close').focus();
+    markJobViewed(job.id);
   }
   function closeDrawer(fromUrl){
     closeShareMenu();
@@ -549,6 +599,7 @@
   function rowFor(job){
     var frag=$('job-template').content.cloneNode(true),row=frag.querySelector('.job-row'),open=row.querySelector('.job-open'),head=row.querySelector('.job-open-head');
     row.setAttribute('data-swatch',swatchFor(job));
+    row.setAttribute('data-job-id',String(job.id));
     head.querySelector('.job-title').textContent=displayTitle(job.title);
     // Preserve the complete title on hover; existing aria-label already gives the full title and company.
     head.title=displayTitle(job.title);
@@ -592,6 +643,14 @@
     var notice=eligibilityLabel(job);
     var noticeNode=open.querySelector('.job-notice');noticeNode.textContent=notice;noticeNode.hidden=!notice;
     noticeNode.title=trim(job.eligibility||job.notice)||'';
+    // Place the passive status immediately BEFORE the job's posting age.
+    // Do not add a third row, change employer placement or change the job date itself.
+    var ageGroup=document.createElement('span');ageGroup.className='job-age-group';
+    var marker=document.createElement('span');marker.className='job-state-marker';marker.hidden=true;
+    age.parentNode.insertBefore(ageGroup,age);
+    ageGroup.appendChild(marker);
+    ageGroup.appendChild(age);
+    updateJobMarker(row,job.id);
     open.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
     head.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
     employer.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
@@ -718,7 +777,13 @@
     if(!$('drawer-share-menu').contains(e.target)&&!$('drawer-share').contains(e.target))closeShareMenu();
   });
   $('drawer-apply').addEventListener('click',function(e){
-    if(!activeJob||activeJob.applicationMethod!=='native')return;
+    if(!activeJob)return;
+    var method=activeJob.applicationMethod||'external';
+    if(method==='external'&&!safeUrl(activeJob.url))return;
+    if(method==='email'&&!activeJob.applicationEmail)return;
+    // 'Opened' records an application-link click, NOT a completed application.
+    markJobOpened(activeJob.id);
+    if(method!=='native')return;
     e.preventDefault();
     var job=activeJob;
     closeDrawer(false);
@@ -732,6 +797,7 @@
     else saved.push(snapshotForJob(activeJob,null));
     persist();updateDrawerSaved();
     $('saved-count').textContent=saved.length;savedShortcut.textContent='Saved jobs ('+saved.length+')';
+    refreshJobMarkers();
     if(state.onlySaved){closeDrawer(false);render();}
   });
   document.addEventListener('keydown',function(e){
