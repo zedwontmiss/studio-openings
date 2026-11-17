@@ -29,18 +29,20 @@
  featuredInput.type='checkbox';featuredInput.name='featuredInterest';featuredInput.value='yes';
  featuredLabel.appendChild(featuredInput);
  var featuredHeading=document.createElement('span');
- featuredHeading.textContent='Request featured placement ';
+ featuredHeading.textContent='Make your job stand out ';
  var featuredStar=document.createElement('span');
  featuredStar.className='featured-inquiry-star';featuredStar.textContent='★';
  featuredStar.setAttribute('aria-label','Featured listing');
  featuredHeading.appendChild(featuredStar);featuredLabel.appendChild(featuredHeading);
  featuredChoice.appendChild(featuredLabel);
  var featuredExplain=document.createElement('p');
- featuredExplain.textContent='Optional. Featured jobs have an exclusive pale-yellow background and a star beside the title. All listings need approval. Pricing and payment are arranged separately if approved; no payment is taken now.';
+ featuredExplain.textContent='Give your opening a spotlight in the feed. Featured jobs get an exclusive baby-yellow highlight and a star beside the title. Request a spot now; we’ll confirm availability and pricing after review. No payment today.';
  featuredChoice.appendChild(featuredExplain);
  var beforeConsent=form.querySelector('.submission-consent');
  if(beforeConsent)form.insertBefore(featuredChoice,beforeConsent);
  else form.appendChild(featuredChoice);
+ function syncFeaturedHighlight(){featuredChoice.classList.toggle('is-selected',mode==='employer' && featuredInput.checked);}
+ featuredInput.addEventListener('change',syncFeaturedHighlight);
  var draftKey='studio-openings.drafts.v061',preview=window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:';
  var turnstileScript;
  function message(s,error){var el=$('submission-error');el.textContent=s;el.className='submission-error'+(error?'':' submission-ok');el.hidden=!s;}
@@ -52,6 +54,7 @@
    featuredChoice.hidden=mode!=='employer';
    featuredInput.disabled=mode!=='employer';
    if(mode!=='employer')featuredInput.checked=false;
+   syncFeaturedHighlight();
    $('submission-permission-text').textContent=mode==='employer'?'I represent the hiring organization, or have permission to submit this vacancy for review.':'This is a public vacancy and I have permission to suggest its original application link for review.';
  }
  function setSending(enabled){$('submission-send').disabled=!enabled;$('submission-send').textContent=(preview||!configuration?.enabled)?'Prepare offline request':'Send for review';}

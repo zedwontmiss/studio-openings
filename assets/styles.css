@@ -369,8 +369,10 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 
 /* v0.11: Compact premium inquiry in the existing employer form.
    Intentionally neutral: the baby-yellow remains exclusive to featured job rows. */
-.featured-inquiry{border-top:1px solid #dedede;border-bottom:1px solid #e7e7e7;padding:12px 0 11px;margin:4px 0 13px}
+.featured-inquiry{border-top:1px solid #dedede;border-bottom:1px solid #e7e7e7;padding:12px 10px 11px;margin:4px 0 13px;transition:background-color .15s ease,border-color .15s ease}
 .featured-inquiry[hidden]{display:none!important}
+/* The featured request is pale yellow only after the employer opts in. */
+.featured-inquiry.is-selected{background:#fff4bf;border-color:#ddce92}
 .featured-inquiry .featured-inquiry-choice{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:700;color:#222;line-height:1.4;cursor:pointer}
 .featured-inquiry .featured-inquiry-choice input{flex:none;display:inline-block!important;width:14px!important;height:14px!important;min-height:14px!important;margin:0!important;padding:0!important;accent-color:#222}
 .featured-inquiry-star{font-size:12px;color:#6e582b;margin-left:2px}
