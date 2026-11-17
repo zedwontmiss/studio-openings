@@ -1,0 +1,5 @@
+# Studio Openings — one canonical website, no third-party job-page sitemap.
+User-agent: *
+Allow: /
+
+Sitemap: https://s-o.app/sitemap.xml
