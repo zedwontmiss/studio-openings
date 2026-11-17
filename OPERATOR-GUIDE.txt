@@ -1,0 +1,53 @@
+STUDIO OPENINGS v0.12 — PREMIUM INVENTORY PILOT
+=============================================
+
+1. WHAT CHANGED
+- Ads stay inside the existing approved-v0.11.1 baby-yellow listing design.
+- Maximum of 10 yellow sponsored jobs in a filtered feed (not 10 per scroll/page).
+- Limit is further adjusted to about 1 sponsored job per 5 visible results.
+- In Best Match, the selected paid jobs are spread across ordinary jobs.
+- The sponsored campaign selection changes once per UTC day, predictably.
+- Explicit sorts (date, company, A-Z) preserve their normal ordering.
+- All existing location/category/job type filters remain effective.
+- Campaigns can last up to 90 calendar days, and expire automatically.
+- A job that closes ceases to be featured; it should also be removed from the board by the existing source pipeline.
+
+2. WHAT HAS NOT CHANGED
+- This release does not add payments, checkout, bidding, an admin panel, pricing,
+  or a promise of a specific number of impressions.
+- Ordinary job submissions and the featured request checkbox stay unchanged.
+- No paid campaigns are activated in assets/featured-jobs.json (empty by default).
+- The existing Cloudflare/D1 setup is not changed.
+
+3. IMPORTANT SALES POLICY
+- Only a limited number of yellow placements is *visible* to each visitor.
+- If there are more than 10 active campaigns, they rotate; a paid advertiser may not
+  appear yellow in every feed, filtered view or session. Disclose this to employers.
+- Daily rotation alone cannot promise equal impressions or applicants. Before selling,
+  measure traffic and publish honest terms about rotation, filters and expiration.
+- Do NOT take money yet. Payment is not connected or verified.
+
+4. OWNER ACTIVATION (FUTURE; CURRENTLY EMPTY)
+- Review real featured requests privately in Cloudflare D1.
+- Approve the employer and verify their job is an eligible direct- or firm- listing.
+- Verify a real payment separately when a payment provider is eventually connected.
+- Only then enter an existing live jobId into assets/featured-jobs.json as below.
+- Never enter user email, payment details, private data, or invented job IDs.
+
+Sample entry for documentation only — DO NOT copy into production:
+{
+  "version": 1,
+  "placements": [
+    {"jobId":"direct-so-SAMPLE123", "startsOn":"2027-01-01", "endsOn":"2027-03-31", "approved":true}
+  ]
+}
+
+5. UPLOAD TO GITHUB (DEVELOPMENT ONLY)
+- Extract ZIP and OPEN its same-named parent folder.
+- Upload ONLY the assets/ folder from inside it to the ROOT of:
+  https://github.com/zedwontmiss/studio-openings/upload/development
+- Files to update: assets/app.js and assets/featured-jobs.json.
+- Commit: Add v0.12 premium rotation and 90-day inventory rules
+- Verify in development site before any main merge.
+- To see rotation with sample sponsored jobs, use the separate OFFLINE preview;
+  the real deployment intentionally has zero active paid listings.

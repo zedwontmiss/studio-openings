@@ -115,38 +115,79 @@
       button.addEventListener('click',function(){toggleKeyword(word);});el.appendChild(button);
     });
   }
-  // v0.10 Featured placements — manually approved via assets/featured-jobs.json.
-  // No checkout, self-service sponsorship or invisible promotion. Activation
-  // requires a validated direct/curated ID and a bounded UTC date range.
-  var featuredById=Object.create(null);
+  // v0.12 — operator-controlled premium inventory (no payment/checkout).
+  // A campaign means eligibility, NOT a guaranteed on-screen impression.
+  // Each visitor sees at most ten yellow listings in the current filtered feed.
+  // Fairness: the eligible campaigns rotate in a stable daily order (UTC).
+  // Separation: sponsored cards are distributed among organic cards.
+  var featuredById=Object.create(null), visibleFeaturedById=Object.create(null);
+  var MAX_VISIBLE_FEATURED=10, FEATURED_SPACING=5;
   function utcDay(s){
     if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return NaN;
     var t=Date.parse(s+'T00:00:00Z');
     return isFinite(t)&&new Date(t).toISOString().slice(0,10)===s?t:NaN;
   }
   function setFeaturedConfig(data){
-    featuredById=Object.create(null);
+    featuredById=Object.create(null);visibleFeaturedById=Object.create(null);
     if(!data||!Array.isArray(data.placements))return;
-    var now=Date.now(),count=0;
-    data.placements.slice(0,30).forEach(function(p){
-      if(count>=3||!p||p.approved!==true)return;
+    var now=Date.now(), seen=Object.create(null);
+    data.placements.slice(0,250).forEach(function(p){
+      if(!p||p.approved!==true)return;
       var id=String(p.jobId||''),start=utcDay(p.startsOn),end=utcDay(p.endsOn);
-      // Only operator-curated IDs; never apply sponsorship to syndicated feeds.
-      if(!/^(direct|firm)-[a-z0-9-]{3,120}$/i.test(id))return;
-      if(!isFinite(start)||!isFinite(end)||end<start||end-start>30*86400000)return;
-      if(now<start||now>=end+86400000||featuredById[id])return;
-      featuredById[id]={start:start,end:end+86400000};count++;
+      // Only curated, first-party job IDs; syndicated listings are ineligible.
+      if(!/^(direct|firm)-[a-z0-9-]{3,120}$/i.test(id)||seen[id])return;
+      // Exactly 90 calendar days at most (inclusive end date).
+      if(!isFinite(start)||!isFinite(end)||end<start||end-start>89*86400000)return;
+      if(now<start||now>=end+86400000)return;
+      featuredById[id]={start:start,end:end+86400000};seen[id]=true;
     });
   }
-  function isFeatured(job){
+  function isActiveFeatured(job){
     if(!job||!job.id)return false;
     var p=featuredById[String(job.id)];
     if(!p||Date.now()<p.start||Date.now()>=p.end)return false;
     if(job.closesOn){var close=utcDay(String(job.closesOn));if(isFinite(close)&&Date.now()>=close+86400000)return false;}
     return true;
   }
+  function isFeatured(job){
+    return !!(job&&visibleFeaturedById[String(job.id)]&&isActiveFeatured(job));
+  }
+  function rotateKey(job,day){
+    var s=day+'|'+String(job.id),h=2166136261;
+    for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
+    h^=h>>>16;h=Math.imul(h,0x7feb352d);h^=h>>>15;
+    h=Math.imul(h,0x846ca68b);h^=h>>>16;
+    return h>>>0;
+  }
+  function rankedFeed(eligibleJobs){
+    // Called only AFTER all standard filters, so paid status never evades filters.
+    visibleFeaturedById=Object.create(null);
+    var organic=eligibleJobs.slice().sort(sortJobs);
+    if(!organic.length)return organic;
+    var limit=Math.min(MAX_VISIBLE_FEATURED,Math.ceil(organic.length/FEATURED_SPACING));
+    var day=Math.floor(Date.now()/86400000);
+    var candidates=organic.filter(isActiveFeatured).sort(function(a,b){
+      return rotateKey(a,day)-rotateKey(b,day)||String(a.id).localeCompare(String(b.id));
+    });
+    var chosen=candidates.slice(0,limit);
+    chosen.forEach(function(job){visibleFeaturedById[String(job.id)]=true;});
+    // Respect Date/Newest/A-Z/Company sorts: do not reorder them for ads.
+    if(state.sort!=='relevant'||!chosen.length)return organic;
+    // One sponsored job for every four regular jobs at most, until campaign
+    // candidates run out. Never stack all paid listings at the top of Best Match.
+    var regular=organic.filter(function(job){return !visibleFeaturedById[String(job.id)];});
+    var output=[],premiumIndex=0,regularIndex=0;
+    while(premiumIndex<chosen.length||regularIndex<regular.length){
+      if(premiumIndex<chosen.length&&(output.length%FEATURED_SPACING===0||regularIndex>=regular.length)){
+        output.push(chosen[premiumIndex++]);
+      }else if(regularIndex<regular.length){
+        output.push(regular[regularIndex++]);
+      }else break;
+    }
+    return output;
+  }
   function loadFeaturedConfig(){
-    // Missing/invalid configuration fails closed: no sponsored label/priority.
+    // A missing or invalid file fails closed: no featured inventory shown.
     return fetch('/assets/featured-jobs.json',{cache:'no-store',credentials:'omit'}).then(function(r){
       if(!r.ok)throw Error('No featured configuration');return r.json();
     }).then(setFeaturedConfig).catch(function(){setFeaturedConfig(null);});
@@ -406,12 +447,7 @@
     return !state.query||state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
   }
   function sortJobs(a,b){
-    // Paid placement affects only Best Match, never explicit date/A–Z/company sorts.
-    // Filters are applied before this comparator runs.
-    if(state.sort==='relevant'){
-      var sponsoredDiff=Number(isFeatured(b))-Number(isFeatured(a));
-      if(sponsoredDiff)return sponsoredDiff;
-    }
+    // Organic quality/date ranking; sponsored spacing is handled by rankedFeed().
     if(state.sort==='review')return (a.reviewOrder||0)-(b.reviewOrder||0);
     if(state.sort==='az')return a.title.localeCompare(b.title);
     if(state.sort==='company')return a.company.localeCompare(b.company);
@@ -742,7 +778,7 @@
     var selected=state.selectedRoles.length;
     $('filter-indicator').textContent=selected?selected+' selected':(document.querySelector('.sidebar').classList.contains('expanded')?'−':'+');
     $('clear-disciplines').textContent=selected?'clear ('+selected+')':'all';
-    var list=state.jobs.filter(eligible).sort(sortJobs);
+    var list=rankedFeed(state.jobs.filter(eligible));
     $('system-message').hidden=state.onlySaved||state.jobs.length>0;
     $('list-footnote').hidden=state.onlySaved;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
