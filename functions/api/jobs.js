@@ -234,7 +234,7 @@ function normJobicy(j,now){
     type:employmentType(j.jobType),
     salary:salary(j.salaryMin??j.annualSalaryMin,j.salaryMax??j.annualSalaryMax,j.salaryCurrency,j.salaryPeriod),
     posted:published(j.pubDate,now),dateKind:'posted',role:decision.role,relevance:decision.relevance,
-    tags:tagsFor(title,description,decision.role),source:'Jobicy',url,description,
+    tags:tagsFor(title,description,decision.role),source:'Jobicy',sourceUrl:url,url,description,descriptionKind:'source-excerpt',
     seniority:String(j.jobLevel||'').slice(0,55)});
 }
 function normHimalayas(j,now){
@@ -255,7 +255,7 @@ function normHimalayas(j,now){
     salary:salary(j.minSalary,j.maxSalary,j.currency,j.salaryPeriod),
     // Official Himalayas API defines pubDate as the LAST UPDATED date.
     posted:published(j.pubDate,now),dateKind:'updated',role:decision.role,relevance:decision.relevance,
-    tags:tagsFor(title,description,decision.role),source:'Himalayas',url,description,
+    tags:tagsFor(title,description,decision.role),source:'Himalayas',sourceUrl:url,url,description,descriptionKind:'source-excerpt',
     seniority:seniority.slice(0,55)});
 }
 function jobKey(j){return [j.company,j.title,j.location].map(x=>String(x||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim()).join('|');}
@@ -268,7 +268,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v084-structured-excerpts&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v085-source-credit&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));
@@ -289,7 +289,7 @@ export async function onRequestGet({request}){
       return (Date.parse(b.posted)||0)-(Date.parse(a.posted)||0);
     }).slice(0,180);
     const body=JSON.stringify({jobs,updatedAt:new Date(now).toISOString(),sources:Array.from(new Set(loaded)),geoPolicy:POLICY_VERSION});
-    const out=new Response(body,{headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':`public, max-age=600, s-maxage=${CACHE_SECONDS}`,'X-Content-Type-Options':'nosniff'}});
+    const out=new Response(body,{headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':`public, max-age=600, s-maxage=${CACHE_SECONDS}`,'X-Content-Type-Options':'nosniff','X-Robots-Tag':'noindex, nofollow'}});
     if(cache){try{await cache.put(cacheKey,out.clone());}catch(_) {}}
     return out;
   }catch(_){return new Response(JSON.stringify({error:'Feed error'}),{status:503,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});}

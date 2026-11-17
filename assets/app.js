@@ -382,13 +382,40 @@
     renderJobDescription(excerpt);
     $('drawer-description-note').textContent=excerpt?(job.descriptionKind==='editorial-summary'?'Editorial summary based on the linked vacancy. Always check the full original job description and eligibility.':'This is a source-provided excerpt. See the original listing for requirements and full details.'):'Read the original vacancy for responsibilities, qualifications, eligibility and application instructions.';
     $('drawer-check-date').textContent=dateLabel(job).label;
-    $('drawer-source-label').textContent=trim(job.source)?'Source: '+trim(job.source):'';
+    // The source credit is a real link. Always keep third-party applicants on
+    // the original API application URL; never silently reroute them to us.
+    var source=trim(job.source),sourceHolder=$('drawer-source-label');
+    sourceHolder.textContent='';
+    if(source){
+      sourceHolder.appendChild(document.createTextNode('Source: '));
+      var sourceUrl=trim(job.sourceUrl||'');
+      if(source==='Himalayas'){
+        // Himalayas permits a link to its domain when a job URL is unavailable.
+        sourceUrl=safeUrl(job.url)?job.url:'https://himalayas.app/';
+      }else if(source==='Jobicy'){
+        sourceUrl=safeUrl(job.url)?job.url:'https://jobicy.com/';
+      }else if(!safeUrl(sourceUrl)&&/^Official careers/.test(source)){
+        sourceUrl=safeUrl(job.url)?job.url:'';
+      }
+      if(safeUrl(sourceUrl)){
+        var credit=document.createElement('a');
+        credit.href=sourceUrl;credit.target='_blank';credit.rel='noopener noreferrer';
+        credit.textContent=source;credit.setAttribute('aria-label','Open source: '+source+' (new tab)');
+        sourceHolder.appendChild(credit);
+      }else sourceHolder.appendChild(document.createTextNode(source));
+    }
     var apply=$('drawer-apply');
     apply.hidden=false;
     apply.dataset.method=method;
+    // For sourced jobs, use ONLY the original applicationLink/url from the API.
     apply.href=method==='external'?job.url:method==='email'?'mailto:'+encodeURIComponent(job.applicationEmail||'')+'?subject='+encodeURIComponent('Application: '+job.title):'#apply';
-    apply.textContent=method==='native'?'Apply on Studio Openings':method==='email'?'Apply by email':'View full job & apply';
+    var externalOrigin=source==='Himalayas'?'Apply via Himalayas':source==='Jobicy'?'Apply via Jobicy':/^Official careers/.test(source)?'Apply on employer career site':'View full job & apply';
+    apply.textContent=method==='native'?'Apply on Studio Openings':method==='email'?'Apply by email':externalOrigin;
+    apply.setAttribute('aria-label',method==='external'?apply.textContent+' (opens a new tab)':apply.textContent);
     if(method==='email'&&!job.applicationEmail){apply.hidden=true;}
+    if(method==='external'&&/^(Himalayas|Jobicy)$/.test(source)){
+      $('drawer-description-note').textContent += ' Applications are handled by '+source+'; Studio Openings does not collect them.';
+    }
 
     updateDrawerSaved();
     closeShareMenu();

@@ -275,3 +275,7 @@ body.drawer-open{overflow:hidden}
 .drawer-description .so-description-body h4{font-size:13px;line-height:1.45;font-weight:700;margin:19px 0 9px;color:#161616}
 .drawer-description .so-description-body ul{margin:4px 0 16px;padding-left:22px;list-style:disc}
 .drawer-description .so-description-body li{font-size:13px;line-height:1.7;padding-left:2px;margin:0 0 7px;overflow-wrap:break-word;word-break:normal}
+
+/* v0.8.5: source attribution remains legible, understated, and keyboard accessible. */
+.drawer-source a{color:#333;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;overflow-wrap:anywhere}
+.drawer-source a:hover,.drawer-source a:focus-visible{color:#111;text-decoration-thickness:2px}
