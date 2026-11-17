@@ -185,4 +185,47 @@
 <script src="assets/document-import.js" defer></script>
 <script src="assets/submission.js" defer></script>
 <script src="assets/native-apply.js" defer></script>
+
+<script>
+(function () {
+  const note = document.querySelector('.coverage-note');
+  if (!note) return;
+
+  note.innerHTML = '<strong>Current coverage.</strong> Studio Openings currently only covers vacancies in the United States, Canada, Singapore, Australia, selected European countries, and the UAE, Saudi Arabia and Qatar. Other countries are not yet covered because we do not have enough reliable job data to verify and maintain listings. Anyone may browse the site; employers set their lawful application requirements.';
+
+  note.insertAdjacentHTML('afterend', `
+    <section style="border-top:1px solid #ddd;margin-top:18px;padding-top:16px">
+      <h3 style="font-size:13px;margin:0 0 8px">Bring Studio Openings to your country</h3>
+      <p>Represent a design firm, recruitment network or creative community in a country we don't cover yet? Request country coverage or inquire about <strong>premium regional partnerships</strong> to support reliable sourcing. Every job remains subject to independent review.</p>
+      <form id="regional-inquiry" style="max-width:440px;display:grid;gap:9px;margin-top:12px">
+        <label>Country / market<input name="country" required maxlength="70" placeholder="e.g. Japan" style="box-sizing:border-box;display:block;width:100%;padding:9px;border:1px solid #bbb"></label>
+        <label>Your email<input name="email" type="email" required maxlength="150" placeholder="name@organization.com" style="box-sizing:border-box;display:block;width:100%;padding:9px;border:1px solid #bbb"></label>
+        <label>Inquiry type<select name="kind" style="box-sizing:border-box;display:block;width:100%;padding:9px;border:1px solid #bbb"><option value="coverage">Request country coverage</option><option value="premium">Premium regional partnership</option></select></label>
+        <button type="submit" style="background:#111;color:white;border:0;padding:11px;cursor:pointer">Prepare email</button>
+        <p id="regional-status" role="status" style="font-size:11px;color:#666;margin:0">Opens your email app; nothing is sent automatically.</p>
+      </form>
+    </section>`);
+
+  const form = document.getElementById('regional-inquiry');
+  const status = document.getElementById('regional-status');
+  let contact = '';
+  fetch('/api/submission-config').then(r => r.ok ? r.json() : null)
+    .then(data => { if (data && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.supportEmail || '')) contact = data.supportEmail; })
+    .catch(() => {});
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    if (!contact) { status.textContent = 'The public contact inbox has not been configured yet. Nothing was sent.'; return; }
+    const country = form.elements.country.value.trim();
+    const email = form.elements.email.value.trim();
+    const premium = form.elements.kind.value === 'premium';
+    const subject = 'Studio Openings — ' + (premium ? 'regional partnership' : 'country coverage') + ' — ' + country;
+    const body = 'Hello Studio Openings,\n\nI would like to ' + (premium ? 'discuss a premium regional partnership' : 'request country coverage') + ' for ' + country + '.\n\nMy email: ' + email + '\n\nOrganization and available job sources:\n';
+    status.textContent = 'Opening your email app. Please review and send the prepared message.';
+    window.location.href = 'mailto:' + encodeURIComponent(contact) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  });
+})();
+</script>
+
 </body></html>
