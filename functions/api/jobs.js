@@ -1,3 +1,4 @@
+import {remoteEligibility,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
 /**
  * Studio Openings: GET /api/jobs
  * Relevance-first, attributable creative job feed. No new paid APIs, no AI calls.
@@ -179,9 +180,10 @@ function normJobicy(j,now){
   const description=plainText(j.jobDescription||j.jobExcerpt);
   const decision=classify({title,description,categories:j.jobIndustry});if(!decision)return null;
   const url=safeLink(j.url,'Jobicy');if(!url)return null;
+  const geo=remoteEligibility(j.jobGeo);if(!geo.eligible)return null;
   return finishJob({id:'jobicy-'+String(j.id||j.jobSlug||url),title,company:String(j.companyName||'Undisclosed').trim(),
     // This is a *remote eligibility region*, not a physical office address.
-    location:geoJobicy(j.jobGeo),locationKind:'eligibility',mode:'remote',
+    location:geoJobicy(j.jobGeo),locationKind:'eligibility',mode:'remote',...geoMeta(geo),
     type:employmentType(j.jobType),
     salary:salary(j.salaryMin??j.annualSalaryMin,j.salaryMax??j.annualSalaryMax,j.salaryCurrency,j.salaryPeriod),
     posted:published(j.pubDate,now),dateKind:'posted',role:decision.role,relevance:decision.relevance,
@@ -193,13 +195,15 @@ function normHimalayas(j,now){
   const description=plainText(j.description||j.excerpt);
   const decision=classify({title,description,categories:[...(j.categories||[]),...(j.parentCategories||[])]});if(!decision)return null;
   const url=safeLink(j.applicationLink,'Himalayas');if(!url)return null;
+  const geo=remoteEligibility(j.locationRestrictions,{timezones:j.timezoneRestrictions});
+  if(!geo.eligible)return null;
   if(j.expiryDate&&String(j.expiryDate)!=='0'){
     const x=Number(j.expiryDate),expiry=Number.isFinite(x)&&x>0?(x<1e12?x*1000:x):Date.parse(j.expiryDate);
     if(Number.isFinite(expiry)&&expiry<now)return null;
   }
   const seniority=Array.isArray(j.seniority)?j.seniority.join(' / '):String(j.seniority||'');
   return finishJob({id:'himalayas-'+String(j.guid||url),title,company:String(j.companyName||'Undisclosed').trim(),
-    location:geoHimalayas(j.locationRestrictions),locationKind:'eligibility',mode:'remote',
+    location:geoHimalayas(j.locationRestrictions),locationKind:'eligibility',mode:'remote',...geoMeta(geo),
     type:employmentType(j.employmentType),
     salary:salary(j.minSalary,j.maxSalary,j.currency,j.salaryPeriod),
     // Official Himalayas API defines pubDate as the LAST UPDATED date.
@@ -217,7 +221,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // v2 key prevents an old 3-hour cached response reappearing after the update.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v07-quality',request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v07-quality&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));
@@ -237,7 +241,7 @@ export async function onRequestGet({request}){
       if(b.qualityScore!==a.qualityScore)return b.qualityScore-a.qualityScore;
       return (Date.parse(b.posted)||0)-(Date.parse(a.posted)||0);
     }).slice(0,180);
-    const body=JSON.stringify({jobs,updatedAt:new Date(now).toISOString(),sources:Array.from(new Set(loaded))});
+    const body=JSON.stringify({jobs,updatedAt:new Date(now).toISOString(),sources:Array.from(new Set(loaded)),geoPolicy:POLICY_VERSION});
     const out=new Response(body,{headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':`public, max-age=600, s-maxage=${CACHE_SECONDS}`,'X-Content-Type-Options':'nosniff'}});
     if(cache){try{await cache.put(cacheKey,out.clone());}catch(_) {}}
     return out;

@@ -19,6 +19,21 @@
     }
     if(pref && pref.match==='all')state.keywordMatch='all';
   }catch(e){}
+  // Consistent typography for titles coming from every feed, including curated jobs.
+  // Only all-uppercase titles change; employer names and existing mixed-case remain untouched.
+  function displayTitle(value){
+    var title=String(value||'').trim();
+    if(!/[A-Z]/.test(title)||/[a-z]/.test(title))return title;
+    var acronyms={BIM:1,CAD:1,CADD:1,UX:1,UI:1,'UX/UI':1,'UI/UX':1,'3D':1,'2D':1,VFX:1,CGI:1,
+      AI:1,IT:1,HR:1,'FF&E':1,LEED:1,AIA:1,RIBA:1,NYC:1,US:1,UK:1,UAE:1,EU:1,
+      APAC:1,EMEA:1,MEP:1,GIS:1,VR:1,AR:1,HVAC:1,'R&D':1,ERP:1,SAP:1,USA:1,QA:1,II:1,III:1,IV:1};
+    var connectors={and:1,or:1,of:1,for:1,in:1,to:1,at:1,the:1,with:1,on:1,by:1,a:1,an:1};
+    return title.toLowerCase().replace(/[a-z0-9]+(?:[&/+.-][a-z0-9]+)*/gi,function(part,index){
+      if(acronyms[part.toUpperCase()])return part.toUpperCase();
+      if(index>0&&connectors[part])return part;
+      return part.slice(0,1).toUpperCase()+part.slice(1);
+    });
+  }
   function persistKeywords(){try{localStorage.setItem(PREFERENCES_KEY,JSON.stringify({keywords:state.keywords,match:state.keywordMatch}));}catch(e){}}
   var ROLE_TAG={architecture:'Architecture',interior:'Interior',industrial:'Industrial Design',product:'Product Design',visual:'Graphic Design',motion:'Motion Design',fashion:'Fashion',web:'Web Design',museum:'Exhibition',culture:'Creative Arts'};
   function jobKeywords(job){
@@ -210,6 +225,9 @@
       };
       var diff=score(b)-score(a);
       if(diff!==0)return diff;
+      // Geographic priority breaks quality ties; it never outranks relevance.
+      var tier=function(j){var n=Number(j.geoTier);return n===1||n===2?n:9;};
+      var geoDiff=tier(a)-tier(b);if(geoDiff)return geoDiff;
     }
     var ad=a.posted?Date.parse(a.posted):0, bd=b.posted?Date.parse(b.posted):0;
     return (isFinite(bd)?bd:0)-(isFinite(ad)?ad:0);
@@ -264,7 +282,7 @@
     $('job-drawer').setAttribute('data-swatch',swatchFor(job));
     $('job-link-message').hidden=true;
     if(!fromUrl)updateJobUrl(job.id,'push');
-    $('drawer-title').textContent=job.title;
+    $('drawer-title').textContent=displayTitle(job.title);
     $('drawer-company').textContent=job.company;
     var meta=$('drawer-meta');meta.textContent='';
     [trim(job.location)||'Region not stated',niceMode(job.mode),trim(job.type)].filter(function(v){return v&&v!=='Not specified';}).forEach(function(value,i){
@@ -320,9 +338,9 @@
   function rowFor(job){
     var frag=$('job-template').content.cloneNode(true),row=frag.querySelector('.job-row'),open=row.querySelector('.job-open'),head=row.querySelector('.job-open-head');
     row.setAttribute('data-swatch',swatchFor(job));
-    head.querySelector('.job-title').textContent=job.title;
+    head.querySelector('.job-title').textContent=displayTitle(job.title);
     // Preserve the complete title on hover; existing aria-label already gives the full title and company.
-    head.title=job.title;
+    head.title=displayTitle(job.title);
     var employer=row.querySelector('.job-open-company');
     employer.querySelector('.job-company').textContent=job.company;
     var age=row.querySelector('.job-age'),dateValue=trim(job.posted);
@@ -363,9 +381,9 @@
     var notice=eligibilityLabel(job);
     var noticeNode=open.querySelector('.job-notice');noticeNode.textContent=notice;noticeNode.hidden=!notice;
     noticeNode.title=trim(job.eligibility||job.notice)||'';
-    open.setAttribute('aria-label','View details: '+job.title+' at '+job.company);
-    head.setAttribute('aria-label','View details: '+job.title+' at '+job.company);
-    employer.setAttribute('aria-label','View details: '+job.title+' at '+job.company);
+    open.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
+    head.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
+    employer.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
     open.addEventListener('click',function(){openDrawer(job,open);});
     head.addEventListener('click',function(){openDrawer(job,head);});
     employer.addEventListener('click',function(){openDrawer(job,employer);});
@@ -380,7 +398,7 @@
     $('filter-indicator').textContent=selected?selected+' selected':(document.querySelector('.sidebar').classList.contains('expanded')?'−':'+');
     $('clear-disciplines').textContent=selected?'clear ('+selected+')':'all';
     var list=state.jobs.filter(eligible).sort(sortJobs);
-    $('results-summary').textContent=state.review?'Real-job review · 16 Nov 2026':'Current listings';
+    $('results-summary').textContent=state.review?'Official firm source review · 17 Nov 2026':'Current listings';
     var wasOpen=!$('job-drawer').hidden;
     closeDrawer(true);
     if(wasOpen)updateJobUrl(null,'replace');
@@ -432,7 +450,7 @@
     if(shareReviewMode())return jobLinkFor(job.id);
     return jobLinkFor(job.id);
   }
-  function shareText(job){return job.title+' — '+job.company+' | Studio Openings';}
+  function shareText(job){return displayTitle(job.title)+' — '+job.company+' | Studio Openings';}
   function shareReviewMode(){return window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1';}
   function configureShareOptions(job){
     var url=publicShareUrl(job), textValue=shareText(job), encodedUrl=encodeURIComponent(url),encodedText=encodeURIComponent(textValue);
@@ -501,14 +519,14 @@
     state.review=true;state.sort='review';
     var o=document.createElement('option');o.value='review';o.textContent='Review mix';$('sort').insertBefore(o,$('sort').firstChild);$('sort').value='review';
     state.jobs=(window.STUDIO_OPENINGS_REVIEW_JOBS||[]).filter(displayableJob).map(function(j,i){j.reviewOrder=i;return j;});
-    $('system-message').hidden=false;$('system-message').textContent='REVIEW SNAPSHOT · Published vacancies checked 16 Nov 2026. Application status may change.';
+    $('system-message').hidden=false;$('system-message').textContent='REVIEW SNAPSHOT · Official firm vacancies reviewed 17 Nov 2026. Their availability may change.';
     $('updated-label').textContent='Offline source review';
     $('list-footnote').textContent='Click a listing to open its details without changing the results layout. The complete description and application steps remain on the original site. Snapshot status can change.';
     render();
     syncJobFromUrl();
   }
   function loadLive(){
-    var urls=['/api/jobs','/api/approved-jobs'];
+    var urls=['/api/jobs','/api/approved-jobs','/api/firm-jobs'];
     Promise.allSettled(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();});})).then(function(items){
       var seen={},records=[],latest=null,success=0;
       items.forEach(function(outcome){
