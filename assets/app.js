@@ -79,6 +79,8 @@
     var mixed=h;mixed^=mixed>>>16;mixed=Math.imul(mixed,0x7feb352d);
     mixed^=mixed>>>15;mixed=Math.imul(mixed,0x846ca68b);mixed^=mixed>>>16;
     var hue=(mixed>>>0)%360,sat=64+((h>>>12)%12),light=84+((h>>>20)%6);
+    // Keep the baby-yellow family exclusive to paid featured-row backgrounds.
+    if(hue>=35 && hue<=85)hue=(hue+135)%360;
     return 'hsl('+hue+', '+sat+'%, '+light+'%)';
   }
   function styleTag(tag,word){tag.style.backgroundColor=tagColorFor(word);}
@@ -113,6 +115,43 @@
       button.addEventListener('click',function(){toggleKeyword(word);});el.appendChild(button);
     });
   }
+  // v0.10 Featured placements — manually approved via assets/featured-jobs.json.
+  // No checkout, self-service sponsorship or invisible promotion. Activation
+  // requires a validated direct/curated ID and a bounded UTC date range.
+  var featuredById=Object.create(null);
+  function utcDay(s){
+    if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return NaN;
+    var t=Date.parse(s+'T00:00:00Z');
+    return isFinite(t)&&new Date(t).toISOString().slice(0,10)===s?t:NaN;
+  }
+  function setFeaturedConfig(data){
+    featuredById=Object.create(null);
+    if(!data||!Array.isArray(data.placements))return;
+    var now=Date.now(),count=0;
+    data.placements.slice(0,30).forEach(function(p){
+      if(count>=3||!p||p.approved!==true)return;
+      var id=String(p.jobId||''),start=utcDay(p.startsOn),end=utcDay(p.endsOn);
+      // Only operator-curated IDs; never apply sponsorship to syndicated feeds.
+      if(!/^(direct|firm)-[a-z0-9-]{3,120}$/i.test(id))return;
+      if(!isFinite(start)||!isFinite(end)||end<start||end-start>30*86400000)return;
+      if(now<start||now>=end+86400000||featuredById[id])return;
+      featuredById[id]={start:start,end:end+86400000};count++;
+    });
+  }
+  function isFeatured(job){
+    if(!job||!job.id)return false;
+    var p=featuredById[String(job.id)];
+    if(!p||Date.now()<p.start||Date.now()>=p.end)return false;
+    if(job.closesOn){var close=utcDay(String(job.closesOn));if(isFinite(close)&&Date.now()>=close+86400000)return false;}
+    return true;
+  }
+  function loadFeaturedConfig(){
+    // Missing/invalid configuration fails closed: no sponsored label/priority.
+    return fetch('/assets/featured-jobs.json',{cache:'no-store',credentials:'omit'}).then(function(r){
+      if(!r.ok)throw Error('No featured configuration');return r.json();
+    }).then(setFeaturedConfig).catch(function(){setFeaturedConfig(null);});
+  }
+
   // Saved jobs v0.9.1: lightweight snapshots in this browser, not a cloud account.
   // Old v0.5 ID-only bookmarks are imported once, without inventing saved dates.
   var STORAGE_KEY='studio-openings.saved.v091', LEGACY_STORAGE_KEY='studio-openings.saved.v05';
@@ -367,6 +406,12 @@
     return !state.query||state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
   }
   function sortJobs(a,b){
+    // Paid placement affects only Best Match, never explicit date/A–Z/company sorts.
+    // Filters are applied before this comparator runs.
+    if(state.sort==='relevant'){
+      var sponsoredDiff=Number(isFeatured(b))-Number(isFeatured(a));
+      if(sponsoredDiff)return sponsoredDiff;
+    }
     if(state.sort==='review')return (a.reviewOrder||0)-(b.reviewOrder||0);
     if(state.sort==='az')return a.title.localeCompare(b.title);
     if(state.sort==='company')return a.company.localeCompare(b.company);
@@ -515,7 +560,17 @@
     $('job-drawer').setAttribute('data-swatch',swatchFor(job));
     $('job-link-message').hidden=true;
     if(!fromUrl)updateJobUrl(job.id,'push');
-    $('drawer-title').textContent=displayTitle(job.title);
+    // Disclosure is integrated into the title: no extra row above it.
+    var drawerTitle=$('drawer-title');
+    drawerTitle.textContent=displayTitle(job.title);
+    if(isFeatured(job)){
+      var drawerStar=document.createElement('span');
+      drawerStar.className='job-featured-star drawer-featured-star';
+      drawerStar.textContent='★';
+      drawerStar.title='Featured · Sponsored';
+      drawerStar.setAttribute('aria-label','Featured sponsored listing');
+      drawerTitle.appendChild(drawerStar);
+    }
     $('drawer-company').textContent=job.company;
     var meta=$('drawer-meta');meta.textContent='';
     [trim(job.location)||'Region not stated',niceMode(job.mode),trim(job.type)].filter(function(v){return v&&v!=='Not specified';}).forEach(function(value,i){
@@ -600,7 +655,23 @@
     var frag=$('job-template').content.cloneNode(true),row=frag.querySelector('.job-row'),open=row.querySelector('.job-open'),head=row.querySelector('.job-open-head');
     row.setAttribute('data-swatch',swatchFor(job));
     row.setAttribute('data-job-id',String(job.id));
-    head.querySelector('.job-title').textContent=displayTitle(job.title);
+    if(isFeatured(job))row.classList.add('is-featured');
+
+    var titleNode=head.querySelector('.job-title');
+    titleNode.textContent=displayTitle(job.title);
+    if(isFeatured(job)){
+      // Inline star follows the visible title text, preserving title/date alignment.
+      var titleText=document.createElement('span');
+      titleText.className='job-title-text';
+      titleText.textContent=displayTitle(job.title);
+      titleNode.textContent='';titleNode.appendChild(titleText);
+      var star=document.createElement('span');
+      star.className='job-featured-star';
+      star.textContent='★';
+      star.title='Featured · Sponsored';
+      star.setAttribute('aria-label','Featured sponsored listing');
+      titleNode.appendChild(star);
+    }
     // Preserve the complete title on hover; existing aria-label already gives the full title and company.
     head.title=displayTitle(job.title);
     var employer=row.querySelector('.job-open-company');
@@ -651,9 +722,10 @@
     ageGroup.appendChild(marker);
     ageGroup.appendChild(age);
     updateJobMarker(row,job.id);
-    open.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
-    head.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
-    employer.setAttribute('aria-label','View details: '+displayTitle(job.title)+' at '+job.company);
+    var disclosurePrefix=isFeatured(job)?'Featured sponsored listing. ':'';
+    open.setAttribute('aria-label',disclosurePrefix+'View details: '+displayTitle(job.title)+' at '+job.company);
+    head.setAttribute('aria-label',disclosurePrefix+'View details: '+displayTitle(job.title)+' at '+job.company);
+    employer.setAttribute('aria-label',disclosurePrefix+'View details: '+displayTitle(job.title)+' at '+job.company);
     open.addEventListener('click',function(){openDrawer(job,open);});
     head.addEventListener('click',function(){openDrawer(job,head);});
     employer.addEventListener('click',function(){openDrawer(job,employer);});
@@ -814,6 +886,8 @@
   function loadReview(){
     state.review=true;state.sort='review';
     var o=document.createElement('option');o.value='review';o.textContent='Review mix';$('sort').insertBefore(o,$('sort').firstChild);$('sort').value='review';
+    // Offline preview only. Production always reads the operator-controlled file.
+    setFeaturedConfig(window.STUDIO_OPENINGS_FEATURED_PREVIEW||null);
     state.jobs=(window.STUDIO_OPENINGS_REVIEW_JOBS||[]).filter(displayableJob).map(function(j,i){j.reviewOrder=i;return j;});
     $('system-message').hidden=false;$('system-message').textContent='REVIEW SNAPSHOT · Official firm vacancies reviewed 17 Nov 2026. Their availability may change.';
     $('updated-label').textContent='Offline source review';
@@ -823,7 +897,8 @@
   }
   function loadLive(){
     var urls=['/api/jobs','/api/approved-jobs','/api/firm-jobs'];
-    Promise.allSettled(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();});})).then(function(items){
+    Promise.all([loadFeaturedConfig(),Promise.allSettled(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();});}))]).then(function(all){
+      var items=all[1];
       var seen={},records=[],latest=null,success=0;
       items.forEach(function(outcome){
         if(outcome.status!=='fulfilled'||!outcome.value||!Array.isArray(outcome.value.jobs))return;
