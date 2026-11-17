@@ -26,10 +26,34 @@ const builtEnvironmentEvidence = /\b(?:building(?:s)?|built environment|resident
 const strongTechEvidence = /\b(?:enterprise software|sap|s\/4hana|salesforce|aws|azure|cloud computing|software development|cloud architecture|microservices|ci\/cd|kubernetes|devops|erp|data warehouse|network security|cloud infrastructure)\b/i;
 const nonCreativeTitle = /\b(?:account manager|sales manager|product manager|project manager|business development|human resources|recruiter|customer support|finance manager|marketing manager|social media manager|software engineer|backend engineer|devops engineer|frontend engineer|data engineer|design engineer|qa engineer|security engineer)\b/i;
 
+// Never end an excerpt in the middle of a word or leave a broken sentence fragment.
+// The original vacancy remains authoritative and is linked from each listing.
+function excerptText(text,limit){
+  if(text.length<=limit)return text;
+  let segment=text.slice(0,limit+1);
+  // Prefer an entire sentence; if the source has none, finish a whole word.
+  const endOfSentence=/(?:[.!?](?:["'’”)]*)?)(?=\s|$)/g;
+  let lastEnd=0,match;
+  while((match=endOfSentence.exec(segment))!==null){
+    const at=match.index+match[0].length;
+    if(at<=limit&&at>=limit*.58)lastEnd=at;
+  }
+  if(lastEnd){segment=segment.slice(0,lastEnd);}
+  else {
+    const whitespace=segment.slice(0,limit+1).search(/\s+\S*$/);
+    // A whitespace boundary near the limit avoids a broken word.
+    if(whitespace>limit*.48)segment=segment.slice(0,whitespace);
+    else {
+      const cut=segment.slice(0,limit+1).lastIndexOf(' ');
+      segment=cut>limit*.48?segment.slice(0,cut):segment.slice(0,limit);
+    }
+  }
+  return segment.trimEnd().replace(/[,:;\-–—]+$/,'').trimEnd()+'…';
+}
 function plainText(value, limit = 1800) {
-  // Preserve paragraphs and list items from source HTML, but NEVER render HTML.
-  // The browser displays the returned text with textContent and white-space:pre-wrap.
-  return String(value || '')
+  // Retain real paragraph and list boundaries from source HTML / text.
+  // The browser displays plain text (textContent), NEVER source HTML.
+  const clean=String(value||'')
     .replace(/\r\n?/g,'\n')
     .replace(/<br\b[^>]*\/?\s*>/gi,'\n')
     .replace(/<li\b[^>]*>/gi,'\n• ')
@@ -44,7 +68,8 @@ function plainText(value, limit = 1800) {
       return code>=32&&code<=0x10ffff?String.fromCodePoint(code):' ';
     })
     .replace(/[^\S\n]+/g,' ').replace(/ *\n */g,'\n')
-    .replace(/\n{3,}/g,'\n\n').trim().slice(0,limit);
+    .replace(/\n{3,}/g,'\n\n').trim();
+  return excerptText(clean,limit);
 }
 function contains(re, title, body) {return re.test(title) || re.test(body);}
 
@@ -235,8 +260,8 @@ async function getSource([name,url]){
 }
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
-  // v2 key prevents an old 3-hour cached response reappearing after the update.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v07-quality&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v083-readable-excerpts&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));

@@ -244,3 +244,27 @@ body.drawer-open{overflow:hidden}
 #submission-form select[aria-invalid="true"]:focus-visible{outline:2px solid #b42318;outline-offset:1px}
 /* Preserve vacancy paragraph breaks and actual bullet lines, including blank lines. */
 .drawer-description #drawer-description-text{white-space:pre-wrap;line-height:1.7;font-size:12.5px;color:#333}
+
+/* V1.0 readiness: visible required markers, not color alone. */
+#submission-form label > span[aria-hidden="true"],
+#submission-form .so-required-legend span[aria-hidden="true"],
+#submission-form .so-permission-required{
+  color:#b42318;font-weight:700;
+}
+#submission-form .so-required-legend{
+  font-size:11px;line-height:1.5;color:#555;margin:6px 0 13px;
+}
+#submission-form .so-permission-required{display:inline-block;margin-left:3px}
+/* Read descriptions as actual paragraphs; do not force natural words to break. */
+.drawer-description #drawer-description-text{
+  display:block;
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+  word-break:normal;
+  hyphens:none;
+  line-height:1.78;
+  font-size:13px;
+  color:#262626;
+  max-width:100%;
+}
+.drawer-description #drawer-description-note{line-height:1.6;margin-top:14px}

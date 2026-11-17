@@ -7,6 +7,18 @@
  var panel=$('submission-panel'), backdrop=$('submission-backdrop'),form=$('submission-form');
  if(!panel||!form)return;
  var mode='employer',lastFocus=null,configuration=null,widgetId=null,token='',lastPrepared=null;
+ // Explicit required-field convention, including a non-color-only explanation.
+ // The existing HTML already contains the visible required asterisks and required attributes.
+ var legend=document.createElement('p');legend.className='so-required-legend';
+ var legendStar=document.createElement('span');legendStar.setAttribute('aria-hidden','true');legendStar.textContent='*';
+ legend.appendChild(legendStar);legend.appendChild(document.createTextNode(' Required fields'));
+ form.insertBefore(legend,form.firstChild);
+ var permissionLabel=form.querySelector('.submission-consent label');
+ if(permissionLabel && !permissionLabel.querySelector('.so-permission-required')){
+   var permissionStar=document.createElement('span');permissionStar.className='so-permission-required';
+   permissionStar.setAttribute('aria-hidden','true');permissionStar.textContent='*';
+   permissionLabel.appendChild(permissionStar);
+ }
  var draftKey='studio-openings.drafts.v061',preview=window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:';
  var turnstileScript;
  function message(s,error){var el=$('submission-error');el.textContent=s;el.className='submission-error'+(error?'':' submission-ok');el.hidden=!s;}

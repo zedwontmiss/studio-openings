@@ -31,7 +31,7 @@ function publicJob(row,now){
   location:short(data.location,90),mode:short(data.mode,12),type:short(data.type,50)||'Not specified',...geoMeta(geo),
   role:data.role,url:applicationMethod==='external'?data.url:'',applicationMethod,
   applicationEmail:applicationMethod==='email'?short(data.applicationEmail,150):'',salary:short(data.salary,75),eligibility:short(data.eligibility,170),
-  description:short(data.description,1800),posted:String(verified||'').slice(0,10),source:'Direct / curated',
+  description:String(data.description||'').trim(),posted:String(verified||'').slice(0,10),source:'Direct / curated',
   verifiedAt:String(verified||'').slice(0,10),descriptionKind:'editorial-summary'
  };
 }
