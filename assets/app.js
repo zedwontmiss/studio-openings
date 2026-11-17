@@ -7,7 +7,7 @@
     product:'Product / UX / UI', visual:'Graphic / Brand', motion:'Motion / 3D', fashion:'Fashion / Photography',
     web:'Web / Creative Tech', museum:'Museum / Exhibition', culture:'Arts / Cultural Production'
   };
-  var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, visible:10, review:false};
+  var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, savedPeriod:'all', visible:10, review:false};
   // Tags are a publication requirement: 1–3 verified role/skill labels per job.
   // No user search counts, guessed qualifications, or random tag promotion.
   var PREFERENCES_KEY='studio-openings.keywords.v05';
@@ -113,10 +113,116 @@
       button.addEventListener('click',function(){toggleKeyword(word);});el.appendChild(button);
     });
   }
-  var STORAGE_KEY='studio-openings.saved.v05';
-  var saved=[];
-  try {saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');if(!Array.isArray(saved))saved=[];} catch(e) {saved=[];}
-  function persist() {try {localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));}catch(e){}}
+  // Saved jobs v0.9.1: lightweight snapshots in this browser, not a cloud account.
+  // Old v0.5 ID-only bookmarks are imported once, without inventing saved dates.
+  var STORAGE_KEY='studio-openings.saved.v091', LEGACY_STORAGE_KEY='studio-openings.saved.v05';
+  var saved=[], savedStorageOk=true;
+  function savedRecord(entry){
+    if(typeof entry==='string')entry={id:entry};
+    if(!entry||typeof entry!=='object'||!entry.id)return null;
+    function field(key,max){return String(entry[key]||'').slice(0,max);}
+    var rawDate=field('savedAt',40);
+    var date=rawDate&&!isNaN(Date.parse(rawDate))?new Date(rawDate).toISOString():'';
+    var rawUrl=field('url',700);
+    return {id:field('id',240),title:field('title',160),company:field('company',120),source:field('source',100),url:safeUrl(rawUrl)?rawUrl:'',savedAt:date};
+  }
+  function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));savedStorageOk=true;return true;}catch(e){savedStorageOk=false;return false;}}
+  try{
+    var source=localStorage.getItem(STORAGE_KEY),oldSource=source===null?localStorage.getItem(LEGACY_STORAGE_KEY):null;
+    var raw=JSON.parse(source!==null?source:(oldSource||'[]'));
+    if(Array.isArray(raw)){
+      var seenSaved=Object.create(null);
+      raw.slice(0,300).forEach(function(item){var entry=savedRecord(item);if(entry&&!seenSaved[entry.id]){saved.push(entry);seenSaved[entry.id]=true;}});
+    }
+    if(source===null&&oldSource!==null)persist();
+  }catch(e){saved=[];savedStorageOk=false;}
+  function savedIndex(id){for(var n=0;n<saved.length;n++)if(saved[n].id===String(id))return n;return -1;}
+  function snapshotForJob(job,old){
+    var link=String(job.url||'');
+    return {id:String(job.id),title:String(job.title||'').slice(0,160),company:String(job.company||'').slice(0,120),
+      source:String(job.source||'').slice(0,100),url:safeUrl(link)?link:'',savedAt:old?old.savedAt:new Date().toISOString()};
+  }
+  function hydrateSavedEntries(){
+    var updates=false;
+    saved.forEach(function(record,index){
+      var job=state.jobs.filter(function(item){return String(item.id)===record.id;})[0];
+      if(!job)return;
+      var recent=snapshotForJob(job,record);
+      if(JSON.stringify(record)!==JSON.stringify(recent)){saved[index]=recent;updates=true;}
+    });
+    if(updates)persist();
+  }
+  // A dedicated saved view deliberately ignores role/search filters: bookmarked
+  // jobs should never disappear from the shortlist because of an old filter.
+  var resultsToolbar=document.querySelector('.results-toolbar');
+  var resultsSortLabel=resultsToolbar.querySelector('label');
+  var savedShortcut=document.createElement('button');
+  savedShortcut.type='button';savedShortcut.id='saved-shortcut';savedShortcut.className='saved-shortcut';
+  savedShortcut.setAttribute('aria-pressed','false');
+  resultsToolbar.insertBefore(savedShortcut,resultsSortLabel);
+  var savedPanel=document.createElement('section');savedPanel.id='saved-library';savedPanel.className='saved-library';savedPanel.hidden=true;
+  var savedHead=document.createElement('div');savedHead.className='saved-library-head';
+  var savedTitle=document.createElement('h2');savedTitle.textContent='Saved jobs';
+  var savedBack=document.createElement('button');savedBack.type='button';savedBack.textContent='Back to all jobs';savedBack.className='saved-back';
+  savedHead.appendChild(savedTitle);savedHead.appendChild(savedBack);savedPanel.appendChild(savedHead);
+  var savedExplain=document.createElement('p');savedExplain.className='saved-explain';
+  savedExplain.textContent='Saved privately in this browser only. No account or cross-device sync.';savedPanel.appendChild(savedExplain);
+  var savedTabs=document.createElement('div');savedTabs.className='saved-tabs';savedTabs.setAttribute('role','group');savedTabs.setAttribute('aria-label','Saved date range');
+  var savedAll=document.createElement('button'),savedWeek=document.createElement('button');
+  [savedAll,savedWeek].forEach(function(b){b.type='button';savedTabs.appendChild(b);});
+  savedAll.textContent='All saved';savedWeek.textContent='Last 7 days';savedPanel.appendChild(savedTabs);
+  var savedListing=document.createElement('div');savedListing.className='saved-listing';savedPanel.appendChild(savedListing);
+  $('job-list').parentNode.insertBefore(savedPanel,$('job-list'));
+  function toggleSavedView(force){state.onlySaved=typeof force==='boolean'?force:!state.onlySaved;state.visible=10;render();}
+  savedShortcut.addEventListener('click',function(){toggleSavedView();});
+  savedBack.addEventListener('click',function(){toggleSavedView(false);});
+  savedAll.addEventListener('click',function(){state.savedPeriod='all';render();});
+  savedWeek.addEventListener('click',function(){state.savedPeriod='week';render();});
+  function savedDateLabel(date){
+    if(!date)return 'Saved before this update (date unknown)';
+    var t=Date.parse(date);if(isNaN(t))return 'Saved date unknown';
+    var days=Math.max(0,Math.floor((Date.now()-t)/86400000));
+    return days===0?'Saved today':days===1?'Saved yesterday':'Saved '+new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+  }
+  function renderSavedPanel(){
+    savedListing.textContent='';
+    savedAll.setAttribute('aria-pressed',String(state.savedPeriod==='all'));
+    savedWeek.setAttribute('aria-pressed',String(state.savedPeriod==='week'));
+    var weekCutoff=Date.now()-7*86400000;
+    var entries=saved.filter(function(item){return state.savedPeriod==='all'||(item.savedAt&&Date.parse(item.savedAt)>=weekCutoff);});
+    entries.sort(function(a,b){return (Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0);});
+    if(!entries.length){
+      var empty=document.createElement('p');empty.className='saved-empty';
+      empty.textContent=saved.length===0?'No saved jobs yet. Open a vacancy and click Save job.':'No jobs saved in the last 7 days. Try All saved.';
+      savedListing.appendChild(empty);return;
+    }
+    entries.forEach(function(item){
+      var job=state.jobs.filter(function(j){return String(j.id)===item.id;})[0];
+      var row=document.createElement('article');row.className='saved-entry';
+      var title=document.createElement(job?'button':'strong');title.className='saved-entry-title';
+      title.textContent=displayTitle((job&&job.title)||item.title||'Previously saved vacancy');
+      if(job){title.type='button';title.addEventListener('click',function(){openDrawer(job,title);});}
+      row.appendChild(title);
+      var company=document.createElement('p');company.className='saved-entry-company';company.textContent=(job&&job.company)||item.company||'Employer information unavailable';row.appendChild(company);
+      var meta=document.createElement('p');meta.className='saved-entry-meta';
+      meta.textContent=savedDateLabel(item.savedAt)+(item.source?' · '+item.source:'');row.appendChild(meta);
+      var status=document.createElement('p');status.className=job?'saved-entry-status':'saved-entry-status is-unavailable';
+      status.textContent=job?'In current listings':'Not in current listings — vacancy status unverified';row.appendChild(status);
+      var actions=document.createElement('div');actions.className='saved-entry-actions';
+      if(job){
+        var review=document.createElement('button');review.type='button';review.textContent='Review job';
+        review.addEventListener('click',function(){openDrawer(job,review);});actions.appendChild(review);
+      }else if(safeUrl(item.url)){
+        var original=document.createElement('a');original.href=item.url;original.target='_blank';original.rel='noopener noreferrer';
+        original.textContent='Check original listing ↗';original.setAttribute('aria-label','Check original listing (availability unverified, opens new tab)');
+        actions.appendChild(original);
+      }
+      var remove=document.createElement('button');remove.type='button';remove.textContent='Remove';remove.className='saved-remove';
+      remove.setAttribute('aria-label','Remove saved job: '+((job&&job.title)||item.title||item.id));
+      remove.addEventListener('click',function(){var pos=savedIndex(item.id);if(pos>=0){saved.splice(pos,1);persist();render();}});
+      actions.appendChild(remove);row.appendChild(actions);savedListing.appendChild(row);
+    });
+  }
   function trim(v) {return String(v||'').trim();}
   function safeUrl(url) {
     try {
@@ -197,7 +303,7 @@
     var role=categoryFor(job);
     if(role==='not-creative')return false;
     if(state.selectedRoles.length&&state.selectedRoles.indexOf(role)<0)return false;
-    if(state.onlySaved&&saved.indexOf(job.id)<0)return false;
+    
     if(state.region==='us'&&!usMatch(trim(job.location)))return false;
     if(state.region==='worldwide'&&!worldwideMatch(trim(job.location)))return false;
     if(state.mode!=='all'&&trim(job.mode).toLowerCase()!==state.mode)return false;
@@ -271,7 +377,7 @@
   }
   function niceMode(value){return ({onsite:'On-site',remote:'Remote',hybrid:'Hybrid'})[trim(value).toLowerCase()]||'Not specified';}
   function updateDrawerSaved(){
-    var selected=!!activeJob&&saved.indexOf(activeJob.id)>=0;
+    var selected=!!activeJob&&savedIndex(activeJob.id)>=0;
     $('drawer-save').textContent=selected?'Saved ✓':'Save job';
     $('drawer-save').setAttribute('aria-pressed',String(selected));
   }
@@ -497,20 +603,31 @@
   function render(){
     renderKeywords();
     $('saved-count').textContent=saved.length;
+    savedShortcut.textContent='Saved jobs ('+saved.length+')';
+    savedShortcut.setAttribute('aria-pressed',String(state.onlySaved));
+    savedShortcut.classList.toggle('active',state.onlySaved);
     $('saved-toggle').setAttribute('aria-pressed',String(state.onlySaved));
     $('saved-toggle').classList.toggle('active',state.onlySaved);
     var selected=state.selectedRoles.length;
     $('filter-indicator').textContent=selected?selected+' selected':(document.querySelector('.sidebar').classList.contains('expanded')?'−':'+');
     $('clear-disciplines').textContent=selected?'clear ('+selected+')':'all';
     var list=state.jobs.filter(eligible).sort(sortJobs);
-    $('results-summary').textContent=state.review?'Official firm source review · 17 Nov 2026':'Current listings';
+    $('system-message').hidden=state.onlySaved||state.jobs.length>0;
+    $('list-footnote').hidden=state.onlySaved;
+    savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
+    $('results-summary').textContent=state.onlySaved?'Your shortlist':state.review?'Official firm source review · 17 Nov 2026':'Current listings';
     var wasOpen=!$('job-drawer').hidden;
     closeDrawer(true);
     if(wasOpen)updateJobUrl(null,'replace');
+    savedPanel.hidden=!state.onlySaved;
+    $('job-list').hidden=state.onlySaved;
+    $('empty-state').hidden=state.onlySaved||!(list.length===0&&state.jobs.length>0);
+    $('more').hidden=state.onlySaved||list.length<=state.visible;
+    resultsSortLabel.hidden=state.onlySaved;
+    $('preferences-bar').hidden=state.onlySaved||!state.keywords.length;
+    if(state.onlySaved){renderSavedPanel();return;}
     var root=$('job-list');root.textContent='';var fragment=document.createDocumentFragment();
     list.slice(0,state.visible).forEach(function(job){fragment.appendChild(rowFor(job));});root.appendChild(fragment);
-    $('empty-state').hidden=!(list.length===0&&state.jobs.length>0);
-    $('more').hidden=list.length<=state.visible;
   }
   function reset(){
     state.keywords=[];state.keywordMatch='any';persistKeywords();state.selectedRoles=[];state.query='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'relevant';state.visible=10;
@@ -532,7 +649,7 @@
   $('work-mode').addEventListener('change',function(){state.mode=this.value;state.visible=10;render();});
   $('has-pay').addEventListener('change',function(){state.hasPay=this.checked;state.visible=10;render();});
   $('sort').addEventListener('change',function(){state.sort=this.value;render();});
-  $('saved-toggle').addEventListener('click',function(){state.onlySaved=!state.onlySaved;state.visible=10;render();});
+  $('saved-toggle').addEventListener('click',function(){toggleSavedView();});
   $('reset').addEventListener('click',reset);$('empty-reset').addEventListener('click',reset);
   $('more').addEventListener('click',function(){state.visible+=20;render();});
   $('drawer-close').addEventListener('click',function(){closeDrawer(false);});
@@ -608,7 +725,15 @@
     window.dispatchEvent(new CustomEvent('studio:apply',{detail:{job:job}}));
   });
   $('drawer-copy').addEventListener('click',function(){copyJobUrl(this);});
-  $('drawer-save').addEventListener('click',function(){if(!activeJob)return;var pos=saved.indexOf(activeJob.id);if(pos>=0)saved.splice(pos,1);else saved.push(activeJob.id);persist();updateDrawerSaved();$('saved-count').textContent=saved.length;if(state.onlySaved){closeDrawer(false);render();}});
+  $('drawer-save').addEventListener('click',function(){
+    if(!activeJob)return;
+    var pos=savedIndex(activeJob.id);
+    if(pos>=0)saved.splice(pos,1);
+    else saved.push(snapshotForJob(activeJob,null));
+    persist();updateDrawerSaved();
+    $('saved-count').textContent=saved.length;savedShortcut.textContent='Saved jobs ('+saved.length+')';
+    if(state.onlySaved){closeDrawer(false);render();}
+  });
   document.addEventListener('keydown',function(e){
     if(!$('job-drawer').hidden){
       if(e.key==='Escape'){e.preventDefault();if(!$('drawer-share-menu').hidden){closeShareMenu();$('drawer-share').focus();}else closeDrawer();return;}
@@ -627,7 +752,7 @@
     $('system-message').hidden=false;$('system-message').textContent='REVIEW SNAPSHOT · Official firm vacancies reviewed 17 Nov 2026. Their availability may change.';
     $('updated-label').textContent='Offline source review';
     $('list-footnote').textContent='Click a listing to open its details without changing the results layout. The complete description and application steps remain on the original site. Snapshot status can change.';
-    render();
+    hydrateSavedEntries();render();
     syncJobFromUrl();
   }
   function loadLive(){
@@ -647,7 +772,7 @@
       $('system-message').hidden=state.jobs.length>0;
       if(!state.jobs.length)$('system-message').textContent='No current creative vacancies were returned by the connected feeds.';
       $('updated-label').textContent='Feed fetched '+new Date(latest||Date.now()).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-      render();syncJobFromUrl();
+      hydrateSavedEntries();render();syncJobFromUrl();
     }).catch(function(){
       $('system-message').hidden=false;
       $('updated-label').textContent='Feed unavailable';
