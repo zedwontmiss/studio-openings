@@ -55,6 +55,10 @@ function normalize(input){
     o.companyWebsite=allowedURL(input.companyWebsite);
     if(!o.companyWebsite)return [null,'Company website must use HTTPS'];
   }else{o.companyWebsite='';}
+  // User can only REQUEST featured placement. No self-reported payment or approval is accepted.
+  if(input.featuredInterest!==undefined && typeof input.featuredInterest!=='boolean')return [null,'Invalid featured placement request'];
+  if(input.kind!=='employer' && input.featuredInterest===true)return [null,'Only employers can request featured placement'];
+  o.featuredInterest=input.kind==='employer'&&input.featuredInterest===true;
   o.kind=input.kind;o.role=input.role;o.mode=input.mode;o.type=input.type||'';
   // Deliberately discard unrecognized fields, Turnstile token, raw files, and client timestamps.
   return [o,null];
@@ -111,7 +115,7 @@ export async function onRequestPost({request,env}){
       "INSERT INTO job_submissions (id,status,submission_type,job_title,company,application_url,contact_email,job_data) VALUES (?, 'pending', ?, ?, ?, ?, ?, ?)"
     ).bind(id,data.kind,data.title,data.company,data.url,data.contactEmail,JSON.stringify(jobData)).run();
     if(result?.success!==true)return fail(503,'storage','Unable to save this submission now.');
-    return json({ok:true,status:'pending',reference:id,message:'Your job was received and is awaiting manual review.'},201);
+    return json({ok:true,status:'pending',reference:id,featuredInterest:data.featuredInterest,message:'Your job was received and is awaiting manual review. No payment was collected and no featured placement was activated.'},201);
   }catch{return fail(503,'storage','Unable to save this submission now. Try again later.');}
 }
 export async function onRequestGet(){return fail(405,'method','POST only');}

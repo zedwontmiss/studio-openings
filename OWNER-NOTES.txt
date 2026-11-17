@@ -1,0 +1,52 @@
+Studio Openings v0.11 — Employer Featured Placement Requests
+=====================================================
+
+What this version DOES:
+- Adds an optional "Request featured placement" checkbox inside the existing employer submission drawer.
+- Hides it for visitor vacancy suggestions.
+- Sends `featuredInterest: true/false` with the same protected POST /api/submit form.
+- Server validates the request and stores it inside the existing private job_submissions.job_data JSON.
+- Normal submission reference, approval, and anti-spam protections remain.
+- On successful request, explicitly says no payment was collected or featured status granted.
+- The existing v0.10.1 exclusive baby-yellow + title star styling is preserved.
+
+What this version DOES NOT do:
+- No payment, invoice, checkout, account, employer dashboard or automatic sponsorship.
+- No guaranteed response times or advertising guarantees.
+- No changes to live listings until the owner verifies payment and manually enables a featured placement.
+- No new D1 schema/migration, secrets or paid services needed.
+
+OWNER WORKFLOW
+1. In Cloudflare dashboard > D1 > studio-openings-db > Console, review premium inquiries with:
+
+   SELECT id, job_title, company, contact_email, status, created_at
+   FROM job_submissions
+   WHERE json_extract(job_data, '$.featuredInterest') = 1
+   ORDER BY created_at DESC LIMIT 50;
+
+2. Confirm the company, job legitimacy and applicant routing. Only then discuss a price/payment route externally. Never solicit payment inside this prototype form.
+3. Verify actual payment in your payment provider dashboard independently. Do not trust a screenshot or browser field as proof.
+4. Approve the job using your existing manual moderation workflow.
+5. Only after BOTH verification and editorial approval, add its public jobId to assets/featured-jobs.json using a bounded live date range:
+
+   {
+     "placements": [
+       {
+         "jobId": "direct-so-12345678",
+         "startsOn": "2026-11-20",
+         "endsOn": "2026-11-27",
+         "approved": true
+       }
+     ]
+   }
+
+   EXAMPLE ONLY: don't copy fictional ID/dates into production.
+   `direct-` + lowercased D1 ID from approved-jobs endpoint is the matching jobId. This JSON is PUBLIC and must not contain contact data or private payment references.
+
+6. Expired placements stop showing the premium style. The feed must still include the approved job.
+
+UPLOADING: This ZIP contains an outer named folder. Open the folder and drag the folders `assets` and `functions` into the ROOT GitHub branch upload page, not into /assets. Only three files replace current files. Do not upload the outer named folder.
+URL: https://github.com/zedwontmiss/studio-openings/upload/development
+COMMIT: Add v0.11 featured placement request workflow
+
+COMPATIBILITY: no new dependencies/build tools. Existing Cloudflare Pages Functions + D1 + Turnstile; old browsers use existing site implementation.
