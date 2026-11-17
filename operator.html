@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Studio Openings — Operator</title>
+<link rel="stylesheet" href="/assets/operator.css">
+<script defer src="/assets/operator.js"></script>
+</head>
+<body>
+<header class="masthead"><a href="/" class="brand">studio openings</a><span class="right">operator / private console</span></header>
+<main>
+  <div class="pagehead"><div><p class="eyebrow">STUDIO OPENINGS / OPERATIONS</p><h1>Premium management</h1><p class="sub">Review hiring organizations and manage approved featured campaigns. No automated payment collection.</p></div><a class="quiet-link" href="/" target="_blank" rel="noopener">View public board ↗</a></div>
+  <section id="lock-panel" class="login-panel" aria-label="Unlock operator console">
+    <h2>Unlock operator console</h2>
+    <p>Enter the private operator secret configured in Cloudflare. It stays in this browser tab's memory only and is never saved in local storage.</p>
+    <div class="unlock"><input id="operator-key" type="password" autocomplete="off" spellcheck="false" placeholder="Operator secret" aria-label="Operator secret"><button id="unlock-button" type="button">Unlock console</button></div>
+    <p id="login-error" class="feedback" role="status">The console stays locked until the secret and D1 migration are configured.</p>
+  </section>
+  <section id="console" hidden>
+    <div class="stats" aria-label="Premium inventory overview">
+      <div><span>Pending jobs</span><strong id="count-pending">0</strong></div>
+      <div><span>Featured requests</span><strong id="count-requests">0</strong></div>
+      <div><span>Active campaigns</span><strong id="count-active">0</strong></div>
+      <div><span>Visible yellow limit</span><strong>10</strong></div>
+    </div>
+    <div class="console-tools"><p class="caption">90-day campaigns · Recheck active vacancies every 30 days · Manual payment verification required</p><div class="tools-right"><button id="refresh-button" type="button">Refresh</button><button id="lock-button" type="button">Lock</button></div></div>
+    <nav class="tabs" aria-label="Operator views"><button class="tab active" data-tab="requests" type="button">Requests</button><button class="tab" data-tab="approved" type="button">Approved jobs</button><button class="tab" data-tab="campaigns" type="button">Campaigns</button></nav>
+    <div id="operation-error" class="notice" hidden role="status"></div>
+    <section id="tab-requests"><h2>New submissions</h2><p class="hint">Approve only after checking the original vacancy and employer identity. A featured request is never proof of payment.</p><div id="requests-list" class="records"></div></section>
+    <section id="tab-approved" hidden><h2>Approved jobs</h2><p class="hint">Activation is disabled by default. It requires verified payment, a still-open vacancy, and a separate Cloudflare activation setting.</p><div id="approved-list" class="records"></div></section>
+    <section id="tab-campaigns" hidden><h2>Premium campaigns</h2><p class="hint">Campaigns appear in the public feed only while active, valid, and eligible. Ten yellow listings at most are shown per filtered feed.</p><div id="campaigns-list" class="records"></div></section>
+    <p class="footer">Owner console v0.13 · This page is a shell; private records are supplied only after server authentication. Never share your operator secret.</p>
+  </section>
+</main>
+<div id="confirm-backdrop" class="backdrop" hidden>
+ <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-heading"><h2 id="confirm-heading">Confirm action</h2><p id="confirm-details"></p><div id="activate-fields" hidden><label for="starts-on">Campaign start (90 days inclusive)</label><input id="starts-on" type="date"><label class="checkline"><input id="payment-verified" type="checkbox"> I independently verified this employer's payment</label></div><label class="checkline"><input id="review-confirmed" type="checkbox"> I independently checked this vacancy and employer</label><p class="feedback">Your confirmation is an operator attestation, not automated payment verification.</p><div class="dialog-actions"><button id="cancel-action" type="button">Cancel</button><button id="execute-action" type="button">Confirm</button></div><p class="feedback" id="confirm-error" role="status"></p></div>
+</div>
+</body></html>

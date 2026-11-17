@@ -187,10 +187,14 @@
     return output;
   }
   function loadFeaturedConfig(){
-    // A missing or invalid file fails closed: no featured inventory shown.
-    return fetch('/assets/featured-jobs.json',{cache:'no-store',credentials:'omit'}).then(function(r){
+    // v0.13: prefer vetted, server-stored campaigns. Static empty fallback
+    // preserves the existing safe behavior until migration/configuration.
+    function fallback(){return fetch('/assets/featured-jobs.json',{cache:'no-store',credentials:'omit'}).then(function(r){
       if(!r.ok)throw Error('No featured configuration');return r.json();
-    }).then(setFeaturedConfig).catch(function(){setFeaturedConfig(null);});
+    });}
+    return fetch('/api/featured-jobs',{cache:'no-store',credentials:'omit'}).then(function(r){
+      if(!r.ok)throw Error('Premium inventory unavailable');return r.json();
+    }).catch(fallback).then(setFeaturedConfig).catch(function(){setFeaturedConfig(null);});
   }
 
   // Saved jobs v0.9.1: lightweight snapshots in this browser, not a cloud account.
