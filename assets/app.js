@@ -409,12 +409,12 @@
     apply.dataset.method=method;
     // For sourced jobs, use ONLY the original applicationLink/url from the API.
     apply.href=method==='external'?job.url:method==='email'?'mailto:'+encodeURIComponent(job.applicationEmail||'')+'?subject='+encodeURIComponent('Application: '+job.title):'#apply';
-    var externalOrigin=source==='Himalayas'?'Apply via Himalayas':source==='Jobicy'?'Apply via Jobicy':/^Official careers/.test(source)?'Apply on employer career site':'View full job & apply';
+    var externalOrigin='Apply for job';
     apply.textContent=method==='native'?'Apply on Studio Openings':method==='email'?'Apply by email':externalOrigin;
     apply.setAttribute('aria-label',method==='external'?apply.textContent+' (opens a new tab)':apply.textContent);
     if(method==='email'&&!job.applicationEmail){apply.hidden=true;}
     if(method==='external'&&/^(Himalayas|Jobicy)$/.test(source)){
-      $('drawer-description-note').textContent += ' Applications are handled by '+source+'; Studio Openings does not collect them.';
+      $('drawer-description-note').textContent += ' Applications continue through the original source listing; Studio Openings does not collect them.';
     }
 
     updateDrawerSaved();
