@@ -377,3 +377,15 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 .featured-inquiry .featured-inquiry-choice input{flex:none;display:inline-block!important;width:14px!important;height:14px!important;min-height:14px!important;margin:0!important;padding:0!important;accent-color:#222}
 .featured-inquiry-star{font-size:12px;color:#6e582b;margin-left:2px}
 .featured-inquiry p{font-size:11px;line-height:1.55;color:#666;margin:6px 0 0 22px;font-weight:400}
+
+/* v0.13.1 reference-based employer locations, entirely within submission drawer. */
+.so-place-results{position:relative;z-index:10;background:#fff;border:1px solid #b9b9b9;margin-top:2px;max-height:180px;overflow:auto;box-shadow:0 2px 5px #0001}
+.so-place-results[hidden]{display:none}
+.so-place-choice{display:block;width:100%;border:0;border-bottom:1px solid #eee;background:#fff;text-align:left;color:#252525;padding:7px 9px;font:11px Arial,Helvetica,sans-serif;cursor:pointer}
+.so-place-choice:hover,.so-place-choice:focus-visible{background:#f0f0f0}
+.so-place-help{display:block;color:#777;font:10px/1.4 Arial,Helvetica,sans-serif;margin:4px 0 6px}
+#submission-form .so-location-city{display:block;margin:0 0 12px;font:700 11px Arial,Helvetica,sans-serif;color:#454545}
+.so-eligibility-extras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.so-eligibility-extras>label{display:block;font:bold 11px Arial,Helvetica,sans-serif;color:#454545;min-width:0}
+.so-eligibility-extras>label:first-child{grid-column:1 / -1}
+@media(max-width:540px){.so-eligibility-extras{grid-template-columns:1fr}.so-eligibility-extras>label:first-child{grid-column:auto}}

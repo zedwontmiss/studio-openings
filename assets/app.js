@@ -654,6 +654,11 @@
         sourceHolder.appendChild(credit);
       }else sourceHolder.appendChild(document.createTextNode(source));
     }
+    if(/^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(String(job.detailUrl||''))){
+      var sep=document.createTextNode(' · ');sourceHolder.appendChild(sep);
+      var jobPage=document.createElement('a');jobPage.href=job.detailUrl;jobPage.textContent='View job page';
+      sourceHolder.appendChild(jobPage);
+    }
     var apply=$('drawer-apply');
     apply.hidden=false;
     apply.dataset.method=method;

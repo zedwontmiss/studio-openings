@@ -1,3 +1,4 @@
+import {resolveReference,standardizeJobLocation,locateRaw} from '../../lib/location-reference.js';
 /** Studio Openings v0.6.1 — protected public job submission, Cloudflare Pages Function.
  * Required existing bindings: JOBS_DB (D1), TURNSTILE_SECRET_KEY (Secret).
  * No file uploads or unmoderated public publication are accepted here.
@@ -27,6 +28,27 @@ function normalize(input){
   for(const [name,length,required] of [['title',120,true],['company',100,true],['location',90,true],['url',600,false],['applicationEmail',150,false],['contactEmail',150,true],['salary',75,false],['eligibility',170,false],['description',1800,false],['closesOn',10,false]]){
     if(!checkField(input[name]??'',length,required))return [null,`Invalid ${name}`];
     o[name]=str(input[name]??'',length);
+  }
+  const loc=standardizeJobLocation(input);
+  if(loc.error)return [null,loc.error];
+  if(!loc.display)return [null,'Choose a valid location'];
+  o.location=loc.display;
+  o.locationReference=loc.reference;
+  o.locationCity=loc.city;
+  o.locationVerified=loc.verified;
+  const eligibilityRegion=String(input.applicantLocation||'').trim();
+  if(eligibilityRegion.length>100)return [null,'Eligible applicant location is too long'];
+  if(input.applicantLocationReference && !resolveReference(input.applicantLocationReference))return [null,'Choose an eligible region from the suggestions'];
+  let eligibleRef=resolveReference(input.applicantLocationReference)||locateRaw(eligibilityRegion);
+  if(eligibilityRegion && !eligibleRef)return [null,'Choose an eligible region from the suggestions'];
+  o.applicantLocation=eligibleRef?eligibleRef.label:'';
+  o.applicantLocationReference=eligibleRef;
+  o.workAuthorization=input.workAuthorization||'unspecified';
+  o.visaSponsorship=input.visaSponsorship||'unspecified';
+  if(!['unspecified','required','not_required'].includes(o.workAuthorization)||!['unspecified','available','unavailable'].includes(o.visaSponsorship))return [null,'Invalid eligibility setting'];
+  if(input.mode==='remote' && loc.reference?.kind==='worldwide' && eligibleRef && eligibleRef.kind!=='worldwide'){
+    // Clear misleading worldwide workplace geography when applicant scope is restricted.
+    o.location='Remote · '+eligibleRef.label;
   }
   if(o.title.length<3||o.company.length<2)return [null,'Provide a real job title and company'];
   if(!/^[^\s@]{1,64}@[^\s@]{1,120}\.[a-z]{2,24}$/i.test(o.contactEmail))return [null,'Enter a valid contact email'];
