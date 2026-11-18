@@ -394,6 +394,17 @@
   // Compact eligibility labels are display-only. Preserve the original source text
   // in the title attribute; never infer citizenship or broad regional eligibility
   // from a physical worksite location alone.
+  // Compact only exact lists of eligible European countries. Do not infer that
+  // Europe as a whole is eligible, and leave the full source text in the drawer.
+  function compactJobLocation(job){
+    var raw=trim(job.location);
+    if(!raw)return 'Region not stated';
+    if(!(job.locationKind==='eligibility'||/^eligible\s*:/i.test(raw)))return raw;
+    var list=raw.replace(/^eligible\s*:\s*/i,'').split(/\s*[,;]\s*/).map(function(s){return s.trim().toLowerCase();}).filter(Boolean);
+    if(list.length<4)return raw;
+    var europe={belgium:1,france:1,germany:1,ireland:1,italy:1,netherlands:1,poland:1,portugal:1,spain:1,'united kingdom':1,uk:1,austria:1,sweden:1,norway:1,finland:1,denmark:1,iceland:1,luxembourg:1,switzerland:1,greece:1,cyprus:1,czechia:1,'czech republic':1,estonia:1,latvia:1,lithuania:1,croatia:1,malta:1,romania:1,slovakia:1,slovenia:1,hungary:1,bulgaria:1};
+    return list.every(function(s){return !!europe[s];})?'Eligible: Europe (selected countries)':raw;
+  }
   function eligibilityLabel(job){
     var raw=trim(job.eligibility||job.notice);
     var source=raw.toLowerCase();
@@ -747,12 +758,12 @@
     });
     // Omit unverified metadata rather than repeating "Not specified" on every row.
     var meta=open.querySelector('.job-meta');meta.textContent='';
-    var items=[trim(job.location)||'Region not stated',niceMode(job.mode),trim(job.type)]
+    var items=[compactJobLocation(job),niceMode(job.mode),trim(job.type)]
       .filter(function(value){return value&&value!=='Not specified';});
     items.forEach(function(value,index){
       if(index){var divider=document.createElement('span');divider.className='job-divider';divider.textContent='|';divider.setAttribute('aria-hidden','true');meta.appendChild(divider);}
       var span=document.createElement('span');span.textContent=value;meta.appendChild(span);
-      if(index===0&&job.locationKind==='eligibility')span.title='Remote applicant eligibility region; not the employer office address';
+      if(index===0&&(job.locationKind==='eligibility'||value!==trim(job.location)))span.title='Full original eligibility: '+trim(job.location);
     });
     var salary=open.querySelector('.job-salary');salary.textContent=trim(job.salary)||'Salary not disclosed';
     if(!trim(job.salary))salary.classList.add('missing');
@@ -941,7 +952,7 @@
     syncJobFromUrl();
   }
   function loadLive(){
-    var urls=['/api/jobs','/api/approved-jobs','/api/firm-jobs'];
+    var urls=['/api/jobs','/api/approved-jobs','/api/firm-jobs','/api/source-jobs'];
     Promise.all([loadFeaturedConfig(),Promise.allSettled(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();});}))]).then(function(all){
       var items=all[1];
       var seen={},records=[],latest=null,success=0;
