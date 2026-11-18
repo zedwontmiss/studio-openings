@@ -4,7 +4,7 @@ export async function onRequestGet({request,env}){
  const canonical=(env?.PUBLIC_CANONICAL_HOST||'studio-openings.pages.dev').toLowerCase().trim();
  const host=/^[a-z0-9.-]+$/.test(canonical)?canonical:'studio-openings.pages.dev';
  const root='https://'+host;
- const rows=[{url:root+'/'},{url:root+'/privacy.html'}];
+ const rows=[{url:root+'/'},{url:root+'/privacy.html'},{url:root+'/coverage.html'}];
  if(env?.JOBS_DB){
   try{const r=await env.JOBS_DB.prepare("SELECT id,status,submission_type,job_data,reviewed_at FROM job_submissions WHERE status='approved' AND submission_type='employer' ORDER BY reviewed_at DESC LIMIT 250").all();
    const now=Date.now();

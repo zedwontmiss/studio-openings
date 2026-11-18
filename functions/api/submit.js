@@ -1,4 +1,5 @@
-import {resolveReference,standardizeJobLocation,locateRaw} from '../../lib/location-reference.js';
+import {resolveReference,standardizeJobLocation} from '../../lib/location-reference.js';
+import {verifyCityReference} from '../../lib/place-provider.js';
 /** Studio Openings v0.6.1 — protected public job submission, Cloudflare Pages Function.
  * Required existing bindings: JOBS_DB (D1), TURNSTILE_SECRET_KEY (Secret).
  * No file uploads or unmoderated public publication are accepted here.
@@ -39,7 +40,7 @@ function normalize(input){
   const eligibilityRegion=String(input.applicantLocation||'').trim();
   if(eligibilityRegion.length>100)return [null,'Eligible applicant location is too long'];
   if(input.applicantLocationReference && !resolveReference(input.applicantLocationReference))return [null,'Choose an eligible region from the suggestions'];
-  let eligibleRef=resolveReference(input.applicantLocationReference)||locateRaw(eligibilityRegion);
+  let eligibleRef=resolveReference(input.applicantLocationReference);
   if(eligibilityRegion && !eligibleRef)return [null,'Choose an eligible region from the suggestions'];
   o.applicantLocation=eligibleRef?eligibleRef.label:'';
   o.applicantLocationReference=eligibleRef;
@@ -122,6 +123,19 @@ export async function onRequestPost({request,env}){
   const ip=request.headers.get('CF-Connecting-IP')||'';
   const verified=await verifyTurnstile(body.turnstileToken,env.TURNSTILE_SECRET_KEY,host,ip);
   if(!verified)return fail(403,'turnstile','Verification failed or expired. Try again.');
+  // v0.14.1: verify the selected geographic IDs against the reference service,
+  // not just the client-supplied place names. Fail closed during outages.
+  if(data.locationReference?.kind==='city'){
+    let checked;
+    try{checked=await verifyCityReference(data.locationReference);}catch{
+      return fail(503,'geographic_reference','City verification is temporarily unavailable. Please try again later.');
+    }
+    if(!checked.ok)return fail(422,'geography',checked.error);
+    const {city,region,country}=checked;
+    data.locationReference={kind:'city',countryCode:country.code,regionCode:region.code.replace(country.code+'-',''),regionId:region.id,cityId:city.id,cityName:city.name,regionName:region.name,label:city.name+', '+region.name+', '+country.name};
+    data.locationCity=city.name;data.location=data.locationReference.label;
+  }
+
   try{
     // Per-email submission limit and duplicate URL prevention. No IP stored.
     const recent=await env.JOBS_DB.prepare("SELECT count(*) AS n FROM job_submissions WHERE contact_email = ? AND created_at >= datetime('now','-1 day')").bind(data.contactEmail).first();

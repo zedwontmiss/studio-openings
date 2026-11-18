@@ -968,3 +968,10 @@
   }
   if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();
 })();
+/* v0.14.1 — quiet expansion link, outside the job listing rows. */
+(function(){
+ function add(){var footer=document.querySelector('.site-footer');if(!footer||footer.querySelector('.so-coverage-link'))return;
+  var sep=document.createTextNode(' · '),a=document.createElement('a');a.className='so-coverage-link';a.href='/coverage.html';a.textContent='bring studio openings to your city';footer.appendChild(sep);footer.appendChild(a);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',add);else add();
+})();

@@ -389,3 +389,22 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 .so-eligibility-extras>label{display:block;font:bold 11px Arial,Helvetica,sans-serif;color:#454545;min-width:0}
 .so-eligibility-extras>label:first-child{grid-column:1 / -1}
 @media(max-width:540px){.so-eligibility-extras{grid-template-columns:1fr}.so-eligibility-extras>label:first-child{grid-column:auto}}
+
+/* v0.14.1 — compact dependent geographic selectors. */
+.so-geo-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;margin:10px 0;padding:12px;border:1px solid #dedede;background:#fafafa}
+.so-geo-title,.so-geo-hint,.so-geo-group>.so-geo-hint{grid-column:1/-1;margin:0}
+.so-geo-title{font-size:12px}
+.so-geo-hint{font:11px/1.4 Arial,Helvetica,sans-serif;color:#666}
+.so-geo-field{display:flex;flex-direction:column;gap:5px;font-size:11px;min-width:0;position:relative}
+.so-geo-field select,.so-geo-field input{width:100%;max-width:100%;box-sizing:border-box;border:1px solid #aaa;background:#fff;border-radius:0;padding:9px 8px;min-height:37px;font:12px Arial,Helvetica,sans-serif;color:#222}
+.so-geo-field select:disabled,.so-geo-field input:disabled{background:#eee;color:#777}
+.so-geo-options{position:absolute;left:0;right:0;top:100%;z-index:70;max-height:210px;overflow:auto;background:#fff;border:1px solid #888;box-shadow:0 4px 10px rgba(0,0,0,.09)}
+.so-geo-options[hidden]{display:none!important}
+.so-geo-option{display:block;width:100%;padding:9px 10px;text-align:left;border:0;border-bottom:1px solid #eee;background:#fff;font:12px Arial,Helvetica,sans-serif;cursor:pointer;color:#222}
+.so-geo-option:hover,.so-geo-option:focus{background:#eee}
+.so-eligibility-extras .so-geo-field{margin:10px 0}
+.so-geo-group a{color:#333;text-decoration:underline}
+@media(max-width:520px){.so-geo-group{grid-template-columns:1fr;padding:10px}.so-geo-title,.so-geo-hint,.so-geo-group>.so-geo-hint{grid-column:auto}}
+/* The verified picker spans the full two-column submission layout, not half a column. */
+.submission-form .so-geo-group,.so-geo-group{grid-column:1 / -1;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:640px){.submission-form .so-geo-group,.so-geo-group{grid-template-columns:1fr}}

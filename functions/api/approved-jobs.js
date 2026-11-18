@@ -19,8 +19,9 @@ function publicJob(row,now){
  if(Number.isNaN(lastCheck))return null;
  // With no separate daily monitor, retire unverified posts after 30 days.
  if(now-lastCheck>30*86400000)return null;
- const geo=(String(data.mode||'').toLowerCase()==='remote')?
-   remoteEligibility(data.location):officeLocation(data.location);
+ const geo=(data.locationVerified && data.locationReference?.countryCode)?
+   {eligible:true,countryCode:data.locationReference.countryCode,raw:data.location}:
+   (String(data.mode||'').toLowerCase()==='remote'?remoteEligibility(data.location):officeLocation(data.location));
  if(!geo.eligible)return null;
  if(data.closesOn){
    const closes=Date.parse(data.closesOn+'T23:59:59Z');
