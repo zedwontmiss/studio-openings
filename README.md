@@ -65,3 +65,7 @@ For **three or more semicolon-separated US office locations**, listing cards sho
 The public Suggest route is retired. Existing `/#suggest` and `/suggest-a-job.html` links redirect to paid `/post-a-job.html`; the public `/api/submit` endpoint now rejects `kind: suggest` so the paid gate cannot be bypassed via the old UI. Historical D1 suggestions and operator-approved editorial sourcing are retained. Organic jobs indexed independently by the operator remain non-sponsored, while employer-requested advertising requires payment after review.
 
 The board now shows 10 jobs initially, then appends eight after a visitor scrolls near the end, with a 450 ms 'Loading more openings…' pause. The browser's actual scroll is unaffected, and no automated intersection cascade dumps the full dataset. The feed ends naturally once all current API results are shown. This is client-side progressive disclosure, NOT yet server-side pagination or scheduled ATS ingestion.
+
+## v1.1 — Opt-in D1 snapshots
+
+Source jobs from operator-approved official ATS boards can be refreshed into D1 snapshots. Includes source-health monitoring and 72-hour expiry. New indexed feed is **off by default** and original ATS feeds are preserved for rollback. See `operations/INGESTION_PREVIEW.md` for Preview-only D1 migration, secrets, and optional separate Cron Worker setup. GitHub commit does not configure Cloudflare resources. No production changes, payment updates, or claimed new live vacancies.
