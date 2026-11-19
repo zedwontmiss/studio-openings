@@ -56,7 +56,9 @@ function normalize(input){
   if(!/^[^\s@]{1,64}@[^\s@]{1,120}\.[a-z]{2,24}$/i.test(o.contactEmail))return [null,'Enter a valid contact email'];
   o.contactEmail=o.contactEmail.toLowerCase();
   if(!ROLES.has(input.role)||!MODES.has(input.mode)||!TYPES.has(input.type||''))return [null,'Choose a supported discipline and job type'];
-  if(!['employer','suggest'].includes(input.kind))return [null,'Invalid submission type'];
+  // New public submissions are paid employer requests only. Historical editorial
+  // suggestions remain intact in D1 and the private operator review console.
+  if(input.kind!=='employer')return [null,'Public vacancy suggestions are closed. Use the employer posting page.'];
   o.applicationMethod=input.applicationMethod||'external';
   if(!METHODS.has(o.applicationMethod))return [null,'Unsupported application method'];
   // A visitor suggestion cannot authorize collection of candidate data or publish an application email.

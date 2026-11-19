@@ -847,22 +847,34 @@
     employer.addEventListener('click',function(){openDrawer(job,employer);});
     return frag;
   }
-  var feedJobs=[],feedObserver=null,scrollBusy=false;
+  // A short reveal pause is intentional; native scrolling is never throttled.
+  var feedJobs=[],feedBusy=false,feedTimer=null,feedVersion=0;
   function feedControls(){
-    var remaining=!state.onlySaved&&state.visible<feedJobs.length;
-    $('scroll-sentinel').hidden=!remaining;
-    $('more').hidden=!remaining||!!feedObserver;
-    $('feed-end').hidden=state.onlySaved||state.jobs.length===0||feedJobs.length===0||remaining;
+    var more=!state.onlySaved&&state.visible<feedJobs.length;
+    $('scroll-sentinel').hidden=!more;
+    $('feed-progress').hidden=!more||!feedBusy;
+    $('feed-end').hidden=state.onlySaved||!state.jobs.length||!feedJobs.length||more;
   }
   function appendFeed(){
-    if(scrollBusy||state.onlySaved||state.visible>=feedJobs.length||!$('job-drawer').hidden)return;
-    scrollBusy=true;
-    var end=Math.min(feedJobs.length,state.visible+20),fragment=document.createDocumentFragment();
-    feedJobs.slice(state.visible,end).forEach(function(job){fragment.appendChild(rowFor(job));});
-    $('job-list').appendChild(fragment);
-    state.visible=end;feedControls();scrollBusy=false;
+    if(feedBusy||state.onlySaved||state.visible>=feedJobs.length||!$('job-drawer').hidden)return;
+    if($('scroll-sentinel').hidden||$('scroll-sentinel').getBoundingClientRect().top>window.innerHeight+160)return;
+    feedBusy=true;var version=feedVersion;
+    feedControls();
+    feedTimer=setTimeout(function(){
+      feedTimer=null;
+      if(version!==feedVersion||state.onlySaved||!$('job-drawer').hidden){feedBusy=false;feedControls();return;}
+      var next=Math.min(feedJobs.length,state.visible+8),frag=document.createDocumentFragment();
+      feedJobs.slice(state.visible,next).forEach(function(job){frag.appendChild(rowFor(job));});
+      $('job-list').appendChild(frag);
+      state.visible=next;feedBusy=false;feedControls();
+      // Only auto-extend if there is genuinely not enough content to scroll.
+      if(document.documentElement.scrollHeight<=window.innerHeight+10&&state.visible<feedJobs.length)appendFeed();
+    },450);
   }
   function render(){
+    feedVersion++;
+    if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
+    feedBusy=false;
     renderKeywords();
     $('saved-count').textContent=saved.length;
     savedShortcut.textContent='Saved jobs ('+saved.length+')';
@@ -915,19 +927,11 @@
   $('sort').addEventListener('change',function(){state.sort=this.value;render();});
   $('saved-toggle').addEventListener('click',function(){toggleSavedView();});
   $('reset').addEventListener('click',reset);$('empty-reset').addEventListener('click',reset);
-  $('more').addEventListener('click',appendFeed);
-  if(typeof window.IntersectionObserver==='function'){
-    feedObserver=new IntersectionObserver(function(entries){
-      if(entries.length&&entries[0].isIntersecting)appendFeed();
-    },{rootMargin:'650px 0px',threshold:0});
-    feedObserver.observe($('scroll-sentinel'));
-  }else{
-    // Fallback for older Safari: both passive scroll paging and a manual link.
-    window.addEventListener('scroll',function(){
-      if($('scroll-sentinel').hidden)return;
-      if($('scroll-sentinel').getBoundingClientRect().top<window.innerHeight+550)appendFeed();
-    },{passive:true});
-  }
+  // One visitor scroll triggers one eight-job reveal; no observer cascade.
+  window.addEventListener('scroll',appendFeed,{passive:true});
+  window.addEventListener('resize',function(){
+    if(document.documentElement.scrollHeight<=window.innerHeight+10)appendFeed();
+  });
   $('drawer-close').addEventListener('click',function(){closeDrawer(false);});
   $('drawer-backdrop').addEventListener('click',function(){closeDrawer(false);});
   window.addEventListener('popstate',syncJobFromUrl);

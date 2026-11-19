@@ -62,7 +62,7 @@
       <div class="job-list" id="job-list" aria-label="Creative job openings"></div>
       <div class="empty-state" id="empty-state" hidden><strong>No jobs match these filters.</strong><p>Try a different discipline or region.</p><button id="empty-reset" type="button">Clear filters</button></div>
       <div id="scroll-sentinel" class="scroll-sentinel" aria-hidden="true" hidden></div>
-      <div class="load-more"><button id="more" type="button" hidden>Load more jobs</button></div>
+      <p id="feed-progress" class="feed-progress" aria-live="polite" role="status" hidden>Loading more openings…</p>
       <p id="feed-end" class="feed-end" hidden>End of current listings.</p>
       <p class="list-footnote" id="list-footnote">Select a listing to read its available details. Confirm all requirements and vacancy status on the original job page.</p>
     </div>
@@ -70,7 +70,7 @@
 </section>
 
 </main>
-<footer class="site-footer"><div class="shell footer-inner"><span>studio openings</span><span><a href="/about.html">about</a> · <a href="/suggest-a-job.html">suggest a public opening</a> · <a href="/coverage.html">bring to your city</a> · <a href="/privacy.html">privacy</a> · <a href="#top">top</a></span></div></footer>
+<footer class="site-footer"><div class="shell footer-inner"><span>studio openings</span><span><a href="/about.html">about</a> · <a href="/coverage.html">bring to your city</a> · <a href="/privacy.html">privacy</a> · <a href="#top">top</a></span></div></footer>
 <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
 <aside id="job-drawer" class="job-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-describedby="drawer-company" tabindex="-1" hidden>
   <div class="drawer-topline"><span>studio openings / job details</span><div class="drawer-top-actions"><button type="button" id="drawer-share" class="drawer-share-trigger" aria-expanded="false" aria-controls="drawer-share-menu">Share</button><button type="button" id="drawer-close" class="drawer-close" aria-label="Close job details">Close <span aria-hidden="true">×</span></button></div></div>
@@ -127,7 +127,7 @@
 <script src="assets/native-apply.js" defer></script>
 
 <script>
-if (location.hash === '#suggest') location.replace('/suggest-a-job.html');
+if (location.hash === '#suggest') location.replace('/post-a-job.html');
 else if (location.hash === '#submit') location.replace('/post-a-job.html');
 </script>
 

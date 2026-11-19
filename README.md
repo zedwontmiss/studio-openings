@@ -59,3 +59,9 @@ Homepage retains the original job board and filters, moving About to `/about.htm
 Listings append 20 at a time near the end of the viewport, using IntersectionObserver and a legacy Safari scroll/manual fallback. This exhausts the currently loaded jobs; it is not server-side infinite indexing or a change to ATS ingestion. The browsing filters, job details, saved jobs, ranking and sponsored placement remain the same.
 
 For **three or more semicolon-separated US office locations**, listing cards show `United States (selected)` only if each segment explicitly ends in `United States`, `USA` or `US`. Full unmodified office lists remain visible in the job details and title hover text. This is not interpreted as remote eligibility or applicable to mixed-country listings.
+
+## v1.0.8: paid-only public intake and paced browsing
+
+The public Suggest route is retired. Existing `/#suggest` and `/suggest-a-job.html` links redirect to paid `/post-a-job.html`; the public `/api/submit` endpoint now rejects `kind: suggest` so the paid gate cannot be bypassed via the old UI. Historical D1 suggestions and operator-approved editorial sourcing are retained. Organic jobs indexed independently by the operator remain non-sponsored, while employer-requested advertising requires payment after review.
+
+The board now shows 10 jobs initially, then appends eight after a visitor scrolls near the end, with a 450 ms 'Loading more openings…' pause. The browser's actual scroll is unaffected, and no automated intersection cascade dumps the full dataset. The feed ends naturally once all current API results are shown. This is client-side progressive disclosure, NOT yet server-side pagination or scheduled ATS ingestion.
