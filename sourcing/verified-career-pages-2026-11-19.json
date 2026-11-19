@@ -1,0 +1,286 @@
+{
+  "version": 1,
+  "asOf": "2026-11-19",
+  "status": "CAREER_PAGES_ONLY_NOT_VERIFIED_ACTIVE_JOBS",
+  "employers": [
+    {
+      "name": "Bjarke Ingels Group",
+      "discipline": "architecture",
+      "careerURL": "https://big.dk/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "OMA",
+      "discipline": "architecture",
+      "careerURL": "https://omajobs.career.softgarden.de/en/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Herzog & de Meuron",
+      "discipline": "architecture",
+      "careerURL": "https://www.herzogdemeuron.com/practice/jobs/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "MVRDV",
+      "discipline": "architecture",
+      "careerURL": "https://jobs.mvrdv.com/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Gensler",
+      "discipline": "architecture",
+      "careerURL": "https://www.gensler.com/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Perkins&Will",
+      "discipline": "architecture",
+      "careerURL": "https://perkinswill.com/careers/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Foster + Partners",
+      "discipline": "architecture",
+      "careerURL": "https://vacancies.fosterandpartners.com/jobs/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Zaha Hadid Architects",
+      "discipline": "architecture",
+      "careerURL": "https://zaha-hadid.jobs.personio.com/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Snøhetta",
+      "discipline": "architecture",
+      "careerURL": "https://web106.reachmee.com/ext/I020/762/main?lang=UK&rmref=210&site=6&validator=83f187b6a1fc05eedd0e6135a310a4c1",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Field Operations",
+      "discipline": "architecture",
+      "careerURL": "https://www.fieldoperations.net/positions",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "IDEO",
+      "discipline": "industrial",
+      "careerURL": "https://www.ideo.com/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "frog",
+      "discipline": "industrial",
+      "careerURL": "https://www.frog.co/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Designit",
+      "discipline": "industrial",
+      "careerURL": "https://www.designit.com/jobs",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Dyson",
+      "discipline": "industrial",
+      "careerURL": "https://careers.dyson.com/en-gb/what-you-can-do/create/creative/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Apple",
+      "discipline": "industrial",
+      "careerURL": "https://jobs.apple.com/en-us/search?location=United-States-USA&team=Industrial-Design-DESGN-ID",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Work & Co",
+      "discipline": "product",
+      "careerURL": "https://work.co/careers/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Instrument",
+      "discipline": "web",
+      "careerURL": "https://www.instrument.com/careers/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "ustwo",
+      "discipline": "product",
+      "careerURL": "https://ustwo.com/join-us/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Monks",
+      "discipline": "web",
+      "careerURL": "https://www.monks.com/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Adobe Design",
+      "discipline": "product",
+      "careerURL": "https://careers.adobe.com/us/en/design-team",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "BUCK",
+      "discipline": "motion",
+      "careerURL": "https://buck.co/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Framestore",
+      "discipline": "motion",
+      "careerURL": "https://www.framestore.com/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Pixar Animation Studios",
+      "discipline": "motion",
+      "careerURL": "https://www.pixar.com/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Nike",
+      "discipline": "fashion",
+      "careerURL": "https://careers.nike.com/jobs?filter%5Bcategory%5D%5B0%5D=Design",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Tate",
+      "discipline": "museum",
+      "careerURL": "https://jobsearch.tate.org.uk/jobs",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "The Metropolitan Museum of Art",
+      "discipline": "museum",
+      "careerURL": "https://www.metmuseum.org/de/opportunities/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Aperture",
+      "discipline": "photography",
+      "careerURL": "https://aperture.org/jobs",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Leica Camera",
+      "discipline": "photography",
+      "careerURL": "https://leica-camera.com/en-DK/company/career",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Condé Nast",
+      "discipline": "photography",
+      "careerURL": "https://www.condenast.com/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Art Basel",
+      "discipline": "culture",
+      "careerURL": "https://www.artbasel.com/about/careers",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    },
+    {
+      "name": "Hauser & Wirth",
+      "discipline": "culture",
+      "careerURL": "https://www.hauserwirth.com/careers/learning-manager/",
+      "verification": "official_career_page_seen",
+      "ats": "unverified",
+      "currentJobListings": "unverified",
+      "publish": false
+    }
+  ]
+}
