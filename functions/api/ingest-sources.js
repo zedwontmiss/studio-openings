@@ -3,7 +3,13 @@ import {cityCovered,POLICY_VERSION} from '../../lib/coverage-policy.js';
 const H={'content-type':'application/json; charset=utf-8','cache-control':'private, no-store'};
 const respond=(v,status=200)=>new Response(JSON.stringify(v),{status,headers:H});
 function equal(a,b){const x=new TextEncoder().encode(a),y=new TextEncoder().encode(b);let n=x.length^y.length;for(let i=0;i<Math.max(x.length,y.length);i++)n|=(x[i]||0)^(y[i]||0);return n===0;}
-function auth(req,env){let v=req.headers.get('authorization')||'';return ['OPERATOR_ACCESS_TOKEN','SOURCING_INGEST_SECRET'].some(k=>typeof env[k]==='string'&&env[k].length>=32&&equal(v,'Bearer '+env[k]));}
+function auth(req,env){
+ const v=req.headers.get('authorization')||'';
+ return ['OPERATOR_ACCESS_TOKEN','SOURCING_INGEST_SECRET'].some(k=>typeof env[k]==='string'&&env[k].length>=32&&equal(v,'Bearer '+env[k]));
+}
+function operator(req,env){const t=env?.OPERATOR_ACCESS_TOKEN;return typeof t==='string'&&t.length>=32&&equal(req.headers.get('authorization')||'','Bearer '+t);}
+function preview(req){try{return new URL(req.url).hostname==='development.studio-openings.pages.dev';}catch{return false;}}
+function originOK(req){try{return new URL(req.headers.get('origin')).origin===new URL(req.url).origin;}catch{return false;}}
 const sql="SELECT id,employer_name,official_url,provider,board_token,qualification FROM creative_sources WHERE status='approved'";
 async function sourceFor(db,id){
  if(id)return db.prepare(sql+' AND id=? LIMIT 1').bind(id).first();
@@ -46,8 +52,13 @@ async function sync(db,source){
  return {ok:true,source:source.employer_name,atsJobs:rows.length,indexed:jobs.length,verifiedLocations:lookup.size,retirement:complete?'double-confirmed':'skipped'};
 }
 export async function onRequestPost({request,env}){
- if(env?.SOURCE_INGEST_ENABLED!=='true'||!env?.JOBS_DB)return respond({ok:false,error:'Ingestion disabled or D1 not bound.'},503);
+ if(!env?.JOBS_DB)return respond({ok:false,error:'Preview D1 is not bound.'},503);
+ if(!preview(request))return respond({ok:false,error:'Preview sync only.'},403);
  if(!auth(request,env))return respond({ok:false,error:'Unauthorized.'},401);
+ // Manual operator sync is available after Preview bootstrap. Scheduled workers
+ // require separate explicit activation and may not bypass the operator workflow.
+ if(operator(request,env)){if(!originOK(request))return respond({ok:false,error:'Invalid operator origin.'},403);}
+ else if(env.SOURCE_INGEST_ENABLED!=='true')return respond({ok:false,error:'Scheduled ingestion is disabled.'},503);
  if(!(request.headers.get('content-type')||'').toLowerCase().startsWith('application/json'))return respond({ok:false,error:'JSON required.'},415);
  let payload;try{const raw=await request.text();if(raw.length>1200)throw Error('size');payload=JSON.parse(raw);}catch{return respond({ok:false,error:'Invalid JSON.'},400);}
  if(!payload||typeof payload!=='object'||Array.isArray(payload))return respond({ok:false,error:'Invalid request.'},422);
@@ -56,7 +67,7 @@ export async function onRequestPost({request,env}){
  catch{return respond({ok:false,error:'Sync failed; verify Preview D1 schema and approved source.'},503);}
 }
 export async function onRequestGet({request,env}){
- if(!env?.JOBS_DB||!auth(request,env))return respond({ok:false,error:'Unauthorized.'},401);
+ if(!preview(request)||!env?.JOBS_DB||!operator(request,env))return respond({ok:false,error:'Preview operator access required.'},401);
  try{
   const [a,b]=await Promise.all([
    env.JOBS_DB.prepare("SELECT h.source_id,h.last_attempt_at,h.last_success_at,h.status,h.source_count,h.matched_count,h.failure_streak FROM source_ingest_health h JOIN creative_sources s ON s.id=h.source_id WHERE s.status IN ('approved','paused') ORDER BY h.last_attempt_at DESC LIMIT 180").all(),

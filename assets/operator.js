@@ -72,22 +72,45 @@
  function selectTab(tab){selectedTab=tab;['requests','approved','campaigns','sources'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
 
  // v0.14.2: opt-in registry, same tab-memory credential. Failures do not affect premium management.
- var sourceState={sources:[],maps:[]},indexHealth={},selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null;
+ var sourceState={sources:[],maps:[]},indexHealth={},indexReady=false,indexEnvironment='',selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null;
  function sourceAPI(method,body){return fetch('/api/source-registry',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {error:'Invalid source API response'};}).then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Source registry unavailable');return v;});});}
  function sourceNotice(msg){$('source-feedback').hidden=!msg;$('source-feedback').textContent=msg||'';}
  function indexAPI(method,body){return fetch('/api/ingest-sources',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Indexer unavailable');return v;});});}
+ function setupAPI(method,body){return fetch('/api/ingest-setup',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Preview setup unavailable');return v;});});}
+ function initIndex(){
+   if(!confirm('Initialize Preview D1 tables only? First confirm JOBS_DB points to the separate Preview database, NOT your Production database. No live jobs will be published.'))return;
+   sourceNotice('Initializing Preview source tables…');
+   setupAPI('POST',{confirm:'initialize-preview-only'}).then(function(d){
+     sourceNotice(d.ready?'Preview tables ready. Approve and map an official ATS source, then sync its jobs.':'Some Preview tables remain unavailable.');
+     return loadSources();
+   }).catch(function(e){sourceNotice('Initialization failed: '+e.message);});
+ }
+ function renderIndexSetup(){
+   var host=$('source-list'),box=$('source-ingest-setup');
+   if(!box){box=el('div','record');box.id='source-ingest-setup';host.parentNode.insertBefore(box,host);}
+   box.textContent='';
+   box.appendChild(el('h3','', 'D1 source index · Preview'));
+   var status=indexEnvironment==='preview'?(indexReady?'Ready for approved ATS sync':'Database setup required'):'Preview readiness not confirmed';
+   box.appendChild(el('p','hint',status+'. Public indexed feed remains separate from manual validation.'));
+   if(indexEnvironment==='preview'&&!indexReady)sourceButton(box,'Initialize Preview tables',initIndex);
+   sourceButton(box,'Check readiness',loadIndexReadiness);
+ }
+ function loadIndexReadiness(){return setupAPI('GET').then(function(d){
+   indexReady=!!d.ready;indexEnvironment=d.environment||'';
+   renderIndexSetup();if(indexReady)loadIndexHealth();
+ }).catch(function(e){indexReady=false;indexEnvironment='';renderIndexSetup();sourceNotice('Preview readiness: '+e.message);});}
  function loadIndexHealth(){return indexAPI('GET').then(function(d){indexHealth={};(d.health||[]).forEach(function(x){indexHealth[x.sourceId]=x;});renderSources();}).catch(function(){indexHealth={};renderSources();});}
  function syncIndexedSource(s){sourceNotice('Checking one approved ATS source…');return indexAPI('POST',{sourceId:s.id}).then(function(d){sourceNotice('Indexed '+d.indexed+' verified vacancies at '+d.source+'. Publication still requires Preview opt-in.');return loadIndexHealth();}).catch(function(e){sourceNotice('Sync unavailable: '+e.message);});}
- function loadSources(){if(!$('source-country').options.length||$('source-country').options.length===1){sourceGet('/api/geo?kind=countries&purpose=source').then(function(j){sourceFill($('source-country'),'Choose country',j.countries);}).catch(function(e){sourceNotice(e.message);});}return sourceAPI('GET').then(function(res){sourceState=res;renderSources();loadIndexHealth();}).catch(function(e){sourceNotice('Registry unavailable: '+e.message+'. Run v0.14.2 D1 migration before using this tab.');});}
+ function loadSources(){if(!$('source-country').options.length||$('source-country').options.length===1){sourceGet('/api/geo?kind=countries&purpose=source').then(function(j){sourceFill($('source-country'),'Choose country',j.countries);}).catch(function(e){sourceNotice(e.message);});}return sourceAPI('GET').then(function(res){sourceState=res;renderSources();loadIndexReadiness();}).catch(function(e){sourceNotice('Registry unavailable: '+e.message+'. Check the Preview D1 binding, then initialize Preview tables.');loadIndexReadiness();});}
  function sourceAction(payload,after){sourceNotice('Saving…');return sourceAPI('POST',payload).then(function(r){sourceNotice(r.message||'Saved.');return loadSources().then(function(){if(after)after();});}).catch(function(e){sourceNotice(e.message);});}
  function sourceButton(parent,label,callback){var b=el('button','',label);b.type='button';b.onclick=callback;parent.appendChild(b);return b;}
- function renderSources(){var host=$('source-list');host.textContent='';if(!sourceState.sources.length){host.appendChild(el('p','empty','No verified career sources yet. Add a company above.'));return;}
+ function renderSources(){var host=$('source-list');host.textContent='';renderIndexSetup();if(!sourceState.sources.length){host.appendChild(el('p','empty','No verified career sources yet. Add a company above.'));return;}
   sourceState.sources.forEach(function(s){var item=el('article','record'),info=el('div'),actions=el('div','actions');item.appendChild(info);item.appendChild(actions);
    info.appendChild(el('span','status',s.status.toUpperCase()+' · '+s.qualification.replace('_',' ')));info.appendChild(el('h3','',s.employerName));info.appendChild(el('p','',s.provider+' / '+s.boardToken+' · '+s.focus));
    var mapped=sourceState.maps.filter(function(m){return m.sourceId===s.id;});info.appendChild(el('p','',mapped.length+' verified location mapping(s)'));linkText(info,s.officialURL,'Official careers ↗');
    var h=indexHealth[s.id];if(h)info.appendChild(el('p','role','Indexer: '+h.status+' · '+h.matched+' matched · last success '+(h.lastSuccess||'never')));
    sourceButton(actions,'Inspect locations',function(){inspectSource(s);});
-   if(s.status==='approved')sourceButton(actions,'Sync indexed jobs',function(){syncIndexedSource(s);});
+   if(s.status==='approved'&&indexReady)sourceButton(actions,'Sync indexed jobs',function(){syncIndexedSource(s);});
    if(s.status==='pending')sourceButton(actions,'Verify & approve',function(){if(confirm('Have you independently verified the employer identity, official careers URL, and ATS board?'))sourceAction({action:'approve',id:s.id,reviewConfirmed:true});});
    if(s.status==='approved')sourceButton(actions,'Pause',function(){sourceAction({action:'pause',id:s.id});});
    if(s.status==='paused')sourceButton(actions,'Resume',function(){sourceAction({action:'resume',id:s.id});});

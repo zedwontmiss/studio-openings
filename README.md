@@ -73,3 +73,7 @@ Source jobs from operator-approved official ATS boards can be refreshed into D1 
 ## v1.1.1 — Unified filters in Saved Jobs
 
 The Saved Jobs view uses the same discipline, title/company search, regional, arrangement, employment, salary-disclosed and keyword filters as the main listing feed. Its **All saved / Last 7 days** tabs remain independent. The Saved count always means **total bookmarks**, while a small inline counter reports how many visible saved jobs match the filters. Saved entries remain hidden from public accounts and are stored in the browser only. New bookmarks cache a small, verified set of role, location, employment type and up to three published tags for filtering if a vacancy later disappears from the live feed. Existing historical ID-only bookmarks are preserved without assigning an invented category; they are excluded from category/skill filters until a live job can rehydrate them. No saved-card tags were added and no job IDs were deleted.
+
+## v1.1.2 — Preview-only guided D1 setup
+
+A protected `/api/ingest-setup` allows idempotent schema initialization from Operator → Sources after the owner confirms the `JOBS_DB` Preview binding targets a separate database. Manual approved-source sync now works with the operator token on Preview (same-origin); scheduled Cron ingestion still requires explicit secret and environment activation. No public index, paid order, or Production behavior is changed by the commit. See `operations/INGESTION_PREVIEW.md`.
