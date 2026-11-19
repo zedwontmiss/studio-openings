@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Suggest an existing verified public architecture, design or creative-industry job to Studio Openings. Free editorial review.">
+<title>Suggest a Public Opening — Studio Openings</title><link rel="stylesheet" href="/assets/styles.css"><link rel="stylesheet" href="/assets/post-a-job.css">
+<style>.so-suggest-page .post-shell{max-width:780px}.so-suggest-page .submission-panel{display:block}.so-suggest-page .submission-topline{margin:25px 0 0}.so-suggest-page .submission-scroll{padding-top:17px}.so-suggest-page .post-group{margin-top:24px}.so-suggest-page #method-external{display:block}.so-suggest-page .method-hint{display:none}</style></head>
+<body class="so-post-page so-suggest-page">
+<header class="site-header"><div class="shell nav-inner"><a class="wordmark" href="/">studio openings</a><nav class="nav-links" aria-label="Navigation"><a href="/">browse jobs</a><a href="/post-a-job.html">post a job</a><a href="/about.html">about</a></nav></div></header>
+<main class="post-shell"><div class="post-eyebrow">Studio Openings / Community</div>
+<h1>Suggest a public opening.</h1><p class="post-intro">Found a relevant creative job on an employer's official website? Share the vacancy for editorial review. This is free and does not purchase placement.</p>
+<section id="submission-panel" class="submission-panel" aria-labelledby="submission-title" hidden>
+<div class="submission-topline"><span>FREE · PUBLIC VACANCY SUGGESTION</span><button type="button" id="submission-close" class="drawer-close">← Browse jobs</button></div>
+<div class="submission-scroll">
+
+<h2 id="submission-title">Post a creative job</h2><p class="submission-lede">Suggestions are free. Share an existing public vacancy from an official employer page for editorial review.</p>
+<div class="submission-modes" hidden aria-hidden="true"><button type="button" id="mode-employer">I'm hiring</button><button type="button" id="mode-suggest">Suggest a vacancy</button></div>
+<form id="submission-form" novalidate>
+      <div class="post-group"><small>01 / VACANCY DETAILS</small><h3>Which public vacancy did you find?</h3><p>Use the employer’s public vacancy page as the authoritative source.</p></div>
+      <label>Job title <span aria-hidden="true">*</span><input name="title" type="text" minlength="3" maxlength="120" autocomplete="off" placeholder="e.g. Architectural Designer" required></label>
+      <label>Company / studio <span aria-hidden="true">*</span><input name="company" type="text" maxlength="100" placeholder="Hiring organization" required></label>
+      <div class="post-group"><small>02 / WORKPLACE</small><h3>Location, work mode &amp; eligibility</h3><p>Choose a verified location so applicants can understand where they would work.</p></div><div class="submission-two"><label>Location <span aria-hidden="true">*</span><input name="location" type="text" maxlength="90" placeholder="City, country / Worldwide" required></label>
+      <label>Arrangement <span aria-hidden="true">*</span><select name="mode" required><option value="">Select…</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label></div>
+      <div class="submission-two"><label>Employment <select name="type"><option value="">Not specified</option><option value="Full-time">Full-time</option><option value="Part-time">Part-time</option><option value="Contract">Contract</option><option value="Internship">Internship</option></select></label>
+      <label>Discipline <span aria-hidden="true">*</span><select name="role" required><option value="">Select…</option><option value="architecture">Architecture / Landscape</option><option value="interior">Interior / Spatial</option><option value="industrial">Industrial Design</option><option value="product">Product / UX / UI</option><option value="visual">Graphic / Brand</option><option value="motion">Motion / 3D / VFX</option><option value="fashion">Fashion / Photography</option><option value="web">Web / Creative Tech</option><option value="museum">Museum / Exhibition</option><option value="culture">Arts / Cultural Production</option></select></label></div>
+      <div class="post-group"><small>03 / APPLICATIONS</small><h3>Official vacancy source</h3><p>Provide the direct job URL from the employer website, not just a career homepage.</p></div><div id="application-method-group" class="application-method-group" hidden aria-hidden="true">
+        <span class="method-label">How should candidates apply?</span>
+        <label><input type="radio" name="applicationMethod" value="native"> On Studio Openings</label>
+        <label><input type="radio" name="applicationMethod" value="email"> By email</label>
+        <label><input type="radio" name="applicationMethod" value="external" checked> Company website</label>
+      </div>
+      <div id="method-native" class="method-hint">Candidates apply on Studio Openings using name, email, portfolio link and an introduction. We review applications privately and forward them manually; no employer inbox yet.</div>
+      <label id="method-email" hidden>Application email <span aria-hidden="true">*</span><input name="applicationEmail" type="email" maxlength="150" placeholder="careers@studio.com"></label>
+      <label id="method-external" hidden>Official vacancy URL <span aria-hidden="true">*</span><input name="url" type="url" maxlength="600" placeholder="https://company.com/careers/job"></label>
+      <div class="submission-two">
+        <label>Your email <span aria-hidden="true">*</span><input name="contactEmail" type="email" maxlength="150" placeholder="hiring@company.com" autocomplete="email" required></label>
+        <label>Company website (optional)<input name="companyWebsite" type="url" maxlength="350" placeholder="https://company.com"></label>
+      </div>
+      <div class="submission-two"><label>Salary (optional)<input name="salary" type="text" maxlength="75" placeholder="USD 70k–90k / yr"></label><label>Closes on (optional)<input name="closesOn" type="date"></label></div>
+      <label>Eligibility / work-authorisation notes (optional)<input name="eligibility" type="text" maxlength="170" placeholder="e.g. US only"></label>
+      <div class="post-group"><small>04 / JOB DESCRIPTION</small><h3>Additional vacancy details (optional)</h3><p>Add context from the public posting if useful. We will independently verify the official source.</p></div><label>Job description <textarea name="description" rows="9" maxlength="4800" placeholder="About the role&#10;&#10;Responsibilities&#10;• ...&#10;&#10;Qualifications&#10;• ...&#10;&#10;Benefits and compensation&#10;• ..."></textarea></label>
+      <div class="submission-consent"><label><input name="permission" type="checkbox" required> <span id="submission-permission-text">I represent the hiring organization or have permission to submit this vacancy for public listing.</span></label></div>
+      <p id="submission-error" class="submission-error" role="alert" hidden></p>
+      <div id="turnstile-container" aria-label="Security verification"></div>
+      <p id="submission-connection" class="submission-help" aria-live="polite">Checking submission service…</p>
+      <div class="submission-actions"><button type="button" id="submission-save" class="submission-secondary">Save local draft</button><button type="submit" id="submission-send" class="submission-primary">Send for review</button></div>
+      <p class="submission-help">Suggestions are free. A submission is not a published job; every opening is independently reviewed. Read our <a href="/privacy.html" target="_blank" rel="noopener">privacy &amp; contact information</a> before submitting.</p>
+    </form>
+<section id="submission-result" class="submission-result" hidden aria-live="polite">
+      <strong id="submission-result-heading">Review request</strong>
+      <p id="submission-result-copy"></p>
+      <p id="submission-result-reference" class="submission-reference"></p>
+      <div class="submission-actions"><button type="button" id="submission-download" class="submission-primary">Download request JSON</button><button type="button" id="submission-new" class="submission-secondary">New request</button></div>
+    </section>
+</div>
+</section>
+<div id="submission-backdrop" hidden></div></main>
+<footer class="post-footer"><a href="/">Browse jobs</a> · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy &amp; contact</a></footer>
+<script src="/assets/submission.js" defer></script></body></html>

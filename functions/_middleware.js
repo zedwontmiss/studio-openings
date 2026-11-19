@@ -7,7 +7,7 @@ export async function onRequest(context){
  const isProduction=u.hostname.toLowerCase()===canonicalHost;
  const path=u.pathname;
  const isPrivate=path==='/operator.html'||path==='/operator'||path.startsWith('/api/')||path.startsWith('/assets/')||path.startsWith('/functions/');
- const isPage=path==='/'||path==='/index.html'||path==='/privacy.html'||path==='/coverage.html'||path==='/post-a-job.html'||/^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path);
+ const isPage=path==='/'||path==='/index.html'||path==='/privacy.html'||path==='/coverage.html'||path==='/post-a-job.html'||path==='/about.html'||path==='/suggest-a-job.html'||/^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path);
  if(!isProduction||isPrivate||(!isPage && path!=='/robots.txt'&&path!=='/sitemap.xml'))headers.set('X-Robots-Tag','noindex, nofollow');
  if(isProduction&&response.status===200&&isPage){
    const target=path==='/index.html'?'/':path;

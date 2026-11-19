@@ -4,7 +4,7 @@
 (function(){
  'use strict';
  function $(id){return document.getElementById(id);}
- var panel=$('submission-panel'), backdrop=$('submission-backdrop'),form=$('submission-form'),standalone=document.body.classList.contains('so-post-page');
+ var panel=$('submission-panel'), backdrop=$('submission-backdrop'),form=$('submission-form'),standalone=document.body.classList.contains('so-post-page'),standaloneSuggest=document.body.classList.contains('so-suggest-page');
  if(!panel||!form)return;
  var mode='employer',lastFocus=null,configuration=null,widgetId=null,token='',lastPrepared=null;
  // Explicit required-field convention, including a non-color-only explanation.
@@ -205,7 +205,7 @@
  }
  function close(){
    panel.hidden=true;
-   if(standalone){var price=$('post-pricing');if(price)price.hidden=false;window.history.replaceState(null,'','/post-a-job.html');window.scrollTo(0,0);return;}
+   if(standalone){if(standaloneSuggest){window.location.href='/';return;}var price=$('post-pricing');if(price)price.hidden=false;window.history.replaceState(null,'','/post-a-job.html');window.scrollTo(0,0);return;}
    backdrop.hidden=true;document.body.classList.remove('submission-open');
    if(lastFocus&&document.contains(lastFocus))lastFocus.focus();
  }
@@ -337,9 +337,9 @@
      if(widgetId!==null&&window.turnstile){window.turnstile.reset(widgetId);token='';}
    }finally{setSending(true);}
  }
- function newSubmission(){form.reset();soLocationEntry.clear();soApplicantEntry.clear();form.hidden=false;lastPrepared=null;token='';$('submission-result').hidden=true;planRadios[0].radio.checked=true;syncPlan();setMode('employer');resetValidation();message('');if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);}
+ function newSubmission(){form.reset();soLocationEntry.clear();soApplicantEntry.clear();form.hidden=false;lastPrepared=null;token='';$('submission-result').hidden=true;planRadios[0].radio.checked=true;syncPlan();setMode(standaloneSuggest?'suggest':'employer');resetValidation();message('');if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);}
  var employerLink=$('nav-submit');if(employerLink)employerLink.addEventListener('click',function(e){if(standalone)return;e.preventDefault();window.location.href='/post-a-job.html';});
- var suggestLink=$('nav-suggest');if(suggestLink)suggestLink.addEventListener('click',function(e){e.preventDefault();open();setMode('suggest');});
+ var suggestLink=$('nav-suggest');if(suggestLink)suggestLink.addEventListener('click',function(){window.location.href='/suggest-a-job.html';});
  $('mode-employer').addEventListener('click',function(){setMode('employer');});
  $('mode-suggest').addEventListener('click',function(){setMode('suggest');});
  form.querySelectorAll('input[name=applicationMethod]').forEach(function(r){r.addEventListener('change',updateApplicationMethod);});
@@ -366,6 +366,7 @@
  });
  if(standalone){
    planSection.hidden=true;
+   if(standaloneSuggest){setMode('suggest');open();return;}
    var selectedPlan=(new URL(window.location.href)).searchParams.get('plan');
    if(selectedPlan==='standard'||selectedPlan==='featured'){
      planRadios.forEach(function(x){x.radio.checked=x.radio.value===selectedPlan;});syncPlan();

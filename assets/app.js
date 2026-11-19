@@ -427,7 +427,14 @@
   function compactJobLocation(job){
     var raw=trim(job.location);
     if(!raw)return 'Region not stated';
-    if(!(job.locationKind==='eligibility'||/^eligible\s*:/i.test(raw)))return raw;
+    // Many distinct US offices are one multi-office job, not hundreds of records.
+    // This is display-only, and never means a remote job accepts every US applicant.
+    if(job.locationKind!=='eligibility'&&!/^eligible\s*:/i.test(raw)){
+      var offices=raw.split(/\s*;\s*/).filter(Boolean);
+      if(offices.length>=3&&offices.every(function(x){return /,\s*(?:United States(?: of America)?|USA|US)\s*$/i.test(x);}))
+        return 'United States (selected)';
+      return raw;
+    }
     var list=raw.replace(/^eligible\s*:\s*/i,'').split(/\s*[,;]\s*/).map(function(s){return s.trim().toLowerCase();}).filter(Boolean);
     if(list.length<4)return raw;
     var europe={belgium:1,france:1,germany:1,ireland:1,italy:1,netherlands:1,poland:1,portugal:1,spain:1,'united kingdom':1,uk:1,austria:1,sweden:1,norway:1,finland:1,denmark:1,iceland:1,luxembourg:1,switzerland:1,greece:1,cyprus:1,czechia:1,'czech republic':1,estonia:1,latvia:1,lithuania:1,croatia:1,malta:1,romania:1,slovakia:1,slovenia:1,hungary:1,bulgaria:1};
@@ -816,7 +823,7 @@
     items.forEach(function(value,index){
       if(index){var divider=document.createElement('span');divider.className='job-divider';divider.textContent='|';divider.setAttribute('aria-hidden','true');meta.appendChild(divider);}
       var span=document.createElement('span');span.textContent=value;meta.appendChild(span);
-      if(index===0&&(job.locationKind==='eligibility'||value!==trim(job.location)))span.title='Full original eligibility: '+trim(job.location);
+      if(index===0&&(job.locationKind==='eligibility'||value!==trim(job.location)))span.title=(job.locationKind==='eligibility'?'Full original eligibility: ':'Full original office locations: ')+trim(job.location);
     });
     var salary=open.querySelector('.job-salary');salary.textContent=trim(job.salary)||'Salary not disclosed';
     if(!trim(job.salary))salary.classList.add('missing');
@@ -840,6 +847,21 @@
     employer.addEventListener('click',function(){openDrawer(job,employer);});
     return frag;
   }
+  var feedJobs=[],feedObserver=null,scrollBusy=false;
+  function feedControls(){
+    var remaining=!state.onlySaved&&state.visible<feedJobs.length;
+    $('scroll-sentinel').hidden=!remaining;
+    $('more').hidden=!remaining||!!feedObserver;
+    $('feed-end').hidden=state.onlySaved||state.jobs.length===0||feedJobs.length===0||remaining;
+  }
+  function appendFeed(){
+    if(scrollBusy||state.onlySaved||state.visible>=feedJobs.length||!$('job-drawer').hidden)return;
+    scrollBusy=true;
+    var end=Math.min(feedJobs.length,state.visible+20),fragment=document.createDocumentFragment();
+    feedJobs.slice(state.visible,end).forEach(function(job){fragment.appendChild(rowFor(job));});
+    $('job-list').appendChild(fragment);
+    state.visible=end;feedControls();scrollBusy=false;
+  }
   function render(){
     renderKeywords();
     $('saved-count').textContent=saved.length;
@@ -862,12 +884,14 @@
     savedPanel.hidden=!state.onlySaved;
     $('job-list').hidden=state.onlySaved;
     $('empty-state').hidden=state.onlySaved||!(list.length===0&&state.jobs.length>0);
-    $('more').hidden=state.onlySaved||list.length<=state.visible;
+    feedJobs=list;
+    feedControls();
     resultsSortLabel.hidden=state.onlySaved;
     $('preferences-bar').hidden=state.onlySaved||!state.keywords.length;
     if(state.onlySaved){renderSavedPanel();return;}
     var root=$('job-list');root.textContent='';var fragment=document.createDocumentFragment();
     list.slice(0,state.visible).forEach(function(job){fragment.appendChild(rowFor(job));});root.appendChild(fragment);
+    feedControls();
   }
   function reset(){
     state.keywords=[];state.keywordMatch='any';persistKeywords();state.selectedRoles=[];state.query='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'relevant';state.visible=10;
@@ -891,7 +915,19 @@
   $('sort').addEventListener('change',function(){state.sort=this.value;render();});
   $('saved-toggle').addEventListener('click',function(){toggleSavedView();});
   $('reset').addEventListener('click',reset);$('empty-reset').addEventListener('click',reset);
-  $('more').addEventListener('click',function(){state.visible+=20;render();});
+  $('more').addEventListener('click',appendFeed);
+  if(typeof window.IntersectionObserver==='function'){
+    feedObserver=new IntersectionObserver(function(entries){
+      if(entries.length&&entries[0].isIntersecting)appendFeed();
+    },{rootMargin:'650px 0px',threshold:0});
+    feedObserver.observe($('scroll-sentinel'));
+  }else{
+    // Fallback for older Safari: both passive scroll paging and a manual link.
+    window.addEventListener('scroll',function(){
+      if($('scroll-sentinel').hidden)return;
+      if($('scroll-sentinel').getBoundingClientRect().top<window.innerHeight+550)appendFeed();
+    },{passive:true});
+  }
   $('drawer-close').addEventListener('click',function(){closeDrawer(false);});
   $('drawer-backdrop').addEventListener('click',function(){closeDrawer(false);});
   window.addEventListener('popstate',syncJobFromUrl);
@@ -1031,11 +1067,4 @@
     });
   }
   if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();
-})();
-/* v0.14.1 — quiet expansion link, outside the job listing rows. */
-(function(){
- function add(){var footer=document.querySelector('.site-footer');if(!footer||footer.querySelector('.so-coverage-link'))return;
-  var sep=document.createTextNode(' · '),a=document.createElement('a');a.className='so-coverage-link';a.href='/coverage.html';a.textContent='bring studio openings to your city';footer.appendChild(sep);footer.appendChild(a);
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',add);else add();
 })();

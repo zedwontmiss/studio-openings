@@ -11,7 +11,7 @@
     
 </head>
 <body>
-<header class="site-header" id="top"><div class="shell nav-inner"><a class="wordmark" href="#top">studio openings</a><nav class="nav-links" aria-label="Navigation"><a href="#jobs">jobs</a><a href="/post-a-job.html" id="nav-submit">post a job</a><a href="#about">about</a></nav></div></header>
+<header class="site-header" id="top"><div class="shell nav-inner"><a class="wordmark" href="#top">studio openings</a><nav class="nav-links" aria-label="Navigation"><a href="#jobs">jobs</a><a href="/post-a-job.html" id="nav-submit">post a job</a><a href="/about.html">about</a><a href="/coverage.html">bring to your city</a></nav></div></header>
 <main class="shell">
 <section class="directory" id="jobs">
   <div class="list-intro"><h1>openings <span class="tiny-context">/ creative work, clearly listed</span></h1><span class="updated" id="updated-label">Checking job feeds…</span></div>
@@ -61,14 +61,16 @@
       <div id="system-message" class="system-message" role="status">Fetching jobs…</div>
       <div class="job-list" id="job-list" aria-label="Creative job openings"></div>
       <div class="empty-state" id="empty-state" hidden><strong>No jobs match these filters.</strong><p>Try a different discipline or region.</p><button id="empty-reset" type="button">Clear filters</button></div>
-      <div class="load-more"><button id="more" type="button" hidden>Show more jobs</button></div>
+      <div id="scroll-sentinel" class="scroll-sentinel" aria-hidden="true" hidden></div>
+      <div class="load-more"><button id="more" type="button" hidden>Load more jobs</button></div>
+      <p id="feed-end" class="feed-end" hidden>End of current listings.</p>
       <p class="list-footnote" id="list-footnote">Select a listing to read its available details. Confirm all requirements and vacancy status on the original job page.</p>
     </div>
   </div>
 </section>
-<section class="about-section" id="about"><h2>about studio openings</h2><p>We index individual openings across the built environment, visual and digital design, and arts and cultural institutions. No registration required to browse.</p><p class="coverage-note">We are gradually expanding coverage. Current sourcing focuses on vacancies based in the United States, Canada, Singapore, Australia, selected European markets, and selected Gulf countries. Anyone can browse the site; individual employers determine their job-specific eligibility and work-authorization requirements.</p><p>Remote jobs are sourced from <a href="https://himalayas.app" target="_blank" rel="noopener noreferrer">Himalayas</a> and <a href="https://jobicy.com" target="_blank" rel="noopener noreferrer">Jobicy</a>. We also check vetted official AI and creative-technology employers on Greenhouse and Ashby for current, relevant design vacancies. Availability may change; always verify eligibility and applications on the original career board. Firm-listed locations are office locations unless otherwise specified. Employer-submitted listings appear only after editorial review and verified payment. Geographic restrictions on remote jobs describe applicant eligibility, not office addresses. Always check the original vacancy for requirements and application status.</p><p>Found a verified creative vacancy? <a href="#suggest" id="nav-suggest">Suggest a public opening</a> for editorial review. Suggestions do not buy placement.</p></section>
+
 </main>
-<footer class="site-footer"><div class="shell footer-inner"><span>studio openings · v0.8.1</span><span><a href="/privacy.html">privacy &amp; contact</a> · <a href="#top">back to top</a></span></div></footer>
+<footer class="site-footer"><div class="shell footer-inner"><span>studio openings</span><span><a href="/about.html">about</a> · <a href="/suggest-a-job.html">suggest a public opening</a> · <a href="/coverage.html">bring to your city</a> · <a href="/privacy.html">privacy</a> · <a href="#top">top</a></span></div></footer>
 <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
 <aside id="job-drawer" class="job-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-describedby="drawer-company" tabindex="-1" hidden>
   <div class="drawer-topline"><span>studio openings / job details</span><div class="drawer-top-actions"><button type="button" id="drawer-share" class="drawer-share-trigger" aria-expanded="false" aria-controls="drawer-share-menu">Share</button><button type="button" id="drawer-close" class="drawer-close" aria-label="Close job details">Close <span aria-hidden="true">×</span></button></div></div>
@@ -94,66 +96,6 @@
     <div class="drawer-source"><span id="drawer-check-date"></span><span id="drawer-source-label"></span></div>
   </div>
   <div class="drawer-actions"><button type="button" id="drawer-save" class="drawer-save" aria-pressed="false">Save job</button><button type="button" id="drawer-copy" class="drawer-copy" title="Copy shareable job URL">Copy link</button><a id="drawer-apply" target="_blank" rel="noopener noreferrer" class="drawer-apply">View full job &amp; apply <span aria-hidden="true">↗</span></a></div>
-</aside>
-
-<div id="submission-backdrop" class="submission-backdrop" hidden></div>
-<aside id="submission-panel" class="submission-panel" role="dialog" aria-modal="true" aria-labelledby="submission-title" tabindex="-1" hidden>
-  <div class="submission-topline"><span>studio openings / submissions</span><button type="button" id="submission-close" class="drawer-close" aria-label="Close submission form">Close <span aria-hidden="true">×</span></button></div>
-  <div class="submission-scroll">
-    <h2 id="submission-title">Submit a creative job</h2>
-    <p class="submission-lede">Free to submit. All listings are reviewed before publication.</p>
-    <div class="submission-modes" role="group" aria-label="Type of submission">
-      <button type="button" id="mode-employer" class="submission-mode active" aria-pressed="true">I'm hiring</button>
-      <button type="button" id="mode-suggest" class="submission-mode" aria-pressed="false">Suggest a vacancy</button>
-    </div>
-    <form id="submission-form" novalidate>
-      <section class="document-import" aria-label="Import existing vacancy">
-        <strong>Have a job description already?</strong>
-        <p>Upload a document or paste its text. We'll prefill the form for you to review.</p>
-        <label for="job-document">PDF, DOCX, TXT or Markdown (max 4 MB)</label>
-        <input id="job-document" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
-        <label for="job-paste">Or paste job description</label>
-        <textarea id="job-paste" rows="3" maxlength="18000" placeholder="Paste an existing job description here…"></textarea>
-        <button id="import-document" class="submission-secondary" type="button">Extract details</button>
-        <p id="import-status" class="import-status" role="status" hidden></p>
-        <small>Text extraction happens in your browser. Original documents are not uploaded or stored. PDF extraction requires an internet connection; scanned PDFs may not work.</small>
-      </section>
-      <label>Job title <span aria-hidden="true">*</span><input name="title" type="text" minlength="3" maxlength="120" autocomplete="off" placeholder="e.g. Architectural Designer" required></label>
-      <label>Company / studio <span aria-hidden="true">*</span><input name="company" type="text" maxlength="100" placeholder="Hiring organization" required></label>
-      <div class="submission-two"><label>Location <span aria-hidden="true">*</span><input name="location" type="text" maxlength="90" placeholder="City, country / Worldwide" required></label>
-      <label>Arrangement <span aria-hidden="true">*</span><select name="mode" required><option value="">Select…</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label></div>
-      <div class="submission-two"><label>Employment <select name="type"><option value="">Not specified</option><option value="Full-time">Full-time</option><option value="Part-time">Part-time</option><option value="Contract">Contract</option><option value="Internship">Internship</option></select></label>
-      <label>Discipline <span aria-hidden="true">*</span><select name="role" required><option value="">Select…</option><option value="architecture">Architecture / Landscape</option><option value="interior">Interior / Spatial</option><option value="industrial">Industrial Design</option><option value="product">Product / UX / UI</option><option value="visual">Graphic / Brand</option><option value="motion">Motion / 3D / VFX</option><option value="fashion">Fashion / Photography</option><option value="web">Web / Creative Tech</option><option value="museum">Museum / Exhibition</option><option value="culture">Arts / Cultural Production</option></select></label></div>
-      <div id="application-method-group" class="application-method-group">
-        <span class="method-label">How should candidates apply?</span>
-        <label><input type="radio" name="applicationMethod" value="native" checked> On Studio Openings</label>
-        <label><input type="radio" name="applicationMethod" value="email"> By email</label>
-        <label><input type="radio" name="applicationMethod" value="external"> Company website</label>
-      </div>
-      <div id="method-native" class="method-hint">Candidates apply on Studio Openings using name, email, portfolio link and an introduction. We review applications privately and forward them manually; no employer inbox yet.</div>
-      <label id="method-email" hidden>Application email <span aria-hidden="true">*</span><input name="applicationEmail" type="email" maxlength="150" placeholder="careers@studio.com"></label>
-      <label id="method-external" hidden>Application URL <span aria-hidden="true">*</span><input name="url" type="url" maxlength="600" placeholder="https://company.com/careers/job"></label>
-      <div class="submission-two">
-        <label>Contact email <span aria-hidden="true">*</span><input name="contactEmail" type="email" maxlength="150" placeholder="hiring@company.com" autocomplete="email" required></label>
-        <label>Company website (optional)<input name="companyWebsite" type="url" maxlength="350" placeholder="https://company.com"></label>
-      </div>
-      <div class="submission-two"><label>Salary (optional)<input name="salary" type="text" maxlength="75" placeholder="USD 70k–90k / yr"></label><label>Closes on (optional)<input name="closesOn" type="date"></label></div>
-      <label>Eligibility / work-authorisation notes (optional)<input name="eligibility" type="text" maxlength="170" placeholder="e.g. US only"></label>
-      <label>Brief description (optional)<textarea name="description" rows="4" maxlength="1800" placeholder="Core responsibilities and qualifications"></textarea></label>
-      <div class="submission-consent"><label><input name="permission" type="checkbox" required> <span id="submission-permission-text">I represent the hiring organization or have permission to submit this vacancy for public listing.</span></label></div>
-      <p id="submission-error" class="submission-error" role="alert" hidden></p>
-      <div id="turnstile-container" aria-label="Security verification"></div>
-      <p id="submission-connection" class="submission-help" aria-live="polite">Checking submission service…</p>
-      <div class="submission-actions"><button type="button" id="submission-save" class="submission-secondary">Save local draft</button><button type="submit" id="submission-send" class="submission-primary">Send for review</button></div>
-      <p class="submission-help">No registration required. A submitted job is pending review. Read our <a href="/privacy.html" target="_blank" rel="noopener">privacy &amp; contact information</a> before submitting.</p>
-    </form>
-    <section id="submission-result" class="submission-result" hidden aria-live="polite">
-      <strong id="submission-result-heading">Review request</strong>
-      <p id="submission-result-copy"></p>
-      <p id="submission-result-reference" class="submission-reference"></p>
-      <div class="submission-actions"><button type="button" id="submission-download" class="submission-primary">Download request JSON</button><button type="button" id="submission-new" class="submission-secondary">New request</button></div>
-    </section>
-  </div>
 </aside>
 
 <div id="apply-backdrop" class="submission-backdrop" hidden></div>
@@ -182,50 +124,11 @@
 </button></article></template>
 
 <script src="assets/app.js" defer></script>
-<script src="assets/document-import.js" defer></script>
-<script src="assets/submission.js" defer></script>
 <script src="assets/native-apply.js" defer></script>
 
 <script>
-(function () {
-  const note = document.querySelector('.coverage-note');
-  if (!note) return;
-
-  note.innerHTML = '<strong>Current coverage.</strong> Studio Openings currently only covers vacancies in the United States, Canada, Singapore, Australia, selected European countries, and the UAE, Saudi Arabia and Qatar. Other countries are not yet covered because we do not have enough reliable job data to verify and maintain listings. Anyone may browse the site; employers set their lawful application requirements.';
-
-  note.insertAdjacentHTML('afterend', `
-    <section style="border-top:1px solid #ddd;margin-top:18px;padding-top:16px">
-      <h3 style="font-size:13px;margin:0 0 8px">Bring Studio Openings to your country</h3>
-      <p>Represent a design firm, recruitment network or creative community in a country we don't cover yet? Request country coverage or inquire about <strong>premium regional partnerships</strong> to support reliable sourcing. Every job remains subject to independent review.</p>
-      <form id="regional-inquiry" style="max-width:440px;display:grid;gap:9px;margin-top:12px">
-        <label>Country / market<input name="country" required maxlength="70" placeholder="e.g. Japan" style="box-sizing:border-box;display:block;width:100%;padding:9px;border:1px solid #bbb"></label>
-        <label>Your email<input name="email" type="email" required maxlength="150" placeholder="name@organization.com" style="box-sizing:border-box;display:block;width:100%;padding:9px;border:1px solid #bbb"></label>
-        <label>Inquiry type<select name="kind" style="box-sizing:border-box;display:block;width:100%;padding:9px;border:1px solid #bbb"><option value="coverage">Request country coverage</option><option value="premium">Premium regional partnership</option></select></label>
-        <button type="submit" style="background:#111;color:white;border:0;padding:11px;cursor:pointer">Prepare email</button>
-        <p id="regional-status" role="status" style="font-size:11px;color:#666;margin:0">Opens your email app; nothing is sent automatically.</p>
-      </form>
-    </section>`);
-
-  const form = document.getElementById('regional-inquiry');
-  const status = document.getElementById('regional-status');
-  let contact = '';
-  fetch('/api/submission-config').then(r => r.ok ? r.json() : null)
-    .then(data => { if (data && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.supportEmail || '')) contact = data.supportEmail; })
-    .catch(() => {});
-
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-    if (!contact) { status.textContent = 'The public contact inbox has not been configured yet. Nothing was sent.'; return; }
-    const country = form.elements.country.value.trim();
-    const email = form.elements.email.value.trim();
-    const premium = form.elements.kind.value === 'premium';
-    const subject = 'Studio Openings — ' + (premium ? 'regional partnership' : 'country coverage') + ' — ' + country;
-    const body = 'Hello Studio Openings,\n\nI would like to ' + (premium ? 'discuss a premium regional partnership' : 'request country coverage') + ' for ' + country + '.\n\nMy email: ' + email + '\n\nOrganization and available job sources:\n';
-    status.textContent = 'Opening your email app. Please review and send the prepared message.';
-    window.location.href = 'mailto:' + encodeURIComponent(contact) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-  });
-})();
+if (location.hash === '#suggest') location.replace('/suggest-a-job.html');
+else if (location.hash === '#submit') location.replace('/post-a-job.html');
 </script>
 
 </body></html>

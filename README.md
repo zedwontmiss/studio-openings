@@ -51,3 +51,11 @@ Official Greenhouse/Ashby/Lever ATS descriptions are parsed into short plain-tex
 ## Architecture firm sourcing pilot (development)
 
 The development site includes a five-opening editorial pilot sourced from employer-owned job pages at Herzog & de Meuron and MVRDV. Verified November 19, 2026. These are short editorial summaries rather than copied descriptions; original vacancies remain the source of truth. Each entry automatically expires after November 26, 2026 unless reviewed again. This is not an automatic crawler, does not use Indeed/SEEK, and does not guarantee live vacancy availability after the manual review date. Three Swiss interior/architecture/BIM openings and two MVRDV architectural roles are included. User preferences for Full-time ranking remain unchanged.
+
+## v1.0.6 — Listings-first homepage and location compacting
+
+Homepage retains the original job board and filters, moving About to `/about.html` and free visitor vacancy suggestions to `/suggest-a-job.html`. `/coverage.html` and `/post-a-job.html` remain separate. Legacy `/#suggest` and `/#submit` links redirect to the appropriate standalone pages. No inline homepage suggestion, About section or regional form. Suggest reuses the existing secure editorial-review submission workflow, rather than creating new submission or payment infrastructure.
+
+Listings append 20 at a time near the end of the viewport, using IntersectionObserver and a legacy Safari scroll/manual fallback. This exhausts the currently loaded jobs; it is not server-side infinite indexing or a change to ATS ingestion. The browsing filters, job details, saved jobs, ranking and sponsored placement remain the same.
+
+For **three or more semicolon-separated US office locations**, listing cards show `United States (selected)` only if each segment explicitly ends in `United States`, `USA` or `US`. Full unmodified office lists remain visible in the job details and title hover text. This is not interpreted as remote eligibility or applicable to mixed-country listings.
