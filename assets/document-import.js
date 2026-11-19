@@ -110,7 +110,7 @@
      title:title.slice(0,120),company:labelled(lines,/^(?:company|employer|organization|organisation|studio)\s*[:\-]\s*(.+)$/i).slice(0,100),
      location:labelled(lines,/^(?:location|based in|work location)\s*[:\-]\s*(.+)$/i).slice(0,90),
      salary:salary.slice(0,75),eligibility:labelled(lines,/^(?:eligibility|work authorization|work authorisation|eligible applicants)\s*[:\-]\s*(.+)$/i).slice(0,170),
-     description:cleaned.slice(0,1800),mode:'',type:'',role:''
+     description:cleaned.slice(0,4800),mode:'',type:'',role:''
    };
    if(/hybrid/i.test(modeText))output.mode='hybrid';else if(/on[- ]site|in[- ]office/i.test(modeText))output.mode='onsite';else if(/remote/i.test(modeText))output.mode='remote';
    if(/full[- ]time/i.test(typeText))output.type='Full-time';else if(/part[- ]time/i.test(typeText))output.type='Part-time';else if(/contract|freelance/i.test(typeText))output.type='Contract';else if(/intern/i.test(typeText))output.type='Internship';

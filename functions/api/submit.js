@@ -9,7 +9,7 @@ const ROLES = new Set(['architecture','interior','industrial','product','visual'
 const MODES = new Set(['remote','hybrid','onsite']);
 const METHODS = new Set(['external','email','native']);
 const TYPES = new Set(['','Full-time','Part-time','Contract','Internship']);
-const MAX_BODY_BYTES = 17000;
+const MAX_BODY_BYTES = 26000;
 const json = (obj, status=200, extra={}) => new Response(JSON.stringify(obj),{
   status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff',...extra}
 });
@@ -27,7 +27,7 @@ function checkField(x,max,required=false){return typeof x==='string'&&x.length<=
 function normalize(input){
   if(!input||typeof input!=='object'||Array.isArray(input))return [null,'Invalid submission'];
   const o={};
-  for(const [name,length,required] of [['title',120,true],['company',100,true],['location',90,true],['url',600,false],['applicationEmail',150,false],['contactEmail',150,true],['salary',75,false],['eligibility',170,false],['description',1800,false],['closesOn',10,false]]){
+  for(const [name,length,required] of [['title',120,true],['company',100,true],['location',90,true],['url',600,false],['applicationEmail',150,false],['contactEmail',150,true],['salary',75,false],['eligibility',170,false],['description',4800,false],['closesOn',10,false]]){
     if(!checkField(input[name]??'',length,required))return [null,`Invalid ${name}`];
     o[name]=str(input[name]??'',length);
   }
