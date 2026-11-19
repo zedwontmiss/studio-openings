@@ -2,7 +2,7 @@ import {fetchOfficialJobs,classifyCreative} from '../../lib/source-registry-core
 import {POLICY_VERSION,canUseCountry,cityCovered} from '../../lib/coverage-policy.js';
 /** Studio Openings v1.0.1 — editorially selected, official AI/creative employer ATS feeds.
  * No generic scraping, user-provided URLs or fabricated job availability.
- * Four independent shards, six sources maximum per request, four-hour edge cache.
+ * Seven independent shards, six sources maximum per request, four-hour edge cache.
  */
 const SOURCES=Object.freeze([
  ['greenhouse','anthropic','Anthropic'],['greenhouse','figma','Figma'],
@@ -16,7 +16,15 @@ const SOURCES=Object.freeze([
  ['ashby','recraft','Recraft'],['ashby','gamma','Gamma'],
  ['ashby','openai','OpenAI'],['ashby','dust','Dust'],
  ['ashby','hightouch-inc','Hightouch'],['ashby','typesafe-ai','TypeSafe AI'],
- ['ashby','pencil','Pencil'],['ashby','highbeam','Highbeam']
+ ['ashby','pencil','Pencil'],['ashby','highbeam','Highbeam'],
+ ['ashby','reducto','Reducto'],['ashby','baseten','Baseten'],
+ ['ashby','lovable','Lovable'],['ashby','basis-ai','Basis AI'],
+ ['ashby','merciv','Merciv'],['ashby','haut-ai','Haut.AI'],
+ ['ashby','strella','Strella'],['ashby','peec','Peec AI'],
+ ['ashby','profound','Profound'],['ashby','read-ai','Read AI'],
+ ['ashby','edra','Edra'],['ashby','traversal','Traversal'],
+ ['ashby','mazehq','Maze'],['ashby','nectar-social','Nectar Social'],
+ ['greenhouse','jazzx-ai','JazzX AI'],['lever','agtonomy','Agtonomy']
 ].map(([provider,board_token,name])=>({provider,board_token,name})));
 const REJECT=/\b(?:software architect|solutions architect|cloud architect|data architect|sales|account manager|business development|recruiter|operations manager|finance|project manager|product manager|customer success|marketing manager|talent acquisition|open application|general application|talent pool)\b/i;
 const US_CITIES=['San Francisco','New York','Los Angeles','Seattle','Boston','Austin','Chicago','Miami','Denver','Raleigh','San Diego','San Jose','Mountain View','Palo Alto','Menlo Park','Redwood City','Washington DC','Washington, DC','Portland','Philadelphia','Atlanta','Salt Lake City','Charlotte','Brooklyn','Irvine','Santa Monica'];
@@ -86,7 +94,7 @@ async function loadBoard(source,now){
 const HEAD={'content-type':'application/json; charset=utf-8','x-content-type-options':'nosniff'};
 export async function onRequestGet({request}){
  const u=new URL(request.url),shard=Number(u.searchParams.get('shard'));
- if(!Number.isInteger(shard)||shard<0||shard>3)return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
+ if(!Number.isInteger(shard)||shard<0||shard>=Math.ceil(SOURCES.length/6))return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
  const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=1&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
  if(cache)try{const hit=await cache.match(key);if(hit)return hit;}catch(_){}
  const sources=SOURCES.slice(shard*6,shard*6+6),now=Date.now();

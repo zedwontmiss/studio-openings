@@ -35,7 +35,7 @@
     <section id="tab-campaigns" hidden><h2>Premium campaigns</h2><p class="hint">Campaigns appear in the public feed only while active, valid, and eligible. Ten yellow listings at most are shown per filtered feed.</p><div id="campaigns-list" class="records"></div></section>
     <section id="tab-sources" hidden>
       <h2>Verified creative career sources</h2>
-      <p class="hint">Two qualification routes: priority cities, or individually approved firms wherever they operate. Only official ATS openings and operator-verified locations are published. No blanket city expansion.</p>
+      <p class="hint">Two qualification routes: priority cities, or verified employers outside priority cities — including early-stage AI startups regardless of brand recognition. Funding stage can guide outreach but is never proof of an open role. Official ATS vacancies and verified job locations remain mandatory.</p>
       <div id="source-feedback" class="notice" hidden role="status"></div>
       <form id="source-form" class="source-form">
        <div class="source-fields">
@@ -44,7 +44,7 @@
         <label>Official ATS<select name="provider"><option value="greenhouse">Greenhouse</option><option value="lever">Lever</option><option value="lever_eu">Lever EU</option><option value="ashby">Ashby</option></select></label>
         <label>ATS board identifier<input name="boardToken" required placeholder="board-token"></label>
         <label>Creative discipline<select name="focus"><option value="architecture">Architecture / Landscape</option><option value="interior">Interior / Furniture</option><option value="industrial">Industrial / Physical Product</option><option value="product">Product / UX</option><option value="visual">Graphic / Photography</option><option value="fashion">Fashion / Textiles</option><option value="motion">Motion / Games / VFX</option><option value="web">Web / Digital</option><option value="museum">Museum / Exhibition</option><option value="culture">Arts / Cultural</option></select></label>
-        <label>Qualification route<select name="qualification"><option value="city_first">Priority city</option><option value="verified_firm">Verified firm exception (outside hub)</option></select></label>
+        <label>Qualification route<select name="qualification"><option value="city_first">Priority city</option><option value="verified_firm">Verified firm / AI startup exception (outside hub)</option></select></label>
        </div>
        <p class="hint">Register a source only after identifying its official employer-controlled careers site. Every new source starts pending.</p>
        <button type="submit" class="source-submit">Add to private registry</button>
