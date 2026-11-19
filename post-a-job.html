@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Post a paid creative job on Studio Openings. Choose Standard or Featured, then submit for editorial review and invoice.">
+<title>Post a Creative Job — Studio Openings</title>
+<link rel="stylesheet" href="/assets/styles.css"><link rel="stylesheet" href="/assets/post-a-job.css">
+</head>
+<body class="so-post-page">
+<header class="site-header"><div class="shell nav-inner"><a class="wordmark" href="/">studio openings</a><nav class="nav-links" aria-label="Navigation"><a href="/">browse jobs</a><a href="/privacy.html">contact</a></nav></div></header>
+<main class="post-shell">
+<div class="post-eyebrow">Studio Openings / Employers</div>
+<section id="post-pricing" aria-labelledby="post-pricing-title">
+<div class="post-step">STEP 1 OF 2 · CHOOSE YOUR PACKAGE</div>
+<h1 id="post-pricing-title">Post a creative job.</h1>
+<p class="post-intro">Reach candidates across architecture, design, fashion, culture and the arts. Choose one-time job advertising, then send your vacancy for review.</p>
+<div class="post-cards">
+<article class="post-card"><span class="post-tier">STANDARD JOB</span><strong class="post-price">$149 <small>USD · one-time</small></strong><h2>30-day placement</h2><p>One verified job opening in our searchable creative job feed.</p><ul><li>Up to 30 days of visibility</li><li>Editorial review of employer and job</li><li>Searchable by discipline and location</li><li>No account required</li></ul><a class="post-continue" href="/post-a-job.html?plan=standard">Continue with Standard</a></article>
+<article class="post-card post-card-featured"><span class="post-tier">FEATURED JOB ★</span><strong class="post-price">$349 <small>USD · one-time</small></strong><h2>90-day featured placement</h2><p>Eligible for baby-yellow highlighted rows, a star, and daily rotation.</p><ul><li>Up to 90 days of visibility</li><li>Everything in Standard</li><li>Limited rotating highlighted inventory</li><li>Placement varies with search filters</li></ul><a class="post-continue" href="/post-a-job.html?plan=featured">Continue with Featured</a></article>
+</div>
+<p class="post-fine">No payment is taken on this website. Every employer submission is reviewed first; accepted requests receive a manual invoice. Payment must be verified before publication. No impressions, applicants or hires are guaranteed. Vacancies may close or fail re-verification before the maximum term.</p>
+<p class="post-fine">Have a public vacancy to recommend instead? <a href="/#suggest">Suggest a vacancy without purchasing an ad</a>.</p>
+</section>
+<section id="submission-panel" class="submission-panel" aria-labelledby="submission-title" hidden>
+<div class="submission-topline"><span>STEP 2 OF 2 · COMPLETE YOUR VACANCY</span><button type="button" id="submission-close" class="drawer-close">← Change package</button></div>
+<div class="submission-scroll">
+<div class="post-selection"><span>SELECTED PACKAGE</span><strong id="post-selected-plan">Standard Job · $149 · 30 days</strong></div>
+<h2 id="submission-title">Post a creative job</h2><p class="submission-lede">Complete the details for editorial review. If accepted, we will contact you about the invoice.</p>
+<div class="submission-modes" hidden aria-hidden="true"><button type="button" id="mode-employer">I'm hiring</button><button type="button" id="mode-suggest">Suggest a vacancy</button></div>
+<form id="submission-form" novalidate>
+      <div class="post-group"><small>01 / VACANCY DETAILS</small><h3>What position are you hiring for?</h3><p>Import an existing job description or fill out the verified vacancy details below.</p></div><section class="document-import" aria-label="Import existing vacancy">
+        <strong>Have a job description already?</strong>
+        <p>Upload a document or paste its text. We'll prefill the form for you to review.</p>
+        <label for="job-document">PDF, DOCX, TXT or Markdown (max 4 MB)</label>
+        <input id="job-document" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+        <label for="job-paste">Or paste job description</label>
+        <textarea id="job-paste" rows="3" maxlength="18000" placeholder="Paste an existing job description here…"></textarea>
+        <button id="import-document" class="submission-secondary" type="button">Extract details</button>
+        <p id="import-status" class="import-status" role="status" hidden></p>
+        <small>Text extraction happens in your browser. Original documents are not uploaded or stored. PDF extraction requires an internet connection; scanned PDFs may not work.</small>
+      </section>
+      <label>Job title <span aria-hidden="true">*</span><input name="title" type="text" minlength="3" maxlength="120" autocomplete="off" placeholder="e.g. Architectural Designer" required></label>
+      <label>Company / studio <span aria-hidden="true">*</span><input name="company" type="text" maxlength="100" placeholder="Hiring organization" required></label>
+      <div class="post-group"><small>02 / WORKPLACE</small><h3>Location, work mode &amp; eligibility</h3><p>Choose a verified location so applicants can understand where they would work.</p></div><div class="submission-two"><label>Location <span aria-hidden="true">*</span><input name="location" type="text" maxlength="90" placeholder="City, country / Worldwide" required></label>
+      <label>Arrangement <span aria-hidden="true">*</span><select name="mode" required><option value="">Select…</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label></div>
+      <div class="submission-two"><label>Employment <select name="type"><option value="">Not specified</option><option value="Full-time">Full-time</option><option value="Part-time">Part-time</option><option value="Contract">Contract</option><option value="Internship">Internship</option></select></label>
+      <label>Discipline <span aria-hidden="true">*</span><select name="role" required><option value="">Select…</option><option value="architecture">Architecture / Landscape</option><option value="interior">Interior / Spatial</option><option value="industrial">Industrial Design</option><option value="product">Product / UX / UI</option><option value="visual">Graphic / Brand</option><option value="motion">Motion / 3D / VFX</option><option value="fashion">Fashion / Photography</option><option value="web">Web / Creative Tech</option><option value="museum">Museum / Exhibition</option><option value="culture">Arts / Cultural Production</option></select></label></div>
+      <div class="post-group"><small>03 / APPLICATIONS</small><h3>Where should applications go?</h3><p>Provide a direct careers URL or an application email address. On-site applications are unavailable during launch.</p></div><div id="application-method-group" class="application-method-group">
+        <span class="method-label">How should candidates apply?</span>
+        <label><input type="radio" name="applicationMethod" value="native" checked> On Studio Openings</label>
+        <label><input type="radio" name="applicationMethod" value="email"> By email</label>
+        <label><input type="radio" name="applicationMethod" value="external"> Company website</label>
+      </div>
+      <div id="method-native" class="method-hint">Candidates apply on Studio Openings using name, email, portfolio link and an introduction. We review applications privately and forward them manually; no employer inbox yet.</div>
+      <label id="method-email" hidden>Application email <span aria-hidden="true">*</span><input name="applicationEmail" type="email" maxlength="150" placeholder="careers@studio.com"></label>
+      <label id="method-external" hidden>Application URL <span aria-hidden="true">*</span><input name="url" type="url" maxlength="600" placeholder="https://company.com/careers/job"></label>
+      <div class="submission-two">
+        <label>Contact email <span aria-hidden="true">*</span><input name="contactEmail" type="email" maxlength="150" placeholder="hiring@company.com" autocomplete="email" required></label>
+        <label>Company website (optional)<input name="companyWebsite" type="url" maxlength="350" placeholder="https://company.com"></label>
+      </div>
+      <div class="submission-two"><label>Salary (optional)<input name="salary" type="text" maxlength="75" placeholder="USD 70k–90k / yr"></label><label>Closes on (optional)<input name="closesOn" type="date"></label></div>
+      <label>Eligibility / work-authorisation notes (optional)<input name="eligibility" type="text" maxlength="170" placeholder="e.g. US only"></label>
+      <div class="post-group"><small>04 / JOB DESCRIPTION</small><h3>Give candidates the full details</h3><p>Responsibilities, qualifications, expected experience, compensation and benefits. A sufficiently detailed posting is easier to verify and evaluate.</p></div><label>Job description <textarea name="description" rows="9" maxlength="4800" placeholder="About the role&#10;&#10;Responsibilities&#10;• ...&#10;&#10;Qualifications&#10;• ...&#10;&#10;Benefits and compensation&#10;• ..."></textarea></label><p class="post-fine">We recommend at least 240 characters for a complete public job page.</p>
+      <div class="submission-consent"><label><input name="permission" type="checkbox" required> <span id="submission-permission-text">I represent the hiring organization or have permission to submit this vacancy for public listing.</span></label></div>
+      <p id="submission-error" class="submission-error" role="alert" hidden></p>
+      <div id="turnstile-container" aria-label="Security verification"></div>
+      <p id="submission-connection" class="submission-help" aria-live="polite">Checking submission service…</p>
+      <div class="submission-actions"><button type="button" id="submission-save" class="submission-secondary">Save local draft</button><button type="submit" id="submission-send" class="submission-primary">Send for review</button></div>
+      <p class="submission-help">No payment is taken here. Your submission stays private until editorial approval, invoicing and verified payment. Read our <a href="/privacy.html" target="_blank" rel="noopener">privacy &amp; contact information</a> before submitting.</p>
+    </form>
+<section id="submission-result" class="submission-result" hidden aria-live="polite">
+      <strong id="submission-result-heading">Review request</strong>
+      <p id="submission-result-copy"></p>
+      <p id="submission-result-reference" class="submission-reference"></p>
+      <div class="submission-actions"><button type="button" id="submission-download" class="submission-primary">Download request JSON</button><button type="button" id="submission-new" class="submission-secondary">New request</button></div>
+    </section>
+</div>
+</section>
+<div id="submission-backdrop" hidden></div>
+</main>
+<footer class="post-footer"><a href="/">Browse jobs</a> · <a href="/privacy.html">Privacy &amp; contact</a> · Studio Openings</footer>
+<script src="/assets/document-import.js" defer></script><script src="/assets/submission.js" defer></script>
+</body></html>
