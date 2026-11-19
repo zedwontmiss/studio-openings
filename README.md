@@ -33,3 +33,7 @@ Owner-only setup, invoicing, database migration and operational instructions are
 ## Editorial policy
 
 External vacancies must be attributed to their sources and checked for accuracy, eligibility, location and currency of the opening. Visitors should verify requirements on the employer's authoritative job page.
+
+## AI/creative employer sourcing (development)
+
+Added 24 reviewed Greenhouse/Ashby employer boards across four six-source API shards: `/api/ai-jobs?shard=0..3`. Each source is checked live and responses are cached for four hours. Jobs are excluded unless they have a source-verified ATS link, supported creative title, and conservatively recognized job location/eligibility. Failure to fetch a source never creates placeholder vacancies. This is a lightweight on-demand expansion; scheduled ingestion and full D1 indexing remain future work.
