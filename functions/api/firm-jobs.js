@@ -1,4 +1,5 @@
 import {officeLocation,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
+import {sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
 /**
  * Studio Openings v0.8 — official-firm pilot, GET /api/firm-jobs
  * Only five explicitly reviewed employer-owned public Greenhouse boards.
@@ -116,14 +117,15 @@ function normalize(record,firm,now){
   const edited=date(record.updated_at,now);
   const published=date(record.first_published,now);
   // No copying of long external descriptions. Links retain the official application.
-  const description=`${title} at ${firm.name}${place?', '+place:''}. Visit the original employer listing for responsibilities, qualifications, and application instructions.`;
+  const description=sourceExcerpt(record.content,1000);
+  if(description.length<130)return null;
   const relevance=role==='architecture'?94:role==='interior'?93:90;
   return {id:`firm-gh-${firm.token}-${record.id}`,title,company:firm.name,location:place||'Location not stated',
-    locationKind:'office',mode:arrangement(title,body,place),type:typeFor(title,body),salary:'',...geoMeta(geo),
+    locationKind:'office',mode:arrangement(title,body,place),type:typeFor(title,body)||employmentTypeOf('',title,body),salary:'',...geoMeta(geo),
     posted:published||edited,dateKind:published?'posted':'updated',role,relevance,
     qualityScore:Math.min(100,Math.round(relevance*.7)+10+(place?5:0)+(published||edited?7:0)+(url?2:0)+(tags.length>=2?2:0)),
     tags,source:`Official careers · ${firm.name}`,sourceUrl:`https://job-boards.greenhouse.io/${firm.token}`,
-    url,description,descriptionKind:'editorial-summary'};
+    url,description,descriptionKind:'source-excerpt'};
 }
 async function fetchFirm(firm,now){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8500);
@@ -146,7 +148,7 @@ async function fetchFirm(firm,now){
 }
 export async function onRequestGet({request}){
   const now=Date.now(),cache=typeof caches==='undefined'?null:caches.default;
-  const url=new URL(request.url),key=new Request(url.origin+'/api/firm-jobs?version=pilot-08&geo='+POLICY_VERSION,{method:'GET'});
+  const url=new URL(request.url),key=new Request(url.origin+'/api/firm-jobs?version=pilot-08-content-quality&geo='+POLICY_VERSION,{method:'GET'});
   try{
     if(cache){const hit=await cache.match(key);if(hit)return hit;}
     // 5 reviewed boards, <=6 simultaneous outgoing Cloudflare connections.

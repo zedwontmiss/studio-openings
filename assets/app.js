@@ -399,7 +399,7 @@
       return 'culture';
     }
     if(r==='product'&&/\bindustrial\b|physical product|furniture design/.test(t))return 'industrial';
-    if(/\barchitect(?:s|ure|ural)?\b/.test(t)&&/\b(?:sap|s\/4hana|salesforce|servicenow|oracle|erp|aws|azure|cloud|software|solution(?:s)?|enterprise|data|database|systems?|network|cybersecurity|security|platform|infrastructure|devops|api|application|integration|technical|technology|information|it)\b/.test(t))return 'not-creative';
+    if(/\barchitect(?:s|ure|ural)?\b/.test(t)&&/\b(?:ai|genai|generative|artificial intelligence|llm|machine learning|ml|sap|s\/4hana|salesforce|servicenow|oracle|erp|aws|azure|cloud|software|solution(?:s)?|enterprise|data|database|systems?|network|cybersecurity|security|platform|infrastructure|devops|api|application|integration|technical|technology|information|it)\b/.test(t))return 'not-creative';
     return roleLabels[r]?r:'culture';
   }
   function dateLabel(job) {
@@ -488,6 +488,17 @@
     if(state.sort==='az')return a.title.localeCompare(b.title);
     if(state.sort==='company')return a.company.localeCompare(b.company);
     if(state.sort==='relevant'){
+      // Career-first default: confirmed permanent/full-time > unknown > part-time/intern > hourly/contract.
+      // Never infer full-time from missing metadata; explicit sorts remain independent.
+      var typeRank=function(job){
+        var t=trim(job.type).toLowerCase();
+        if(/\b(contract|contractor|freelanc(?:e|er)|hourly|temporary|fixed[ -]?term)\b/.test(t))return 3;
+        if(/\bfull[ -]?time\b|\bfulltime\b|\bpermanent\b/.test(t))return 0;
+        if(/\bpart[ -]?time\b|\bparttime\b|\bintern(?:ship)?\b/.test(t))return 2;
+        return 1;
+      };
+      var typeDiff=typeRank(a)-typeRank(b);
+      if(typeDiff)return typeDiff;
       var score=function(job){
         var quality=Number(job.qualityScore);
         if(isFinite(quality)&&quality>0)return quality;

@@ -1,4 +1,4 @@
-import {fetchOfficialJobs,classifyCreative} from '../../lib/source-registry-core.js';
+import {fetchOfficialJobs,classifyCreative,sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
 import {POLICY_VERSION,canUseCountry,cityCovered} from '../../lib/coverage-policy.js';
 /** Studio Openings v1.0.1 — editorially selected, official AI/creative employer ATS feeds.
  * No generic scraping, user-provided URLs or fabricated job availability.
@@ -61,17 +61,18 @@ export function locationOf(raw){
  }
  return null; // No headquarters-based geography guessing.
 }
-export function creativeRole(title){
+export function creativeRole(title,description=''){
  if(REJECT.test(title))return '';
- const role=classifyCreative(title);
+ const role=classifyCreative(title,description);
  if(role)return role;
  if(/\b(?:creative designer|performance creative designer|growth designer|marketing designer|designer,?\s+growth marketing)\b/i.test(title))return 'visual';
  if(/\b(?:motion editor|creative editor|motion graphics designer)\b/i.test(title))return 'motion';
  return '';
 }
 export function normalize(row,source,now){
- const title=clean(row.title,125),role=creativeRole(title),loc=locationOf(row.location);
- if(!role||!loc||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
+ const title=clean(row.title,125),role=creativeRole(title,row.description),loc=locationOf(row.location);
+ const description=sourceExcerpt(row.description,1000);
+ if(!role||!loc||description.length<130||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
  const n=Date.parse(row.posted||''),posted=Number.isFinite(n)&&n>946684800000&&n<=now+86400000?new Date(n).toISOString():'';
  const name=source.name,tags=[TAGS[role]];
  if(role==='product'&&/\b(?:UX|UI|user experience|interaction)\b/i.test(title))tags.push('UX/UI');
@@ -79,15 +80,14 @@ export function normalize(row,source,now){
  if(role==='motion'&&/\b3D\b/i.test(title))tags.push('3D');
  return {id:'ai-'+source.provider+'-'+source.board_token+'-'+String(row.uid).slice(0,60),
    title,company:name,location:clean(row.location,140),locationKind:loc.kind,mode:loc.mode,
-   type:'Not specified',role,geoCountry:loc.country,geoPolicy:POLICY_VERSION,
+   type:employmentTypeOf(row.employmentType,title,row.description),role,geoCountry:loc.country,geoPolicy:POLICY_VERSION,
    salary:'',posted,dateKind:posted?'posted':'added',relevance:92,tags,
    source:'Official careers · '+name,
    sourceUrl:'https://'+(source.provider==='ashby'?'jobs.ashbyhq.com/':'job-boards.greenhouse.io/')+source.board_token,
-   url:row.url,description:title+' at '+name+'. See the official job posting for full requirements, applicant eligibility and current application status.',
-   descriptionKind:'editorial-summary'};
+   url:row.url,description,descriptionKind:'source-excerpt'};
 }
 async function loadBoard(source,now){
- const records=await fetchOfficialJobs(source),result=[];
+ const records=await fetchOfficialJobs(source,fetch,{includeDescription:true}),result=[];
  for(const row of records){const job=normalize(row,source,now);if(job)result.push(job);if(result.length===20)break;}
  return result;
 }
@@ -95,7 +95,7 @@ const HEAD={'content-type':'application/json; charset=utf-8','x-content-type-opt
 export async function onRequestGet({request}){
  const u=new URL(request.url),shard=Number(u.searchParams.get('shard'));
  if(!Number.isInteger(shard)||shard<0||shard>=Math.ceil(SOURCES.length/6))return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
- const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=1&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
+ const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=2-full-description&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
  if(cache)try{const hit=await cache.match(key);if(hit)return hit;}catch(_){}
  const sources=SOURCES.slice(shard*6,shard*6+6),now=Date.now();
  const outcomes=await Promise.allSettled(sources.map(s=>loadBoard(s,now)));
