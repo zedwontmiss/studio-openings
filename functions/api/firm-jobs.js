@@ -148,7 +148,7 @@ async function fetchFirm(firm,now){
 }
 export async function onRequestGet({request}){
   const now=Date.now(),cache=typeof caches==='undefined'?null:caches.default;
-  const url=new URL(request.url),key=new Request(url.origin+'/api/firm-jobs?version=pilot-08-content-quality&geo='+POLICY_VERSION,{method:'GET'});
+  const url=new URL(request.url),key=new Request(url.origin+'/api/firm-jobs?version=pilot-08-v2-safe-excerpt&geo='+POLICY_VERSION,{method:'GET'});
   try{
     if(cache){const hit=await cache.match(key);if(hit)return hit;}
     // 5 reviewed boards, <=6 simultaneous outgoing Cloudflare connections.

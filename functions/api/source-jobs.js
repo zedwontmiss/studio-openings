@@ -11,7 +11,7 @@ export async function onRequestGet({request,env}){
  const requestedShard=new URL(request.url).searchParams.get('shard')||'0';
  const shard=Number(requestedShard);
  if(!Number.isInteger(shard)||shard<0||shard>3)return new Response(JSON.stringify({error:'Unsupported source registry shard'}),{status:400,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
- const cacheKey=new Request(new URL('/api/source-jobs?version=v12-content-quality&shard='+shard,request.url).toString(),{method:'GET'});
+ const cacheKey=new Request(new URL('/api/source-jobs?version=v13-safe-excerpt&shard='+shard,request.url).toString(),{method:'GET'});
  if(cache){try{const hit=await cache.match(cacheKey);if(hit)return hit;}catch(_){}}
  if(!env?.JOBS_DB)return reply({jobs:[],status:'unconfigured'});
  let sources,maps;

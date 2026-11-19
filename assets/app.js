@@ -399,7 +399,14 @@
       return 'culture';
     }
     if(r==='product'&&/\bindustrial\b|physical product|furniture design/.test(t))return 'industrial';
-    if(/\barchitect(?:s|ure|ural)?\b/.test(t)&&/\b(?:ai|genai|generative|artificial intelligence|llm|machine learning|ml|sap|s\/4hana|salesforce|servicenow|oracle|erp|aws|azure|cloud|software|solution(?:s)?|enterprise|data|database|systems?|network|cybersecurity|security|platform|infrastructure|devops|api|application|integration|technical|technology|information|it)\b/.test(t))return 'not-creative';
+    if(/\barchitect(?:s|ure|ural)?\b/.test(t)){
+      if(/\b(?:ai|genai|generative|artificial intelligence|llm|machine learning|ml|sap|salesforce|servicenow|erp|aws|azure|cloud|software|solutions?|enterprise|data|database|systems?|network|security|platform|infrastructure|devops|api|applications?|integrations?|deployment|messaging|sms|email|implementation|technical|technology|information|it)\b/.test(t))return 'not-creative';
+      if(r==='architecture'&&!/\b(?:landscape architect|interior architect|residential architect|building architect|project architect|design architect|architectural|building design|bim|revit|urban design)\b/.test(t)){
+        var d=trim(job.description).toLowerCase();
+        if(!/\b(?:revit|autocad|building codes?|floor plans?|construction drawings?|architectural projects?|building design|facade|façade|landscape architecture|bim coordination)\b/.test(d))return 'not-creative';
+        if(/\b(?:deployment|messaging|email\/sms|integration architecture|enterprise customers|cloud infrastructure|software architect|data flows)\b/.test(d))return 'not-creative';
+      }
+    }
     return roleLabels[r]?r:'culture';
   }
   function dateLabel(job) {
@@ -563,6 +570,20 @@
   // flattened upstream excerpts without changing job requirements or claims.
   function descriptionParagraphs(raw){
     var text=String(raw||'').replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ');
+    // Decode only character entities; display is always textContent, never HTML.
+    function decode(s){
+      var map={lt:'<',gt:'>',amp:'&',quot:'"',apos:"'",nbsp:' ',mdash:'—',ndash:'–',bull:'•'};
+      return s.replace(/&(#(?:x[0-9a-f]+|\d+)|[a-z][a-z0-9]+);/gi,function(m,k){
+        if(k.charAt(0)==='#'){var n=k.charAt(1).toLowerCase()==='x'?parseInt(k.slice(2),16):parseInt(k.slice(1),10);return n>=32&&n<=0x10ffff?String.fromCodePoint(n):' ';}
+        return Object.prototype.hasOwnProperty.call(map,k.toLowerCase())?map[k.toLowerCase()]:m;
+      });
+    }
+    for(var di=0;di<3;di++){var next=decode(text);if(next===text)break;text=next;}
+    text=text.replace(/<(?:script|style|iframe)\b[^>]*>[\s\S]*?<\/(?:script|style|iframe)\s*>/gi,' ')
+      .replace(/<br\b[^>]*\/?>/gi,'\n').replace(/<li\b[^>]*>/gi,'\n• ')
+      .replace(/<\/li\s*>/gi,'\n')
+      .replace(/<\/?(?:p|div|section|article|h[1-6]|ul|ol|blockquote)\b[^>]*>/gi,'\n\n')
+      .replace(/<[^>]+>/g,' ').replace(/\n{3,}/g,'\n\n').trim();
     // Some copied descriptions glue a new sentence directly to a full stop.
     // Only split before a capitalized ordinary word; avoid .NET, version IDs, URLs.
     text=text.replace(/([.!?]["'’”)]?)([A-Z][a-z])/g,'$1\n\n$2');

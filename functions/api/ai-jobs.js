@@ -95,7 +95,7 @@ const HEAD={'content-type':'application/json; charset=utf-8','x-content-type-opt
 export async function onRequestGet({request}){
  const u=new URL(request.url),shard=Number(u.searchParams.get('shard'));
  if(!Number.isInteger(shard)||shard<0||shard>=Math.ceil(SOURCES.length/6))return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
- const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=2-full-description&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
+ const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=3-safe-excerpt-architect&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
  if(cache)try{const hit=await cache.match(key);if(hit)return hit;}catch(_){}
  const sources=SOURCES.slice(shard*6,shard*6+6),now=Date.now();
  const outcomes=await Promise.allSettled(sources.map(s=>loadBoard(s,now)));
