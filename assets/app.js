@@ -229,7 +229,14 @@
     var rawDate=field('savedAt',40);
     var date=rawDate&&!isNaN(Date.parse(rawDate))?new Date(rawDate).toISOString():'';
     var rawUrl=field('url',700);
-    return {id:field('id',240),title:field('title',160),company:field('company',120),source:field('source',100),url:safeUrl(rawUrl)?rawUrl:'',savedAt:date};
+    // Cached fields allow saved vacancies to be filtered when their live feed
+    // disappears; do not invent metadata for historical ID-only bookmarks.
+    var tags=Array.isArray(entry.tags)?entry.tags.filter(function(t){return typeof t==='string'&&t.length<=40;}).slice(0,3):[];
+    return {id:field('id',240),title:field('title',160),company:field('company',120),
+      source:field('source',100),url:safeUrl(rawUrl)?rawUrl:'',savedAt:date,
+      role:field('role',24),location:field('location',160),mode:field('mode',30),
+      type:field('type',50),salary:field('salary',75),eligibility:field('eligibility',170),
+      seniority:field('seniority',65),tags:tags};
   }
   function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));savedStorageOk=true;return true;}catch(e){savedStorageOk=false;return false;}}
   try{
@@ -294,7 +301,12 @@
   function snapshotForJob(job,old){
     var link=String(job.url||'');
     return {id:String(job.id),title:String(job.title||'').slice(0,160),company:String(job.company||'').slice(0,120),
-      source:String(job.source||'').slice(0,100),url:safeUrl(link)?link:'',savedAt:old?old.savedAt:new Date().toISOString()};
+      source:String(job.source||'').slice(0,100),url:safeUrl(link)?link:'',savedAt:old?old.savedAt:new Date().toISOString(),
+      // Same canonical category / tag calculation used by the live job feed.
+      role:categoryFor(job),location:String(job.location||'').slice(0,160),
+      mode:String(job.mode||'').slice(0,30),type:String(job.type||'').slice(0,50),
+      salary:String(job.salary||'').slice(0,75),eligibility:String(job.eligibility||'').slice(0,170),
+      seniority:String(job.seniority||'').slice(0,65),tags:jobKeywords(job)};
   }
   function hydrateSavedEntries(){
     var updates=false;
@@ -325,6 +337,8 @@
   var savedAll=document.createElement('button'),savedWeek=document.createElement('button');
   [savedAll,savedWeek].forEach(function(b){b.type='button';savedTabs.appendChild(b);});
   savedAll.textContent='All saved';savedWeek.textContent='Last 7 days';savedPanel.appendChild(savedTabs);
+  var savedFilterInfo=document.createElement('p');savedFilterInfo.className='saved-filter-info';savedFilterInfo.hidden=true;
+  savedPanel.appendChild(savedFilterInfo);
   var savedListing=document.createElement('div');savedListing.className='saved-listing';savedPanel.appendChild(savedListing);
   $('job-list').parentNode.insertBefore(savedPanel,$('job-list'));
   function toggleSavedView(force){state.onlySaved=typeof force==='boolean'?force:!state.onlySaved;state.visible=10;render();}
@@ -338,16 +352,42 @@
     var days=Math.max(0,Math.floor((Date.now()-t)/86400000));
     return days===0?'Saved today':days===1?'Saved yesterday':'Saved '+new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
   }
+  function savedHasActiveFilters(){
+    return !!(state.selectedRoles.length||state.keywords.length||state.query||
+      state.region!=='all'||state.mode!=='all'||state.type!=='all'||state.hasPay);
+  }
+  function savedMatchesFilters(item,job){
+    if(job)return eligible(job);
+    // An archived job with saved category/tag metadata can still be filtered.
+    if(roleLabels[item.role])return eligible(item,item.role,item.tags||[]);
+    // Legacy bookmarks can have no role/location/tags. Never classify their
+    // unknown metadata as Culture or claim to match a skill or work arrangement.
+    if(state.selectedRoles.length||state.keywords.length||
+       state.region!=='all'||state.mode!=='all'||state.type!=='all'||state.hasPay)return false;
+    if(!state.query)return true;
+    var text=[item.title,item.company,item.source].join(' ').toLowerCase();
+    return state.query.toLowerCase().split(/\s+/).every(function(part){return text.indexOf(part)!==-1;});
+  }
   function renderSavedPanel(){
     savedListing.textContent='';
     savedAll.setAttribute('aria-pressed',String(state.savedPeriod==='all'));
     savedWeek.setAttribute('aria-pressed',String(state.savedPeriod==='week'));
     var weekCutoff=Date.now()-7*86400000;
-    var entries=saved.filter(function(item){return state.savedPeriod==='all'||(item.savedAt&&Date.parse(item.savedAt)>=weekCutoff);});
+    var periodEntries=saved.filter(function(item){return state.savedPeriod==='all'||(item.savedAt&&Date.parse(item.savedAt)>=weekCutoff);});
+    var entries=periodEntries.filter(function(item){
+      var job=state.jobs.filter(function(j){return String(j.id)===item.id;})[0];
+      return savedMatchesFilters(item,job);
+    });
+    var filtered=savedHasActiveFilters();
+    savedFilterInfo.hidden=!filtered;
+    savedFilterInfo.textContent=filtered?entries.length+' of '+periodEntries.length+' saved jobs match the current filters.':'';
     entries.sort(function(a,b){return (Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0);});
     if(!entries.length){
       var empty=document.createElement('p');empty.className='saved-empty';
-      empty.textContent=saved.length===0?'No saved jobs yet. Open a vacancy and click Save job.':'No jobs saved in the last 7 days. Try All saved.';
+      empty.textContent=saved.length===0?'No saved jobs yet. Open a vacancy and click Save job.':
+        !periodEntries.length?'No jobs saved in the last 7 days. Try All saved.':
+        filtered?'No saved jobs match these filters. Change or clear filters to see more.':
+        'No saved jobs in this view.';
       savedListing.appendChild(empty);return;
     }
     entries.forEach(function(item){
@@ -478,8 +518,8 @@
     if(value==='part-time')return /part[\s-]?time/.test(t);
     return t.indexOf(value)!==-1;
   }
-  function eligible(job){
-    var role=categoryFor(job);
+  function eligible(job,verifiedRole,verifiedTags){
+    var role=verifiedRole||categoryFor(job);
     if(role==='not-creative')return false;
     if(state.selectedRoles.length&&state.selectedRoles.indexOf(role)<0)return false;
     
@@ -489,7 +529,7 @@
     if(!matchesType(job,state.type))return false;
     if(state.hasPay&&!trim(job.salary))return false;
     if(state.keywords.length){
-      var tags=jobKeywords(job);
+      var tags=Array.isArray(verifiedTags)?verifiedTags:jobKeywords(job);
       var matched=state.keywordMatch==='all' ? state.keywords.every(function(k){return tags.indexOf(k)>=0;}) : state.keywords.some(function(k){return tags.indexOf(k)>=0;});
       if(!matched)return false;
     }

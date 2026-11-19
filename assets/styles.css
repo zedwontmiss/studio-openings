@@ -434,3 +434,7 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 /* Deliberate progressive disclosure on scroll; never throttle the document itself. */
 .feed-progress{text-align:center;color:#777;font-size:11px;line-height:1.6;min-height:24px;padding:4px 0;margin:13px 0}
 .feed-progress[hidden]{display:none!important}
+
+/* v1.1.1: Saved Jobs uses the sidebar's filters; counts remain total bookmarks. */
+.saved-filter-info{font-size:11px;color:#777;line-height:1.45;margin:2px 1px 4px}
+.saved-filter-info[hidden]{display:none!important}
