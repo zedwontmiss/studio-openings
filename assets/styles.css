@@ -408,3 +408,18 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 /* The verified picker spans the full two-column submission layout, not half a column. */
 .submission-form .so-geo-group,.so-geo-group{grid-column:1 / -1;grid-template-columns:repeat(3,minmax(0,1fr))}
 @media(max-width:640px){.submission-form .so-geo-group,.so-geo-group{grid-template-columns:1fr}}
+
+/* v1.0 — revenue-first posting selection, matching the existing compact drawer. */
+.so-paid-packages{margin:11px 0 15px;padding:13px 0;border-top:1px solid #dedede;border-bottom:1px solid #dedede}
+.so-paid-packages[hidden]{display:none!important}
+.so-paid-heading{display:block;font-size:12px;color:#1f1f1f;margin-bottom:3px}
+.so-paid-help,.so-paid-terms{font-size:11px;color:#666;line-height:1.55;margin:0 0 11px}
+.so-paid-terms{font-size:10px;margin:10px 0 0}
+.so-paid-choice{display:flex!important;align-items:center;gap:9px;margin:0 0 6px!important;padding:10px 11px;border:1px solid #d1d1d1;background:#fff;cursor:pointer;color:#222;font-weight:normal!important}
+.so-paid-choice.is-selected{border-color:#222;background:#f7f7f7}
+.so-paid-choice input{appearance:auto!important;display:block!important;flex:none;width:14px!important;height:14px!important;min-height:14px!important;margin:0!important;padding:0!important;accent-color:#222}
+.so-paid-choice-main{display:block;flex:1;min-width:0}
+.so-paid-choice-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px}
+.so-paid-choice-title{font-size:12px;font-weight:bold;white-space:nowrap}
+.so-paid-choice-amount{font-size:13px;font-weight:700;white-space:nowrap}
+.so-paid-choice-desc{display:block;color:#777;font-size:10.5px;line-height:1.45}

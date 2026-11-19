@@ -5,8 +5,9 @@ export async function onRequestGet({env}){
  try{
   const r=await env.JOBS_DB.prepare(`SELECT p.submission_id,p.starts_on,p.ends_on FROM premium_campaigns p
     JOIN job_submissions s ON s.id=p.submission_id
+    JOIN job_orders o ON o.submission_id=s.id
     WHERE p.status='active' AND p.starts_on<=date('now') AND p.ends_on>=date('now')
-      AND s.status='approved' AND s.submission_type='employer'
+      AND s.status='approved' AND s.submission_type='employer' AND o.status='paid' AND o.tier='featured' AND o.published_at IS NOT NULL
     ORDER BY p.starts_on DESC LIMIT 250`).all();
   const placements=(r.results||[]).map(x=>({jobId:'direct-'+String(x.submission_id).toLowerCase(),startsOn:x.starts_on,endsOn:x.ends_on,approved:true}));
   return new Response(JSON.stringify({version:1,placements}),{headers:HEAD});

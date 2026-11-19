@@ -19,31 +19,33 @@
    permissionStar.setAttribute('aria-hidden','true');permissionStar.textContent='*';
    permissionLabel.appendChild(permissionStar);
  }
- // v0.11: optional employer-only inquiry. No payment, priority, or publication is granted here.
- var featuredChoice=document.createElement('div');
- featuredChoice.className='featured-inquiry';
- featuredChoice.id='featured-inquiry';
- var featuredLabel=document.createElement('label');
- featuredLabel.className='featured-inquiry-choice';
- var featuredInput=document.createElement('input');
- featuredInput.type='checkbox';featuredInput.name='featuredInterest';featuredInput.value='yes';
- featuredLabel.appendChild(featuredInput);
- var featuredHeading=document.createElement('span');
- featuredHeading.textContent='Make your job stand out ';
- var featuredStar=document.createElement('span');
- featuredStar.className='featured-inquiry-star';featuredStar.textContent='★';
- featuredStar.setAttribute('aria-label','Featured listing');
- featuredHeading.appendChild(featuredStar);featuredLabel.appendChild(featuredHeading);
- featuredChoice.appendChild(featuredLabel);
- var featuredExplain=document.createElement('p');
- featuredExplain.textContent='Give your opening a spotlight in the feed. Featured jobs get an exclusive baby-yellow highlight and a star beside the title. Request a spot now; we’ll confirm availability and pricing after review. No payment today.';
- featuredChoice.appendChild(featuredExplain);
- var beforeConsent=form.querySelector('.submission-consent');
- if(beforeConsent)form.insertBefore(featuredChoice,beforeConsent);
- else form.appendChild(featuredChoice);
- function syncFeaturedHighlight(){featuredChoice.classList.toggle('is-selected',mode==='employer' && featuredInput.checked);}
- featuredInput.addEventListener('change',syncFeaturedHighlight);
-
+ // v1.0: choose a paid order; editorial review precedes manual invoice and publication.
+ var planSection=soElSafe('div','so-paid-packages');
+ planSection.id='so-paid-packages';
+ var planHeading=soElSafe('strong','so-paid-heading','Select your posting package');
+ planSection.appendChild(planHeading);
+ var planHelp=soElSafe('p','so-paid-help','All employer listings are paid. Submit for editorial review first; we email an invoice if the job is accepted. No payment is taken on this website.');
+ planSection.appendChild(planHelp);
+ var planRadios=[];
+ function makePlan(id,name,price,days,description){
+   var label=soElSafe('label','so-paid-choice'),radio=document.createElement('input');
+   radio.type='radio';radio.name='postingPackage';radio.value=id;radio.checked=id==='standard';
+   var detail=soElSafe('span','so-paid-choice-main');
+   var title=soElSafe('span','so-paid-choice-title',name),amount=soElSafe('strong','so-paid-choice-amount','$'+price);
+   var heading=soElSafe('span','so-paid-choice-heading');heading.appendChild(title);heading.appendChild(amount);
+   detail.appendChild(heading);detail.appendChild(soElSafe('span','so-paid-choice-desc',days+' days · '+description));
+   label.appendChild(radio);label.appendChild(detail);planSection.appendChild(label);
+   planRadios.push({radio:radio,label:label});radio.addEventListener('change',syncPlan);
+ }
+ function soElSafe(t,cl,txt){var n=document.createElement(t);n.className=cl;n.textContent=txt||'';return n;}
+ makePlan('standard','Standard Job',149,30,'Standard placement in the creative job feed');
+ makePlan('featured','Featured Job ★',349,90,'Baby-yellow highlight, title star and daily placement rotation');
+ var terms=soElSafe('p','so-paid-terms','Up to the stated duration while the vacancy remains open; reviewed for freshness every 30 days. Featured placement rotates and does not guarantee impressions or applications.');
+ planSection.appendChild(terms);
+ var beforeImport=form.querySelector('.document-import');
+ if(beforeImport)form.insertBefore(planSection,beforeImport);else form.insertBefore(planSection,form.firstChild);
+ function syncPlan(){planRadios.forEach(function(x){x.label.classList.toggle('is-selected',x.radio.checked);});}
+ syncPlan();
  // v0.14.1 verified geography. Country -> division -> settlement, never arbitrary city text.
  var soCountries=[{"code":"US","name":"United States"},{"code":"CA","name":"Canada"},{"code":"GB","name":"United Kingdom"},{"code":"CH","name":"Switzerland"},{"code":"DE","name":"Germany"},{"code":"FR","name":"France"},{"code":"NL","name":"Netherlands"},{"code":"BE","name":"Belgium"},{"code":"LU","name":"Luxembourg"},{"code":"AT","name":"Austria"},{"code":"IE","name":"Ireland"},{"code":"DK","name":"Denmark"},{"code":"SE","name":"Sweden"},{"code":"NO","name":"Norway"},{"code":"FI","name":"Finland"},{"code":"IS","name":"Iceland"},{"code":"SG","name":"Singapore"},{"code":"AU","name":"Australia"},{"code":"NZ","name":"New Zealand"},{"code":"AE","name":"United Arab Emirates"},{"code":"SA","name":"Saudi Arabia"},{"code":"QA","name":"Qatar"},{"code":"JP","name":"Japan"},{"code":"KR","name":"South Korea"},{"code":"CY","name":"Cyprus"},{"code":"IT","name":"Italy"},{"code":"ES","name":"Spain"}];
  function soEl(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text)e.textContent=text;return e;}
@@ -146,16 +148,19 @@
  function message(s,error){var el=$('submission-error');el.textContent=s;el.className='submission-error'+(error?'':' submission-ok');el.hidden=!s;}
  function setMode(next){
    mode=next==='suggest'?'suggest':'employer';
+   var lede=document.querySelector('.submission-lede');
+   if(lede)lede.textContent=mode==='employer'?'Employer job postings are paid. Every request is reviewed first; an invoice follows if accepted. No payment is taken at submission.':'Suggest an existing public vacancy for editorial review. Suggestions are free and do not include employer advertising.';
+   var heading=$('submission-title');if(heading)heading.textContent=mode==='employer'?'Post a creative job':'Suggest a creative vacancy';
    ['employer','suggest'].forEach(function(k){$('mode-'+k).classList.toggle('active',mode===k);$('mode-'+k).setAttribute('aria-pressed',String(mode===k));});
    if(mode==='suggest'){var radio=form.querySelector('input[name=applicationMethod][value=external]');if(radio)radio.checked=true;}
    updateApplicationMethod();
-   featuredChoice.hidden=mode!=='employer';
-   featuredInput.disabled=mode!=='employer';
-   if(mode!=='employer')featuredInput.checked=false;
-   syncFeaturedHighlight();
+   planSection.hidden=mode!=='employer';
+   planRadios.forEach(function(x){x.radio.disabled=mode!=='employer';});
+   syncPlan();
    $('submission-permission-text').textContent=mode==='employer'?'I represent the hiring organization, or have permission to submit this vacancy for review.':'This is a public vacancy and I have permission to suggest its original application link for review.';
+   if(configuration&&configuration.enabled)setSending(true);
  }
- function setSending(enabled){$('submission-send').disabled=!enabled;$('submission-send').textContent=(preview||!configuration?.enabled)?'Prepare offline request':'Send for review';}
+ function setSending(enabled){$('submission-send').disabled=!enabled;$('submission-send').textContent=(preview||!configuration?.enabled)?'Prepare offline request':mode==='employer'?'Request review & invoice':'Suggest vacancy for review';}
  function loadTurnstile(){
    if(window.turnstile)return Promise.resolve(window.turnstile);
    if(turnstileScript)return turnstileScript;
@@ -216,7 +221,7 @@
  }
  function collect(){
    var f=new FormData(form),v=function(k){return String(f.get(k)||'').trim();};
-   return {schema:'studio-openings-submission-v1',kind:mode,applicationMethod:updateApplicationMethod(),applicationEmail:v('applicationEmail'),title:v('title'),company:v('company'),location:v('location'),locationReference:soLocationEntry.get(),locationCity:v('locationCity'),applicantLocation:v('applicantLocation'),applicantLocationReference:soApplicantEntry.get(),workAuthorization:v('workAuthorization'),visaSponsorship:v('visaSponsorship'),mode:v('mode'),type:v('type'),role:v('role'),url:urlHttps(v('url')),companyWebsite:v('companyWebsite')?urlHttps(v('companyWebsite')):'',contactEmail:v('contactEmail'),salary:v('salary'),closesOn:v('closesOn'),eligibility:v('eligibility'),description:v('description'),permissionChecked:f.get('permission')==='on',featuredInterest:mode==='employer'&&f.get('featuredInterest')==='yes'};
+   return {schema:'studio-openings-submission-v1',kind:mode,applicationMethod:updateApplicationMethod(),applicationEmail:v('applicationEmail'),title:v('title'),company:v('company'),location:v('location'),locationReference:soLocationEntry.get(),locationCity:v('locationCity'),applicantLocation:v('applicantLocation'),applicantLocationReference:soApplicantEntry.get(),workAuthorization:v('workAuthorization'),visaSponsorship:v('visaSponsorship'),mode:v('mode'),type:v('type'),role:v('role'),url:urlHttps(v('url')),companyWebsite:v('companyWebsite')?urlHttps(v('companyWebsite')):'',contactEmail:v('contactEmail'),salary:v('salary'),closesOn:v('closesOn'),eligibility:v('eligibility'),description:v('description'),permissionChecked:f.get('permission')==='on',postingPackage:mode==='employer'?v('postingPackage'):'',featuredInterest:mode==='employer'&&v('postingPackage')==='featured'};
  }
  // Inline, accessible validation. The form uses novalidate intentionally so we can
  // show every issue at once and focus the first affected field.
@@ -233,6 +238,7 @@
    if(data.applicantLocation&&!data.applicantLocationReference)add('applicantLocation','Select an eligible country.');
    if(!data.mode)add('mode','Select a work arrangement.');
    if(!data.role)add('role','Select a discipline.');
+   if(data.kind==='employer'&&['standard','featured'].indexOf(data.postingPackage)<0)add('postingPackage','Choose a paid package.');
    if(data.applicationMethod==='external'&&!data.url)add('url','Enter a valid HTTPS application link (https://…).');
    if(data.applicationMethod==='email'&&!emailValid(data.applicationEmail))add('applicationEmail','Enter a valid application email address.');
    if(!emailValid(data.contactEmail))add('contactEmail',data.contactEmail?'Enter a valid contact email address.':'Contact email is required.');
@@ -321,13 +327,13 @@
      var response=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'omit',body:JSON.stringify(Object.assign({},data,{turnstileToken:token}))});
      var payload=await response.json();
      if(!response.ok||!payload.ok)throw Error(payload.message||'Submission failed');
-     result('Submitted for review',data.featuredInterest?'Your listing was received for editorial review. Your featured-placement request was recorded. This is not a payment or a promise of promotion.':'Your listing was received. It is pending manual approval and is not public yet.',false,payload.reference);
+     result(data.kind==='employer'?'Posting request received':'Vacancy suggested',data.kind==='employer'?'Your '+(data.postingPackage==='featured'?'Featured ($349)':'Standard ($149)')+' request is awaiting editorial review. If accepted, we will contact you with an invoice. Payment and publication happen only after review. Save your reference; an automated email has not been sent.':'Thank you. We will review this public vacancy suggestion before publishing it.',false,payload.reference);
    }catch(err){
      message((err.message||'Could not submit')+' — nothing was published. You can retry or save a local draft.',true);
      if(widgetId!==null&&window.turnstile){window.turnstile.reset(widgetId);token='';}
    }finally{setSending(true);}
  }
- function newSubmission(){form.reset();soLocationEntry.clear();soApplicantEntry.clear();form.hidden=false;lastPrepared=null;token='';$('submission-result').hidden=true;setMode('employer');resetValidation();message('');if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);}
+ function newSubmission(){form.reset();soLocationEntry.clear();soApplicantEntry.clear();form.hidden=false;lastPrepared=null;token='';$('submission-result').hidden=true;planRadios[0].radio.checked=true;syncPlan();setMode('employer');resetValidation();message('');if(widgetId!==null&&window.turnstile)window.turnstile.reset(widgetId);}
  $('nav-submit').addEventListener('click',function(e){e.preventDefault();open();});
  $('mode-employer').addEventListener('click',function(){setMode('employer');});
  $('mode-suggest').addEventListener('click',function(){setMode('suggest');});

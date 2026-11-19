@@ -14,7 +14,7 @@
   try {
     var pref=JSON.parse(localStorage.getItem(PREFERENCES_KEY)||'{}');
     if(pref && Array.isArray(pref.keywords)) {
-      var oldNames={Graphic:'Graphic Design',Product:'Product Design',Motion:'Motion Design',Industrial:'Industrial Design'};
+      var oldNames={Graphic:'Graphic Design',Product:'Product Design',Motion:'Motion Design',Industrial:'Industrial Design',Landscape:'Landscape Architecture',Adobe:'Adobe Creative Cloud'};
       state.keywords=pref.keywords.filter(function(x){return typeof x==='string' && x.length<35;}).map(function(x){return oldNames[x]||x;}).filter(function(x,i,a){return a.indexOf(x)===i;}).slice(0,15);
     }
     if(pref && pref.match==='all')state.keywordMatch='all';
@@ -41,16 +41,16 @@
     if(!ROLE_TAG[role])return [];
     var title=String(job.title||'').toLowerCase();
     var details=(title+' '+String(job.description||job.summary||'')).toLowerCase().slice(0,12000);
-    var tags=[];
+    var tags=[ROLE_TAG[role]];
     function add(label,condition){if(condition && tags.indexOf(label)<0)tags.push(label);}
     // Source-normalized backend tags can be used if they are recognized and concise.
-    var allowable={Architecture:1,'Interior':1,'Industrial Design':1,'Product Design':1,'Graphic Design':1,'Motion Design':1,'Fashion':1,'Web Design':1,'Exhibition':1,'Creative Arts':1,'Preservation':1,'Urban Planning':1,'Landscape':1,'CAD':1,'UX/UI':1,'Branding':1,'Illustration':1,'3D':1,'Photography':1,'Sound':1,'Revit':1,'AutoCAD':1,'BIM':1,'Figma':1,'Rhino':1,'SketchUp':1,'Adobe':1,'Public Sector':1};
-    if(Array.isArray(job.tags))job.tags.forEach(function(t){if(allowable[t])add(t,true);});
+    var allowable={Architecture:1,'Interior':1,'Industrial Design':1,'Product Design':1,'Graphic Design':1,'Motion Design':1,'Fashion':1,'Web Design':1,'Exhibition':1,'Creative Arts':1,'Preservation':1,'Urban Planning':1,'Landscape Architecture':1,'CAD':1,'UX/UI':1,'Branding':1,'Illustration':1,'3D':1,'Photography':1,'Sound':1,'Revit':1,'AutoCAD':1,'BIM':1,'Figma':1,'Rhino':1,'SketchUp':1,'Adobe Creative Cloud':1,'Vectorworks':1,'Archicad':1,'Grasshopper':1,'Civil 3D':1,'Blender':1,'Cinema 4D':1,'After Effects':1,'Photoshop':1,'Illustrator':1,'InDesign':1,'Enscape':1,'Lumion':1,'V-Ray':1,'Public Sector':1};
+    if(Array.isArray(job.tags))job.tags.forEach(function(t){if(t==='Landscape')t='Landscape Architecture';if(t==='Adobe')t='Adobe Creative Cloud';if(allowable[t])add(t,true);});
     // Detect specialties from the role title. A bare 'architect' is NOT enough
     // unless backend classification verified it as a physical design role.
     add('Preservation',/\b(?:preservation|historic preservation|heritage)\b/.test(title));
     add('Urban Planning',/\b(?:urban|regional|city|town)\s+plann?|\bplanning coordinator\b/.test(title));
-    add('Landscape',/\blandscape\b/.test(title));
+    add('Landscape Architecture',/\blandscape\b/.test(title));
     add('CAD',/\bcadd?\b|\bdraft(?:er|ing|sperson)?\b/.test(title));
     add('UX/UI',/\bux\b|\bui\b|user experience|user interface|interaction design/.test(title));
     add('Branding',/\bbrand(?:ing)?\b|identity design/.test(title));
@@ -68,21 +68,42 @@
     add('Figma',/\bfigma\b/.test(details));
     add('Rhino',/\brhino\b/.test(details));
     add('SketchUp',/\bsketchup\b/.test(details));
-    add('Adobe',/adobe (?:creative|illustrator|photoshop|indesign)/.test(details));
+    add('Adobe Creative Cloud',/adobe creative cloud|adobe creative suite/.test(details));
+    add('Photoshop',/\bphotoshop\b/.test(details));
+    add('Illustrator',/\billustrator\b/.test(details));
+    add('InDesign',/\bindesign\b/.test(details));
+    add('After Effects',/\bafter effects\b/.test(details));
+    add('Vectorworks',/\bvectorworks\b/.test(details));
+    add('Archicad',/\barchicad\b/.test(details));
+    add('Grasshopper',/\bgrasshopper\b/.test(details));
+    add('Civil 3D',/\bcivil 3d\b/.test(details));
+    add('Blender',/\bblender\b/.test(details));
+    add('Cinema 4D',/\bcinema 4d\b/.test(details));
+    add('Enscape',/\benscape\b/.test(details));
+    add('Lumion',/\blumion\b/.test(details));
+    add('V-Ray',/\bv[ -]?ray\b/.test(details));
     if(job.source==='NYC Open Data')add('Public Sector',true);
     return tags.slice(0,3);
   }
-  function tagColorFor(word){
-    var s=String(word||'').trim().toLowerCase(),h=2166136261;
-    for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
-    h=h>>>0;
-    var mixed=h;mixed^=mixed>>>16;mixed=Math.imul(mixed,0x7feb352d);
-    mixed^=mixed>>>15;mixed=Math.imul(mixed,0x846ca68b);mixed^=mixed>>>16;
-    var hue=(mixed>>>0)%360,sat=64+((h>>>12)%12),light=84+((h>>>20)%6);
-    // Keep the baby-yellow family exclusive to paid featured-row backgrounds.
-    if(hue>=35 && hue<=85)hue=(hue+135)%360;
-    return 'hsl('+hue+', '+sat+'%, '+light+'%)';
-  }
+  // One explicitly assigned colour per editorial tag; never random hash collisions.
+  // No tag uses the baby-yellow Featured job row background.
+  var TAG_PALETTE={
+   'Architecture':'#b9d5ff','Landscape Architecture':'#9cd9b0','Interior':'#ffbcb0',
+   'Industrial Design':'#c6bdff','Product Design':'#a0d9e2','Graphic Design':'#ffc0da',
+   'Motion Design':'#b2bbe8','Fashion':'#f2a9db','Web Design':'#a4e2d0',
+   'Exhibition':'#d4b69f','Creative Arts':'#c1df9e','Preservation':'#c6a5ec',
+   'Urban Planning':'#82cfbd','CAD':'#a9bde2','UX/UI':'#e6adce',
+   'Branding':'#efa79f','Illustration':'#c9b2db','3D':'#8fc9e7',
+   'Photography':'#f9b58f','Sound':'#99cfdb','Revit':'#86d7cf',
+   'AutoCAD':'#eba2a9','BIM':'#d0a1e9','Figma':'#d0bd9c',
+   'Rhino':'#b6b1ee','SketchUp':'#dcb0af','Adobe Creative Cloud':'#a9d2a0',
+   'Public Sector':'#b3c1d1','Vectorworks':'#a6d9bf','Archicad':'#cba5c1',
+   'Grasshopper':'#acc69c','Civil 3D':'#b4a6da','Blender':'#dbb5a5',
+   'Cinema 4D':'#adc6e4','After Effects':'#bea3d4','Photoshop':'#a9cce9',
+   'Illustrator':'#e9b1b8','InDesign':'#c5c8a1','Enscape':'#aac9d1',
+   'Lumion':'#d4c2a6','V-Ray':'#c2a8dd'
+  };
+  function tagColorFor(word){return TAG_PALETTE[word]||'#cad9e6';}
   function styleTag(tag,word){tag.style.backgroundColor=tagColorFor(word);}
   function displayableJob(job){
     if(!job||!job.id||!job.title||!job.company)return false;

@@ -7,3 +7,10 @@ main{max-width:1140px;margin:0 auto;padding:30px 30px 60px}.pagehead{display:fle
 /* v0.14.2 — private creative-source registry; keeps the established operator typography. */
 .source-form{margin:16px 0;padding:15px;border:1px solid #ddd}.source-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:12px}.source-form label{display:block;font-size:11px;font-weight:bold;color:#454545}.source-form input,.source-form select{display:block;width:100%;padding:8px;margin-top:4px;border:1px solid #ccc;background:#fff;color:#202020;font-size:12px;min-width:0}.source-submit{border:1px solid #222;background:#222;color:white;padding:8px 13px;margin-top:11px}.source-review{margin:20px 0 0;border-top:1px solid #ddd;padding-top:18px}.source-location-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #eee;font-size:12px}.source-location-row button{background:#fff;border:1px solid #bbb;padding:5px 9px;white-space:nowrap}.source-location-row small{color:#777}.source-city-options{border:1px solid #ddd;margin-top:5px;max-height:160px;overflow:auto}.source-city-options button{display:block;text-align:left;border:0;border-bottom:1px solid #eee;background:#fff;width:100%;padding:8px;cursor:pointer}.source-city-options button:hover{background:#f6f6f6}
 @media(max-width:680px){.source-fields{grid-template-columns:1fr}.source-location-row{flex-wrap:wrap}}
+
+/* v1.0 manual billing fields: compact and private, never public. */
+#invoice-fields,#payment-fields{margin:14px 0;border-top:1px solid #e1e1e1;padding-top:12px}
+#payment-fields label[for="payment-reference"]{font-size:12px;display:block;color:#444;font-weight:700}
+#payment-reference{width:100%;padding:9px;border:1px solid #bbb;margin:6px 0 12px}
+.record .role{text-transform:none}
+@media(max-width:680px){.record{grid-template-columns:1fr}.record .actions{justify-content:flex-start;flex-wrap:wrap}}

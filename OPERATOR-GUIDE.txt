@@ -1,53 +1,37 @@
-STUDIO OPENINGS v0.12 — PREMIUM INVENTORY PILOT
-=============================================
+STUDIO OPENINGS — V1.0 OPERATOR GUIDE (MANUAL INVOICE)
+===================================================
 
-1. WHAT CHANGED
-- Ads stay inside the existing approved-v0.11.1 baby-yellow listing design.
-- Maximum of 10 yellow sponsored jobs in a filtered feed (not 10 per scroll/page).
-- Limit is further adjusted to about 1 sponsored job per 5 visible results.
-- In Best Match, the selected paid jobs are spread across ordinary jobs.
-- The sponsored campaign selection changes once per UTC day, predictably.
-- Explicit sorts (date, company, A-Z) preserve their normal ordering.
-- All existing location/category/job type filters remain effective.
-- Campaigns can last up to 90 calendar days, and expire automatically.
-- A job that closes ceases to be featured; it should also be removed from the board by the existing source pipeline.
+NO PROVIDER CHECKOUT IS CONNECTED. NO EMAIL IS SENT BY THIS SOFTWARE.
+Only you may authorize editorial review and attest to payment. Do not share the secret.
 
-2. WHAT HAS NOT CHANGED
-- This release does not add payments, checkout, bidding, an admin panel, pricing,
-  or a promise of a specific number of impressions.
-- Ordinary job submissions and the featured request checkbox stay unchanged.
-- No paid campaigns are activated in assets/featured-jobs.json (empty by default).
-- The existing Cloudflare/D1 setup is not changed.
+PRICING
+  Standard: USD 149 for up to 30 days of public visibility
+  Featured: USD 349 for up to 90 days, rotating baby-yellow/stared listing
+  Spotlight: NOT SOLD — unimplemented
+  Visitor vacancy suggestion: free editorial source, not an advertising service
 
-3. IMPORTANT SALES POLICY
-- Only a limited number of yellow placements is *visible* to each visitor.
-- If there are more than 10 active campaigns, they rotate; a paid advertiser may not
-  appear yellow in every feed, filtered view or session. Disclose this to employers.
-- Daily rotation alone cannot promise equal impressions or applicants. Before selling,
-  measure traffic and publish honest terms about rotation, filters and expiration.
-- Do NOT take money yet. Payment is not connected or verified.
+WORKFLOW / OPERATOR CONSOLE
+  1. Unlock /operator.html with Cloudflare OPERATOR_ACCESS_TOKEN Secret.
+  2. Requests -> pending_review: verify the employer, role, location, source and applicant route. Press Review passed.
+  3. ready_to_invoice: use Copy invoice email, prepare an actual invoice under your legal seller identity (amount and currency) and send it from your verified hello@s-o.app mailbox. Clicking Copy does NOT send.
+  4. ONLY after the actual invoice has gone out, click Invoice actually sent.
+  5. awaiting_payment: confirm bank/provider funds received for the correct order amount. Record a private payment reference. NEVER accept an employer screenshot as proof.
+  6. paid: recheck vacancy; click Publish paid job. Standard goes live up to 30 days. Featured goes live up to 90 days only when PREMIUM_ACTIVATION_ENABLED=true.
+  7. Send a separate manual paid/published confirmation email to the employer using the Copy email buttons. The site does not send email automatically.
+  8. Recheck each published vacancy at least every 30 days. Job freshness is intentionally capped. Purchased duration is NOT reset when reverified.
 
-4. OWNER ACTIVATION (FUTURE; CURRENTLY EMPTY)
-- Review real featured requests privately in Cloudflare D1.
-- Approve the employer and verify their job is an eligible direct- or firm- listing.
-- Verify a real payment separately when a payment provider is eventually connected.
-- Only then enter an existing live jobId into assets/featured-jobs.json as below.
-- Never enter user email, payment details, private data, or invented job IDs.
+WARNINGS
+  - Paid posts cannot be rejected with the simple Reject button; resolve refunds/disputes manually first. No automated refund feature.
+  - Featured rows have at most ten visible placements in a filtered feed, with a capacity limit and rotation. Never guarantee impression counts or number of applicants.
+  - An order paid for 90 days may disappear early if vacancy closes, fails verification, or no longer qualifies. Tell buyers about those conditions.
+  - Verify real bank transfer acceptance for overseas buyers and actual sender account BEFORE inviting paid employers.
+  - Store no API keys, operator passwords, banking details or customer payment identifiers in GitHub source.
+  - Never use real payment attestations to simulate QA. Local automated tests use isolated temporary SQLite.
 
-Sample entry for documentation only — DO NOT copy into production:
-{
-  "version": 1,
-  "placements": [
-    {"jobId":"direct-so-SAMPLE123", "startsOn":"2027-01-01", "endsOn":"2027-03-31", "approved":true}
-  ]
-}
+MIGRATION
+  Preview D1 first: OWNER-SETUP/001_job_orders.sql (single SQL statement).
+  Confirm via /tables -> job_orders visible. Do not run on production until the v1.0 launch is approved.
 
-5. UPLOAD TO GITHUB (DEVELOPMENT ONLY)
-- Extract ZIP and OPEN its same-named parent folder.
-- Upload ONLY the assets/ folder from inside it to the ROOT of:
-  https://github.com/zedwontmiss/studio-openings/upload/development
-- Files to update: assets/app.js and assets/featured-jobs.json.
-- Commit: Add v0.12 premium rotation and 90-day inventory rules
-- Verify in development site before any main merge.
-- To see rotation with sample sponsored jobs, use the separate OFFLINE preview;
-  the real deployment intentionally has zero active paid listings.
+SCOPE
+  Payments: manual only; applications: external link or email preferred; native application form disabled.
+  Newsletter, bulk email, credit cards, one-click checkout, and Spotlight not yet implemented.

@@ -1,3 +1,4 @@
+import {publicationEligible} from '../../lib/paid-plans.js';
 import {eligibleJob} from '../../lib/seo-jobs.js';
 import {remoteEligibility,officeLocation,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
 /** Public read-only, APPROVED-only job feed from D1. Never exposes submitter email. */
@@ -7,6 +8,7 @@ function validHTTPS(value){
  catch{return false;}
 }
 function publicJob(row,now){
+ if(!publicationEligible(row,now))return null;
  let data;
  try{data=JSON.parse(row.job_data);}catch{return null;}
  if(!data||typeof data!=='object'||!ROLES.has(data.role)||!data.title||!data.company||!data.location)return null;
@@ -40,7 +42,7 @@ function publicJob(row,now){
 export async function onRequestGet({env}){
  if(!env?.JOBS_DB)return new Response(JSON.stringify({jobs:[],error:'not-configured'}),{status:503,headers:{'content-type':'application/json','cache-control':'no-store'}});
  try{
-  const query=await env.JOBS_DB.prepare("SELECT id, status, submission_type, job_data, created_at, reviewed_at FROM job_submissions WHERE status = 'approved' ORDER BY reviewed_at DESC LIMIT 150").all();
+  const query=await env.JOBS_DB.prepare("SELECT s.id,s.status,s.submission_type,s.job_data,s.created_at,s.reviewed_at,o.tier AS order_tier,o.status AS order_status,o.published_at AS order_published_at FROM job_submissions s LEFT JOIN job_orders o ON o.submission_id=s.id WHERE s.status='approved' ORDER BY s.reviewed_at DESC LIMIT 150").all();
   const now=Date.now(),jobs=(query.results||[]).map(row=>publicJob(row,now)).filter(Boolean).filter(j=>j.applicationMethod!=='native'||env.NATIVE_APPLY_ENABLED==='true');
   return new Response(JSON.stringify({jobs,updatedAt:new Date(now).toISOString(),geoPolicy:POLICY_VERSION}),{
     status:200,headers:{'content-type':'application/json; charset=utf-8','cache-control':'public, max-age=180','x-content-type-options':'nosniff'}

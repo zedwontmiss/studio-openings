@@ -6,7 +6,10 @@ import {fetchOfficialJobs,safeJobURL,classifyCreative,locationKey} from '../../l
 import {cityCovered,POLICY_VERSION} from '../../lib/coverage-policy.js';
 const H={'content-type':'application/json; charset=utf-8','cache-control':'public, max-age=600, s-maxage=900','x-content-type-options':'nosniff'};
 const reply=(obj)=>new Response(JSON.stringify(obj),{headers:H});
-export async function onRequestGet({env}){
+export async function onRequestGet({request,env}){
+ const cache=typeof caches==='undefined'?null:caches.default;
+ const cacheKey=new Request(new URL('/api/source-jobs?version=v10',request.url).toString(),{method:'GET'});
+ if(cache){try{const hit=await cache.match(cacheKey);if(hit)return hit;}catch(_){}}
  if(!env?.JOBS_DB)return reply({jobs:[],status:'unconfigured'});
  let sources,maps;
  try{
@@ -37,5 +40,7 @@ export async function onRequestGet({env}){
    if(out.length>=100)break;
   }
  });
- return reply({jobs:out.slice(0,100),updatedAt:new Date().toISOString(),sources:sources.length,failed,geoPolicy:POLICY_VERSION});
+ const result=reply({jobs:out.slice(0,100),updatedAt:new Date().toISOString(),sources:sources.length,failed,geoPolicy:POLICY_VERSION});
+ if(cache){try{await cache.put(cacheKey,result.clone());}catch(_){}}
+ return result;
 }

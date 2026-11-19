@@ -1,3 +1,4 @@
+import {PAID_PLANS,planOf} from '../../lib/paid-plans.js';
 import {resolveReference,standardizeJobLocation} from '../../lib/location-reference.js';
 import {verifyCityReference} from '../../lib/place-provider.js';
 /** Studio Openings v0.6.1 — protected public job submission, Cloudflare Pages Function.
@@ -60,6 +61,8 @@ function normalize(input){
   if(!METHODS.has(o.applicationMethod))return [null,'Unsupported application method'];
   // A visitor suggestion cannot authorize collection of candidate data or publish an application email.
   if(input.kind==='suggest'&&o.applicationMethod!=='external')return [null,'Suggestions require an original application URL'];
+  if(input.kind==='employer'&&!planOf(input.postingPackage))return [null,'Select a paid posting package: Standard or Featured'];
+  o.postingPackage=input.kind==='employer'?input.postingPackage:'';
   if(o.applicationMethod==='email'){
     if(!/^[^\s@]{1,64}@[^\s@]{1,120}\.[a-z]{2,24}$/i.test(o.applicationEmail))return [null,'Valid application email required'];
     o.applicationEmail=o.applicationEmail.toLowerCase();
@@ -81,7 +84,8 @@ function normalize(input){
   // User can only REQUEST featured placement. No self-reported payment or approval is accepted.
   if(input.featuredInterest!==undefined && typeof input.featuredInterest!=='boolean')return [null,'Invalid featured placement request'];
   if(input.kind!=='employer' && input.featuredInterest===true)return [null,'Only employers can request featured placement'];
-  o.featuredInterest=input.kind==='employer'&&input.featuredInterest===true;
+  // The server determines featured status from the purchased plan, never a checkbox.
+  o.featuredInterest=input.kind==='employer'&&o.postingPackage==='featured';
   o.kind=input.kind;o.role=input.role;o.mode=input.mode;o.type=input.type||'';
   // Deliberately discard unrecognized fields, Turnstile token, raw files, and client timestamps.
   return [o,null];
@@ -147,11 +151,20 @@ export async function onRequestPost({request,env}){
     const id='SO-'+crypto.randomUUID().slice(0,8).toUpperCase();
     const jobData={schema:'studio-openings-submission-v1',...data};
     delete jobData.contactEmail; // contact email stored separately, not in public listing JSON.
-    const result=await env.JOBS_DB.prepare(
+    const submission=env.JOBS_DB.prepare(
       "INSERT INTO job_submissions (id,status,submission_type,job_title,company,application_url,contact_email,job_data) VALUES (?, 'pending', ?, ?, ?, ?, ?, ?)"
-    ).bind(id,data.kind,data.title,data.company,data.url,data.contactEmail,JSON.stringify(jobData)).run();
+    ).bind(id,data.kind,data.title,data.company,data.url,data.contactEmail,JSON.stringify(jobData));
+    let result;
+    if(data.kind==='employer'){
+      const plan=PAID_PLANS[data.postingPackage];
+      const order=env.JOBS_DB.prepare("INSERT INTO job_orders (submission_id,tier,price_usd,status) VALUES (?,?,?,'pending_review')").bind(id,data.postingPackage,plan.priceUSD);
+      const saved=await env.JOBS_DB.batch([submission,order]);
+      if(!saved.every(x=>x?.success===true))return fail(503,'storage','Order could not be saved.');
+      return json({ok:true,status:'pending',reference:id,postingPackage:data.postingPackage,priceUSD:plan.priceUSD,currency:'USD',paymentStatus:'pending_review',message:'Request received. Editorial review comes first. If accepted, you will be contacted with an invoice. No payment has been collected or job published.'},201);
+    }
+    result=await submission.run();
     if(result?.success!==true)return fail(503,'storage','Unable to save this submission now.');
-    return json({ok:true,status:'pending',reference:id,featuredInterest:data.featuredInterest,message:'Your job was received and is awaiting manual review. No payment was collected and no featured placement was activated.'},201);
+    return json({ok:true,status:'pending',reference:id,message:'Your public vacancy suggestion was received for editorial review. Nothing has been published.'},201);
   }catch{return fail(503,'storage','Unable to save this submission now. Try again later.');}
 }
 export async function onRequestGet(){return fail(405,'method','POST only');}

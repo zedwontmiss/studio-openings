@@ -1,67 +1,45 @@
-# studio openings — plain-text creative and architecture jobs (v0.4)
+# Studio Openings — v1.0 development release candidate
 
-**The previous directory-of-job-boards has been replaced with individual job postings.** This is an actual job search interface, with live listings loaded on Cloudflare Pages from two permitted public feeds. Inspired by the utility of classic Craigslist, not its visual branding.
+A compact, global, creative-industry job board built with plain HTML, CSS and JavaScript, Cloudflare Pages Functions, Cloudflare D1, and Cloudflare Turnstile. No local build tools, paid AI APIs, frontend accounts, or paid job-posting gateway are required.
 
-## What works
-- A dense, mobile-friendly list of *individual* jobs, not job boards.
-- Search by job title, company, skill; filter by creative discipline, region and employment type; sort newest/title/company.
-- Save jobs in this browser (`localStorage`), show saved jobs, and load more.
-- Transparent source attribution on each row; application links point to the original Jobicy/Himalayas URL, as required.
-- **No AI API, database, login, paid API, giant front-end framework or build tool.** Static site + one Cloudflare Pages Function.
-- The deployed live API fetches recent job openings and caches them at the edge for three hours.
-- No fake job counts, paid placement widgets, payment processing, or speculative salary estimates.
+**Branch policy:** Test in `development` first. Never merge into `main` before owner approval.
 
-## Local design preview vs live jobs
-- Double-click `index.html` to view layout and filters offline.
-- **Local preview rows are demonstrative, not real job vacancies.** They are conspicuously marked as examples and have no application links.
-- Only after deployment to Cloudflare Pages does `/api/jobs` run and deliver real job listings. Cloudflare Pages Functions will not run from a `file://` preview or a regular static server.
-- If live APIs fail, the site shows a clear error rather than pretending old postings are active.
+## Job supply
+- Visitors browse sourced jobs for free. External vacancies come from attributed Jobicy, Himalayas and a limited set of employer-owned ATS feeds, plus independently approved creative career sources.
+- Visitor suggestions of existing public openings are free, editorial, and do not buy placement.
+- Employer-initiated job submissions are **paid by default**: Standard USD 149, up to 30 days; Featured USD 349, up to 90 days. All require editorial review, invoice and independently verified funds before publication.
+- Featured placements use existing baby-yellow background and star; shown with daily rotation, never more than ten in a filtered feed. No guaranteed views, ranking or applicants.
+- Spotlight USD 599 is **not implemented and not for sale**.
 
-## Deploy to Cloudflare Pages (no domain purchase)
-1. Create a GitHub repository with all files at the project root (`index.html`, `assets/`, and `functions/`).
-2. In Cloudflare Dashboard → Workers & Pages → Create Pages, select **Connect to Git**, choose the repository and deploy. Framework preset: None. Build command: blank. Output directory: root / `.` (Cloudflare UI may accept `/` or `.` for static root).
-3. Use the free `*.pages.dev` URL and verify both `/` and `/api/jobs`.
-4. Test outgoing job URLs, filters, date labels and mobile layout. No database migrations or API credentials.
+## How a paid order works
+1. Employer chooses Standard or Featured and submits details after Turnstile.
+2. Server inserts `job_submissions` + `job_orders` together, both pending; nothing public.
+3. Operator verifies source/employer, then prepares/sends an actual invoice **manually** from a working business email.
+4. Operator marks invoice sent only after doing so; then confirms payment against their bank/provider statement, with a reconciliation reference.
+5. Operator performs final vacancy check and publishes the paid job. Featured starts a 90-calendar-day campaign on publication (requires `PREMIUM_ACTIVATION_ENABLED=true`).
+6. Listings expire after their purchased term or when closed, and must be independently reverified every ~30 days to remain displayed.
 
-**Important:** Cloudflare Pages *Direct Upload* support for Functions has differed from Git deployments. **Use Git integration** for the provided `functions/api/jobs.js` route. Uploading only the static HTML ZIP can result in an empty job feed.
+**There is no payment gateway, no card capture, no automated invoice, no automatic email, no mailing-list signup in this version.** Do not promise any of these. Configure and test `hello@s-o.app` as a real sender before inviting paid buyers. Issue legally appropriate invoices and refund terms; never record payment based on a screenshot alone.
 
-## Data sources & obligations
-- Jobicy Public Jobs API: https://jobicy.com/jobs-rss-feed and https://github.com/Jobicy/remote-jobs-api. Public use permitted with credit, canonical Jobicy listing links, no pretending to own the jobs. Do not refresh more than once hourly. Our function caches for 3 hours.
-- Himalayas Remote Jobs API: https://himalayas.app/docs/remote-jobs-api and https://himalayas.app/terms . Public commercial display permitted; each Apply link uses the provided `applicationLink`, and each row credits Himalayas. **Do not syndicate to third-party aggregators, including Google Jobs, or output `JobPosting` structured data for syndicated jobs.**
-- The site intentionally contains no `JobPosting` JSON-LD for imported jobs.
-- Jobicy feed covers the last ~7 days; Himalayas updates daily, but jobs can close earlier than scheduled. Prospective applicants must confirm on the source site.
-- Initial feed only contains remote positions from these two sources; on-site and hybrid roles would require additional employer-authorized sources.
+## Infrastructure
+- Pages: `studio-openings.pages.dev` (production, `main`) and `development.studio-openings.pages.dev` (`development`).
+- D1 binding: `JOBS_DB`, separate preview and production databases.
+- Secret: `OPERATOR_ACCESS_TOKEN` (unique 32+ characters; never in Git).
+- Secret: `TURNSTILE_SECRET_KEY`. Text/public: `TURNSTILE_SITE_KEY`. Text: `SUPPORT_EMAIL`.
+- Optional Text: `PREMIUM_ACTIVATION_ENABLED=true` only after testing preview Featured workflow; false/missing fails closed.
+- `NATIVE_APPLY_ENABLED` should remain unset/false until forwarding, consent, delivery and retention are ready.
+- Run the `job_orders` migration in **Preview D1 before uploading** this revision. Production migration only when launch is explicitly approved.
+- Cloudflare Worker/Pages and D1 quotas and WAF/rate limits still require operator monitoring.
 
-## Software maintenance & risk
-- Source providers can change fields, rate limits, permissions or API behavior; then the function may need an update.
-- Cloudflare's free quotas and source free allowances apply. An API is involved, but no *paid* API or AI inference is needed for this MVP.
-- Public job listings can be scams or expired. This version relies on upstream moderation and dates; it doesn't independently verify employers or guarantee availability.
-- Salary shown only when provided in source; no estimates.
-- For monetization, wait for traffic before adding submissions/sponsors. You can add an employer-submission workflow later, requiring moderation and payment validation.
+## Publishing gates
+- Employer posts without paid/published orders do not enter `/api/approved-jobs`, featured listings, SEO detail pages or the sitemap.
+- Approval of curated visitor suggestions is separate and free.
+- No premium placement is activated without paid order and owner feature flag.
+- Existing code does not give any third party read access to stored candidate applications; native apply is off by default.
 
-## Project structure
-- `index.html` : semantics, layout, filter controls, row template.
-- `assets/styles.css` : responsive minimalist editorial style.
-- `assets/app.js` : filtering, saving, live API fetch, honest local-preview samples.
-- `assets/favicon.svg` : original monogram.
-- `functions/api/jobs.js` : free edge adapter, normalization, attribution, deduplication and 3-hour cache.
+## Release validation
+- 19 local D1+API integration checks passed (including unpaid rejection, review/invoice/payment workflow, featured activation, expiry, and private operator authorization). This is **not** a live Cloudflare test or security certification.
+- After deployment to development, verify real Turnstile, D1 binding, packages in the drawer, operator workflow, geographic selection and responsive views.
+- Never submit invented job listings to the actual production board. Clear QA records from Preview before using it for real customers.
 
-## Testing
-Use Node.js to syntax-check:
-`node --check assets/app.js`
-`node --check --input-type=module < functions/api/jobs.js`
-
-For actual live API integration, verify on your Cloudflare Pages URL after deployment; the development container used to package this ZIP cannot directly reach the job API hosts.
-
-## v0.4 changes
-- Removed the announcement bar and large hero entirely; the job board is visible immediately.
-- Simplified visual system to white, black and gray with Arial/Helvetica; no accent colors or emoji.
-- Default first page contains 10 vacancies; short about section follows the listing and Show more control.
-- Added Architecture / BIM and Interior / spatial categories; included relevant remote job-search queries and filters out common software-architect positions.
-- Preview examples now include architecture and interior roles. Actual data after deployment still depends on available authorized feeds; broad on-site architecture job coverage is not yet supported.
-- API sources and permissions are unchanged; there is no live employer/job-feed submission endpoint yet. That requires a persistent collection destination and moderation.
-
-## v0.4 changes
-- Rebranded to Studio Openings (temporary Cloudflare Pages project slug: `studio-openings` if available).
-- Removed the total job counts from the heading, category filters and results summary. Saved job total remains personal to the visitor.
-- No changes to job feed integrations, permissions or deployment procedure.
+See OPERATOR-GUIDE.txt for exact owner steps and OWNER-NOTES.txt for security/limitations.
