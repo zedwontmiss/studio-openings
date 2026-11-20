@@ -446,114 +446,99 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 @media(max-width:540px){.saved-entry.is-featured{padding-left:6px;padding-right:6px}.saved-featured-star{font-size:11px}}
 
 
-/* v1.1.10 — iPhone reading density.
-   Keep desktop layout untouched; Safari 10/High Sierra and modern iOS compatible.
-   Deliberately avoid large tags and overlapping title/date/company columns. */
+/* v1.1.10 — iPhone density, desktop-equivalent row structure.
+   Title and posting date remain in row one; company and tags in row two.
+   Keep the single-line truncation convention used on desktop. */
 @media (max-width:600px){
-  /* A stable, compact site header. Keep links on one horizontal row instead
-     of wrapping individual link labels into hard-to-read two-line fragments. */
-  .nav-inner{
-    height:auto;
-    min-height:46px;
-    padding-top:9px;
-    padding-bottom:9px;
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    gap:8px;
-  }
-  .wordmark{font-size:18px;line-height:1.2;flex:0 0 auto}
-  .nav-links{
-    flex:1 1 100%;
-    min-width:0;
-    display:flex;
-    flex-wrap:nowrap;
-    gap:16px;
-    font-size:11px;
-    line-height:1.4;
-    white-space:nowrap;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    padding:2px 0 3px;
-  }
-  .nav-links a{flex:0 0 auto}
-  .list-intro{align-items:flex-start;gap:8px}
-  .updated{max-width:42%;line-height:1.35}
+  .nav-inner{height:auto;min-height:43px;padding-top:7px;padding-bottom:7px;gap:8px}
+  .wordmark{font-size:16px;line-height:1.2}
+  .nav-links{font-size:10px;gap:9px;line-height:1.35}
+  .list-intro{gap:7px}
+  .updated{font-size:9px;line-height:1.35}
 
-  /* Three tidy rows: title with age, full-width company, compact tags.
-     This avoids company names, titles and tags colliding on narrow screens. */
   .job-head{
-    grid-template-columns:minmax(0,1fr) auto;
-    grid-template-rows:auto auto auto;
-    column-gap:6px;
-    row-gap:3px;
-    padding:9px 8px 0;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,40%);
+    grid-template-rows:auto auto;
+    column-gap:8px;
+    row-gap:2px;
+    align-items:start;
+    padding:8px 8px 0;
   }
   .job-head .job-open-head{
-    grid-row:1;grid-column:1 / -1;
-    padding-right:76px;
+    grid-row:1;
+    grid-column:1 / -1;
+    width:100%;
     min-width:0;
-  }
-  .job-row.has-status .job-head .job-open-head{padding-right:94px}
-  .job-head .job-title{
-    font-size:13px;
-    line-height:1.35;
-    white-space:normal;
-    overflow:visible;
-    text-overflow:clip;
-    overflow-wrap:break-word;
-  }
-  .job-row.is-featured .job-title-text{
-    white-space:normal;
-    overflow:visible;
-    text-overflow:clip;
-  }
-  .job-head .job-age-group{grid-row:1;grid-column:2;gap:4px}
-  .job-head .job-age{font-size:9.5px}
-  .job-head .job-open-company{
-    grid-row:2;grid-column:1 / -1;
-    justify-self:stretch;
     max-width:100%;
+    padding-right:34px;
+    overflow:hidden;
+  }
+  .job-row.has-status .job-head .job-open-head{padding-right:85px}
+  .job-head .job-title{
+    display:block;
+    width:100%;
+    max-width:100%;
+    font-size:12px;
+    line-height:1.3;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    overflow-wrap:normal;
+  }
+  .job-head .job-age-group{grid-row:1;grid-column:2;gap:3px}
+  .job-head .job-age{font-size:9px}
+  .job-head .job-state-marker{font-size:9px}
+  .job-head .job-open-company{
+    grid-row:2;
+    grid-column:1;
+    justify-self:stretch;
+    min-width:0;
+    overflow:hidden;
   }
   .job-head .job-company{
-    font-size:11.5px;
-    line-height:1.32;
+    font-size:10.5px;
+    line-height:1.3;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
     margin:0;
-    white-space:normal;
-    overflow-wrap:break-word;
   }
   .job-head .job-keywords{
-    grid-row:3;grid-column:1 / -1;
-    justify-self:start;
-    justify-content:flex-start;
-    align-self:start;
+    grid-row:2;
+    grid-column:2;
+    justify-self:end;
+    align-self:center;
     max-width:100%;
-    gap:4px;
-    margin:1px 0 2px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:3px;
+    margin:0;
     padding:0;
   }
   .job-head .job-keyword{
-    font-size:9px;
-    line-height:1.2;
-    padding:2px 6px;
+    font-size:8.5px;
+    line-height:1.1;
+    padding:2px 5px;
     border-width:1px;
-    border-radius:10px;
+    border-radius:9px;
   }
-  .job-open-details{padding-top:1px;padding-bottom:8px}
-  .job-meta{font-size:10.5px;line-height:1.4}
-  .job-salary{font-size:10.5px;line-height:1.35}
-  .job-row.is-featured .job-title{max-width:100%}
+  .job-row.is-featured .job-title{max-width:100%;white-space:nowrap;overflow:hidden}
+  .job-row.is-featured .job-title-text{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .job-open-details{padding-top:1px;padding-bottom:7px}
+  .job-meta{font-size:10px;line-height:1.35}
+  .job-salary{font-size:10px;line-height:1.3}
 
-  /* Readable vacancy body without exaggerated heading-to-paragraph gaps. */
+  /* Compact job-details typography, independent of listing row geometry. */
   .drawer-scroll{padding:18px 17px}
   .drawer-description .so-description-body,
-  .drawer-description .so-description-body p{
-    font-size:12px;line-height:1.62;
-  }
+  .drawer-description .so-description-body p{font-size:12px;line-height:1.62}
   .drawer-description .so-description-body p{margin-bottom:12px}
-  .drawer-description .so-description-body h4{
-    font-size:12px;line-height:1.4;
-    margin:16px 0 8px;
-  }
+  .drawer-description .so-description-body h4{font-size:12px;line-height:1.4;margin:16px 0 8px}
   .drawer-description #drawer-description-note{font-size:10.5px;line-height:1.5}
 }
