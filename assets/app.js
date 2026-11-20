@@ -464,17 +464,36 @@
   // from a physical worksite location alone.
   // Compact only exact lists of eligible European countries. Do not infer that
   // Europe as a whole is eligible, and leave the full source text in the drawer.
+  // Only display compaction: never overwrite source-reported office locations,
+  // citizenship eligibility, or applicant restrictions.
   function compactJobLocation(job){
     var raw=trim(job.location);
     if(!raw)return 'Region not stated';
-    // Many distinct US offices are one multi-office job, not hundreds of records.
-    // This is display-only, and never means a remote job accepts every US applicant.
     if(job.locationKind!=='eligibility'&&!/^eligible\s*:/i.test(raw)){
-      var offices=raw.split(/\s*;\s*/).filter(Boolean);
-      if(offices.length>=3&&offices.every(function(x){return /,\s*(?:United States(?: of America)?|USA|US)\s*$/i.test(x);}))
-        return 'United States (selected)';
+      // ATS often lists offices as "Chicago, IL; Miami, FL; New York, NY",
+      // not "... United States" on each segment.
+      var offices=raw.split(/\s*;\s*|\s+\|\s+/).map(function(s){return s.trim();}).filter(Boolean);
+      if(offices.length>3){
+        var usCodes=/,\s*(?:AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|IA|ID|IL|IN|KS|KY|LA|MA|MD|ME|MI|MN|MO|MS|MT|NC|ND|NE|NH|NJ|NM|NV|NY|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VA|VT|WA|WI|WV|WY|DC|PR)(?=\s*(?:$|[,/()\-]))/;
+        var usNames=/,\s*(?:Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)(?=\s*(?:$|[,/()\-]))/i;
+        var usCountry=/\b(?:United States(?: of America)?|USA)\b|\bU\.S\.A?\./i;
+        var foreign=/\b(?:Canada|United Kingdom|UK|Germany|France|Italy|Spain|Portugal|Netherlands|Belgium|Switzerland|Austria|Sweden|Norway|Denmark|Finland|Ireland|Poland|Australia|New Zealand|Singapore|Japan|China|India|United Arab Emirates|UAE|Hong Kong|Taiwan|South Korea|Indonesia|Malaysia|Philippines|Brazil|Mexico|South Africa)\b/i;
+        var caProvince=/,\s*(?:ON|BC|QC|AB|NS|NB|MB|SK|NL|NT|NU|YT)(?=\s*(?:$|[,/()\-]))/;
+        var knownUS=0,knownForeign=0;
+        offices.forEach(function(part){
+          if(foreign.test(part)||caProvince.test(part))knownForeign++;
+          else if(usCountry.test(part)||usCodes.test(part)||usNames.test(part))knownUS++;
+        });
+        var unclassified=offices.length-knownUS-knownForeign;
+        if(!knownForeign&&(knownUS===offices.length||
+           (knownUS>=4&&unclassified<=1&&(String(job.geoCountry||'').toUpperCase()==='US'||usCountry.test(raw)))))
+          return 'United States (selected)';
+        return 'Multiple locations (selected)';
+      }
       return raw;
     }
+    // Remote eligibility is a separate policy: never infer worldwide access
+    // from an office/location display shortcut.
     var list=raw.replace(/^eligible\s*:\s*/i,'').split(/\s*[,;]\s*/).map(function(s){return s.trim().toLowerCase();}).filter(Boolean);
     if(list.length<4)return raw;
     var europe={belgium:1,france:1,germany:1,ireland:1,italy:1,netherlands:1,poland:1,portugal:1,spain:1,'united kingdom':1,uk:1,austria:1,sweden:1,norway:1,finland:1,denmark:1,iceland:1,luxembourg:1,switzerland:1,greece:1,cyprus:1,czechia:1,'czech republic':1,estonia:1,latvia:1,lithuania:1,croatia:1,malta:1,romania:1,slovakia:1,slovenia:1,hungary:1,bulgaria:1};
@@ -724,9 +743,12 @@
     }
     $('drawer-company').textContent=job.company;
     var meta=$('drawer-meta');meta.textContent='';
-    [trim(job.location)||'Region not stated',niceMode(job.mode),trim(job.type)].filter(function(v){return v&&v!=='Not specified';}).forEach(function(value,i){
+    var shortLocation=compactJobLocation(job);
+    [shortLocation,niceMode(job.mode),trim(job.type)].filter(function(v){return v&&v!=='Not specified';}).forEach(function(value,i){
       if(i){var separator=document.createElement('span');separator.textContent='|';separator.className='drawer-divider';meta.appendChild(separator);}
-      var item=document.createElement('span');item.textContent=value;meta.appendChild(item);
+      var item=document.createElement('span');item.textContent=value;
+      if(i===0&&shortLocation!==trim(job.location))item.title='Source-reported locations: '+trim(job.location);
+      meta.appendChild(item);
     });
     var salary=trim(job.salary);$('drawer-pay').textContent=salary||'Not disclosed';
     var eligibility=eligibilityLabel(job);
@@ -863,7 +885,7 @@
     items.forEach(function(value,index){
       if(index){var divider=document.createElement('span');divider.className='job-divider';divider.textContent='|';divider.setAttribute('aria-hidden','true');meta.appendChild(divider);}
       var span=document.createElement('span');span.textContent=value;meta.appendChild(span);
-      if(index===0&&(job.locationKind==='eligibility'||value!==trim(job.location)))span.title=(job.locationKind==='eligibility'?'Full original eligibility: ':'Full original office locations: ')+trim(job.location);
+      if(index===0&&(job.locationKind==='eligibility'||value!==trim(job.location)))span.title=(job.locationKind==='eligibility'?'Source-reported eligibility: ':'Source-reported locations: ')+trim(job.location);
     });
     var salary=open.querySelector('.job-salary');salary.textContent=trim(job.salary)||'Salary not disclosed';
     if(!trim(job.salary))salary.classList.add('missing');
