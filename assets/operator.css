@@ -31,3 +31,11 @@ main{max-width:1140px;margin:0 auto;padding:30px 30px 60px}.pagehead{display:fle
 .source-location-status.is-verified{color:#27633a;font-weight:bold}
 .source-submit:disabled{opacity:.7;cursor:default}
 @media(max-width:680px){.source-location-status{min-width:0}}
+
+/* v1.1.8 — approval before verified city mapping. */
+.source-map-gate{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:12px;margin:12px 0;background:#fff8e9;border:1px solid #e2ce9a;font-size:12px}
+.source-map-gate p{margin:0;line-height:1.5}
+.source-map-gate button{background:#222;color:#fff;border:1px solid #222;padding:7px 12px;white-space:nowrap}
+.source-map-gate-error{color:#882424}
+.source-map-gate button:disabled,.source-location-row button:disabled{opacity:.55;cursor:default}
+@media(max-width:680px){.source-map-gate{flex-direction:column;align-items:flex-start}}

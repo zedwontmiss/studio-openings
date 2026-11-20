@@ -143,6 +143,10 @@
  }
  function saveVerifiedLocationMapping(){
    if(sourceMapSaving)return Promise.resolve();
+   if(selectedSource&&selectedSource.status!=='approved'){
+     sourceMapMessage('Approve this employer source before saving a city mapping.','error');
+     return Promise.resolve();
+   }
    if(!selectedSource||!selectedCity||!selectedRaw){
      sourceMapMessage('Select a verified city from the search results before saving.','error');
      return Promise.resolve();
@@ -189,6 +193,32 @@
        linkText(host,s.officialURL,'Open official careers ↗');
        return;
      }
+     if(s.status!=='approved'){
+       var gate=el('div','source-map-gate');
+       var hint=el('p','',s.status==='pending'?
+         'Approve this verified employer and ATS before mapping vacancy locations.':
+         'This source is paused. Resume it to map vacancy locations.');
+       gate.appendChild(hint);
+       if(s.status==='pending'){
+         var verify=sourceButton(gate,'Verify & approve source',function(){
+           if(!confirm('Have you independently verified the employer identity, official careers URL, and ATS board?'))return;
+           verify.disabled=true;verify.textContent='Verifying…';
+           sourceAPI('POST',{action:'approve',id:s.id,reviewConfirmed:true}).then(function(){
+             return loadSources();
+           }).then(function(){
+             var current=(sourceState.sources||[]).filter(function(it){return it.id===s.id;})[0];
+             if(!current||current.status!=='approved')throw Error('Approval not confirmed by the registry.');
+             sourceNotice('Official source approved. You can now map city locations.');
+             return inspectSource(current);
+           }).catch(function(err){
+             verify.disabled=false;verify.textContent='Verify & approve source';
+             hint.textContent='Approval not confirmed: '+(err&&err.message||'Unknown error');
+             hint.className='source-map-gate-error';
+           });
+         });
+       }
+       host.appendChild(gate);
+     }
      result.locations.forEach(function(loc){
        var row=el('div','source-location-row'),text=el('span','',loc.rawLocation+' ('+loc.count+' job'+(loc.count===1?'':'s')+')');
        row.setAttribute('data-location-key',sourceMapKey(loc.rawLocation));
@@ -197,7 +227,7 @@
        var badge=el('small','source-location-status'+(mapping?' is-verified':''),
          mapping?'✓ Verified · '+[mapping.cityName,mapping.regionName].filter(Boolean).join(', '):'Not mapped');
        row.appendChild(badge);
-       sourceButton(row,mapping?'Change mapping':'Map city',function(){
+       if(s.status==='approved')sourceButton(row,mapping?'Change mapping':'Map city',function(){
          if(sourceMapSaving){sourceMapMessage('Finish saving the current mapping first.','pending');return;}
          selectedRaw=loc.rawLocation;selectedCity=null;$('source-map-form').hidden=false;
          sourceMapMessage(mapping?'Current mapping: '+[mapping.cityName,mapping.regionName].filter(Boolean).join(', ')+'. Choose a new verified city to change it.':'','neutral');
@@ -212,6 +242,10 @@
          $('source-city-options').hidden=true;
          jumpToSourceBlock($('source-map-form'));
        });
+       else{
+         var locked=sourceButton(row,s.status==='pending'?'Approve source first':'Resume source first',function(){});
+         locked.disabled=true;locked.title='Official ATS approval required for mapping.';
+       }
        host.appendChild(row);
      });
    }).catch(function(e){

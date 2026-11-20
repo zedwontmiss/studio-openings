@@ -16,9 +16,9 @@ function node(){return {
  getBoundingClientRect(){return {top:1250};}
 };}
 const slots={};
-for(const k of ['source-review','source-map-form','source-review-title','source-locations','source-raw-location','source-country','source-region','source-city','source-map-save','source-selected-city','source-city-options'])slots[k]=node();
+for(const k of ['source-review','source-map-form','source-review-title','source-locations','source-raw-location','source-country','source-region','source-city','source-map-save','source-selected-city','source-city-options','source-map-feedback'])slots[k]=node();
 const scrolls=[],win={pageYOffset:200,scrollTo(x,y){scrolls.push(y);}};
-const src={id:'src-12345678-aaaa-4444-bbbb-cccccccccccc',employerName:'Wight & Company',officialURL:'https://job-boards.greenhouse.io/wight'};
+const src={id:'src-12345678-aaaa-4444-bbbb-cccccccccccc',employerName:'Wight & Company',officialURL:'https://job-boards.greenhouse.io/wight',status:'approved'};
 let mode='ok',release;
 const data={totalPublished:13,creativeTitles:7,locations:[{rawLocation:'Darien, Illinois, United States',count:3},{rawLocation:'Darien or Chicago, Illinois',count:2}]};
 function sourceAPI(){return mode==='error'?Promise.reject(Error('Official ATS unavailable (HTTP 502)')):mode==='slow'?new Promise(done=>{release=done;}):Promise.resolve(data);}
@@ -26,7 +26,7 @@ function make(tag,cls,text){const v=node();v.className=cls||'';v.textContent=tex
 function button(parent,label,callback){const v=make('button','',label);v.onclick=callback;parent.appendChild(v);return v;}
 function link(parent,url,label){const a=make('a','quiet-link',label);a.href=url;parent.appendChild(a);}
 const engine=new Function('$','window','document','sourceAPI','sourceButton','el','sourceState','linkText',
-'var sourceInspectRevision=0,sourceInspectButton=null,selectedSource=null,selectedRaw=null,selectedCity=null;\n'+body+'\nreturn {inspectSource};')(
+'var sourceInspectRevision=0,sourceInspectButton=null,selectedSource=null,selectedRaw=null,selectedCity=null,sourceMapSaving=false;\n'+body+'\nreturn {inspectSource};')(
 name=>slots[name],win,{documentElement:{scrollTop:0}},sourceAPI,button,make,{maps:[]},link);
 async function run(){
  const trigger=make('button','','Inspect locations');
@@ -39,7 +39,7 @@ async function run(){
  assert(slots['source-locations'].children.length===3,'rendered two raw locations');
  assert(!trigger.disabled&&trigger.textContent==='Inspect locations','restores button');
  assert(slots['source-locations'].attributes['aria-busy']==='false','busy state cleared');
- slots['source-locations'].children[2].children[1].onclick();
+ slots['source-locations'].children[2].children[2].onclick();
  assert(slots['source-map-form'].hidden===false,'mapping form opens');
  assert(/multiple cities/.test(slots['source-selected-city'].textContent),'warns against fake city');
  assert(scrolls.length>1,'scrolls to mapping form');
@@ -53,6 +53,12 @@ async function run(){
  mode='ok';await engine.inspectSource(src,trigger);
  release({totalPublished:2,creativeTitles:0,locations:[]});await stale;
  assert(slots['source-locations'].children.length===3,'stale response ignored');
- console.log('PASS: 14 operator inspect regressions');
+ await engine.inspectSource({...src,status:'pending'},trigger);
+ const pendingRows=slots['source-locations'].children;
+ assert(pendingRows.length===4,'pending ATS shows approval gate');
+ assert(pendingRows[1].children[1].textContent==='Verify & approve source','pending source has review CTA');
+ assert(pendingRows[2].children[2].disabled===true,'Map city is disabled until approval');
+ assert(pendingRows[2].children[2].textContent==='Approve source first','disabled Map city says why');
+ console.log('PASS: 18 operator inspect regressions');
 }
 run().catch(e=>{console.error(e);process.exitCode=1;});

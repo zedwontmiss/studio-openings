@@ -99,3 +99,7 @@ Operator → Sources → Inspect locations now scrolls to the results section im
 ## v1.1.7 — Location mapping save confirmation
 
 The operator mapping form shows immediate **Saving…**, then **Saved ✓** only after the official POST succeeds and a subsequent authenticated GET confirms that the mapping exists in Preview D1. A successful row becomes **✓ Verified · City, Region**, and the source's verified mapping count refreshes. Failure gives a local error and **Retry save**, without resetting the form or hiding the error above the viewport. No source approval, automatic publication, schema migration or Production change is included.
+
+## v1.1.8 — Approval-first source inspector
+
+Pending/paused ATS sources can still be inspected, but **Map city** is disabled until the employer/official ATS is approved. The inspector shows a nearby **Verify & approve source** button that requires a human attestation and an authenticated registry readback before enabling mapping. The backend mapping approval requirement remains enforced. Historical failed saves are not auto-retried. Existing D1 schema, Premium jobs and Production are not touched.
