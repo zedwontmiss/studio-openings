@@ -50,10 +50,10 @@
        <button type="submit" class="source-submit">Add to private registry</button>
       </form>
       <div id="source-list" class="records"></div>
-      <div id="source-review" class="source-review" hidden>
+      <div id="source-review" class="source-review" aria-labelledby="source-review-title" hidden>
        <h3 id="source-review-title">Review source locations</h3>
        <p class="hint">Choose a published job's raw location, then map it to a verified city. A verified-firm exception permits rural cities but does not unlock the surrounding area.</p>
-       <div id="source-locations" class="source-locations"></div>
+       <div id="source-locations" class="source-locations" aria-live="polite" aria-atomic="false"></div>
        <form id="source-map-form" class="source-form" hidden>
         <label>Original ATS location<input id="source-raw-location" readonly maxlength="140"></label>
         <div class="source-fields">

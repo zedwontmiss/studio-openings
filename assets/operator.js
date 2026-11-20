@@ -72,7 +72,7 @@
  function selectTab(tab){selectedTab=tab;['requests','approved','campaigns','sources'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
 
  // v0.14.2: opt-in registry, same tab-memory credential. Failures do not affect premium management.
- var sourceState={sources:[],maps:[]},indexHealth={},indexReady=false,indexEnvironment='',selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null;
+ var sourceState={sources:[],maps:[]},indexHealth={},indexReady=false,indexEnvironment='',selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null,sourceInspectRevision=0,sourceInspectButton=null;
  function sourceAPI(method,body){return fetch('/api/source-registry',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {error:'Invalid source API response'};}).then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Source registry unavailable');return v;});});}
  function sourceNotice(msg){$('source-feedback').hidden=!msg;$('source-feedback').textContent=msg||'';}
  function indexAPI(method,body){return fetch('/api/ingest-sources',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Indexer unavailable');return v;});});}
@@ -109,7 +109,7 @@
    info.appendChild(el('span','status',s.status.toUpperCase()+' · '+s.qualification.replace('_',' ')));info.appendChild(el('h3','',s.employerName));info.appendChild(el('p','',s.provider+' / '+s.boardToken+' · '+s.focus));
    var mapped=sourceState.maps.filter(function(m){return m.sourceId===s.id;});info.appendChild(el('p','',mapped.length+' verified location mapping(s)'));linkText(info,s.officialURL,'Official careers ↗');
    var h=indexHealth[s.id];if(h)info.appendChild(el('p','role','Indexer: '+h.status+' · '+h.matched+' matched · last success '+(h.lastSuccess||'never')));
-   sourceButton(actions,'Inspect locations',function(){inspectSource(s);});
+   var inspectButton=sourceButton(actions,'Inspect locations',function(){inspectSource(s,inspectButton);});
    if(s.status==='approved'&&indexReady)sourceButton(actions,'Sync indexed jobs',function(){syncIndexedSource(s);});
    if(s.status==='pending')sourceButton(actions,'Verify & approve',function(){if(confirm('Have you independently verified the employer identity, official careers URL, and ATS board?'))sourceAction({action:'approve',id:s.id,reviewConfirmed:true});});
    if(s.status==='approved')sourceButton(actions,'Pause',function(){sourceAction({action:'pause',id:s.id});});
@@ -117,16 +117,64 @@
    host.appendChild(item);
   });
  }
- function inspectSource(s){selectedSource=s;selectedRaw='';selectedCity=null;$('source-review').hidden=false;$('source-map-form').hidden=true;$('source-review-title').textContent='Official job locations — '+s.employerName;$('source-locations').textContent='Checking the official ATS board…';
-  sourceAPI('POST',{action:'inspect',id:s.id}).then(function(result){var host=$('source-locations');host.textContent='';host.appendChild(el('p','hint',result.totalPublished+' published ATS jobs; '+result.creativeTitles+' creative-title candidates. Map each distinct location separately.'));
-   if(!result.locations.length){host.appendChild(el('p','empty','No locations found in matching creative vacancies.'));return;}
-   result.locations.forEach(function(loc){var row=el('div','source-location-row'),text=el('span','',loc.rawLocation+' ('+loc.count+' job'+(loc.count===1?'':'s')+')');row.appendChild(text);
-    var exists=sourceState.maps.some(function(m){return m.sourceId===s.id&&m.locationKey===loc.rawLocation.trim().replace(/\s+/g,' ').toLowerCase();});
-    if(exists)row.appendChild(el('small','', 'Verified'));
-    sourceButton(row,exists?'Change mapping':'Map city',function(){selectedRaw=loc.rawLocation;selectedCity=null;$('source-map-form').hidden=false;$('source-raw-location').value=loc.rawLocation;$('source-country').value='';$('source-region').textContent='';$('source-region').disabled=true;$('source-city').value='';$('source-city').disabled=true;$('source-map-save').disabled=true;$('source-selected-city').textContent='Select the correct verified country, region and city.';$('source-city-options').hidden=true;});
-    host.appendChild(row);
+ function jumpToSourceBlock(node){
+   if(!node)return;
+   // Scroll the actual result into view instead of leaving it below a long
+   // registry. No smooth-scroll dependency (old Safari / macOS compatible).
+   var top=node.getBoundingClientRect().top+(window.pageYOffset||document.documentElement.scrollTop||0)-24;
+   window.scrollTo(0,Math.max(0,Math.round(top)));
+ }
+ function inspectSource(s,clickedButton){
+   selectedSource=s;selectedRaw='';selectedCity=null;
+   var revision=++sourceInspectRevision,review=$('source-review'),host=$('source-locations');
+   if(sourceInspectButton){sourceInspectButton.disabled=false;sourceInspectButton.textContent='Inspect locations';}
+   sourceInspectButton=clickedButton||null;
+   if(sourceInspectButton){sourceInspectButton.disabled=true;sourceInspectButton.textContent='Inspecting…';}
+   review.hidden=false;$('source-map-form').hidden=true;
+   $('source-review-title').textContent='Official job locations — '+s.employerName;
+   host.textContent='Checking the official ATS board. This may take a few seconds…';
+   host.setAttribute('aria-busy','true');
+   jumpToSourceBlock(review);
+   return sourceAPI('POST',{action:'inspect',id:s.id}).then(function(result){
+     if(revision!==sourceInspectRevision)return;
+     host.textContent='';
+     host.appendChild(el('p','hint',result.totalPublished+' jobs returned by the official ATS; '+result.creativeTitles+' potential creative roles. Verify locations individually before publishing.'));
+     if(!Array.isArray(result.locations)||!result.locations.length){
+       host.appendChild(el('p','empty','No recognizable locations in the current creative roles. Review the original employer board or choose another source.'));
+       linkText(host,s.officialURL,'Open official careers ↗');
+       return;
+     }
+     result.locations.forEach(function(loc){
+       var row=el('div','source-location-row'),text=el('span','',loc.rawLocation+' ('+loc.count+' job'+(loc.count===1?'':'s')+')');
+       row.appendChild(text);
+       var exists=sourceState.maps.some(function(m){return m.sourceId===s.id&&m.locationKey===loc.rawLocation.trim().replace(/\s+/g,' ').toLowerCase();});
+       if(exists)row.appendChild(el('small','', 'Verified'));
+       sourceButton(row,exists?'Change mapping':'Map city',function(){
+         selectedRaw=loc.rawLocation;selectedCity=null;$('source-map-form').hidden=false;
+         $('source-raw-location').value=loc.rawLocation;$('source-country').value='';
+         $('source-region').textContent='';$('source-region').disabled=true;
+         $('source-city').value='';$('source-city').disabled=true;
+         $('source-map-save').disabled=true;
+         $('source-selected-city').textContent=/\s+or\s+|;|\//i.test(loc.rawLocation)?
+           'This posting may list multiple cities. Do not assign one city unless the original vacancy confirms it. Otherwise, leave this location unmapped.':
+           'Select the correct verified country, region and city.';
+         $('source-city-options').hidden=true;
+         jumpToSourceBlock($('source-map-form'));
+       });
+       host.appendChild(row);
+     });
+   }).catch(function(e){
+     if(revision!==sourceInspectRevision)return;
+     host.textContent='';
+     host.appendChild(el('p','source-inspect-error','Unable to retrieve job locations: '+(e&&e.message||'Unknown ATS error')+'. The source is still pending; no jobs have been published.'));
+     var retry=sourceButton(host,'Retry inspection',function(){inspectSource(s,retry);});
+     retry.className='source-retry';
+     linkText(host,s.officialURL,'Check official careers ↗');
+   }).then(function(){
+     if(revision!==sourceInspectRevision)return;
+     host.setAttribute('aria-busy','false');
+     if(sourceInspectButton){sourceInspectButton.disabled=false;sourceInspectButton.textContent='Inspect locations';sourceInspectButton=null;}
    });
-  }).catch(function(e){$('source-locations').textContent=e.message;});
  }
  function sourceGet(url){var sourceMode=url.indexOf('purpose=source')>=0;return fetch(url,{credentials:'same-origin',cache:'no-store',headers:sourceMode?{Authorization:'Bearer '+token}:{}}).then(function(r){return r.json().then(function(j){if(!r.ok)throw Error(j.error||'Geographic lookup unavailable.');return j;});});}
  function sourceFill(sel,placeholder,items){sel.textContent='';sel.appendChild(new Option(placeholder,''));items.forEach(function(x){sel.appendChild(new Option(x.name,String(x.id||x.code)));});}
