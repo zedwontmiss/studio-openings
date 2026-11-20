@@ -72,7 +72,7 @@
  function selectTab(tab){selectedTab=tab;['requests','approved','campaigns','sources'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
 
  // v0.14.2: opt-in registry, same tab-memory credential. Failures do not affect premium management.
- var sourceState={sources:[],maps:[]},indexHealth={},indexReady=false,indexEnvironment='',selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null,sourceInspectRevision=0,sourceInspectButton=null;
+ var sourceState={sources:[],maps:[]},indexHealth={},indexReady=false,indexEnvironment='',selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null,sourceInspectRevision=0,sourceInspectButton=null,sourceMapSaving=false;
  function sourceAPI(method,body){return fetch('/api/source-registry',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {error:'Invalid source API response'};}).then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Source registry unavailable');return v;});});}
  function sourceNotice(msg){$('source-feedback').hidden=!msg;$('source-feedback').textContent=msg||'';}
  function indexAPI(method,body){return fetch('/api/ingest-sources',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Indexer unavailable');return v;});});}
@@ -124,6 +124,51 @@
    var top=node.getBoundingClientRect().top+(window.pageYOffset||document.documentElement.scrollTop||0)-24;
    window.scrollTo(0,Math.max(0,Math.round(top)));
  }
+ function sourceMapKey(raw){return String(raw||'').normalize('NFKC').trim().replace(/\s+/g,' ').toLowerCase();}
+ function sourceMapMessage(text,kind){
+   var area=$('source-map-feedback');area.textContent=text||'';area.hidden=!text;
+   area.className='source-map-feedback'+(kind?' is-'+kind:'');
+ }
+ function mappedCity(sourceId,raw){
+   return (sourceState.maps||[]).filter(function(m){return m.sourceId===sourceId&&m.locationKey===sourceMapKey(raw);})[0]||null;
+ }
+ function updateMappedRow(raw,mapping){
+   var key=sourceMapKey(raw);
+   Array.prototype.forEach.call($('source-locations').querySelectorAll('.source-location-row'),function(row){
+     if(row.getAttribute('data-location-key')!==key)return;
+     var badge=row.querySelector('.source-location-status'),btn=row.querySelector('button');
+     if(badge){badge.textContent='✓ Verified · '+[mapping.cityName,mapping.regionName].filter(Boolean).join(', ');badge.className='source-location-status is-verified';}
+     if(btn)btn.textContent='Change mapping';
+   });
+ }
+ function saveVerifiedLocationMapping(){
+   if(sourceMapSaving)return Promise.resolve();
+   if(!selectedSource||!selectedCity||!selectedRaw){
+     sourceMapMessage('Select a verified city from the search results before saving.','error');
+     return Promise.resolve();
+   }
+   var s=selectedSource,raw=selectedRaw,city=selectedCity,button=$('source-map-save'),accepted=false;
+   sourceMapSaving=true;button.disabled=true;button.textContent='Saving…';
+   sourceMapMessage('Saving and confirming the mapping in Preview D1…','pending');
+   return sourceAPI('POST',{action:'map_location',id:s.id,rawLocation:raw,locationReference:city})
+     .then(function(){accepted=true;return sourceAPI('GET');})
+     .then(function(result){
+       var m=(result.maps||[]).filter(function(x){return x.sourceId===s.id&&x.locationKey===sourceMapKey(raw);})[0];
+       if(!m||String(m.countryCode||'').toUpperCase()!==String(city.countryCode||'').toUpperCase()||
+          sourceMapKey(m.cityName)!==sourceMapKey(city.cityName))
+         throw Error('The saved city could not be confirmed from the source registry. Please retry.');
+       sourceState=result;renderSources();
+       var label=[m.cityName,m.regionName,m.countryName].filter(Boolean).join(', ');
+       sourceMapMessage('✓ Saved and verified in Preview D1: '+label+'.','success');
+       button.disabled=true;button.textContent='Saved ✓';
+       updateMappedRow(raw,m);
+       sourceNotice('Verified mapping saved: '+raw+' → '+label+'.');
+     })
+     .catch(function(e){
+       button.disabled=false;button.textContent='Retry save';
+       sourceMapMessage((accepted?'Unable to confirm the saved mapping: ':'Mapping not saved: ')+(e&&e.message||'Unexpected error'),'error');
+     }).then(function(){sourceMapSaving=false;});
+ }
  function inspectSource(s,clickedButton){
    selectedSource=s;selectedRaw='';selectedCity=null;
    var revision=++sourceInspectRevision,review=$('source-review'),host=$('source-locations');
@@ -146,11 +191,17 @@
      }
      result.locations.forEach(function(loc){
        var row=el('div','source-location-row'),text=el('span','',loc.rawLocation+' ('+loc.count+' job'+(loc.count===1?'':'s')+')');
+       row.setAttribute('data-location-key',sourceMapKey(loc.rawLocation));
        row.appendChild(text);
-       var exists=sourceState.maps.some(function(m){return m.sourceId===s.id&&m.locationKey===loc.rawLocation.trim().replace(/\s+/g,' ').toLowerCase();});
-       if(exists)row.appendChild(el('small','', 'Verified'));
-       sourceButton(row,exists?'Change mapping':'Map city',function(){
+       var mapping=mappedCity(s.id,loc.rawLocation);
+       var badge=el('small','source-location-status'+(mapping?' is-verified':''),
+         mapping?'✓ Verified · '+[mapping.cityName,mapping.regionName].filter(Boolean).join(', '):'Not mapped');
+       row.appendChild(badge);
+       sourceButton(row,mapping?'Change mapping':'Map city',function(){
+         if(sourceMapSaving){sourceMapMessage('Finish saving the current mapping first.','pending');return;}
          selectedRaw=loc.rawLocation;selectedCity=null;$('source-map-form').hidden=false;
+         sourceMapMessage(mapping?'Current mapping: '+[mapping.cityName,mapping.regionName].filter(Boolean).join(', ')+'. Choose a new verified city to change it.':'','neutral');
+         $('source-map-save').textContent='Save verified mapping';
          $('source-raw-location').value=loc.rawLocation;$('source-country').value='';
          $('source-region').textContent='';$('source-region').disabled=true;
          $('source-city').value='';$('source-city').disabled=true;
@@ -185,6 +236,6 @@
  $('source-city').oninput=function(){selectedCity=null;$('source-map-save').disabled=true;var q=this.value.trim(),country=$('source-country').value,region=$('source-region').value,out=$('source-city-options'),requestNo=++sourceGeoRequest;out.textContent='';out.hidden=true;clearTimeout(sourceDebounce);if(q.length<2||!country||!region)return;
   sourceDebounce=setTimeout(function(){sourceGet('/api/geo?kind=cities&purpose=source&country='+encodeURIComponent(country)+'&region='+encodeURIComponent(region)+'&q='+encodeURIComponent(q)).then(function(j){if(requestNo!==sourceGeoRequest)return;out.textContent='';j.cities.forEach(function(city){var b=el('button','',city.name);b.type='button';b.onclick=function(){selectedCity={kind:'city',countryCode:country,regionId:Number(region),cityId:Number(city.id),cityName:city.name,regionName:$('source-region').options[$('source-region').selectedIndex].text};$('source-city').value=city.name;out.hidden=true;$('source-map-save').disabled=false;$('source-selected-city').textContent='Verified selection: '+city.name+', '+selectedCity.regionName;};out.appendChild(b);});out.hidden=!j.cities.length;if(!j.cities.length)$('source-selected-city').textContent='No verified city matched. Try another spelling.';}).catch(function(e){$('source-selected-city').textContent=e.message;});},220);
  };
- $('source-map-form').onsubmit=function(e){e.preventDefault();if(!selectedSource||!selectedCity||!selectedRaw)return;sourceAction({action:'map_location',id:selectedSource.id,rawLocation:selectedRaw,locationReference:selectedCity},function(){if(selectedSource)inspectSource(selectedSource);});};
+ $('source-map-form').onsubmit=function(e){e.preventDefault();return saveVerifiedLocationMapping();};
  $('unlock-button').addEventListener('click',unlock);$('operator-key').addEventListener('keydown',function(e){if(e.key==='Enter')unlock();});$('refresh-button').addEventListener('click',function(){api('GET').then(function(d){data=d;render();}).catch(function(err){if(/access|invalid|configured/i.test(err.message))lock(err.message);else {$('operation-error').hidden=false;setMessage('operation-error',err.message);}});});$('lock-button').addEventListener('click',function(){lock('Operator console locked.');});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.addEventListener('click',function(){selectTab(btn.getAttribute('data-tab'));});});$('cancel-action').addEventListener('click',closeAction);$('execute-action').addEventListener('click',execute);$('confirm-backdrop').addEventListener('click',function(e){if(e.target===$('confirm-backdrop'))closeAction();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('confirm-backdrop').hidden)closeAction();});
 })();

@@ -20,3 +20,14 @@ main{max-width:1140px;margin:0 auto;padding:30px 30px 60px}.pagehead{display:fle
 .source-inspect-error{color:#8a2929;font-size:12px;line-height:1.55;margin:12px 0}
 .source-retry{display:inline-block;border:1px solid #bbb;background:#fff;padding:7px 12px;margin:8px 14px 8px 0}
 .source-locations>a.quiet-link{display:inline-block;margin:8px 0}
+
+/* v1.1.7: D1 confirmation appears at the mapping button. */
+.source-map-feedback{font-size:12px;line-height:1.5;margin:11px 0 0;padding:9px 11px;border:1px solid #ddd;background:#f7f7f7;color:#444}
+.source-map-feedback.is-success{border-color:#c5d8c7;background:#f4faf4;color:#205a31}
+.source-map-feedback.is-error{border-color:#e1b9b9;background:#fff7f7;color:#902727}
+.source-map-feedback[hidden]{display:none!important}
+.source-location-row>span{flex:1;min-width:0}
+.source-location-status{min-width:90px;font-size:11px;color:#777}
+.source-location-status.is-verified{color:#27633a;font-weight:bold}
+.source-submit:disabled{opacity:.7;cursor:default}
+@media(max-width:680px){.source-location-status{min-width:0}}

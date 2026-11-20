@@ -95,3 +95,7 @@ Active employer-paid Featured campaigns rank before regular vacancies **after al
 ## v1.1.6 — Source Inspector UX fix
 
 Operator → Sources → Inspect locations now scrolls to the results section immediately and shows a clear ATS-loading state. The button is disabled while its request is active to avoid duplicate clicks, then returns to normal. A failed ATS request displays an inline diagnostic, a Retry inspection button and a link to the verified employer careers page. Subsequent clicks ignore stale responses from earlier inspections. Map city also scrolls to the actual mapping form; multi-city raw locations warn against assigning a made-up single city. No changes to the D1 schema, review/approval gate, Production, or live published jobs.
+
+## v1.1.7 — Location mapping save confirmation
+
+The operator mapping form shows immediate **Saving…**, then **Saved ✓** only after the official POST succeeds and a subsequent authenticated GET confirms that the mapping exists in Preview D1. A successful row becomes **✓ Verified · City, Region**, and the source's verified mapping count refreshes. Failure gives a local error and **Retry save**, without resetting the form or hiding the error above the viewport. No source approval, automatic publication, schema migration or Production change is included.
