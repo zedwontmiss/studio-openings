@@ -498,8 +498,15 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
   .job-head .job-title{
     font-size:13px;
     line-height:1.35;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
+    overflow-wrap:break-word;
+  }
+  .job-row.is-featured .job-title-text{
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
   }
   .job-head .job-age-group{grid-row:1;grid-column:2;gap:4px}
   .job-head .job-age{font-size:9.5px}
