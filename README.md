@@ -77,3 +77,9 @@ The Saved Jobs view uses the same discipline, title/company search, regional, ar
 ## v1.1.2 — Preview-only guided D1 setup
 
 A protected `/api/ingest-setup` allows idempotent schema initialization from Operator → Sources after the owner confirms the `JOBS_DB` Preview binding targets a separate database. Manual approved-source sync now works with the operator token on Preview (same-origin); scheduled Cron ingestion still requires explicit secret and environment activation. No public index, paid order, or Production behavior is changed by the commit. See `operations/INGESTION_PREVIEW.md`.
+
+## v1.1.3 — Filter and tag callback bug fix
+
+The live job board previously called `state.jobs.filter(eligible)` after `eligible(job, savedRoleOverride, savedTagsOverride)` gained optional parameters for Saved Jobs. JavaScript's `Array.filter` passes `(job, index, array)`, which mistakenly supplied a numeric category override and the entire job array as keyword tags. This caused genuine Product / UX / UI listings (and other disciplines) to disappear when filters were selected. The board now explicitly calls `eligible(job)` for each job. The function additionally validates the optional saved override types to prevent future callback misuse.
+
+Regression fixture: `tests/filter-regression.cjs` (dependency-free Node), covering discipline, role context, tag match-any/all, search, region, employment type and saved metadata overrides. Tests performed against the exact updated application code before committing. No existing bookmarks, tags, data sources, layout, payment or Production behavior were intentionally modified.

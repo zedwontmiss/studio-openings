@@ -318,8 +318,8 @@
     });
     if(updates)persist();
   }
-  // A dedicated saved view deliberately ignores role/search filters: bookmarked
-  // jobs should never disappear from the shortlist because of an old filter.
+  // Saved Jobs remains a separate shortlist but honors the same active filters.
+  // Stored bookmarks are never deleted by filtering.
   var resultsToolbar=document.querySelector('.results-toolbar');
   var resultsSortLabel=resultsToolbar.querySelector('label');
   var savedShortcut=document.createElement('button');
@@ -519,7 +519,7 @@
     return t.indexOf(value)!==-1;
   }
   function eligible(job,verifiedRole,verifiedTags){
-    var role=verifiedRole||categoryFor(job);
+    var role=(typeof verifiedRole==='string'&&roleLabels[verifiedRole])?verifiedRole:categoryFor(job);
     if(role==='not-creative')return false;
     if(state.selectedRoles.length&&state.selectedRoles.indexOf(role)<0)return false;
     
@@ -529,7 +529,7 @@
     if(!matchesType(job,state.type))return false;
     if(state.hasPay&&!trim(job.salary))return false;
     if(state.keywords.length){
-      var tags=Array.isArray(verifiedTags)?verifiedTags:jobKeywords(job);
+      var tags=Array.isArray(verifiedTags)&&verifiedTags.every(function(t){return typeof t==='string';})?verifiedTags:jobKeywords(job);
       var matched=state.keywordMatch==='all' ? state.keywords.every(function(k){return tags.indexOf(k)>=0;}) : state.keywords.some(function(k){return tags.indexOf(k)>=0;});
       if(!matched)return false;
     }
@@ -925,7 +925,9 @@
     var selected=state.selectedRoles.length;
     $('filter-indicator').textContent=selected?selected+' selected':(document.querySelector('.sidebar').classList.contains('expanded')?'−':'+');
     $('clear-disciplines').textContent=selected?'clear ('+selected+')':'all';
-    var list=rankedFeed(state.jobs.filter(eligible));
+    // Array.filter passes (job, index, array). Do not forward index/array as
+    // Saved Jobs' optional verified role and tags override parameters.
+    var list=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
     $('system-message').hidden=state.onlySaved||state.jobs.length>0;
     $('list-footnote').hidden=state.onlySaved;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
