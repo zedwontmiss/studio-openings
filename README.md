@@ -103,3 +103,7 @@ The operator mapping form shows immediate **Saving…**, then **Saved ✓** only
 ## v1.1.8 — Approval-first source inspector
 
 Pending/paused ATS sources can still be inspected, but **Map city** is disabled until the employer/official ATS is approved. The inspector shows a nearby **Verify & approve source** button that requires a human attestation and an authenticated registry readback before enabling mapping. The backend mapping approval requirement remains enforced. Historical failed saves are not auto-retried. Existing D1 schema, Premium jobs and Production are not touched.
+
+## v1.1.9 — Operator verified country list simplified to Tier 1
+
+The private **Operator → Sources → Verified country** dropdown now presents only the two previously agreed Tier 1 markets in fixed order: **United States (US), Canada (CA)**. The source geo API returns this small list instead of requesting the global country list. All other geo purposes (employer/request), existing D1 source-location mappings, backend verification rules, priority-city exception policy and broader editorial sourcing coverage remain unchanged. Future expansion of the operator selector should be deliberate, rather than displaying every country in the world's geo provider. No production release or database migration.

@@ -1,5 +1,5 @@
-import {SUPPORTED_COUNTRIES,cityCovered,placeKey,getCountry} from '../../lib/coverage-policy.js';
-import {fetchPlace,regionsFor,citiesFor} from '../../lib/place-provider.js';
+import {SUPPORTED_COUNTRIES,SOURCE_MAPPING_TIER1,cityCovered,placeKey,getCountry} from '../../lib/coverage-policy.js';
+import {regionsFor,citiesFor} from '../../lib/place-provider.js';
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':status===200?'public, max-age=300':'no-store','x-content-type-options':'nosniff'}});
 export async function onRequestGet({request,env}){
   const u=new URL(request.url);const kind=u.searchParams.get('kind'),requested=u.searchParams.get('purpose'),purpose=requested==='source'?'source':requested==='request'?'request':'employer';
@@ -12,7 +12,9 @@ export async function onRequestGet({request,env}){
     if(kind==='countries'){
       // Same high-value market allowlist for employers and expansion requests.
       // Geography validity alone does not make a market actively supported.
-      if(purpose==='source')return json({countries:(await fetchPlace('countries.json')).countries.map(x=>({code:x.code,name:x.name}))});
+      // Source mapping intentionally exposes Tier 1 first: US, then Canada.
+      // Other markets remain in supported policy and existing D1 mappings.
+      if(purpose==='source')return json({countries:SOURCE_MAPPING_TIER1});
       return json({countries:SUPPORTED_COUNTRIES});
     }
     if(!/^[A-Z]{2}$/.test(country)||(purpose!=='source'&&!getCountry(country)))return json({error:'Country not supported'},422);
