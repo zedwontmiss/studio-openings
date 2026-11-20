@@ -1,67 +1,109 @@
-# studio openings — plain-text creative and architecture jobs (v0.4)
+# Studio Openings
 
-**The previous directory-of-job-boards has been replaced with individual job postings.** This is an actual job search interface, with live listings loaded on Cloudflare Pages from two permitted public feeds. Inspired by the utility of classic Craigslist, not its visual branding.
+A lightweight, curated job board for architecture, interiors, industrial and product design, visual design, fashion, creative technology, museums, arts and cultural institutions.
 
-## What works
-- A dense, mobile-friendly list of *individual* jobs, not job boards.
-- Search by job title, company, skill; filter by creative discipline, region and employment type; sort newest/title/company.
-- Save jobs in this browser (`localStorage`), show saved jobs, and load more.
-- Transparent source attribution on each row; application links point to the original Jobicy/Himalayas URL, as required.
-- **No AI API, database, login, paid API, giant front-end framework or build tool.** Static site + one Cloudflare Pages Function.
-- The deployed live API fetches recent job openings and caches them at the edge for three hours.
-- No fake job counts, paid placement widgets, payment processing, or speculative salary estimates.
+## Website
 
-## Local design preview vs live jobs
-- Double-click `index.html` to view layout and filters offline.
-- **Local preview rows are demonstrative, not real job vacancies.** They are conspicuously marked as examples and have no application links.
-- Only after deployment to Cloudflare Pages does `/api/jobs` run and deliver real job listings. Cloudflare Pages Functions will not run from a `file://` preview or a regular static server.
-- If live APIs fail, the site shows a clear error rather than pretending old postings are active.
+- Public site: https://studio-openings.pages.dev/
+- Development preview: https://development.studio-openings.pages.dev/
+- Production branch: `main`
+- Test branch: `development`
 
-## Deploy to Cloudflare Pages (no domain purchase)
-1. Create a GitHub repository with all files at the project root (`index.html`, `assets/`, and `functions/`).
-2. In Cloudflare Dashboard → Workers & Pages → Create Pages, select **Connect to Git**, choose the repository and deploy. Framework preset: None. Build command: blank. Output directory: root / `.` (Cloudflare UI may accept `/` or `.` for static root).
-3. Use the free `*.pages.dev` URL and verify both `/` and `/api/jobs`.
-4. Test outgoing job URLs, filters, date labels and mobile layout. No database migrations or API credentials.
+## Product
 
-**Important:** Cloudflare Pages *Direct Upload* support for Functions has differed from Git deployments. **Use Git integration** for the provided `functions/api/jobs.js` route. Uploading only the static HTML ZIP can result in an empty job feed.
+Visitors can discover, filter, inspect and save creative job openings. Source links lead to the original vacancy. Employer-submitted listings are subject to editorial review.
 
-## Data sources & obligations
-- Jobicy Public Jobs API: https://jobicy.com/jobs-rss-feed and https://github.com/Jobicy/remote-jobs-api. Public use permitted with credit, canonical Jobicy listing links, no pretending to own the jobs. Do not refresh more than once hourly. Our function caches for 3 hours.
-- Himalayas Remote Jobs API: https://himalayas.app/docs/remote-jobs-api and https://himalayas.app/terms . Public commercial display permitted; each Apply link uses the provided `applicationLink`, and each row credits Himalayas. **Do not syndicate to third-party aggregators, including Google Jobs, or output `JobPosting` structured data for syndicated jobs.**
-- The site intentionally contains no `JobPosting` JSON-LD for imported jobs.
-- Jobicy feed covers the last ~7 days; Himalayas updates daily, but jobs can close earlier than scheduled. Prospective applicants must confirm on the source site.
-- Initial feed only contains remote positions from these two sources; on-site and hybrid roles would require additional employer-authorized sources.
+Paid employer placement is planned as a one-time service: Standard USD 149 (up to 30 days) and Featured USD 349 (up to 90 days). Featured placements are limited and rotated. No impressions, applicants or hires are guaranteed. This development release does not collect card payments and does not send automated emails. Spotlight is not available yet.
 
-## Software maintenance & risk
-- Source providers can change fields, rate limits, permissions or API behavior; then the function may need an update.
-- Cloudflare's free quotas and source free allowances apply. An API is involved, but no *paid* API or AI inference is needed for this MVP.
-- Public job listings can be scams or expired. This version relies on upstream moderation and dates; it doesn't independently verify employers or guarantee availability.
-- Salary shown only when provided in source; no estimates.
-- For monetization, wait for traffic before adding submissions/sponsors. You can add an employer-submission workflow later, requiring moderation and payment validation.
+## Technology
 
-## Project structure
-- `index.html` : semantics, layout, filter controls, row template.
-- `assets/styles.css` : responsive minimalist editorial style.
-- `assets/app.js` : filtering, saving, live API fetch, honest local-preview samples.
-- `assets/favicon.svg` : original monogram.
-- `functions/api/jobs.js` : free edge adapter, normalization, attribution, deduplication and 3-hour cache.
+Plain HTML, CSS and JavaScript, Cloudflare Pages Functions, D1, and Turnstile. No local build tool is required.
 
-## Testing
-Use Node.js to syntax-check:
-`node --check assets/app.js`
-`node --check --input-type=module < functions/api/jobs.js`
+- Files in `assets/` provide the public interface.
+- `functions/` contains server-side routes.
+- `lib/` contains reusable server-side policies.
+- Private service credentials must be configured in Cloudflare, never embedded in public source.
 
-For actual live API integration, verify on your Cloudflare Pages URL after deployment; the development container used to package this ZIP cannot directly reach the job API hosts.
+## Release discipline
 
-## v0.4 changes
-- Removed the announcement bar and large hero entirely; the job board is visible immediately.
-- Simplified visual system to white, black and gray with Arial/Helvetica; no accent colors or emoji.
-- Default first page contains 10 vacancies; short about section follows the listing and Show more control.
-- Added Architecture / BIM and Interior / spatial categories; included relevant remote job-search queries and filters out common software-architect positions.
-- Preview examples now include architecture and interior roles. Actual data after deployment still depends on available authorized feeds; broad on-site architecture job coverage is not yet supported.
-- API sources and permissions are unchanged; there is no live employer/job-feed submission endpoint yet. That requires a persistent collection destination and moderation.
+Changes are tested in `development` before a separately approved merge into `main`. Public build artifacts and server-side routes are not a place for passwords, invoices, customer payment records or private operational playbooks.
 
-## v0.4 changes
-- Rebranded to Studio Openings (temporary Cloudflare Pages project slug: `studio-openings` if available).
-- Removed the total job counts from the heading, category filters and results summary. Saved job total remains personal to the visitor.
-- No changes to job feed integrations, permissions or deployment procedure.
+Owner-only setup, invoicing, database migration and operational instructions are maintained separately from this public repository.
+
+## Editorial policy
+
+External vacancies must be attributed to their sources and checked for accuracy, eligibility, location and currency of the opening. Visitors should verify requirements on the employer's authoritative job page.
+
+## AI/creative employer sourcing (development)
+
+Added 40 candidate Greenhouse/Ashby/Lever employer boards across seven six-source API shards: `/api/ai-jobs?shard=0..6`. Each source is checked live and responses are cached for four hours. Jobs are excluded unless they have a source-verified ATS link, supported creative title, and conservatively recognized job location/eligibility. Failure to fetch a source never creates placeholder vacancies. This is a lightweight on-demand expansion; scheduled ingestion and full D1 indexing remain future work.
+
+## AI startup sourcing exception (v1.0.2)
+
+AI-native employers are eligible irrespective of company size, public recognition or funding stage when they have a verifiable official ATS board and a currently advertised relevant vacancy (especially Product/UX/UI, brand, motion, 3D and creative AI roles). Funding stage, investment and growth may be used by the operator to prioritize employer outreach, but must not be interpreted as hiring evidence or ability to pay. Do not claim funding stages without dated evidence. Employer-first verification can override the priority-city list for an individual confirmed location; never replace the actual job location with the company's HQ. Unverified or closed roles are excluded.
+
+For operator-added sources, the existing `verified_firm` qualification route covers AI startups without any D1 schema change. The public approved registry now reads four six-source shards (up to 24 approved boards). Source approvals and individual location mappings still require operator review; this is **not** a claim that 24 boards have been approved or that 40 listed companies have vacancies today. No production deploy or payment changes.
+
+## Job quality and career-first ranking (v1.0.3 development)
+
+Official Greenhouse/Ashby/Lever ATS descriptions are parsed into short plain-text excerpts, linked back to the authoritative vacancy. Third-party official feeds exclude postings without meaningful source description, rather than inventing copy. Ashby employmentType and Lever commitment are preserved, while unknown employment type remains explicitly unknown. Generic AI/software/cloud/data architects are excluded from building-architecture classification; bare Architect requires real physical-design evidence. Product/UX/UI roles are classified as Product. On the default Best match sort only, confirmed full-time roles appear ahead of unknown, part-time/intern, and contract/hourly roles. Newest and alphabetical sorts plus employment filters remain available. Source timestamps reflect the ATS's published/updated metadata, not inferred posting dates.
+
+## Architecture firm sourcing pilot (development)
+
+The development site includes a five-opening editorial pilot sourced from employer-owned job pages at Herzog & de Meuron and MVRDV. Verified November 19, 2026. These are short editorial summaries rather than copied descriptions; original vacancies remain the source of truth. Each entry automatically expires after November 26, 2026 unless reviewed again. This is not an automatic crawler, does not use Indeed/SEEK, and does not guarantee live vacancy availability after the manual review date. Three Swiss interior/architecture/BIM openings and two MVRDV architectural roles are included. User preferences for Full-time ranking remain unchanged.
+
+## v1.0.6 — Listings-first homepage and location compacting
+
+Homepage retains the original job board and filters, moving About to `/about.html` and free visitor vacancy suggestions to `/suggest-a-job.html`. `/coverage.html` and `/post-a-job.html` remain separate. Legacy `/#suggest` and `/#submit` links redirect to the appropriate standalone pages. No inline homepage suggestion, About section or regional form. Suggest reuses the existing secure editorial-review submission workflow, rather than creating new submission or payment infrastructure.
+
+Listings append 20 at a time near the end of the viewport, using IntersectionObserver and a legacy Safari scroll/manual fallback. This exhausts the currently loaded jobs; it is not server-side infinite indexing or a change to ATS ingestion. The browsing filters, job details, saved jobs, ranking and sponsored placement remain the same.
+
+For **three or more semicolon-separated US office locations**, listing cards show `United States (selected)` only if each segment explicitly ends in `United States`, `USA` or `US`. Full unmodified office lists remain visible in the job details and title hover text. This is not interpreted as remote eligibility or applicable to mixed-country listings.
+
+## v1.0.8: paid-only public intake and paced browsing
+
+The public Suggest route is retired. Existing `/#suggest` and `/suggest-a-job.html` links redirect to paid `/post-a-job.html`; the public `/api/submit` endpoint now rejects `kind: suggest` so the paid gate cannot be bypassed via the old UI. Historical D1 suggestions and operator-approved editorial sourcing are retained. Organic jobs indexed independently by the operator remain non-sponsored, while employer-requested advertising requires payment after review.
+
+The board now shows 10 jobs initially, then appends eight after a visitor scrolls near the end, with a 450 ms 'Loading more openings…' pause. The browser's actual scroll is unaffected, and no automated intersection cascade dumps the full dataset. The feed ends naturally once all current API results are shown. This is client-side progressive disclosure, NOT yet server-side pagination or scheduled ATS ingestion.
+
+## v1.1 — Opt-in D1 snapshots
+
+Source jobs from operator-approved official ATS boards can be refreshed into D1 snapshots. Includes source-health monitoring and 72-hour expiry. New indexed feed is **off by default** and original ATS feeds are preserved for rollback. See `operations/INGESTION_PREVIEW.md` for Preview-only D1 migration, secrets, and optional separate Cron Worker setup. GitHub commit does not configure Cloudflare resources. No production changes, payment updates, or claimed new live vacancies.
+
+## v1.1.1 — Unified filters in Saved Jobs
+
+The Saved Jobs view uses the same discipline, title/company search, regional, arrangement, employment, salary-disclosed and keyword filters as the main listing feed. Its **All saved / Last 7 days** tabs remain independent. The Saved count always means **total bookmarks**, while a small inline counter reports how many visible saved jobs match the filters. Saved entries remain hidden from public accounts and are stored in the browser only. New bookmarks cache a small, verified set of role, location, employment type and up to three published tags for filtering if a vacancy later disappears from the live feed. Existing historical ID-only bookmarks are preserved without assigning an invented category; they are excluded from category/skill filters until a live job can rehydrate them. No saved-card tags were added and no job IDs were deleted.
+
+## v1.1.2 — Preview-only guided D1 setup
+
+A protected `/api/ingest-setup` allows idempotent schema initialization from Operator → Sources after the owner confirms the `JOBS_DB` Preview binding targets a separate database. Manual approved-source sync now works with the operator token on Preview (same-origin); scheduled Cron ingestion still requires explicit secret and environment activation. No public index, paid order, or Production behavior is changed by the commit. See `operations/INGESTION_PREVIEW.md`.
+
+## v1.1.3 — Filter and tag callback bug fix
+
+The live job board previously called `state.jobs.filter(eligible)` after `eligible(job, savedRoleOverride, savedTagsOverride)` gained optional parameters for Saved Jobs. JavaScript's `Array.filter` passes `(job, index, array)`, which mistakenly supplied a numeric category override and the entire job array as keyword tags. This caused genuine Product / UX / UI listings (and other disciplines) to disappear when filters were selected. The board now explicitly calls `eligible(job)` for each job. The function additionally validates the optional saved override types to prevent future callback misuse.
+
+Regression fixture: `tests/filter-regression.cjs` (dependency-free Node), covering discipline, role context, tag match-any/all, search, region, employment type and saved metadata overrides. Tests performed against the exact updated application code before committing. No existing bookmarks, tags, data sources, layout, payment or Production behavior were intentionally modified.
+
+## v1.1.4 — Compact multiple office locations
+
+Listings with **more than three** semicolon- or pipe-separated office locations show a short display label. Recognized US state abbreviations, US state names and explicit US country references produce `United States (selected)` when all locations are confidently US (or only one ambiguous tail remains and the job carries strong US evidence). Mixed-country or unknown sets show `Multiple locations (selected)`. Lists of three or fewer office locations remain intact. Both the card and job drawer are compact, while the source-reported location remains in the underlying job metadata and hover title; the actual employer posting remains authoritative. Remote applicant eligibility is **not** treated as a list of offices. No backend sourcing/geolocation inference was changed. Regression cases: `tests/location-display-regression.cjs`.
+
+## v1.1.5 — Consistent Featured priority and saved bookmarks
+
+Active employer-paid Featured campaigns rank before regular vacancies **after all discipline/search/skill/location/type filters**. Featured employers rotate fairly each UTC day in Best match. Other sorts affect order within Featured and normal groups. Saved Jobs continues to apply the same sidebar filters, displaying any current paid Featured bookmark first with the baby-yellow row and ★. Expired or unavailable campaigns never retain sponsored styling through old saved metadata. Normal saved jobs remain sorted by saved date. Pricing, billing, placement approval, and public-source verification are untouched. The prior 1-in-5 ad spacing and 10-visible limit are replaced with the requested always-first behavior. This is a code update only, not a created or activated Featured campaign.
+
+## v1.1.6 — Source Inspector UX fix
+
+Operator → Sources → Inspect locations now scrolls to the results section immediately and shows a clear ATS-loading state. The button is disabled while its request is active to avoid duplicate clicks, then returns to normal. A failed ATS request displays an inline diagnostic, a Retry inspection button and a link to the verified employer careers page. Subsequent clicks ignore stale responses from earlier inspections. Map city also scrolls to the actual mapping form; multi-city raw locations warn against assigning a made-up single city. No changes to the D1 schema, review/approval gate, Production, or live published jobs.
+
+## v1.1.7 — Location mapping save confirmation
+
+The operator mapping form shows immediate **Saving…**, then **Saved ✓** only after the official POST succeeds and a subsequent authenticated GET confirms that the mapping exists in Preview D1. A successful row becomes **✓ Verified · City, Region**, and the source's verified mapping count refreshes. Failure gives a local error and **Retry save**, without resetting the form or hiding the error above the viewport. No source approval, automatic publication, schema migration or Production change is included.
+
+## v1.1.8 — Approval-first source inspector
+
+Pending/paused ATS sources can still be inspected, but **Map city** is disabled until the employer/official ATS is approved. The inspector shows a nearby **Verify & approve source** button that requires a human attestation and an authenticated registry readback before enabling mapping. The backend mapping approval requirement remains enforced. Historical failed saves are not auto-retried. Existing D1 schema, Premium jobs and Production are not touched.
+
+## v1.1.9 — Operator verified country list simplified to Tier 1
+
+The private **Operator → Sources → Verified country** dropdown now presents only the two previously agreed Tier 1 markets in fixed order: **United States (US), Canada (CA)**. The source geo API returns this small list instead of requesting the global country list. All other geo purposes (employer/request), existing D1 source-location mappings, backend verification rules, priority-city exception policy and broader editorial sourcing coverage remain unchanged. Future expansion of the operator selector should be deliberate, rather than displaying every country in the world's geo provider. No production release or database migration.

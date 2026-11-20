@@ -1,0 +1,14 @@
+# Studio Openings v1.1 — Preview D1 activation
+
+**Only the `development` Pages Preview is allowed.** A GitHub commit does not deploy a scheduled Worker or modify your Cloudflare D1 bindings.
+
+1. In the Cloudflare dashboard, inspect the `JOBS_DB` binding under **Pages → Preview**. Confirm it is a dedicated **Preview D1 database** and does NOT point to the Production database. This confirmation is essential: a Preview page can technically share a Production binding if misconfigured.
+2. Open https://development.studio-openings.pages.dev/operator.html and log in. Select **Sources**. The new **D1 source index · Preview** section shows readiness. Once the binding is confirmed, click **Initialize Preview tables** and confirm. Initialization is idempotent and adds source-registry and ingestion tables; it does not drop existing tables or publish jobs.
+3. Register an official Greenhouse, Ashby or Lever source. Verify the official careers URL and provider board token. Use **Inspect locations**, map each source location to the actual canonical city, and **Verify & approve** the source. Only approved ATS sources with verified location maps can be indexed.
+4. Click **Sync indexed jobs** on an approved source. The operator token can trigger a manual Preview sync without any additional environment variables. Check the source's status and matched counts; zero matches means no verified jobs indexed. This does not automatically publish a job.
+5. The public indexed feed is **off by default**. After validating real vacancies, their descriptions, categories, and location/eligibility, optionally set `INDEXED_FEED_ENABLED=true` under the **Preview** environment variables and redeploy. The browser still loads existing live ATS feeds. Turning the flag back off disables the new indexed feed.
+6. For automatic scheduled refresh only, create a separate Cloudflare Worker from `worker/source-sync.js`. Set a 32+ character encrypted `SOURCING_INGEST_SECRET` on Pages Preview, set `SOURCE_INGEST_ENABLED=true` on Pages Preview, configure `SYNC_TOKEN` (same secret) and `SYNC_TARGET_URL=https://development.studio-openings.pages.dev/api/ingest-sources` on the scheduled Worker, and create a Cron trigger (`*/15 * * * *`). The Worker is **not deployed by GitHub**, so this is a later action.
+
+Safety: manual sync is operator-only, same-origin and Preview-host-only. Automated sync uses the separate secret only when explicitly enabled. Jobs are capped at 100 per source scan and require a mapped source location and actual ATS posting; failed upstream requests preserve the prior snapshot until its 72-hour freshness expiry. No arbitrary website scraping or new paid checkout is included.
+
+**Important:** do not run setup before verifying which D1 database is bound in the Preview environment. If the operator console says the registry is unavailable, initialize tables, then reload Sources. If the D1 binding is absent or points to Production, do not initialize.
