@@ -438,3 +438,9 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 /* v1.1.1: Saved Jobs uses the sidebar's filters; counts remain total bookmarks. */
 .saved-filter-info{font-size:11px;color:#777;line-height:1.45;margin:2px 1px 4px}
 .saved-filter-info[hidden]{display:none!important}
+
+/* v1.1.5 — Saved Featured looks like the primary baby-yellow Featured row. */
+.saved-entry.is-featured{background:#fff4bf;padding-left:8px;padding-right:8px}
+.saved-entry.is-featured .saved-entry-title{color:#161616}
+.saved-featured-star{margin-left:7px;font-size:12px}
+@media(max-width:540px){.saved-entry.is-featured{padding-left:6px;padding-right:6px}.saved-featured-star{font-size:11px}}

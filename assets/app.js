@@ -136,20 +136,16 @@
       button.addEventListener('click',function(){toggleKeyword(word);});el.appendChild(button);
     });
   }
-  // v0.12 — operator-controlled premium inventory (no payment/checkout).
-  // A campaign means eligibility, NOT a guaranteed on-screen impression.
-  // Each visitor sees at most ten yellow listings in the current filtered feed.
-  // Fairness: the eligible campaigns rotate in a stable daily order (UTC).
-  // Separation: sponsored cards are distributed among organic cards.
-  var featuredById=Object.create(null), visibleFeaturedById=Object.create(null);
-  var MAX_VISIBLE_FEATURED=10, FEATURED_SPACING=5;
+  // Sponsored campaigns lead each relevant filtered feed, with stable daily
+  // rotation inside Featured; campaign eligibility is verified independently.
+  var featuredById=Object.create(null);
   function utcDay(s){
     if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return NaN;
     var t=Date.parse(s+'T00:00:00Z');
     return isFinite(t)&&new Date(t).toISOString().slice(0,10)===s?t:NaN;
   }
   function setFeaturedConfig(data){
-    featuredById=Object.create(null);visibleFeaturedById=Object.create(null);
+    featuredById=Object.create(null);
     if(!data||!Array.isArray(data.placements))return;
     var now=Date.now(), seen=Object.create(null);
     data.placements.slice(0,250).forEach(function(p){
@@ -171,7 +167,9 @@
     return true;
   }
   function isFeatured(job){
-    return !!(job&&visibleFeaturedById[String(job.id)]&&isActiveFeatured(job));
+    // Shared by listings, details and Saved Jobs. An archive alone never
+    // proves an active paid campaign.
+    return isActiveFeatured(job);
   }
   function rotateKey(job,day){
     var s=day+'|'+String(job.id),h=2166136261;
@@ -181,31 +179,22 @@
     return h>>>0;
   }
   function rankedFeed(eligibleJobs){
-    // Called only AFTER all standard filters, so paid status never evades filters.
-    visibleFeaturedById=Object.create(null);
-    var organic=eligibleJobs.slice().sort(sortJobs);
-    if(!organic.length)return organic;
-    var limit=Math.min(MAX_VISIBLE_FEATURED,Math.ceil(organic.length/FEATURED_SPACING));
-    var day=Math.floor(Date.now()/86400000);
-    var candidates=organic.filter(isActiveFeatured).sort(function(a,b){
-      return rotateKey(a,day)-rotateKey(b,day)||String(a.id).localeCompare(String(b.id));
-    });
-    var chosen=candidates.slice(0,limit);
-    chosen.forEach(function(job){visibleFeaturedById[String(job.id)]=true;});
-    // Respect Date/Newest/A-Z/Company sorts: do not reorder them for ads.
-    if(state.sort!=='relevant'||!chosen.length)return organic;
-    // One sponsored job for every four regular jobs at most, until campaign
-    // candidates run out. Never stack all paid listings at the top of Best Match.
-    var regular=organic.filter(function(job){return !visibleFeaturedById[String(job.id)];});
-    var output=[],premiumIndex=0,regularIndex=0;
-    while(premiumIndex<chosen.length||regularIndex<regular.length){
-      if(premiumIndex<chosen.length&&(output.length%FEATURED_SPACING===0||regularIndex>=regular.length)){
-        output.push(chosen[premiumIndex++]);
-      }else if(regularIndex<regular.length){
-        output.push(regular[regularIndex++]);
-      }else break;
+    // Only jobs already matching every active filter can enter this function.
+    var ordered=eligibleJobs.slice().sort(sortJobs);
+    if(!ordered.length)return ordered;
+    var premium=ordered.filter(isActiveFeatured);
+    if(!premium.length)return ordered;
+    // Rotate among paying Featured employers once each UTC day in Best match.
+    if(state.sort==='relevant'){
+      var day=Math.floor(Date.now()/86400000);
+      premium.sort(function(a,b){
+        return rotateKey(a,day)-rotateKey(b,day)||String(a.id).localeCompare(String(b.id));
+      });
     }
-    return output;
+    // Paid placement outranks normal rows even when another sort is chosen;
+    // the chosen sort still applies inside each of these two groups.
+    var standard=ordered.filter(function(job){return !isActiveFeatured(job);});
+    return premium.concat(standard);
   }
   function loadFeaturedConfig(){
     // v0.13: prefer vetted, server-stored campaigns. Static empty fallback
@@ -368,20 +357,29 @@
     var text=[item.title,item.company,item.source].join(' ').toLowerCase();
     return state.query.toLowerCase().split(/\s+/).every(function(part){return text.indexOf(part)!==-1;});
   }
+  function orderSavedEntries(entries,jobIndex){
+    // Apply current filters first. Prioritize only currently active paid jobs;
+    // a stale saved snapshot cannot prolong a sponsored campaign.
+    return entries.sort(function(a,b){
+      var aJob=jobIndex[a.id],bJob=jobIndex[b.id];
+      var aPremium=aJob&&isFeatured(aJob)?1:0,bPremium=bJob&&isFeatured(bJob)?1:0;
+      if(aPremium!==bPremium)return bPremium-aPremium;
+      return (Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0);
+    });
+  }
   function renderSavedPanel(){
     savedListing.textContent='';
     savedAll.setAttribute('aria-pressed',String(state.savedPeriod==='all'));
     savedWeek.setAttribute('aria-pressed',String(state.savedPeriod==='week'));
     var weekCutoff=Date.now()-7*86400000;
+    var jobIndex=Object.create(null);
+    state.jobs.forEach(function(job){jobIndex[String(job.id)]=job;});
     var periodEntries=saved.filter(function(item){return state.savedPeriod==='all'||(item.savedAt&&Date.parse(item.savedAt)>=weekCutoff);});
-    var entries=periodEntries.filter(function(item){
-      var job=state.jobs.filter(function(j){return String(j.id)===item.id;})[0];
-      return savedMatchesFilters(item,job);
-    });
+    var entries=periodEntries.filter(function(item){return savedMatchesFilters(item,jobIndex[item.id]);});
     var filtered=savedHasActiveFilters();
     savedFilterInfo.hidden=!filtered;
     savedFilterInfo.textContent=filtered?entries.length+' of '+periodEntries.length+' saved jobs match the current filters.':'';
-    entries.sort(function(a,b){return (Date.parse(b.savedAt)||0)-(Date.parse(a.savedAt)||0);});
+    orderSavedEntries(entries,jobIndex);
     if(!entries.length){
       var empty=document.createElement('p');empty.className='saved-empty';
       empty.textContent=saved.length===0?'No saved jobs yet. Open a vacancy and click Save job.':
@@ -391,10 +389,18 @@
       savedListing.appendChild(empty);return;
     }
     entries.forEach(function(item){
-      var job=state.jobs.filter(function(j){return String(j.id)===item.id;})[0];
+      var job=jobIndex[item.id],activeFeatured=!!job&&isFeatured(job);
       var row=document.createElement('article');row.className='saved-entry';
+      if(activeFeatured)row.classList.add('is-featured');
       var title=document.createElement(job?'button':'strong');title.className='saved-entry-title';
       title.textContent=displayTitle((job&&job.title)||item.title||'Previously saved vacancy');
+      if(activeFeatured){
+        var star=document.createElement('span');star.className='job-featured-star saved-featured-star';
+        star.textContent='★';star.title='Featured · Sponsored';
+        star.setAttribute('aria-label','Featured sponsored listing');
+        title.appendChild(star);
+        title.setAttribute('aria-label','Featured sponsored listing: '+displayTitle(job.title));
+      }
       if(job){title.type='button';title.addEventListener('click',function(){openDrawer(job,title);});}
       row.appendChild(title);
       var company=document.createElement('p');company.className='saved-entry-company';company.textContent=(job&&job.company)||item.company||'Employer information unavailable';row.appendChild(company);
