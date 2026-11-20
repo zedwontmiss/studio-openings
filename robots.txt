@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://studio-openings.pages.dev/sitemap.xml
+Sitemap: https://s-o.app/sitemap.xml

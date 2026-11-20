@@ -4,7 +4,7 @@ export async function onRequestGet({request,env}){
  const canonical=(env?.PUBLIC_CANONICAL_HOST||'studio-openings.pages.dev').toLowerCase().trim();
  const host=/^[a-z0-9.-]+$/.test(canonical)?canonical:'studio-openings.pages.dev';
  const root='https://'+host;
- const rows=[{url:root+'/'},{url:root+'/privacy.html'},{url:root+'/coverage.html'},{url:root+'/post-a-job.html'}];
+ const rows=[{url:root+'/'},{url:root+'/privacy.html'},{url:root+'/coverage.html'},{url:root+'/post-a-job.html'},{url:root+'/about.html'},{url:root+'/contact.html'},{url:root+'/terms.html'}];
  if(env?.JOBS_DB){
   try{const r=await env.JOBS_DB.prepare("SELECT s.id,s.status,s.submission_type,s.job_data,s.reviewed_at,o.tier AS order_tier,o.status AS order_status,o.published_at AS order_published_at FROM job_submissions s LEFT JOIN job_orders o ON o.submission_id=s.id WHERE s.status='approved' AND s.submission_type='employer' ORDER BY s.reviewed_at DESC LIMIT 250").all();
    const now=Date.now();
