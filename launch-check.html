@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Production Readiness — Studio Openings</title><link rel="stylesheet" href="/assets/operator.css">
+<script defer src="/assets/launch-check.js"></script></head>
+<body><header class="masthead"><a class="brand" href="/">studio openings</a><span class="right">production / private setup</span></header>
+<main style="max-width:740px"><div class="pagehead"><div><p class="eyebrow">RELEASE V1 / DATABASE</p><h1>Production readiness</h1>
+<p class="sub">Read-only schema inspection first. Optional one-time creation of a missing paid-order table only if all existing tables match. Never copies Preview data or records a payment.</p></div></div>
+<section class="login-panel"><h2>Check Production database</h2><p>Open this page at the Production hostname. Use the private operator secret configured in Cloudflare Production, not a database password. The secret remains in this browser tab only.</p>
+<div class="unlock"><input type="password" id="key" autocomplete="off" spellcheck="false" placeholder="Production operator secret" aria-label="Production operator secret">
+<button type="button" id="check">Check database</button></div>
+<p id="message" role="status" class="feedback">No database changes have been made.</p>
+</section>
+<section id="report" hidden style="margin-top:25px;border:1px solid #ddd;padding:19px"><h2 id="status"></h2>
+<p id="summary" class="hint"></p><div id="tables" class="records"></div>
+<div id="upgrade" hidden style="margin-top:24px;border-top:1px solid #ddd;padding-top:17px"><h2>Only one missing table</h2>
+<p>This operation creates <strong>job_orders</strong> and its index only. Existing data is not edited. You must confirm before it runs.</p>
+<label style="display:flex;align-items:center;gap:10px;margin:15px 0"><input id="ack" type="checkbox"> I am working on Production D1 and approve adding the missing paid-order table.</label>
+<button id="install" type="button" disabled style="padding:10px 16px;border:1px solid #111;background:#111;color:#fff">Create missing table</button></div>
+</section>
+<p class="hint" style="margin-top:25px">Production should remain separate from <a href="https://development.studio-openings.pages.dev/operator.html">Preview</a>. This page does not install or enable automated payments, checkout, or the ATS indexer.</p>
+</main></body></html>
