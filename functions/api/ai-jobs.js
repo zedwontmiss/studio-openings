@@ -75,8 +75,15 @@ export function normalize(row,source,now){
  if(!role||!loc||description.length<130||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
  const n=Date.parse(row.posted||''),posted=Number.isFinite(n)&&n>946684800000&&n<=now+86400000?new Date(n).toISOString():'';
  const name=source.name,tags=[TAGS[role]];
+ const leadership=role==='visual'?(function(){
+   const t=title.toLowerCase(),creative=/\bcreative[\s/-]+director\b|\bdirector[\s,-]+(?:of[\s-]+)?creative\b/.test(t),art=!creative&&(/\bart[\s/-]+director\b|\bdirector[\s,-]+of[\s-]+art\b/.test(t));
+   if(creative)return ['Creative','Creative Direction',/\b(?:chief|executive|c-level)\b/.test(t)?'Executive':'Director'];
+   if(art)return ['Design','Art Direction',/\bsenior\b|\bsr[.]?\b/.test(t)?'Senior':'Lead'];
+   return null;
+ })():null;
+ if(leadership){tags.length=0;tags.push(...leadership);}
  if(role==='product'&&/\b(?:UX|UI|user experience|interaction)\b/i.test(title))tags.push('UX/UI');
- if(role==='visual'&&/\bbrand\b/i.test(title))tags.push('Branding');
+ if(role==='visual'&&!leadership&&/\bbrand\b/i.test(title))tags.push('Branding');
  if(role==='motion'&&/\b3D\b/i.test(title))tags.push('3D');
  return {id:'ai-'+source.provider+'-'+source.board_token+'-'+String(row.uid).slice(0,60),
    title,company:name,location:clean(row.location,140),locationKind:loc.kind,mode:loc.mode,

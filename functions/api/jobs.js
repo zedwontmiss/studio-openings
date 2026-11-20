@@ -139,8 +139,18 @@ function classify(job) {
 
 // Explicit skill detection only. A role category is the guaranteed first tag.
 const ROLE_TAG={architecture:'Architecture',interior:'Interior',industrial:'Industrial Design',product:'Product Design',visual:'Graphic Design',motion:'Motion Design',fashion:'Fashion',web:'Web Design',museum:'Exhibition',culture:'Creative Arts'};
+function directionTags(title,description,role){
+  if(role!=='visual')return null;
+  const t=String(title||'').toLowerCase(),body=String(description||'').toLowerCase().slice(0,12000);
+  const creative=/\bcreative[\s/-]+director\b|\bdirector[\s,-]+(?:of[\s-]+)?creative\b/.test(t);
+  const art=!creative&&(/\bart[\s/-]+director\b|\bdirector[\s,-]+of[\s-]+art\b/.test(t));
+  if(!creative&&!art)return null;
+  if(creative)return ['Creative','Creative Direction',/\b(?:chief|executive|c-level)\b/.test(t)?'Executive':'Director'];
+  return ['Design','Art Direction',/\bsenior\b|\bsr[.]?\b/.test(t)?'Senior':'Lead'];
+}
 function tagsFor(title,description,role){
   const tag=ROLE_TAG[role];if(!tag)return [];
+  const leadership=directionTags(title,description,role);if(leadership)return leadership;
   const titleText=String(title||'').toLowerCase(),text=(titleText+' '+String(description||'')).toLowerCase().slice(0,12000);
   const tags=[];
   function add(label,ok){if(ok&&!tags.includes(label))tags.push(label);}

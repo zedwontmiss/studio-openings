@@ -36,11 +36,42 @@
   }
   function persistKeywords(){try{localStorage.setItem(PREFERENCES_KEY,JSON.stringify({keywords:state.keywords,match:state.keywordMatch}));}catch(e){}}
   var ROLE_TAG={architecture:'Architecture',interior:'Interior',industrial:'Industrial Design',product:'Product Design',visual:'Graphic Design',motion:'Motion Design',fashion:'Fashion',web:'Web Design',museum:'Exhibition',culture:'Creative Arts'};
+  // Creative leadership taxonomy. Source title establishes the exact role.
+  // Adjacent skills are searchable only when the original posting supports them.
+  function directionTagProfile(job){
+    var title=String(job.title||'').toLowerCase();
+    var creative=/\bcreative[\s/-]+director\b|\bdirector[\s,-]+(?:of[\s-]+)?creative\b/.test(title);
+    var art=!creative&&(/\bart[\s/-]+director\b|\bdirector[\s,-]+of[\s-]+art\b/.test(title));
+    if(!creative&&!art)return null;
+    var detail=String(job.description||job.summary||'').toLowerCase().slice(0,12000);
+    var source=title+' '+detail;
+    var senior=/\bsenior\b|\bsr[.]?\b/.test(title);
+    var executive=/\b(?:chief|executive|c-level)\b/.test(title);
+    var visible=creative?['Creative','Creative Direction',executive?'Executive':'Director']:
+      ['Design','Art Direction',senior?'Senior':'Lead'];
+    var searchable=visible.slice();
+    function add(label,yes){if(yes&&searchable.indexOf(label)<0)searchable.push(label);}
+    add('Creative',true);add('Design',true);
+    add(creative?'Creative Director':'Art Director',true);
+    add('Visual Design',art||/\bvisual design\b/.test(source));
+    add('Management',creative||/\b(?:lead|manag)(?:e|es|ing|ement)?\s+(?:the\s+)?(?:creative\s+|design\s+|art\s+)?team\b/.test(source));
+    add('Senior',senior);
+    add('Executive',executive);
+    add('Brand Strategy',/\bbrand[\s-]+strateg(?:y|ic)\b/.test(source));
+    add('Branding',/\bbranding\b|\bbrand[\s-]+identity\b/.test(source));
+    add('Marketing',/\bmarketing\b/.test(source));
+    add('Advertising',/\badvertis(?:ing|ement|ements)\b|\bad[\s-]+agency\b/.test(source));
+    add('Campaigns',/\bcampaigns?\b/.test(source));
+    add('Graphic Design',/\bgraphic[\s-]+design\b/.test(source));
+    return {visible:visible,searchable:searchable};
+  }
   function jobKeywords(job){
     var role=categoryFor(job);
     if(!ROLE_TAG[role])return [];
     var title=String(job.title||'').toLowerCase();
     var details=(title+' '+String(job.description||job.summary||'')).toLowerCase().slice(0,12000);
+    var direction=role==='visual'?directionTagProfile(job):null;
+    if(direction)return direction.visible;
     var tags=[ROLE_TAG[role]];
     function add(label,condition){if(condition && tags.indexOf(label)<0)tags.push(label);}
     // Source-normalized backend tags can be used if they are recognized and concise.
@@ -85,9 +116,14 @@
     if(job.source==='NYC Open Data')add('Public Sector',true);
     return tags.slice(0,3);
   }
+  function jobSearchTags(job){
+    var shown=jobKeywords(job),lead=categoryFor(job)==='visual'?directionTagProfile(job):null;
+    return lead?lead.searchable:shown;
+  }
   // One explicitly assigned colour per editorial tag; never random hash collisions.
   // No tag uses the baby-yellow Featured job row background.
   var TAG_PALETTE={
+    'Creative':'#c1b4ec','Design':'#abd8d5','Creative Direction':'#d8a8cc','Art Direction':'#9dcee4','Director':'#becad7','Lead':'#c0cda9','Senior':'#edc3aa','Executive':'#c0bbdf',
    'Architecture':'#b9d5ff','Landscape Architecture':'#9cd9b0','Interior':'#ffbcb0',
    'Industrial Design':'#c6bdff','Product Design':'#a0d9e2','Graphic Design':'#ffc0da',
    'Motion Design':'#b2bbe8','Fashion':'#f2a9db','Web Design':'#a4e2d0',
@@ -122,7 +158,7 @@
     var picker=$('add-keyword');picker.textContent='';
     var blank=document.createElement('option');blank.value='';blank.textContent='+ Add keyword';picker.appendChild(blank);
     var allKeywords=[];
-    state.jobs.forEach(function(job){jobKeywords(job).forEach(function(word){if(allKeywords.indexOf(word)<0)allKeywords.push(word);});});
+    state.jobs.forEach(function(job){jobSearchTags(job).forEach(function(word){if(allKeywords.indexOf(word)<0)allKeywords.push(word);});});
     allKeywords.sort().forEach(function(word){
       if(state.keywords.indexOf(word)>=0)return;
       var option=document.createElement('option');option.value=word;option.textContent=word;picker.appendChild(option);
@@ -554,7 +590,7 @@
     if(!matchesType(job,state.type))return false;
     if(state.hasPay&&!trim(job.salary))return false;
     if(state.keywords.length){
-      var tags=Array.isArray(verifiedTags)&&verifiedTags.every(function(t){return typeof t==='string';})?verifiedTags:jobKeywords(job);
+      var tags=Array.isArray(verifiedTags)&&verifiedTags.every(function(t){return typeof t==='string';})?verifiedTags:jobSearchTags(job);
       var matched=state.keywordMatch==='all' ? state.keywords.every(function(k){return tags.indexOf(k)>=0;}) : state.keywords.some(function(k){return tags.indexOf(k)>=0;});
       if(!matched)return false;
     }
