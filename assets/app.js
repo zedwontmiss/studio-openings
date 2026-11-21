@@ -139,6 +139,28 @@
    'Illustrator':'#e9b1b8','InDesign':'#c5c8a1','Enscape':'#aac9d1',
    'Lumion':'#d4c2a6','V-Ray':'#c2a8dd'
   };
+  // Compact labels are visual aliases only; canonical terms remain stored,
+  // searchable, screen-reader friendly and tied to the original tag palette.
+  var SHORT_TAG_LABELS={
+    'Architecture':'Arch',
+    'Art Direction':'AD',
+    'Creative Direction':'CD',
+    'Product Design':'Product',
+    'Graphic Design':'Graphic',
+    'Motion Design':'Motion',
+    'Industrial Design':'Industrial',
+    'Landscape Architecture':'Landscape',
+    'Urban Planning':'Urban',
+    'Web Design':'Web',
+    'Creative Arts':'Arts',
+    'Photography':'Photo',
+    'Adobe Creative Cloud':'Adobe CC',
+    'Public Sector':'Public'
+  };
+  function shortTagLabel(word){
+    return Object.prototype.hasOwnProperty.call(SHORT_TAG_LABELS,word)
+      ? SHORT_TAG_LABELS[word] : word;
+  }
   function tagColorFor(word){return TAG_PALETTE[word]||'#cad9e6';}
   function styleTag(tag,word){tag.style.backgroundColor=tagColorFor(word);}
   function displayableJob(job){
@@ -915,7 +937,7 @@
       var chip=document.createElement('button');chip.type='button';chip.className='job-keyword';
       if(state.keywords.indexOf(word)>=0)chip.classList.add('selected');
       // Compact visible tag, keep the canonical taxonomy for search and filtering.
-      chip.textContent=word==='Creative Direction'?'CD':word;
+      chip.textContent=shortTagLabel(word);
       chip.setAttribute('aria-label',word);
       chip.setAttribute('aria-pressed',String(state.keywords.indexOf(word)>=0));
       styleTag(chip,word);
