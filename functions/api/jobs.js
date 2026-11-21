@@ -30,25 +30,28 @@ const nonCreativeTitle = /\b(?:account manager|sales manager|product manager|pro
 // The original vacancy remains authoritative and is linked from each listing.
 function excerptText(text,limit){
   if(text.length<=limit)return text;
-  let segment=text.slice(0,limit+1);
-  // Prefer an entire sentence; if the source has none, finish a whole word.
-  const endOfSentence=/(?:[.!?](?:["'’”)]*)?)(?=\s|$)/g;
-  let lastEnd=0,match;
-  while((match=endOfSentence.exec(segment))!==null){
+  const segment=text.slice(0,limit+1);
+  // The source may include newlines, headings and paragraphs. Prefer a
+  // complete sentence, not an arbitrarily truncated word plus ellipsis.
+  const sentence=/[.!?][)"'’”\]]*(?=\s|$)/g;
+  let match,lastEnd=0;
+  while((match=sentence.exec(segment))!==null){
     const at=match.index+match[0].length;
-    if(at<=limit&&at>=limit*.58)lastEnd=at;
-  }
-  if(lastEnd){segment=segment.slice(0,lastEnd);}
-  else {
-    const whitespace=segment.slice(0,limit+1).search(/\s+\S*$/);
-    // A whitespace boundary near the limit avoids a broken word.
-    if(whitespace>limit*.48)segment=segment.slice(0,whitespace);
-    else {
-      const cut=segment.slice(0,limit+1).lastIndexOf(' ');
-      segment=cut>limit*.48?segment.slice(0,cut):segment.slice(0,limit);
+    if(at<=limit && at>=Math.min(180,Math.floor(limit*.35))){
+      // Common abbreviations are not the end of a sentence.
+      const previous=segment.slice(Math.max(0,at-16),at);
+      if(/\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|Inc|Ltd|Co|etc|e\.g|i\.e|U\.S|U\.K)\.$/i.test(previous))continue;
+      lastEnd=at;
     }
   }
-  return segment.trimEnd().replace(/[,:;\-–—]+$/,'').trimEnd()+'…';
+  if(lastEnd)return segment.slice(0,lastEnd).trimEnd();
+  // A complete source paragraph is acceptable when no sentence boundary
+  // occurs within the limit. Never invent or complete truncated job text.
+  const paragraph=segment.lastIndexOf('\n');
+  if(paragraph>=Math.min(180,Math.floor(limit*.35))){
+    return segment.slice(0,paragraph).trimEnd();
+  }
+  return '';
 }
 function plainText(value, limit = 1800) {
   // Retain real paragraph and list boundaries from source HTML / text.
