@@ -542,3 +542,49 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
   .drawer-description .so-description-body h4{font-size:12px;line-height:1.4;margin:16px 0 8px}
   .drawer-description #drawer-description-note{font-size:10.5px;line-height:1.5}
 }
+
+
+/* v1.1.11 — iPhone single-line header, proportional to desktop.
+   Explicitly override legacy mobile header rules. */
+@media(max-width:600px){
+  .site-header .nav-inner{
+    height:42px;
+    min-height:42px;
+    padding-top:0;
+    padding-bottom:0;
+    display:flex;
+    flex-direction:row;
+    flex-wrap:nowrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .site-header .wordmark{
+    flex:0 0 auto;
+    font-size:12px;
+    letter-spacing:-.025em;
+    white-space:nowrap;
+    line-height:1.15;
+  }
+  .site-header .nav-links{
+    display:flex;
+    flex:0 1 auto;
+    min-width:0;
+    flex-wrap:nowrap;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+    font-size:9.5px;
+    line-height:1.1;
+    white-space:nowrap;
+  }
+  .site-header .nav-links a{white-space:nowrap;flex:0 0 auto}
+  .job-head .job-keywords{flex-wrap:nowrap}
+  .job-head .job-keyword{font-size:8.5px;padding:2px 4px;line-height:1.1}
+}
+@media(max-width:370px){
+  .site-header .nav-inner{gap:5px}
+  .site-header .wordmark{font-size:11px}
+  .site-header .nav-links{font-size:8.5px;gap:6px}
+  .job-head .job-keyword{font-size:8px;padding:2px 3px}
+}
