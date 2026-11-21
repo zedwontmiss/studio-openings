@@ -914,7 +914,10 @@
     jobKeywords(job).forEach(function(word){
       var chip=document.createElement('button');chip.type='button';chip.className='job-keyword';
       if(state.keywords.indexOf(word)>=0)chip.classList.add('selected');
-      chip.textContent=word;chip.setAttribute('aria-pressed',String(state.keywords.indexOf(word)>=0));
+      // Compact visible tag, keep the canonical taxonomy for search and filtering.
+      chip.textContent=word==='Creative Direction'?'CD':word;
+      chip.setAttribute('aria-label',word);
+      chip.setAttribute('aria-pressed',String(state.keywords.indexOf(word)>=0));
       styleTag(chip,word);
       chip.title=state.keywords.indexOf(word)>=0?'Remove '+word+' from preferences':'Add '+word+' to preferences';
       chip.addEventListener('click',function(event){event.stopPropagation();toggleKeyword(word);});
