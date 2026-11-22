@@ -53,7 +53,7 @@ function excerptText(text,limit){
   }
   return '';
 }
-function plainText(value, limit = 1800) {
+function plainText(value, limit = 14000) {
   // Retain real paragraph and list boundaries from source HTML / text.
   // The browser displays plain text (textContent), NEVER source HTML.
   const clean=String(value||'')
@@ -281,7 +281,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v1111-sentence-safe&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v1120-expanded-descriptions&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));
