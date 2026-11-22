@@ -8,7 +8,11 @@ export async function onRequestGet({params,env,request}){
  catch{return new Response('Temporarily unavailable',{status:503});}
  const job=eligibleJob(row);
  if(!job)return new Response('This job is no longer available',{status:404,headers:{'X-Robots-Tag':'noindex'}});
- const url=new URL(request.url), origin='https://'+url.hostname;
+ // Public canonical domain is independent of the Preview deployment hostname.
+ // Never accidentally index duplicate Preview job-detail pages.
+ const url=new URL(request.url);
+ const preview=url.hostname!=='s-o.app';
+ const origin='https://s-o.app';
  const schema=toSchema(job,origin);
  const json=JSON.stringify(schema).replace(/</g,'\\u003c');
  const detail=job.description.split(/\n\n+/).map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');
@@ -27,5 +31,5 @@ export async function onRequestGet({params,env,request}){
 <a class="apply" href="${href}"${job.applicationMethod==='external'?' target="_blank" rel="noopener noreferrer"':''}>Apply for this job</a>
 <p class="fine">Applications are handled by the hiring organization. Confirm the vacancy and eligibility before applying.</p></main>
 <footer>Studio Openings · <a href="/privacy.html">Privacy</a></footer></body></html>`;
- return new Response(html,{status:200,headers:HEADERS});
+ return new Response(html,{status:200,headers:preview?{...HEADERS,'x-robots-tag':'noindex, nofollow'}:HEADERS});
 }
