@@ -8,6 +8,16 @@
     web:'Web / Creative Tech', museum:'Museum / Exhibition', culture:'Arts / Cultural Production'
   };
   var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, savedPeriod:'all', visible:10, review:false};
+  // Category landing pages link to the existing filtered job board.
+  // Only allow known disciplines; never use unchecked query input as HTML.
+  try {
+    var requestedDiscipline=new URL(window.location.href).searchParams.get('discipline')||'';
+    if(Object.prototype.hasOwnProperty.call(roleLabels,requestedDiscipline)){
+      state.selectedRoles=[requestedDiscipline];
+      var selectedCheckbox=document.querySelector('input[name="discipline"][value="'+requestedDiscipline+'"]');
+      if(selectedCheckbox)selectedCheckbox.checked=true;
+    }
+  }catch(e){}
   // Tags are a publication requirement: 1–3 verified role/skill labels per job.
   // No user search counts, guessed qualifications, or random tag promotion.
   var PREFERENCES_KEY='studio-openings.keywords.v05';
