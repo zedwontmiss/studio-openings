@@ -1,6 +1,6 @@
 import {sourceSeoJob} from '../../lib/source-seo-policy.js';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const HEAD={'content-type':'text/html; charset=utf-8','cache-control':'public, max-age=180','x-content-type-options':'nosniff'};
+const HEAD={'content-type':'text/html; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
 export async function onRequestGet({params,env,request}){
  const id=String(params?.id||'');
  if(!/^[a-z0-9-]{8,160}$/i.test(id))return new Response('Job not found',{status:404,headers:{'x-robots-tag':'noindex'}});
@@ -8,7 +8,7 @@ export async function onRequestGet({params,env,request}){
  if(!env?.JOBS_DB)return new Response('Temporarily unavailable',{status:503,headers:{'x-robots-tag':'noindex'}});
  let row;
  try{
-  row=await env.JOBS_DB.prepare("SELECT j.job_json,j.state AS snapshot_state,j.last_seen_at,s.status AS source_status FROM source_job_snapshots j JOIN creative_sources s ON s.id=j.source_id WHERE json_extract(j.job_json,'$.id')=? LIMIT 1").bind(id).first();
+  row=await env.JOBS_DB.prepare("SELECT * FROM reviewed_source_jobs WHERE id=? LIMIT 1").bind(id).first();
  }catch{return new Response('Temporarily unavailable',{status:503,headers:{'x-robots-tag':'noindex'}});}
  const job=sourceSeoJob(row);
  if(!job)return new Response('This job is no longer available',{status:404,headers:{'x-robots-tag':'noindex'}});
@@ -24,7 +24,7 @@ export async function onRequestGet({params,env,request}){
 <p>${esc(job.company)} · ${esc(job.location)}</p>
 <p class="sub">Verified source: ${esc(job.source)} · Last editorial verification: ${esc(job.verifiedAt)}</p>
 <h2>Role description</h2><div class="description">${paragraphs}</div>
-<a class="apply" href="${esc(job.url)}" target="_blank" rel="noopener noreferrer">View original vacancy &amp; apply</a>
+<a data-apply-job="${esc(job.id)}" class="apply" href="${esc(job.url)}" target="_blank" rel="noopener noreferrer">View original vacancy &amp; apply</a>
 <p class="sub">Recruitment is managed by the original employer. Confirm availability and applicant eligibility on their official site.</p></main>
 <footer><a href="/">All creative openings</a> · <a href="/contact.html">Contact</a></footer></body></html>`;
  return new Response(html,{headers:preview?{...HEAD,'x-robots-tag':'noindex, nofollow'}:HEAD});

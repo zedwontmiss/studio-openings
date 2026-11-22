@@ -21,13 +21,7 @@ jobs:
           while IFS= read -r -d '' file; do
             node --input-type=module --check < "$file"
           done < <(find assets functions lib worker -type f -name '*.js' -print0 2>/dev/null || true)
-      - name: Test description handling
-        run: node tests/descriptions.mjs
-      - name: Test SEO discipline pages
-        run: node tests/disciplines.mjs
-      - name: Test eligible job pages, sitemap and expiry rules
-        run: node tests/seo-jobs.mjs
-      - name: Test source-backed SEO publication safeguards
-        run: node tests/source-seo.mjs
-      - name: Test approval-only distribution drafts
-        run: node tests/distribution-drafts.mjs
+      - name: Run all regression and integration suites
+        run: |
+          set -euo pipefail
+          for suite in tests/*.cjs tests/*.mjs; do node "$suite"; done

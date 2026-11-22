@@ -58,13 +58,14 @@ function plainText(value, limit = 14000) {
   // The browser displays plain text (textContent), NEVER source HTML.
   const clean=String(value||'')
     .replace(/\r\n?/g,'\n')
+    .replace(/<(script|style|iframe)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,' ')
     .replace(/<br\b[^>]*\/?\s*>/gi,'\n')
     .replace(/<hr\b[^>]*\/?\s*>/gi,'\n\n')
     .replace(/<(?:p|div|section|article|h[1-6])\b[^>]*>/gi,'\n\n')
     .replace(/<li\b[^>]*>/gi,'\n• ')
     .replace(/<\/li\s*>/gi,'\n')
     .replace(/<\/(?:p|div|section|article|h[1-6]|ul|ol|blockquote)\s*>/gi,'\n\n')
-    .replace(/<\/?[^>]+>/g,' ')
+    .replace(/<\/?[a-z][\w:-]*(?:\s[^<>]*)?\/?>/gi,' ')
     .replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&')
     .replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'")
     .replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
@@ -257,9 +258,11 @@ function normHimalayas(j,now){
   const url=safeLink(j.applicationLink,'Himalayas');if(!url)return null;
   const geo=remoteEligibility(j.locationRestrictions,{timezones:j.timezoneRestrictions});
   if(!geo.eligible)return null;
+  let expiresAt='';
   if(j.expiryDate&&String(j.expiryDate)!=='0'){
     const x=Number(j.expiryDate),expiry=Number.isFinite(x)&&x>0?(x<1e12?x*1000:x):Date.parse(j.expiryDate);
-    if(Number.isFinite(expiry)&&expiry<now)return null;
+    if(!Number.isFinite(expiry)||expiry<=now)return null;
+    expiresAt=new Date(expiry).toISOString();
   }
   const seniority=Array.isArray(j.seniority)?j.seniority.join(' / '):String(j.seniority||'');
   return finishJob({id:'himalayas-'+String(j.guid||url),title,company:String(j.companyName||'Undisclosed').trim(),
@@ -267,7 +270,7 @@ function normHimalayas(j,now){
     type:employmentType(j.employmentType),
     salary:salary(j.minSalary,j.maxSalary,j.currency,j.salaryPeriod),
     // Official Himalayas API defines pubDate as the LAST UPDATED date.
-    posted:published(j.pubDate,now),dateKind:'updated',role:decision.role,relevance:decision.relevance,
+    expiresAt,posted:published(j.pubDate,now),dateKind:'updated',role:decision.role,relevance:decision.relevance,
     tags:tagsFor(title,description,decision.role),source:'Himalayas',sourceUrl:url,url,description,descriptionKind:'source-excerpt',
     seniority:seniority.slice(0,55)});
 }
@@ -281,7 +284,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v1120-expanded-descriptions&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v1122-expiry&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));

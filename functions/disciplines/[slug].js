@@ -3,7 +3,7 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'
 const HEAD={'content-type':'text/html; charset=utf-8','cache-control':'public, max-age=600','x-content-type-options':'nosniff'};
 export async function onRequestGet({params,request}){
  const slug=String(params?.slug||'').toLowerCase(),item=DISCIPLINES[slug];
- if(!item)return new Response('Page not found',{status:404,headers:{...HEAD,'x-robots-tag':'noindex'}});
+ if(!DISCIPLINE_SLUGS.includes(slug))return new Response('Page not found',{status:404,headers:{...HEAD,'x-robots-tag':'noindex'}});
  const url=new URL(request.url),preview=url.hostname!=='s-o.app';
  const canonical='https://s-o.app/disciplines/'+slug;
  const intro=esc(item.intro),name=esc(item.name),tip=esc(item.advice);

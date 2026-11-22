@@ -29,7 +29,7 @@ const OPENINGS=Object.freeze([
 const HEAD={'content-type':'application/json; charset=utf-8','cache-control':'public, max-age=300','x-content-type-options':'nosniff'};
 export async function onRequestGet(){
  const today=new Date().toISOString().slice(0,10),active=today>=REVIEWED&&today<=EXPIRES;
- const jobs=active?OPENINGS.map(o=>({...o,mode:o.mode||'',salary:o.salary||'',posted:'',dateKind:'added',
+ const jobs=active?OPENINGS.map(o=>({...o,expiresAt:new Date(Date.parse(EXPIRES+'T00:00:00Z')+86400000).toISOString(),mode:o.mode||'',salary:o.salary||'',posted:'',dateKind:'added',
   verifiedAt:REVIEWED,descriptionKind:'editorial-summary',source:'Official careers · '+o.company,
   sourceUrl:o.url,applicationMethod:'external',locationKind:'office',relevance:93,qualityScore:94})):[];
  return new Response(JSON.stringify({jobs,checkedAt:REVIEWED,expiresAt:EXPIRES,status:active?'editorial-current':'editorial-expired'}),{headers:HEAD});

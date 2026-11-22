@@ -1,19 +1,29 @@
-/** Studio Openings launch index policy: canonical production host only; preview never indexed. */
-const FALLBACK_HOST='studio-openings.pages.dev';
-export async function onRequest(context){
- const u=new URL(context.request.url),response=await context.next(),headers=new Headers(response.headers);
- const configured=String(context.env?.PUBLIC_CANONICAL_HOST||FALLBACK_HOST).trim().toLowerCase();
- const canonicalHost=/^[a-z0-9.-]+$/.test(configured)?configured:FALLBACK_HOST;
- const isProduction=u.hostname.toLowerCase()===canonicalHost;
- const path=u.pathname;
- const isPrivate=path==='/operator.html'||path==='/operator'||path.startsWith('/api/')||path.startsWith('/assets/')||path.startsWith('/functions/');
- const isPage=path==='/'||path==='/index.html'||path==='/privacy.html'||path==='/coverage.html'||path==='/post-a-job.html'||path==='/about.html'||path==='/contact.html'||path==='/terms.html'||path==='/suggest-a-job.html'||/^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path);
- if(!isProduction||isPrivate||(!isPage && path!=='/robots.txt'&&path!=='/sitemap.xml'))headers.set('X-Robots-Tag','noindex, nofollow');
- if(isProduction&&response.status===200&&isPage){
-   const target=path==='/index.html'?'/':path;
-   const canonical='<https://'+canonicalHost+target+'>; rel="canonical"';
-   const old=headers.get('Link');headers.set('Link',old?old+', '+canonical:canonical);
- }
- headers.set('X-Content-Type-Options','nosniff');
- return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
+import {DISCIPLINE_SLUGS} from '../lib/discipline-pages.js';
+
+const pages = new Set(['/', '/privacy', '/coverage', '/post-a-job', '/about', '/contact', '/terms',
+  ...DISCIPLINE_SLUGS.map(slug => '/disciplines/' + slug)]);
+
+export async function onRequest(context) {
+  const {hostname, pathname} = new URL(context.request.url);
+  const response = await context.next();
+  const headers = new Headers(response.headers);
+  const path = pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
+  const publicPage = pages.has(path) || /^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path) || /^\/openings\/[a-z0-9-]{8,160}$/i.test(path);
+  if (hostname !== 's-o.app' || response.status >= 400 || (!publicPage && !['/robots.txt','/sitemap.xml'].includes(path))) {
+    headers.set('X-Robots-Tag', 'noindex, nofollow');
+  } else if (publicPage && response.status === 200) {
+    headers.set('Link', '<https://s-o.app' + path + '>; rel="canonical"');
+  }
+  headers.set('X-Content-Type-Options', 'nosniff');
+  const output = new Response(response.body, {status:response.status, statusText:response.statusText, headers});
+  const previewReady = hostname === 'development.studio-openings.pages.dev' && context.env?.PREVIEW_D1_ISOLATED === 'true';
+  if (publicPage && response.status === 200 && context.request.method === 'GET' &&
+      context.env?.TRAFFIC_ENABLED === 'true' && (hostname === 's-o.app' || previewReady) &&
+      headers.get('content-type')?.startsWith('text/html') &&
+      context.request.headers.get('DNT') !== '1' && context.request.headers.get('Sec-GPC') !== '1') {
+    return new HTMLRewriter().on('head',{element(head){
+      head.append('<script defer src="/assets/traffic.js"></script>',{html:true});
+    }}).transform(output);
+  }
+  return output;
 }

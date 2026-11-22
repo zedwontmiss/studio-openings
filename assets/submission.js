@@ -101,7 +101,7 @@
    soGeoStatus.textContent=soSelectedRegion?'Type a city and choose from verified results.':'';
  });
  soCitySearch.addEventListener('input',function(){
-   var request=++soCityRequest;soLocationSelected=null;soCity.value='';soLocationInput.value=soCountry.options[soCountry.selectedIndex]?.text||'';
+   var request=++soCityRequest;soLocationSelected=null;soCity.value='';soLocationInput.value=(soCountry.options[soCountry.selectedIndex]||{}).text||'';
    soClearChoices();if(soSearchTimer)clearTimeout(soSearchTimer);
    var q=soCitySearch.value.trim();if(!soSelectedRegion||q.length<2)return;
    soSearchTimer=setTimeout(async function(){
@@ -120,7 +120,7 @@
  var soLocationEntry={get:function(){
    if(soLocationSelected)return Object.assign({},soLocationSelected);
    if(soCitySearch.value.trim())return null;
-   if(soCountry.value&&(!soRegion.value||form.querySelector('input[name="mode"]:checked')?.value==='remote')){
+   if(soCountry.value&&(!soRegion.value||(form.querySelector('input[name="mode"]:checked')||{}).value==='remote')){
      return {kind:'country',countryCode:soCountry.value,regionCode:''};
    }
    return null;
@@ -160,7 +160,7 @@
    $('submission-permission-text').textContent=mode==='employer'?'I represent the hiring organization, or have permission to submit this vacancy for review.':'This is a public vacancy and I have permission to suggest its original application link for review.';
    if(configuration&&configuration.enabled)setSending(true);
  }
- function setSending(enabled){$('submission-send').disabled=!enabled;$('submission-send').textContent=(preview||!configuration?.enabled)?'Prepare offline request':mode==='employer'?'Request review & invoice':'Suggest vacancy for review';}
+ function setSending(enabled){$('submission-send').disabled=!enabled;$('submission-send').textContent=(preview||!(configuration&&configuration.enabled))?'Prepare offline request':mode==='employer'?'Request review & invoice':'Suggest vacancy for review';}
  function loadTurnstile(){
    if(window.turnstile)return Promise.resolve(window.turnstile);
    if(turnstileScript)return turnstileScript;
@@ -320,7 +320,7 @@
    e.preventDefault();
    var data=collect();validationAttempted=true;if(!showValidation(data,true))return;
    lastPrepared=data;
-   if(preview||!configuration?.enabled){
+   if(preview||!(configuration&&configuration.enabled)){
      localSave(data);
      result('Offline request prepared — not sent','This is a local review. Download the request JSON; your information has not reached Studio Openings.',true,'');
      return;

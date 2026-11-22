@@ -588,3 +588,16 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
   .site-header .nav-links{font-size:8.5px;gap:6px}
   .job-head .job-keyword{font-size:8px;padding:2px 3px}
 }
+
+/* Let the status and date reserve their actual width on the title line. */
+.job-headline{grid-column:1 / -1;grid-row:1;display:flex;align-items:baseline;min-width:0}
+.job-head .job-headline .job-open-head{flex:1 1 0%;min-width:0;width:auto;padding-right:0}
+.job-headline .job-age-group{flex:none;margin-left:6px}
+.job-head .job-keywords{flex-wrap:wrap;min-width:0}
+.drawer-description{overflow-wrap:break-word;word-wrap:break-word}
+@supports not (inset:0){
+  .nav-links a+a{margin-left:8px}
+  .job-keyword+.job-keyword{margin-left:3px}
+}
+
+.job-headline a.job-open-head{color:inherit;text-decoration:none}

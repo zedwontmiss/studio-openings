@@ -7,7 +7,7 @@ import {POLICY_VERSION,canUseCountry,cityCovered} from '../../lib/coverage-polic
 const SOURCES=Object.freeze([
  ['greenhouse','anthropic','Anthropic'],['greenhouse','figma','Figma'],
  ['greenhouse','snorkelai','Snorkel AI'],['greenhouse','gusto','Gusto'],
- ['greenhouse','durable','Durable'],['greenhouse','warp','Warp'],
+ ['greenhouse','warp','Warp'],
  ['greenhouse','brightai','BrightAI'],['greenhouse','gatherai','Gather AI'],
  ['greenhouse','checkr','Checkr'],['greenhouse','customerio','Customer.io'],
  ['greenhouse','inmarket','InMarket'],['greenhouse','codepath','CodePath'],
@@ -23,7 +23,7 @@ const SOURCES=Object.freeze([
  ['ashby','strella','Strella'],['ashby','peec','Peec AI'],
  ['ashby','profound','Profound'],['ashby','read-ai','Read AI'],
  ['ashby','edra','Edra'],['ashby','traversal','Traversal'],
- ['ashby','mazehq','Maze'],['ashby','nectar-social','Nectar Social'],
+ ['ashby','mazehq','Maze'],
  ['greenhouse','jazzx-ai','JazzX AI'],['lever','agtonomy','Agtonomy']
 ].map(([provider,board_token,name])=>({provider,board_token,name})));
 const REJECT=/\b(?:software architect|solutions architect|cloud architect|data architect|sales|account manager|business development|recruiter|operations manager|finance|project manager|product manager|customer success|marketing manager|talent acquisition|open application|general application|talent pool)\b/i;
@@ -71,7 +71,7 @@ export function creativeRole(title,description=''){
 }
 export function normalize(row,source,now){
  const title=clean(row.title,125),role=creativeRole(title,row.description),loc=locationOf(row.location);
- const description=sourceExcerpt(row.description,14000);
+ const description=sourceExcerpt(row.description,950);
  if(!role||!loc||description.length<130||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
  const n=Date.parse(row.posted||''),posted=Number.isFinite(n)&&n>946684800000&&n<=now+86400000?new Date(n).toISOString():'';
  const name=source.name,tags=[TAGS[role]];
@@ -90,7 +90,7 @@ export function normalize(row,source,now){
    type:employmentTypeOf(row.employmentType,title,row.description),role,geoCountry:loc.country,geoPolicy:POLICY_VERSION,
    salary:'',posted,dateKind:posted?'posted':'added',relevance:92,tags,
    source:'Official careers · '+name,
-   sourceUrl:'https://'+(source.provider==='ashby'?'jobs.ashbyhq.com/':'job-boards.greenhouse.io/')+source.board_token,
+   sourceUrl:row.url,
    url:row.url,description,descriptionKind:'source-excerpt'};
 }
 async function loadBoard(source,now){
@@ -102,7 +102,7 @@ const HEAD={'content-type':'application/json; charset=utf-8','x-content-type-opt
 export async function onRequestGet({request}){
  const u=new URL(request.url),shard=Number(u.searchParams.get('shard'));
  if(!Number.isInteger(shard)||shard<0||shard>=Math.ceil(SOURCES.length/6))return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
- const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=4-expanded-source-description&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
+ const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=5-source-excerpt&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
  if(cache)try{const hit=await cache.match(key);if(hit)return hit;}catch(_){}
  const sources=SOURCES.slice(shard*6,shard*6+6),now=Date.now();
  const outcomes=await Promise.allSettled(sources.map(s=>loadBoard(s,now)));

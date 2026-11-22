@@ -175,6 +175,7 @@
   function styleTag(tag,word){tag.style.backgroundColor=tagColorFor(word);}
   function displayableJob(job){
     if(!job||!job.id||!job.title||!job.company)return false;
+    if(job.expiresAt && !(Date.parse(job.expiresAt)>Date.now()))return false;
     if((job.applicationMethod||'external')==='external'&&!safeUrl(job.url))return false;
     return categoryFor(job)!=='not-creative'&&jobKeywords(job).length>0;
   }
@@ -365,15 +366,16 @@
       salary:String(job.salary||'').slice(0,75),eligibility:String(job.eligibility||'').slice(0,170),
       seniority:String(job.seniority||'').slice(0,65),tags:jobKeywords(job)};
   }
+  var liveAliases=Object.create(null);
   function hydrateSavedEntries(){
     var updates=false;
     saved.forEach(function(record,index){
-      var job=state.jobs.filter(function(item){return String(item.id)===record.id;})[0];
+      var job=state.jobs.filter(function(item){return String(item.id)===(liveAliases[record.id]||record.id);})[0];
       if(!job)return;
       var recent=snapshotForJob(job,record);
       if(JSON.stringify(record)!==JSON.stringify(recent)){saved[index]=recent;updates=true;}
     });
-    if(updates)persist();
+    if(updates){saved=saved.filter(function(entry,i){return saved.findIndex(function(other){return entry.id===other.id;})===i;});persist();}
   }
   // Saved Jobs remains a separate shortlist but honors the same active filters.
   // Stored bookmarks are never deleted by filtering.
@@ -700,7 +702,7 @@
     var id=jobIdFromUrl();
     if(!id){ closeDrawer(true); return; }
     var job=state.jobs.filter(function(candidate){
-      return String(candidate.id)===id || publicJobHandle(candidate.id)===id;
+      return String(candidate.id)===(liveAliases[id]||id) || publicJobHandle(candidate.id)===id;
     })[0];
     if(job){
       // Legacy long source URLs continue to open; replace them in the address
@@ -740,7 +742,7 @@
       .replace(/<br\b[^>]*\/?>/gi,'\n').replace(/<li\b[^>]*>/gi,'\n• ')
       .replace(/<\/li\s*>/gi,'\n')
       .replace(/<\/?(?:p|div|section|article|h[1-6]|ul|ol|blockquote)\b[^>]*>/gi,'\n\n')
-      .replace(/<[^>]+>/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+      .replace(/<\/?[a-z][\w:-]*(?:\s[^<>]*)?\/?>/gi,' ').replace(/\n{3,}/g,'\n\n').trim();
     // Some copied descriptions glue a new sentence directly to a full stop.
     // Only split before a capitalized ordinary word; avoid .NET, version IDs, URLs.
     text=text.replace(/([.!?]["'’”)]?)([A-Z][a-z])/g,'$1\n\n$2');
@@ -854,7 +856,7 @@
     });
     var excerpt=trim(job.description||job.summary);
     renderJobDescription(excerpt);
-    $('drawer-description-note').textContent=excerpt?(job.descriptionKind==='editorial-summary'?'Editorial summary based on the linked vacancy. Always check the full original job description and eligibility.':'Description supplied by the source. Check the original listing for the authoritative requirements and application details.'):'Read the original vacancy for responsibilities, qualifications, eligibility and application instructions.';
+    $('drawer-description-note').textContent=excerpt?(job.descriptionKind==='editorial-summary'?'Editorial summary based on the linked vacancy. Always check the full original job description and eligibility.':job.descriptionKind==='source-excerpt'?'Excerpt from the original vacancy. Open the original listing for the complete requirements.':'Description supplied by the hiring source. Confirm current requirements on the original listing.'):'Read the original vacancy for responsibilities, qualifications, eligibility and application instructions.';
     $('drawer-check-date').textContent=dateLabel(job).label;
     // The source credit is a real link. Always keep third-party applicants on
     // the original API application URL; never silently reroute them to us.
@@ -878,7 +880,7 @@
         sourceHolder.appendChild(credit);
       }else sourceHolder.appendChild(document.createTextNode(source));
     }
-    if(/^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(String(job.detailUrl||''))){
+    if(detailPath(job)){
       var sep=document.createTextNode(' · ');sourceHolder.appendChild(sep);
       var jobPage=document.createElement('a');jobPage.href=job.detailUrl;jobPage.textContent='View job page';
       sourceHolder.appendChild(jobPage);
@@ -886,6 +888,7 @@
     var apply=$('drawer-apply');
     apply.hidden=false;
     apply.dataset.method=method;
+    apply.setAttribute('data-apply-job',/^direct-so-/i.test(job.id)?job.id.slice(7).toUpperCase():/^registry-/.test(job.id)?job.id:'');
     // For sourced jobs, use ONLY the original applicationLink/url from the API.
     apply.href=method==='external'?job.url:method==='email'?'mailto:'+encodeURIComponent(job.applicationEmail||'')+'?subject='+encodeURIComponent('Application: '+job.title):'#apply';
     var externalOrigin='Apply for job';
@@ -920,12 +923,21 @@
     if(lastOpener&&document.contains(lastOpener))lastOpener.focus();
     lastOpener=null;
   }
+  function detailPath(job){
+    var path=String(job&&job.detailUrl||'');
+    return /^\/(?:jobs\/SO-[A-Z0-9-]{6,45}|openings\/[a-z0-9-]{8,160})$/i.test(path)?path:'';
+  }
   function rowFor(job){
     var frag=$('job-template').content.cloneNode(true),row=frag.querySelector('.job-row'),open=row.querySelector('.job-open'),head=row.querySelector('.job-open-head');
     row.setAttribute('data-swatch',swatchFor(job));
     row.setAttribute('data-job-id',String(job.id));
     if(isFeatured(job))row.classList.add('is-featured');
 
+    if(detailPath(job)){
+      var link=document.createElement('a');link.href=detailPath(job);link.className=head.className;
+      link.setAttribute('aria-haspopup','dialog');link.appendChild(head.firstElementChild);
+      head.parentNode.replaceChild(link,head);head=link;
+    }
     var titleNode=head.querySelector('.job-title');
     titleNode.textContent=displayTitle(job.title);
     if(isFeatured(job)){
@@ -990,7 +1002,8 @@
     // Do not add a third row, change employer placement or change the job date itself.
     var ageGroup=document.createElement('span');ageGroup.className='job-age-group';
     var marker=document.createElement('span');marker.className='job-state-marker';marker.hidden=true;
-    age.parentNode.insertBefore(ageGroup,age);
+    var headline=document.createElement('div');headline.className='job-headline';
+    head.parentNode.insertBefore(headline,head);headline.appendChild(head);headline.appendChild(ageGroup);
     ageGroup.appendChild(marker);
     ageGroup.appendChild(age);
     updateJobMarker(row,job.id);
@@ -999,7 +1012,10 @@
     head.setAttribute('aria-label',disclosurePrefix+'View details: '+displayTitle(job.title)+' at '+job.company);
     employer.setAttribute('aria-label',disclosurePrefix+'View details: '+displayTitle(job.title)+' at '+job.company);
     open.addEventListener('click',function(){openDrawer(job,open);});
-    head.addEventListener('click',function(){openDrawer(job,head);});
+    head.addEventListener('click',function(e){
+      if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
+      e.preventDefault();openDrawer(job,head);
+    });
     employer.addEventListener('click',function(){openDrawer(job,employer);});
     return frag;
   }
@@ -1110,8 +1126,8 @@
     // Employer-approved vacancies already have server-rendered SEO pages.
     // Share that canonical page rather than the homepage drawer deep-link.
     // Third-party feed jobs still use stable opaque short links.
-    var path=String(job&&job.detailUrl||'');
-    if(!shareReviewMode()&&/^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path)){
+    var path=detailPath(job);
+    if(!shareReviewMode()&&path){
       return new URL(path,window.location.origin).href;
     }
     return jobLinkFor(job.id);
@@ -1163,6 +1179,9 @@
   });
   $('drawer-apply').addEventListener('click',function(e){
     if(!activeJob)return;
+    if(activeJob.expiresAt && !(Date.parse(activeJob.expiresAt)>Date.now())){
+      e.preventDefault();closeDrawer();state.jobs=state.jobs.filter(displayableJob);render();return;
+    }
     var method=activeJob.applicationMethod||'external';
     if(method==='external'&&!safeUrl(activeJob.url))return;
     if(method==='email'&&!activeJob.applicationEmail)return;
@@ -1208,16 +1227,35 @@
     hydrateSavedEntries();render();
     syncJobFromUrl();
   }
+  function vacancyLinkKey(job){
+    if(!job.url)return '';
+    try{
+      var link=new URL(job.url);
+      link.hash='';
+      var keys=[];link.searchParams.forEach(function(_,k){if(/^utm_|^gh_src$/i.test(k))keys.push(k);});
+      keys.forEach(function(k){link.searchParams.delete(k);});
+      if(link.hostname==='boards.greenhouse.io')link.hostname='job-boards.greenhouse.io';
+      if(/^(?:job-boards\.greenhouse\.io|jobs\.(?:eu\.)?lever\.co|jobs\.ashbyhq\.com)$/.test(link.hostname) && link.pathname.split('/').filter(Boolean).length>=2){
+        return link.origin+link.pathname.replace(/\/apply\/?$|\/$/,'');
+      }
+      return link.href+'|'+trim(job.title).toLowerCase()+'|'+trim(job.location).toLowerCase();
+    }catch(e){return '';}
+  }
   function loadLive(){
-    var urls=['/api/jobs','/api/approved-jobs','/api/firm-jobs','/api/editorial-jobs','/api/indexed-jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3'];
-    Promise.all([loadFeaturedConfig(),Promise.allSettled(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();});}))]).then(function(all){
+    var urls=['/api/approved-jobs','/api/indexed-jobs','/api/firm-jobs','/api/editorial-jobs','/api/jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3'];
+    Promise.all([loadFeaturedConfig(),Promise.all(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();}).then(function(value){return {status:'fulfilled',value:value};},function(){return {status:'rejected'};});}))]).then(function(all){
       var items=all[1];
-      var seen={},records=[],latest=null,success=0;
+      var seen=Object.create(null),links=Object.create(null),records=[],latest=null,success=0;
       items.forEach(function(outcome){
         if(outcome.status!=='fulfilled'||!outcome.value||!Array.isArray(outcome.value.jobs))return;
         success++;
         outcome.value.jobs.forEach(function(j){
-          if(displayableJob(j)&&!seen[j.id]){records.push(j);seen[j.id]=true;}
+          if(!displayableJob(j)||seen[j.id])return;
+          var key=vacancyLinkKey(j);
+          if(key && links[key]){
+            liveAliases[j.id]=links[key];liveAliases[publicJobHandle(j.id)]=links[key];return;
+          }
+          records.push(j);seen[j.id]=true;if(key)links[key]=j.id;
         });
         if(outcome.value.updatedAt)latest=outcome.value.updatedAt;
       });

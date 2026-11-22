@@ -47,4 +47,4 @@ export async function onRequestPost({request,env}){
   return reply({ok:state.ready,...state,environment:'preview',message:'Preview source registry and D1 job index initialized; no jobs published.',publicFeedEnabled:false},state.ready?200:503);
  }catch{return reply({ok:false,error:'Preview schema setup failed. Check the binding and database permissions; no tables were dropped.'},503);}
 }
-export {SQL,TABLES};
+export {SQL,TABLES,operator,preview,sameOrigin};
