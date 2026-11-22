@@ -14,7 +14,7 @@ export async function onRequestGet({params,env,request}){
  if(!job)return new Response('This job is no longer available',{status:404,headers:{'x-robots-tag':'noindex'}});
  const preview=new URL(request.url).hostname!=='s-o.app',origin='https://s-o.app';
  const paragraphs=job.description.split(/\n\n+/).map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');
- const html=`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ const html=`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="alternate icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <title>${esc(job.title)} at ${esc(job.company)} | Studio Openings</title>
 <meta name="description" content="${esc(('Explore the '+job.title+' opening at '+job.company+' in '+job.location+'. Verified source information.').slice(0,155))}">
 <link rel="canonical" href="${origin}/openings/${encodeURIComponent(job.id)}">
