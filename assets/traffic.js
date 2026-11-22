@@ -11,7 +11,7 @@
     else if (external) {
       if (/(^|\.)reddit\.com$/.test(host) || host==='redd.it') source='reddit';
       else if (/^(?:www\.)?(x\.com|twitter\.com|t\.co)$/.test(host)) source='x';
-      else if (/(^|\.)(google\.com|bing\.com|duckduckgo\.com)$/.test(host)) source='search';
+      else if (/^(?:www\.)?(?:google\.(?:com|co\.id|co\.uk|com\.au|co\.jp|co\.in|ca|de|fr|it|es|nl|ch|se|dk|ie)|bing\.com|duckduckgo\.com)$/.test(host)) source='search';
       else source='other';
     }
     try {
