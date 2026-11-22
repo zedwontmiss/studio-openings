@@ -82,11 +82,16 @@
     var details=(title+' '+String(job.description||job.summary||'')).toLowerCase().slice(0,12000);
     var direction=role==='visual'?directionTagProfile(job):null;
     if(direction)return direction.visible;
-    var tags=[ROLE_TAG[role]];
+    var primary=ROLE_TAG[role];
+    if(role==='fashion' && /\b(?:photograph(?:er|y)|retoucher|photo (?:editor|stylist|producer))\b/.test(title))primary='Photography';
+    if(role==='web' && /\bcreative (?:developer|technologist|technology)\b/.test(title))primary='Creative Technology';
+    var tags=[primary];
+    if(primary==='Photography' && /\bretoucher\b/.test(title))tags.push('Retouching');
+    if(primary==='Photography' && /\bfashion\b/.test(title))tags.push('Fashion');
     function add(label,condition){if(condition && tags.indexOf(label)<0)tags.push(label);}
     // Source-normalized backend tags can be used if they are recognized and concise.
     var allowable={Architecture:1,'Interior':1,'Industrial Design':1,'Product Design':1,'Graphic Design':1,'Motion Design':1,'Fashion':1,'Web Design':1,'Exhibition':1,'Creative Arts':1,'Preservation':1,'Urban Planning':1,'Landscape Architecture':1,'CAD':1,'UX/UI':1,'Branding':1,'Illustration':1,'3D':1,'Photography':1,'Sound':1,'Revit':1,'AutoCAD':1,'BIM':1,'Figma':1,'Rhino':1,'SketchUp':1,'Adobe Creative Cloud':1,'Vectorworks':1,'Archicad':1,'Grasshopper':1,'Civil 3D':1,'Blender':1,'Cinema 4D':1,'After Effects':1,'Photoshop':1,'Illustrator':1,'InDesign':1,'Enscape':1,'Lumion':1,'V-Ray':1,'Public Sector':1};
-    if(Array.isArray(job.tags))job.tags.forEach(function(t){if(t==='Landscape')t='Landscape Architecture';if(t==='Adobe')t='Adobe Creative Cloud';if(allowable[t])add(t,true);});
+    if(Array.isArray(job.tags))job.tags.forEach(function(t){if(t==='Landscape')t='Landscape Architecture';if(t==='Adobe')t='Adobe Creative Cloud';if(allowable[t]&&(t!==ROLE_TAG[role]||primary===t))add(t,true);});
     // Detect specialties from the role title. A bare 'architect' is NOT enough
     // unless backend classification verified it as a physical design role.
     add('Preservation',/\b(?:preservation|historic preservation|heritage)\b/.test(title));
@@ -101,7 +106,7 @@
     add('Sound',/sound design|audio design/.test(title));
     // Every accepted role has one role-level tag. It describes a category,
     // not a claimed software skill or a guessed applicant requirement.
-    add(ROLE_TAG[role],true);
+    add(primary,true);
     // Only show software/production skills explicitly mentioned in the source.
     add('Revit',/\brevit\b/.test(details));
     add('AutoCAD',/\bautocad\b/.test(details));
@@ -140,7 +145,7 @@
    'Exhibition':'#d4b69f','Creative Arts':'#c1df9e','Preservation':'#c6a5ec',
    'Urban Planning':'#82cfbd','CAD':'#a9bde2','UX/UI':'#e6adce',
    'Branding':'#efa79f','Illustration':'#c9b2db','3D':'#8fc9e7',
-   'Photography':'#f9b58f','Sound':'#99cfdb','Revit':'#86d7cf',
+   'Retouching':'#e4bbac','Creative Technology':'#9ddbd0','Photography':'#f9b58f','Sound':'#99cfdb','Revit':'#86d7cf',
    'AutoCAD':'#eba2a9','BIM':'#d0a1e9','Figma':'#d0bd9c',
    'Rhino':'#b6b1ee','SketchUp':'#dcb0af','Adobe Creative Cloud':'#a9d2a0',
    'Public Sector':'#b3c1d1','Vectorworks':'#a6d9bf','Archicad':'#cba5c1',

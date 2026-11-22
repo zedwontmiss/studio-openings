@@ -1,3 +1,4 @@
+import {specialistDiscipline,specialistTag} from '../../lib/source-registry-core.js';
 import {remoteEligibility,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
 /**
  * Studio Openings: GET /api/jobs
@@ -114,6 +115,7 @@ function classify(job) {
     return {role:'industrial',relevance:92};
   if (hasTitle(/\b(?:museum|exhibition design(?:er)?|exhibit design(?:er)?|curator|gallery curator)\b/))
     return {role:'museum',relevance:92};
+  const specialty=specialistDiscipline(title);if(specialty)return {role:specialty,relevance:92};
   if (hasTitle(/\b(?:ux(?:\/?ui)?|ui(?:\/?ux)?|user experience|user interface|product design(?:er)?|interaction design(?:er)?|service design(?:er)?|design systems? designer|ux researcher)\b/))
     return {role:'product',relevance:92};
   if (hasTitle(/\b(?:motion design(?:er)?|motion graphics|animat(?:ion|or)|3d (?:artist|designer|modeler)|video editor|vfx|game artist|concept artist|video creator)\b/))
@@ -153,7 +155,7 @@ function directionTags(title,description,role){
   return ['Design','Art Direction',/\bsenior\b|\bsr[.]?\b/.test(t)?'Senior':'Lead'];
 }
 function tagsFor(title,description,role){
-  const tag=ROLE_TAG[role];if(!tag)return [];
+  const tag=specialistTag(title,role)||ROLE_TAG[role];if(!tag)return [];
   const leadership=directionTags(title,description,role);if(leadership)return leadership;
   const titleText=String(title||'').toLowerCase(),text=(titleText+' '+String(description||'')).toLowerCase().slice(0,12000);
   const tags=[];
@@ -284,7 +286,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v1122-expiry&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v1122-specialist&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));
