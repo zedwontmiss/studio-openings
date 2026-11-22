@@ -827,7 +827,7 @@
     });
     var excerpt=trim(job.description||job.summary);
     renderJobDescription(excerpt);
-    $('drawer-description-note').textContent=excerpt?(job.descriptionKind==='editorial-summary'?'Editorial summary based on the linked vacancy. Always check the full original job description and eligibility.':'This is a source-provided excerpt. See the original listing for requirements and full details.'):'Read the original vacancy for responsibilities, qualifications, eligibility and application instructions.';
+    $('drawer-description-note').textContent=excerpt?(job.descriptionKind==='editorial-summary'?'Editorial summary based on the linked vacancy. Always check the full original job description and eligibility.':'Description supplied by the source. Check the original listing for the authoritative requirements and application details.'):'Read the original vacancy for responsibilities, qualifications, eligibility and application instructions.';
     $('drawer-check-date').textContent=dateLabel(job).label;
     // The source credit is a real link. Always keep third-party applicants on
     // the original API application URL; never silently reroute them to us.
