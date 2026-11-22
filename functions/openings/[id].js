@@ -9,7 +9,7 @@ export async function onRequestGet({params,env,request}){
  let row;
  try{
   row=await env.JOBS_DB.prepare("SELECT j.job_json,j.state AS snapshot_state,j.last_seen_at,s.status AS source_status FROM source_job_snapshots j JOIN creative_sources s ON s.id=j.source_id WHERE json_extract(j.job_json,'$.id')=? LIMIT 1").bind(id).first();
- }catch{return new Response('Temporarily unavailable',{status:503,headers:{'x-robots-tag':'noindex'});}
+ }catch{return new Response('Temporarily unavailable',{status:503,headers:{'x-robots-tag':'noindex'}});}
  const job=sourceSeoJob(row);
  if(!job)return new Response('This job is no longer available',{status:404,headers:{'x-robots-tag':'noindex'}});
  const preview=new URL(request.url).hostname!=='s-o.app',origin='https://s-o.app';
