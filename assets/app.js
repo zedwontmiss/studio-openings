@@ -1097,7 +1097,13 @@
     $('drawer-share').setAttribute('aria-expanded','false');
   }
   function publicShareUrl(job){
-    if(shareReviewMode())return jobLinkFor(job.id);
+    // Employer-approved vacancies already have server-rendered SEO pages.
+    // Share that canonical page rather than the homepage drawer deep-link.
+    // Third-party feed jobs still use stable opaque short links.
+    var path=String(job&&job.detailUrl||'');
+    if(!shareReviewMode()&&/^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path)){
+      return new URL(path,window.location.origin).href;
+    }
     return jobLinkFor(job.id);
   }
   function shareText(job){return displayTitle(job.title)+' — '+job.company+' | Studio Openings';}
