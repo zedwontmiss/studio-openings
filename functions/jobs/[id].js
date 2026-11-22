@@ -4,7 +4,7 @@ export async function onRequestGet({params,env,request}){
  const id=String(params?.id||'');
  if(!/^SO-[A-Z0-9-]{6,45}$/i.test(id))return new Response('Job not found',{status:404});
  if(!env?.JOBS_DB)return new Response('Temporarily unavailable',{status:503});
- let row;try{row=await env.JOBS_DB.prepare("SELECT s.id,s.status,s.submission_type,s.job_data,s.reviewed_at,o.tier AS order_tier,o.status AS order_status,o.published_at AS order_published_at FROM job_submissions s LEFT JOIN job_orders o ON o.submission_id=s.id WHERE s.id=? LIMIT 1").bind(id).first();}
+ let row;try{row=await env.JOBS_DB.prepare("SELECT s.id,s.status,s.submission_type,s.job_data,s.created_at,s.reviewed_at,o.tier AS order_tier,o.status AS order_status,o.published_at AS order_published_at FROM job_submissions s LEFT JOIN job_orders o ON o.submission_id=s.id WHERE s.id=? LIMIT 1").bind(id).first();}
  catch{return new Response('Temporarily unavailable',{status:503});}
  const job=eligibleJob(row);
  if(!job)return new Response('This job is no longer available',{status:404,headers:{'X-Robots-Tag':'noindex'}});
