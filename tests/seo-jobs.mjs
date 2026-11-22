@@ -46,9 +46,11 @@ const env=envFor([approved,{...record(),id:'SO-TEST-EXPIRED',reviewed_at:dbDate(
 const site=await renderSitemap({request:new Request('https://development.studio-openings.pages.dev/sitemap.xml'),env});
 const xml=await site.text();
 assert.equal(site.status,200);
-assert.ok(xml.includes('https://s-o.app/jobs/'+id),'valid employer job must appear');
-assert.ok(!xml.includes('SO-TEST-EXPIRED'),'expired job must be excluded');
-assert.ok(xml.includes('https://s-o.app/disciplines/architecture'),'all category pages remain discoverable');
+const locations=new Set(Array.from(xml.matchAll(/<loc>([^<]+)<\/loc>/g),match=>match[1]));
+assert.ok(locations.has('https://s-o.app/jobs/'+id),'valid employer job must appear');
+assert.ok(!locations.has('https://s-o.app/jobs/SO-TEST-EXPIRED'),'expired job must be excluded');
+assert.ok(locations.has('https://s-o.app/disciplines/architecture'),'architecture category must be discoverable');
+for(const location of locations)assert.equal(new URL(location).origin,'https://s-o.app');
 const rendered=await renderJob({params:{id},env,request:new Request('https://development.studio-openings.pages.dev/jobs/'+id)});
 assert.equal(rendered.status,200);
 assert.equal(rendered.headers.get('x-robots-tag'),'noindex, nofollow');
