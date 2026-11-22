@@ -29,3 +29,5 @@ jobs:
         run: node tests/seo-jobs.mjs
       - name: Test source-backed SEO publication safeguards
         run: node tests/source-seo.mjs
+      - name: Test approval-only distribution drafts
+        run: node tests/distribution-drafts.mjs
