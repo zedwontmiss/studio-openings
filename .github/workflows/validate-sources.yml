@@ -27,3 +27,5 @@ jobs:
         run: node tests/disciplines.mjs
       - name: Test eligible job pages, sitemap and expiry rules
         run: node tests/seo-jobs.mjs
+      - name: Test source-backed SEO publication safeguards
+        run: node tests/source-seo.mjs
