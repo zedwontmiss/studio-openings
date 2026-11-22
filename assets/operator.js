@@ -5,7 +5,7 @@
  function el(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;}
  function setMessage(id,msg){$(id).textContent=msg||'';}
  function api(method,body){return fetch('/api/operator',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {error:'Invalid server response'};}).then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Request failed');return v;});});}
- function lock(msg){token='';sourceState={sources:[],maps:[]};$('operator-key').value='';$('console').hidden=true;$('lock-panel').hidden=false;setMessage('login-error',msg||'Operator console locked.');}
+ function lock(msg){token='';clearQueue();sourceState={sources:[],maps:[]};$('operator-key').value='';$('console').hidden=true;$('lock-panel').hidden=false;setMessage('login-error',msg||'Operator console locked.');}
  function load(){return api('GET').then(function(d){data=d;$('lock-panel').hidden=true;$('console').hidden=false;render();loadSources();setMessage('login-error','');}).catch(function(err){lock(err.message);});}
  function unlock(){var value=$('operator-key').value.trim();if(value.length<32){setMessage('login-error','Enter the 32+ character operator secret.');return;}token=value;$('operator-key').value='';load();}
  function campaignFor(id){for(var i=0;i<data.campaigns.length;i++){if(data.campaigns[i].submissionId===id)return data.campaigns[i];}return null;}
@@ -47,15 +47,15 @@
   $('operation-error').hidden=false;setMessage('operation-error','Invoice HTML downloaded. Open it and fill highlighted fields, Print → Save as PDF, email the PDF, then mark Invoice sent only after delivery.');
  }
 
- function showAction(action,s){pendingAction={action:action,id:s.id,title:s.title,company:s.company};var names={approve:'Approve visitor suggestion',review:'Verify employer and job',invoice_sent:'Mark invoice as sent',mark_paid:'Confirm payment received',publish:'Publish paid job',reject:'Reject pending submission',reverify:'Recheck vacancy',pause:'Pause campaign',resume:'Resume campaign',end:'End campaign'};
+ function showAction(action,s){pendingAction={action:action,id:s.id,title:s.title,company:s.company};var names={approve:'Approve visitor suggestion',review:'Verify employer and job',invoice_sent:'Mark invoice as sent',mark_paid:'Confirm payment received',publish:'Publish paid job',reject:'Reject pending submission',close:'Close published vacancy',reverify:'Recheck vacancy',pause:'Pause campaign',resume:'Resume campaign',end:'End campaign'};
   $('confirm-heading').textContent=names[action]||'Confirm action';$('confirm-details').textContent=s.title+' — '+s.company+' · '+s.id+' · '+(s.postingPackage||'curated')+' · '+(s.paymentStatus||'no invoice')+'.';
-  $('activate-fields').hidden=true;$('review-confirmed').parentNode.hidden=['review','approve','publish','reject','reverify'].indexOf(action)<0;
+  $('activate-fields').hidden=true;$('review-confirmed').parentNode.hidden=['review','approve','publish','reject','reverify','close'].indexOf(action)<0;
   $('invoice-fields').hidden=action!=='invoice_sent';$('payment-fields').hidden=action!=='mark_paid';
   $('review-confirmed').checked=false;$('invoice-sent-confirmed').checked=false;$('payment-verified').checked=false;$('payment-reference').value='';setMessage('confirm-error','');$('confirm-backdrop').hidden=false;
  }
  function closeAction(){$('confirm-backdrop').hidden=true;pendingAction=null;}
  function execute(){if(!pendingAction)return;var payload={action:pendingAction.action,id:pendingAction.id};
-  if(['review','approve','publish','reject','reverify'].indexOf(payload.action)>=0){payload.reviewConfirmed=$('review-confirmed').checked;if(!payload.reviewConfirmed){setMessage('confirm-error','You must confirm the editorial review.');return;}}
+  if(['review','approve','publish','reject','reverify','close'].indexOf(payload.action)>=0){payload.reviewConfirmed=$('review-confirmed').checked;if(!payload.reviewConfirmed){setMessage('confirm-error','You must confirm the editorial review.');return;}}
   if(payload.action==='invoice_sent'){payload.invoiceSentConfirmed=$('invoice-sent-confirmed').checked;if(!payload.invoiceSentConfirmed){setMessage('confirm-error','Do not mark sent unless the actual invoice has been sent.');return;}}
   if(payload.action==='mark_paid'){payload.paymentConfirmed=$('payment-verified').checked;payload.paymentReference=$('payment-reference').value.trim();if(!payload.paymentConfirmed||payload.paymentReference.length<4){setMessage('confirm-error','Verify funds in your own account and enter a reconciliation reference.');return;}}
   $('execute-action').disabled=true;api('POST',payload).then(function(res){closeAction();return api('GET').then(function(d){data=d;render();$('operation-error').hidden=false;setMessage('operation-error',res.message||'Updated. No automatic email has been sent.');});}).then(function(){$('execute-action').disabled=false;},function(err){$('execute-action').disabled=false;setMessage('confirm-error',err.message);});
@@ -80,6 +80,7 @@
    else if(s.paymentStatus==='paid'){actionButton(actions,'Publish paid job','primary',function(){showAction('publish',s);});actionButton(actions,'Copy payment email','',function(){emailDraft(s,'paid');});}
    else info.appendChild(el('p','role','Legacy/no paid order — cannot publish. Request a new paid order.'));
   }else if(kind==='approved'){
+   actionButton(actions,'Close vacancy','',function(){showAction('close',s);});
    actionButton(actions,'Reverify','',function(){showAction('reverify',s);});
    if(s.kind==='employer')actionButton(actions,'Copy publication email','',function(){emailDraft(s,'published');});
    if(campaign)actions.appendChild(el('span','status',campaign.status));
@@ -93,7 +94,7 @@
  }
  function fill(id,items,kind){var host=$(id);host.textContent='';if(!items.length){host.appendChild(el('p','empty','No records in this view.'));return;}items.forEach(function(s){host.appendChild(record(s,kind));});}
  function render(){count();var requests=data.submissions.filter(function(s){return s.status==='pending';}),approved=data.submissions.filter(function(s){return s.status==='approved';}),campaignJobs=approved.filter(function(s){return !!campaignFor(s.id);});fill('requests-list',requests,'requests');fill('approved-list',approved,'approved');fill('campaigns-list',campaignJobs,'campaigns');selectTab(selectedTab);}
- function selectTab(tab){selectedTab=tab;['requests','approved','campaigns','sources'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
+ function selectTab(tab){selectedTab=tab;if(tab==='distribution')loadQueue();['requests','approved','campaigns','sources','distribution'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
 
  // v0.14.2: opt-in registry, same tab-memory credential. Failures do not affect premium management.
  var sourceState={sources:[],maps:[]},indexHealth={},indexReady=false,indexEnvironment='',selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null,sourceInspectRevision=0,sourceInspectButton=null,sourceMapSaving=false;
@@ -295,5 +296,68 @@
   sourceDebounce=setTimeout(function(){sourceGet('/api/geo?kind=cities&purpose=source&country='+encodeURIComponent(country)+'&region='+encodeURIComponent(region)+'&q='+encodeURIComponent(q)).then(function(j){if(requestNo!==sourceGeoRequest)return;out.textContent='';j.cities.forEach(function(city){var b=el('button','',city.name);b.type='button';b.onclick=function(){selectedCity={kind:'city',countryCode:country,regionId:Number(region),cityId:Number(city.id),cityName:city.name,regionName:$('source-region').options[$('source-region').selectedIndex].text};$('source-city').value=city.name;out.hidden=true;$('source-map-save').disabled=false;$('source-selected-city').textContent='Verified selection: '+city.name+', '+selectedCity.regionName;};out.appendChild(b);});out.hidden=!j.cities.length;if(!j.cities.length)$('source-selected-city').textContent='No verified city matched. Try another spelling.';}).catch(function(e){$('source-selected-city').textContent=e.message;});},220);
  };
  $('source-map-form').onsubmit=function(e){e.preventDefault();return saveVerifiedLocationMapping();};
+ function clearQueue(){
+  $('queue-setup').hidden=true;
+  ['queue-candidates','queue-entries','queue-history','queue-metrics','queue-message'].forEach(function(id){$(id).textContent='';});
+  $('queue-export').value='';$('queue-output').hidden=true;
+ }
+ function queueAPI(input){
+  return fetch('/api/distribution',{method:input?'POST':'GET',credentials:'same-origin',cache:'no-store',
+   headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:input?JSON.stringify(input):undefined
+  }).then(function(r){return r.json().then(function(v){if(!r.ok)throw Error(v.error||'Queue unavailable');return v;});});
+ }
+ function queueAction(input){
+  var session=token;
+  return queueAPI(input).then(function(v){if(!token||session!==token)return;
+   if(v.body){$('queue-export').value=v.body;$('queue-output').hidden=false;}
+   return loadQueue('Saved '+input.action+'.');
+  }).catch(function(err){if(session===token)setMessage('queue-message',err.message);});
+ }
+ function reviewForm(card,item){
+  var form=el('form','source-form');
+  var evidence=el('input'),description=el('textarea'),confirm=el('input');
+  evidence.required=true;evidence.maxLength=500;description.required=true;description.minLength=240;description.maxLength=16000;
+  confirm.type='checkbox';confirm.required=true;
+  [[evidence,'Permission record or reference'],[description,'Full authorized plain-text description'],[confirm,'I checked this exact vacancy, location and reuse permission.']].forEach(function(pair){
+   var label=el('label','',pair[1]);label.appendChild(pair[0]);form.appendChild(label);
+  });
+  var save=el('button','','Save verification');save.type='submit';form.appendChild(save);
+  form.onsubmit=function(e){e.preventDefault();queueAction({action:'review',id:item.id,version:item.version,evidence:evidence.value,description:description.value,confirmed:confirm.checked});};
+  var details=el('details');details.appendChild(el('summary','','Review publication rights'));details.appendChild(form);card.appendChild(details);
+  actionButton(card,'Revoke rights','',function(){queueAction({action:'revoke',id:item.id});});
+ }
+ function loadQueue(message){
+  var session=token;
+  return queueAPI().then(function(v){
+   if(!session||session!==token)return;
+   $('queue-setup').hidden=true;
+   var candidates=$('queue-candidates'),entries=$('queue-entries'),history=$('queue-history'),metrics=$('queue-metrics');
+   [candidates,entries,history,metrics].forEach(function(n){n.textContent='';});
+   v.candidates.forEach(function(item){
+    var card=el('article','record');candidates.appendChild(card);
+    card.appendChild(el('strong','',item.title+' · '+item.company));card.appendChild(el('p','',item.location));
+    linkText(card,item.url,'Original vacancy');if(item.source)reviewForm(card,item);
+    ['reddit','x'].forEach(function(channel){actionButton(card,'Draft for '+channel,'',function(){queueAction({action:'draft',id:item.id,channel:channel});});});
+   });
+   if(!v.candidates.length)candidates.textContent='No vacancies verified within the last 72 hours.';
+   v.queue.forEach(function(q){
+    var card=el('article','record');entries.appendChild(card);
+    card.appendChild(el('strong','',q.channel+' · '+q.status));card.appendChild(el('p','',q.body));linkText(card,q.original_url,'Verify original vacancy');
+    function button(label,action){actionButton(card,label,'',function(){queueAction({action:action,id:q.job_id,channel:q.channel,version:q.fingerprint});});}
+    if(q.status==='draft')button('Approve this text','approve');
+    if(q.status==='approved'||q.status==='exported')button('Export approved text','export');
+    if(q.status!=='withdrawn')button('Withdraw','withdraw');
+   });
+   if(!v.queue.length)entries.textContent='No drafts yet.';
+   v.audit.forEach(function(a){history.appendChild(el('li','',a.recorded_at+' UTC · '+a.job_id+' · '+a.channel+' · '+a.event));});
+   v.metrics.forEach(function(m){metrics.appendChild(el('p','',m.day+' · '+m.event+' · '+m.referral+' · '+(m.job_key||'directory')+' · '+m.total));});
+   setMessage('queue-message',message||'');
+  }).catch(function(err){if(session===token){clearQueue();$('queue-setup').hidden=err.message!=='Queue unavailable. Check the isolated Preview migration.';setMessage('queue-message',err.message);}});
+ }
+ $('queue-setup').onclick=function(){
+  if(window.confirm('Initialize the queue and metrics in the isolated Preview database?'))queueAction({action:'initialize',confirmed:true});
+ };
+ $('queue-refresh').onclick=function(){clearQueue();loadQueue();};
+ $('queue-copy').onclick=function(){var field=$('queue-export');field.focus();field.select();var copied=document.execCommand('copy');setMessage('queue-message',copied?'Copied approved text.':'Text selected for manual copy.');};
  $('unlock-button').addEventListener('click',unlock);$('operator-key').addEventListener('keydown',function(e){if(e.key==='Enter')unlock();});$('refresh-button').addEventListener('click',function(){api('GET').then(function(d){data=d;render();}).catch(function(err){if(/access|invalid|configured/i.test(err.message))lock(err.message);else {$('operation-error').hidden=false;setMessage('operation-error',err.message);}});});$('lock-button').addEventListener('click',function(){lock('Operator console locked.');});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.addEventListener('click',function(){selectTab(btn.getAttribute('data-tab'));});});$('cancel-action').addEventListener('click',closeAction);$('execute-action').addEventListener('click',execute);$('confirm-backdrop').addEventListener('click',function(e){if(e.target===$('confirm-backdrop'))closeAction();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('confirm-backdrop').hidden)closeAction();});
 })();

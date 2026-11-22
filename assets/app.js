@@ -8,6 +8,16 @@
     web:'Web / Creative Tech', museum:'Museum / Exhibition', culture:'Arts / Cultural Production'
   };
   var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, savedPeriod:'all', visible:10, review:false};
+  // Category landing pages link to the existing filtered job board.
+  // Only allow known disciplines; never use unchecked query input as HTML.
+  try {
+    var requestedDiscipline=new URL(window.location.href).searchParams.get('discipline')||'';
+    if(Object.prototype.hasOwnProperty.call(roleLabels,requestedDiscipline)){
+      state.selectedRoles=[requestedDiscipline];
+      var selectedCheckbox=document.querySelector('input[name="discipline"][value="'+requestedDiscipline+'"]');
+      if(selectedCheckbox)selectedCheckbox.checked=true;
+    }
+  }catch(e){}
   // Tags are a publication requirement: 1–3 verified role/skill labels per job.
   // No user search counts, guessed qualifications, or random tag promotion.
   var PREFERENCES_KEY='studio-openings.keywords.v05';
@@ -72,11 +82,16 @@
     var details=(title+' '+String(job.description||job.summary||'')).toLowerCase().slice(0,12000);
     var direction=role==='visual'?directionTagProfile(job):null;
     if(direction)return direction.visible;
-    var tags=[ROLE_TAG[role]];
+    var primary=ROLE_TAG[role];
+    if(role==='fashion' && /\b(?:photograph(?:er|y)|retoucher|photo (?:editor|stylist|producer))\b/.test(title))primary='Photography';
+    if(role==='web' && /\bcreative (?:developer|technologist|technology)\b/.test(title))primary='Creative Technology';
+    var tags=[primary];
+    if(primary==='Photography' && /\bretoucher\b/.test(title))tags.push('Retouching');
+    if(primary==='Photography' && /\bfashion\b/.test(title))tags.push('Fashion');
     function add(label,condition){if(condition && tags.indexOf(label)<0)tags.push(label);}
     // Source-normalized backend tags can be used if they are recognized and concise.
     var allowable={Architecture:1,'Interior':1,'Industrial Design':1,'Product Design':1,'Graphic Design':1,'Motion Design':1,'Fashion':1,'Web Design':1,'Exhibition':1,'Creative Arts':1,'Preservation':1,'Urban Planning':1,'Landscape Architecture':1,'CAD':1,'UX/UI':1,'Branding':1,'Illustration':1,'3D':1,'Photography':1,'Sound':1,'Revit':1,'AutoCAD':1,'BIM':1,'Figma':1,'Rhino':1,'SketchUp':1,'Adobe Creative Cloud':1,'Vectorworks':1,'Archicad':1,'Grasshopper':1,'Civil 3D':1,'Blender':1,'Cinema 4D':1,'After Effects':1,'Photoshop':1,'Illustrator':1,'InDesign':1,'Enscape':1,'Lumion':1,'V-Ray':1,'Public Sector':1};
-    if(Array.isArray(job.tags))job.tags.forEach(function(t){if(t==='Landscape')t='Landscape Architecture';if(t==='Adobe')t='Adobe Creative Cloud';if(allowable[t])add(t,true);});
+    if(Array.isArray(job.tags))job.tags.forEach(function(t){if(t==='Landscape')t='Landscape Architecture';if(t==='Adobe')t='Adobe Creative Cloud';if(allowable[t]&&(t!==ROLE_TAG[role]||primary===t))add(t,true);});
     // Detect specialties from the role title. A bare 'architect' is NOT enough
     // unless backend classification verified it as a physical design role.
     add('Preservation',/\b(?:preservation|historic preservation|heritage)\b/.test(title));
@@ -91,7 +106,7 @@
     add('Sound',/sound design|audio design/.test(title));
     // Every accepted role has one role-level tag. It describes a category,
     // not a claimed software skill or a guessed applicant requirement.
-    add(ROLE_TAG[role],true);
+    add(primary,true);
     // Only show software/production skills explicitly mentioned in the source.
     add('Revit',/\brevit\b/.test(details));
     add('AutoCAD',/\bautocad\b/.test(details));
@@ -130,7 +145,7 @@
    'Exhibition':'#d4b69f','Creative Arts':'#c1df9e','Preservation':'#c6a5ec',
    'Urban Planning':'#82cfbd','CAD':'#a9bde2','UX/UI':'#e6adce',
    'Branding':'#efa79f','Illustration':'#c9b2db','3D':'#8fc9e7',
-   'Photography':'#f9b58f','Sound':'#99cfdb','Revit':'#86d7cf',
+   'Retouching':'#e4bbac','Creative Technology':'#9ddbd0','Photography':'#f9b58f','Sound':'#99cfdb','Revit':'#86d7cf',
    'AutoCAD':'#eba2a9','BIM':'#d0a1e9','Figma':'#d0bd9c',
    'Rhino':'#b6b1ee','SketchUp':'#dcb0af','Adobe Creative Cloud':'#a9d2a0',
    'Public Sector':'#b3c1d1','Vectorworks':'#a6d9bf','Archicad':'#cba5c1',
@@ -139,10 +154,33 @@
    'Illustrator':'#e9b1b8','InDesign':'#c5c8a1','Enscape':'#aac9d1',
    'Lumion':'#d4c2a6','V-Ray':'#c2a8dd'
   };
+  // Compact labels are visual aliases only; canonical terms remain stored,
+  // searchable, screen-reader friendly and tied to the original tag palette.
+  var SHORT_TAG_LABELS={
+    'Architecture':'Arch',
+    'Art Direction':'AD',
+    'Creative Direction':'CD',
+    'Product Design':'Product',
+    'Graphic Design':'Graphic',
+    'Motion Design':'Motion',
+    'Industrial Design':'Industrial',
+    'Landscape Architecture':'Landscape',
+    'Urban Planning':'Urban',
+    'Web Design':'Web',
+    'Creative Arts':'Arts',
+    'Photography':'Photo',
+    'Adobe Creative Cloud':'Adobe CC',
+    'Public Sector':'Public'
+  };
+  function shortTagLabel(word){
+    return Object.prototype.hasOwnProperty.call(SHORT_TAG_LABELS,word)
+      ? SHORT_TAG_LABELS[word] : word;
+  }
   function tagColorFor(word){return TAG_PALETTE[word]||'#cad9e6';}
   function styleTag(tag,word){tag.style.backgroundColor=tagColorFor(word);}
   function displayableJob(job){
     if(!job||!job.id||!job.title||!job.company)return false;
+    if(job.expiresAt && !(Date.parse(job.expiresAt)>Date.now()))return false;
     if((job.applicationMethod||'external')==='external'&&!safeUrl(job.url))return false;
     return categoryFor(job)!=='not-creative'&&jobKeywords(job).length>0;
   }
@@ -333,15 +371,16 @@
       salary:String(job.salary||'').slice(0,75),eligibility:String(job.eligibility||'').slice(0,170),
       seniority:String(job.seniority||'').slice(0,65),tags:jobKeywords(job)};
   }
+  var liveAliases=Object.create(null);
   function hydrateSavedEntries(){
     var updates=false;
     saved.forEach(function(record,index){
-      var job=state.jobs.filter(function(item){return String(item.id)===record.id;})[0];
+      var job=state.jobs.filter(function(item){return String(item.id)===(liveAliases[record.id]||record.id);})[0];
       if(!job)return;
       var recent=snapshotForJob(job,record);
       if(JSON.stringify(record)!==JSON.stringify(recent)){saved[index]=recent;updates=true;}
     });
-    if(updates)persist();
+    if(updates){saved=saved.filter(function(entry,i){return saved.findIndex(function(other){return entry.id===other.id;})===i;});persist();}
   }
   // Saved Jobs remains a separate shortlist but honors the same active filters.
   // Stored bookmarks are never deleted by filtering.
@@ -637,9 +676,21 @@
     try { return new URL(window.location.href).searchParams.get('job') || ''; }
     catch(e){ return ''; }
   }
+  // Stable, opaque public handle: no encoded source URL or provider name.
+  // This is a URL alias, NOT encryption or a security boundary.
+  // The original job id stays available internally for API matching and saving.
+  function publicJobHandle(id){
+    var value=String(id||''),a=2166136261,b=3339675911,i,n;
+    for(i=0;i<value.length;i++){
+      n=value.charCodeAt(i);
+      a=Math.imul(a^n,16777619)>>>0;
+      b=Math.imul(b^(n+((i&255)<<8)),2246822519)>>>0;
+    }
+    return 'so-'+a.toString(36).padStart(7,'0')+b.toString(36).padStart(7,'0');
+  }
   function jobLinkFor(id){
     var url=new URL(window.location.href);
-    if(id) url.searchParams.set('job',String(id));
+    if(id)url.searchParams.set('job',publicJobHandle(id));
     else url.searchParams.delete('job');
     return url.href;
   }
@@ -655,10 +706,15 @@
   function syncJobFromUrl(){
     var id=jobIdFromUrl();
     if(!id){ closeDrawer(true); return; }
-    var job=state.jobs.filter(function(candidate){return String(candidate.id)===id;})[0];
+    var job=state.jobs.filter(function(candidate){
+      return String(candidate.id)===(liveAliases[id]||id) || publicJobHandle(candidate.id)===id;
+    })[0];
     if(job){
+      // Legacy long source URLs continue to open; replace them in the address
+      // bar with the new short public identifier without adding history.
+      if(id!==publicJobHandle(job.id))updateJobUrl(job.id,'replace');
       // Do not change history or rerender the list on a browser Back/Forward event.
-      if(!activeJob || String(activeJob.id)!==id)openDrawer(job,null,true);
+      if(!activeJob || String(activeJob.id)!==String(job.id))openDrawer(job,null,true);
       $('job-link-message').hidden=true;
     }else{
       closeDrawer(true);
@@ -691,7 +747,7 @@
       .replace(/<br\b[^>]*\/?>/gi,'\n').replace(/<li\b[^>]*>/gi,'\n• ')
       .replace(/<\/li\s*>/gi,'\n')
       .replace(/<\/?(?:p|div|section|article|h[1-6]|ul|ol|blockquote)\b[^>]*>/gi,'\n\n')
-      .replace(/<[^>]+>/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+      .replace(/<\/?[a-z][\w:-]*(?:\s[^<>]*)?\/?>/gi,' ').replace(/\n{3,}/g,'\n\n').trim();
     // Some copied descriptions glue a new sentence directly to a full stop.
     // Only split before a capitalized ordinary word; avoid .NET, version IDs, URLs.
     text=text.replace(/([.!?]["'’”)]?)([A-Z][a-z])/g,'$1\n\n$2');
@@ -805,7 +861,7 @@
     });
     var excerpt=trim(job.description||job.summary);
     renderJobDescription(excerpt);
-    $('drawer-description-note').textContent=excerpt?(job.descriptionKind==='editorial-summary'?'Editorial summary based on the linked vacancy. Always check the full original job description and eligibility.':'This is a source-provided excerpt. See the original listing for requirements and full details.'):'Read the original vacancy for responsibilities, qualifications, eligibility and application instructions.';
+    $('drawer-description-note').textContent=excerpt?(job.descriptionKind==='editorial-summary'?'Editorial summary based on the linked vacancy. Always check the full original job description and eligibility.':job.descriptionKind==='source-excerpt'?'Excerpt from the original vacancy. Open the original listing for the complete requirements.':'Description supplied by the hiring source. Confirm current requirements on the original listing.'):'Read the original vacancy for responsibilities, qualifications, eligibility and application instructions.';
     $('drawer-check-date').textContent=dateLabel(job).label;
     // The source credit is a real link. Always keep third-party applicants on
     // the original API application URL; never silently reroute them to us.
@@ -829,7 +885,7 @@
         sourceHolder.appendChild(credit);
       }else sourceHolder.appendChild(document.createTextNode(source));
     }
-    if(/^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(String(job.detailUrl||''))){
+    if(detailPath(job)){
       var sep=document.createTextNode(' · ');sourceHolder.appendChild(sep);
       var jobPage=document.createElement('a');jobPage.href=job.detailUrl;jobPage.textContent='View job page';
       sourceHolder.appendChild(jobPage);
@@ -837,6 +893,7 @@
     var apply=$('drawer-apply');
     apply.hidden=false;
     apply.dataset.method=method;
+    apply.setAttribute('data-apply-job',/^direct-so-/i.test(job.id)?job.id.slice(7).toUpperCase():/^registry-/.test(job.id)?job.id:'');
     // For sourced jobs, use ONLY the original applicationLink/url from the API.
     apply.href=method==='external'?job.url:method==='email'?'mailto:'+encodeURIComponent(job.applicationEmail||'')+'?subject='+encodeURIComponent('Application: '+job.title):'#apply';
     var externalOrigin='Apply for job';
@@ -871,12 +928,21 @@
     if(lastOpener&&document.contains(lastOpener))lastOpener.focus();
     lastOpener=null;
   }
+  function detailPath(job){
+    var path=String(job&&job.detailUrl||'');
+    return /^\/(?:jobs\/SO-[A-Z0-9-]{6,45}|openings\/[a-z0-9-]{8,160})$/i.test(path)?path:'';
+  }
   function rowFor(job){
     var frag=$('job-template').content.cloneNode(true),row=frag.querySelector('.job-row'),open=row.querySelector('.job-open'),head=row.querySelector('.job-open-head');
     row.setAttribute('data-swatch',swatchFor(job));
     row.setAttribute('data-job-id',String(job.id));
     if(isFeatured(job))row.classList.add('is-featured');
 
+    if(detailPath(job)){
+      var link=document.createElement('a');link.href=detailPath(job);link.className=head.className;
+      link.setAttribute('aria-haspopup','dialog');link.appendChild(head.firstElementChild);
+      head.parentNode.replaceChild(link,head);head=link;
+    }
     var titleNode=head.querySelector('.job-title');
     titleNode.textContent=displayTitle(job.title);
     if(isFeatured(job)){
@@ -914,7 +980,10 @@
     jobKeywords(job).forEach(function(word){
       var chip=document.createElement('button');chip.type='button';chip.className='job-keyword';
       if(state.keywords.indexOf(word)>=0)chip.classList.add('selected');
-      chip.textContent=word;chip.setAttribute('aria-pressed',String(state.keywords.indexOf(word)>=0));
+      // Compact visible tag, keep the canonical taxonomy for search and filtering.
+      chip.textContent=shortTagLabel(word);
+      chip.setAttribute('aria-label',word);
+      chip.setAttribute('aria-pressed',String(state.keywords.indexOf(word)>=0));
       styleTag(chip,word);
       chip.title=state.keywords.indexOf(word)>=0?'Remove '+word+' from preferences':'Add '+word+' to preferences';
       chip.addEventListener('click',function(event){event.stopPropagation();toggleKeyword(word);});
@@ -938,7 +1007,8 @@
     // Do not add a third row, change employer placement or change the job date itself.
     var ageGroup=document.createElement('span');ageGroup.className='job-age-group';
     var marker=document.createElement('span');marker.className='job-state-marker';marker.hidden=true;
-    age.parentNode.insertBefore(ageGroup,age);
+    var headline=document.createElement('div');headline.className='job-headline';
+    head.parentNode.insertBefore(headline,head);headline.appendChild(head);headline.appendChild(ageGroup);
     ageGroup.appendChild(marker);
     ageGroup.appendChild(age);
     updateJobMarker(row,job.id);
@@ -947,7 +1017,10 @@
     head.setAttribute('aria-label',disclosurePrefix+'View details: '+displayTitle(job.title)+' at '+job.company);
     employer.setAttribute('aria-label',disclosurePrefix+'View details: '+displayTitle(job.title)+' at '+job.company);
     open.addEventListener('click',function(){openDrawer(job,open);});
-    head.addEventListener('click',function(){openDrawer(job,head);});
+    head.addEventListener('click',function(e){
+      if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
+      e.preventDefault();openDrawer(job,head);
+    });
     employer.addEventListener('click',function(){openDrawer(job,employer);});
     return frag;
   }
@@ -1055,7 +1128,13 @@
     $('drawer-share').setAttribute('aria-expanded','false');
   }
   function publicShareUrl(job){
-    if(shareReviewMode())return jobLinkFor(job.id);
+    // Employer-approved vacancies already have server-rendered SEO pages.
+    // Share that canonical page rather than the homepage drawer deep-link.
+    // Third-party feed jobs still use stable opaque short links.
+    var path=detailPath(job);
+    if(!shareReviewMode()&&path){
+      return new URL(path,window.location.origin).href;
+    }
     return jobLinkFor(job.id);
   }
   function shareText(job){return displayTitle(job.title)+' — '+job.company+' | Studio Openings';}
@@ -1105,6 +1184,9 @@
   });
   $('drawer-apply').addEventListener('click',function(e){
     if(!activeJob)return;
+    if(activeJob.expiresAt && !(Date.parse(activeJob.expiresAt)>Date.now())){
+      e.preventDefault();closeDrawer();state.jobs=state.jobs.filter(displayableJob);render();return;
+    }
     var method=activeJob.applicationMethod||'external';
     if(method==='external'&&!safeUrl(activeJob.url))return;
     if(method==='email'&&!activeJob.applicationEmail)return;
@@ -1150,16 +1232,35 @@
     hydrateSavedEntries();render();
     syncJobFromUrl();
   }
+  function vacancyLinkKey(job){
+    if(!job.url)return '';
+    try{
+      var link=new URL(job.url);
+      link.hash='';
+      var keys=[];link.searchParams.forEach(function(_,k){if(/^utm_|^gh_src$/i.test(k))keys.push(k);});
+      keys.forEach(function(k){link.searchParams.delete(k);});
+      if(link.hostname==='boards.greenhouse.io')link.hostname='job-boards.greenhouse.io';
+      if(/^(?:job-boards\.greenhouse\.io|jobs\.(?:eu\.)?lever\.co|jobs\.ashbyhq\.com)$/.test(link.hostname) && link.pathname.split('/').filter(Boolean).length>=2){
+        return link.origin+link.pathname.replace(/\/apply\/?$|\/$/,'');
+      }
+      return link.href+'|'+trim(job.title).toLowerCase()+'|'+trim(job.location).toLowerCase();
+    }catch(e){return '';}
+  }
   function loadLive(){
-    var urls=['/api/jobs','/api/approved-jobs','/api/firm-jobs','/api/editorial-jobs','/api/indexed-jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3'];
-    Promise.all([loadFeaturedConfig(),Promise.allSettled(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();});}))]).then(function(all){
+    var urls=['/api/approved-jobs','/api/indexed-jobs','/api/firm-jobs','/api/editorial-jobs','/api/jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/ai-jobs?shard=7','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3'];
+    Promise.all([loadFeaturedConfig(),Promise.all(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();}).then(function(value){return {status:'fulfilled',value:value};},function(){return {status:'rejected'};});}))]).then(function(all){
       var items=all[1];
-      var seen={},records=[],latest=null,success=0;
+      var seen=Object.create(null),links=Object.create(null),records=[],latest=null,success=0;
       items.forEach(function(outcome){
         if(outcome.status!=='fulfilled'||!outcome.value||!Array.isArray(outcome.value.jobs))return;
         success++;
         outcome.value.jobs.forEach(function(j){
-          if(displayableJob(j)&&!seen[j.id]){records.push(j);seen[j.id]=true;}
+          if(!displayableJob(j)||seen[j.id])return;
+          var key=vacancyLinkKey(j);
+          if(key && links[key]){
+            liveAliases[j.id]=links[key];liveAliases[publicJobHandle(j.id)]=links[key];return;
+          }
+          records.push(j);seen[j.id]=true;if(key)links[key]=j.id;
         });
         if(outcome.value.updatedAt)latest=outcome.value.updatedAt;
       });

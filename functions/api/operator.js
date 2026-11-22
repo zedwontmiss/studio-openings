@@ -89,6 +89,16 @@ async function action(env,input){
   const r=await env.JOBS_DB.batch(ops);
   return r.every(x=>x?.success===true)?reply({ok:true,message:'Submission rejected. Send a manual status email to the contact.'}):fail(503,'Rejection not saved.');
  }
+ if(action==='close'){
+  if(input.reviewConfirmed!==true)return fail(422,'Confirm that this vacancy has closed.');
+  if(row.status==='closed')return reply({ok:true,message:'Vacancy already closed.'});
+  if(row.status!=='approved')return fail(409,'Only a published vacancy can be closed.');
+  await env.JOBS_DB.batch([
+   env.JOBS_DB.prepare("UPDATE job_submissions SET status='closed' WHERE id=? AND status='approved'").bind(id),
+   env.JOBS_DB.prepare("UPDATE premium_campaigns SET status='ended',updated_at=CURRENT_TIMESTAMP WHERE submission_id=? AND status IN ('active','paused')").bind(id)
+  ]);
+  return reply({ok:true,message:'Vacancy closed and removed from active listings.'});
+ }
  if(action==='reverify'){
   if(row.status!=='approved'||input.reviewConfirmed!==true)return fail(409,'Recheck a currently published vacancy first.');
   const r=await env.JOBS_DB.prepare("UPDATE job_submissions SET reviewed_at=CURRENT_TIMESTAMP WHERE id=? AND status='approved'").bind(id).run();

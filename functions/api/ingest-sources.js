@@ -1,4 +1,4 @@
-import {fetchOfficialJobs,safeJobURL,locationKey,classifyCreative,sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
+import {fetchOfficialJobScan,safeJobURL,locationKey,classifyCreative,sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
 import {cityCovered,POLICY_VERSION} from '../../lib/coverage-policy.js';
 const H={'content-type':'application/json; charset=utf-8','cache-control':'private, no-store'};
 const respond=(v,status=200)=>new Response(JSON.stringify(v),{status,headers:H});
@@ -31,23 +31,32 @@ export function normalized(row,source,place){
 async function health(db,id,status,n,m){
  await db.prepare("INSERT INTO source_ingest_health(source_id,last_attempt_at,last_success_at,status,source_count,matched_count,failure_streak) VALUES(?,CURRENT_TIMESTAMP,CASE WHEN ?='ok' THEN CURRENT_TIMESTAMP ELSE NULL END,?,?,?,CASE WHEN ?='ok' THEN 0 ELSE 1 END) ON CONFLICT(source_id) DO UPDATE SET last_attempt_at=CURRENT_TIMESTAMP,last_success_at=CASE WHEN excluded.status='ok' THEN CURRENT_TIMESTAMP ELSE last_success_at END,status=excluded.status,source_count=excluded.source_count,matched_count=excluded.matched_count,failure_streak=CASE WHEN excluded.status='ok' THEN 0 ELSE failure_streak+1 END").bind(id,status,status,n,m,status).run();
 }
-async function sync(db,source){
- let rows;try{rows=await fetchOfficialJobs(source,fetch,{includeDescription:true});}
+export async function sync(db,source,fetcher=fetch){
+ const lease='scan:'+source.id,now=Date.now(),token=(now+120000)+':'+crypto.randomUUID();
+ const acquired=await db.prepare("INSERT INTO source_ingest_cursor(name,last_source_id) VALUES(?,?) ON CONFLICT(name) DO UPDATE SET last_source_id=excluded.last_source_id WHERE CAST(last_source_id AS INTEGER)<=?").bind(lease,token,now).run();
+ if(!acquired.meta.changes)return {ok:false,busy:true,error:'Source scan already in progress.'};
+ try{return await scan(db,source,fetcher,lease,token);}
+ finally{await db.prepare('DELETE FROM source_ingest_cursor WHERE name=? AND last_source_id=?').bind(lease,token).run();}
+}
+async function scan(db,source,fetcher,lease,token){
+ let scan;
+ try{scan=await fetchOfficialJobScan(source,fetcher,{includeDescription:true});}
  catch(_){await health(db,source.id,'fetch_failed',0,0);return {ok:false,error:'Official ATS fetch failed; snapshots retained.'};}
+ const rows=scan.rows;
  const mapped=await db.prepare('SELECT location_key,city_name,region_name,country_name,country_code FROM source_location_maps WHERE source_id=? LIMIT 800').bind(source.id).all();
- const lookup=new Map((mapped.results||[]).map(r=>[r.location_key,r])),jobs=[],seen=new Set(),token=crypto.randomUUID();
+ const lookup=new Map((mapped.results||[]).map(r=>[r.location_key,r])),jobs=[],seen=new Set();
  for(const r of rows){
   const job=normalized(r,source,lookup.get(locationKey(r.location)));
   if(!job||seen.has(job.id))continue;
   seen.add(job.id);jobs.push(job);if(jobs.length>=100)break;
  }
- for(let i=0;i<jobs.length;i+=20){
-  const statements=jobs.slice(i,i+20).map(j=>db.prepare("INSERT INTO source_job_snapshots(id,source_id,job_json,state,scan_token,last_seen_at,miss_count) VALUES(?,?,?,'active',?,CURRENT_TIMESTAMP,0) ON CONFLICT(id) DO UPDATE SET job_json=excluded.job_json,state='active',scan_token=excluded.scan_token,last_seen_at=CURRENT_TIMESTAMP,miss_count=0").bind(j.id,source.id,JSON.stringify(j),token));
-  const result=await db.batch(statements);if(!result.every(x=>x.success===true))throw Error('D1 write failed');
- }
- // Never retire after a fetch error, empty response or truncated scan.
- const complete=rows.length>0&&rows.length<800&&jobs.length<100;
- if(complete)await db.prepare("UPDATE source_job_snapshots SET miss_count=miss_count+1,state=CASE WHEN miss_count>=1 THEN 'retired' ELSE state END WHERE source_id=? AND state='active' AND scan_token<>?").bind(source.id,token).run();
+ // One transaction per board. Late scans cannot overwrite a newer lease.
+ const guard="EXISTS (SELECT 1 FROM source_ingest_cursor WHERE name=? AND last_source_id=?) AND EXISTS (SELECT 1 FROM creative_sources WHERE id=? AND status='approved')";
+ const proof=[lease,token,source.id];
+ const statements=jobs.map(j=>db.prepare("INSERT INTO source_job_snapshots(id,source_id,job_json,state,scan_token,last_seen_at,miss_count) SELECT ?,?,?,'active',?,CURRENT_TIMESTAMP,0 WHERE "+guard+" ON CONFLICT(id) DO UPDATE SET job_json=excluded.job_json,state='active',scan_token=excluded.scan_token,last_seen_at=CURRENT_TIMESTAMP,miss_count=0").bind(j.id,source.id,JSON.stringify(j),token,...proof));
+ const complete=scan.complete&&jobs.length<100;
+ if(complete)statements.push(db.prepare("UPDATE source_job_snapshots SET miss_count=miss_count+1,state=CASE WHEN miss_count>=1 THEN 'retired' ELSE state END WHERE source_id=? AND state='active' AND scan_token<>? AND "+guard).bind(source.id,token,...proof));
+ if(statements.length)await db.batch(statements);
  await health(db,source.id,'ok',rows.length,jobs.length);
  return {ok:true,source:source.employer_name,atsJobs:rows.length,indexed:jobs.length,verifiedLocations:lookup.size,retirement:complete?'double-confirmed':'skipped'};
 }
@@ -63,7 +72,7 @@ export async function onRequestPost({request,env}){
  let payload;try{const raw=await request.text();if(raw.length>1200)throw Error('size');payload=JSON.parse(raw);}catch{return respond({ok:false,error:'Invalid JSON.'},400);}
  if(!payload||typeof payload!=='object'||Array.isArray(payload))return respond({ok:false,error:'Invalid request.'},422);
  if(payload.sourceId!==undefined&&!/^src-[a-z0-9-]{15,55}$/i.test(payload.sourceId))return respond({ok:false,error:'Invalid source ID.'},422);
- try{const source=await sourceFor(env.JOBS_DB,payload.sourceId||'');if(!source)return respond({ok:!payload.sourceId,status:'no-approved-source'},payload.sourceId?404:200);const r=await sync(env.JOBS_DB,source);return respond(r,r.ok?200:502);}
+ try{const source=await sourceFor(env.JOBS_DB,payload.sourceId||'');if(!source)return respond({ok:!payload.sourceId,status:'no-approved-source'},payload.sourceId?404:200);const r=await sync(env.JOBS_DB,source);return respond(r,r.ok?200:r.busy?409:502);}
  catch{return respond({ok:false,error:'Sync failed; verify Preview D1 schema and approved source.'},503);}
 }
 export async function onRequestGet({request,env}){

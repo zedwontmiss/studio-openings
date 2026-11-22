@@ -21,7 +21,7 @@ const factory=(strategy)=>{
  const map={sourceId:'src-12345678-aaaa-4444-bbbb-cccccccccccc',
   locationKey:'darien, illinois, united states',cityName:'Darien',regionName:'Illinois',
   countryName:'United States',countryCode:'US'};
- const source={id:map.sourceId};
+ const source={id:map.sourceId,status:strategy==='unapproved'?'pending':'approved'};
  const city={kind:'city',cityName:'Darien',regionName:'Illinois',countryCode:'US',cityId:123};
  const calls=[],notes=[];
  let resolvePost;
@@ -42,6 +42,8 @@ const factory=(strategy)=>{
  return {env,status,save,rowBadge,rowButton,calls,notes,map,resolvePost:()=>resolvePost};
 };
 async function run(){
+ const blocked=factory('unapproved');await blocked.env.saveVerifiedLocationMapping();
+ expect(!blocked.calls.length && blocked.status.className.includes('is-error'),'pending source cannot save a mapping');
  const good=factory('success');
  const pending=good.env.saveVerifiedLocationMapping();
  expect(good.save.textContent==='Saving…'&&good.save.disabled,'shows immediate saving state');

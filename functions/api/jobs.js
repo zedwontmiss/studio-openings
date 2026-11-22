@@ -1,3 +1,4 @@
+import {specialistDiscipline,specialistTag} from '../../lib/source-registry-core.js';
 import {remoteEligibility,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
 /**
  * Studio Openings: GET /api/jobs
@@ -30,38 +31,42 @@ const nonCreativeTitle = /\b(?:account manager|sales manager|product manager|pro
 // The original vacancy remains authoritative and is linked from each listing.
 function excerptText(text,limit){
   if(text.length<=limit)return text;
-  let segment=text.slice(0,limit+1);
-  // Prefer an entire sentence; if the source has none, finish a whole word.
-  const endOfSentence=/(?:[.!?](?:["'’”)]*)?)(?=\s|$)/g;
-  let lastEnd=0,match;
-  while((match=endOfSentence.exec(segment))!==null){
+  const segment=text.slice(0,limit+1);
+  // The source may include newlines, headings and paragraphs. Prefer a
+  // complete sentence, not an arbitrarily truncated word plus ellipsis.
+  const sentence=/[.!?][)"'’”\]]*(?=\s|$)/g;
+  let match,lastEnd=0;
+  while((match=sentence.exec(segment))!==null){
     const at=match.index+match[0].length;
-    if(at<=limit&&at>=limit*.58)lastEnd=at;
-  }
-  if(lastEnd){segment=segment.slice(0,lastEnd);}
-  else {
-    const whitespace=segment.slice(0,limit+1).search(/\s+\S*$/);
-    // A whitespace boundary near the limit avoids a broken word.
-    if(whitespace>limit*.48)segment=segment.slice(0,whitespace);
-    else {
-      const cut=segment.slice(0,limit+1).lastIndexOf(' ');
-      segment=cut>limit*.48?segment.slice(0,cut):segment.slice(0,limit);
+    if(at<=limit && at>=Math.min(180,Math.floor(limit*.35))){
+      // Common abbreviations are not the end of a sentence.
+      const previous=segment.slice(Math.max(0,at-16),at);
+      if(/\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|Inc|Ltd|Co|etc|e\.g|i\.e|U\.S|U\.K)\.$/i.test(previous))continue;
+      lastEnd=at;
     }
   }
-  return segment.trimEnd().replace(/[,:;\-–—]+$/,'').trimEnd()+'…';
+  if(lastEnd)return segment.slice(0,lastEnd).trimEnd();
+  // A complete source paragraph is acceptable when no sentence boundary
+  // occurs within the limit. Never invent or complete truncated job text.
+  const paragraph=segment.lastIndexOf('\n');
+  if(paragraph>=Math.min(180,Math.floor(limit*.35))){
+    return segment.slice(0,paragraph).trimEnd();
+  }
+  return '';
 }
-function plainText(value, limit = 1800) {
+function plainText(value, limit = 14000) {
   // Retain real paragraph and list boundaries from source HTML / text.
   // The browser displays plain text (textContent), NEVER source HTML.
   const clean=String(value||'')
     .replace(/\r\n?/g,'\n')
+    .replace(/<(script|style|iframe)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,' ')
     .replace(/<br\b[^>]*\/?\s*>/gi,'\n')
     .replace(/<hr\b[^>]*\/?\s*>/gi,'\n\n')
     .replace(/<(?:p|div|section|article|h[1-6])\b[^>]*>/gi,'\n\n')
     .replace(/<li\b[^>]*>/gi,'\n• ')
     .replace(/<\/li\s*>/gi,'\n')
     .replace(/<\/(?:p|div|section|article|h[1-6]|ul|ol|blockquote)\s*>/gi,'\n\n')
-    .replace(/<\/?[^>]+>/g,' ')
+    .replace(/<\/?[a-z][\w:-]*(?:\s[^<>]*)?\/?>/gi,' ')
     .replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&')
     .replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'")
     .replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
@@ -110,6 +115,7 @@ function classify(job) {
     return {role:'industrial',relevance:92};
   if (hasTitle(/\b(?:museum|exhibition design(?:er)?|exhibit design(?:er)?|curator|gallery curator)\b/))
     return {role:'museum',relevance:92};
+  const specialty=specialistDiscipline(title);if(specialty)return {role:specialty,relevance:92};
   if (hasTitle(/\b(?:ux(?:\/?ui)?|ui(?:\/?ux)?|user experience|user interface|product design(?:er)?|interaction design(?:er)?|service design(?:er)?|design systems? designer|ux researcher)\b/))
     return {role:'product',relevance:92};
   if (hasTitle(/\b(?:motion design(?:er)?|motion graphics|animat(?:ion|or)|3d (?:artist|designer|modeler)|video editor|vfx|game artist|concept artist|video creator)\b/))
@@ -149,7 +155,7 @@ function directionTags(title,description,role){
   return ['Design','Art Direction',/\bsenior\b|\bsr[.]?\b/.test(t)?'Senior':'Lead'];
 }
 function tagsFor(title,description,role){
-  const tag=ROLE_TAG[role];if(!tag)return [];
+  const tag=specialistTag(title,role)||ROLE_TAG[role];if(!tag)return [];
   const leadership=directionTags(title,description,role);if(leadership)return leadership;
   const titleText=String(title||'').toLowerCase(),text=(titleText+' '+String(description||'')).toLowerCase().slice(0,12000);
   const tags=[];
@@ -254,9 +260,11 @@ function normHimalayas(j,now){
   const url=safeLink(j.applicationLink,'Himalayas');if(!url)return null;
   const geo=remoteEligibility(j.locationRestrictions,{timezones:j.timezoneRestrictions});
   if(!geo.eligible)return null;
+  let expiresAt='';
   if(j.expiryDate&&String(j.expiryDate)!=='0'){
     const x=Number(j.expiryDate),expiry=Number.isFinite(x)&&x>0?(x<1e12?x*1000:x):Date.parse(j.expiryDate);
-    if(Number.isFinite(expiry)&&expiry<now)return null;
+    if(!Number.isFinite(expiry)||expiry<=now)return null;
+    expiresAt=new Date(expiry).toISOString();
   }
   const seniority=Array.isArray(j.seniority)?j.seniority.join(' / '):String(j.seniority||'');
   return finishJob({id:'himalayas-'+String(j.guid||url),title,company:String(j.companyName||'Undisclosed').trim(),
@@ -264,7 +272,7 @@ function normHimalayas(j,now){
     type:employmentType(j.employmentType),
     salary:salary(j.minSalary,j.maxSalary,j.currency,j.salaryPeriod),
     // Official Himalayas API defines pubDate as the LAST UPDATED date.
-    posted:published(j.pubDate,now),dateKind:'updated',role:decision.role,relevance:decision.relevance,
+    expiresAt,posted:published(j.pubDate,now),dateKind:'updated',role:decision.role,relevance:decision.relevance,
     tags:tagsFor(title,description,decision.role),source:'Himalayas',sourceUrl:url,url,description,descriptionKind:'source-excerpt',
     seniority:seniority.slice(0,55)});
 }
@@ -278,7 +286,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v085-source-credit&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v1122-specialist&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));

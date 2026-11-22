@@ -1,3 +1,4 @@
+import {EMPLOYER_ROWS,activeUntil} from '../../lib/job-lifecycle.js';
 /** Studio Openings: on-site candidate application. No public applicant read endpoint. */
 const respond=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
 const error=(status,code,message)=>respond({ok:false,code,message},status);
@@ -30,11 +31,10 @@ export async function onRequestPost({request,env}){
  if(!verified)return error(403,'turnstile','Verification failed. Try again.');
  try{
   const rawId=id.slice('direct-'.length).toUpperCase();
-  const job=await env.JOBS_DB.prepare("SELECT id,job_data,created_at,reviewed_at FROM job_submissions WHERE id = ? AND status = 'approved' LIMIT 1").bind(rawId).first();
+  const job=await env.JOBS_DB.prepare(EMPLOYER_ROWS+" WHERE s.id = ? AND s.status = 'approved' LIMIT 1").bind(rawId).first();
   if(!job)return error(404,'unavailable','The vacancy is no longer accepting applications');
   let info;try{info=JSON.parse(job.job_data);}catch{return error(503,'job','Job record unavailable');}
-  const check=Date.parse(String(job.reviewed_at||job.created_at||'').replace(' ','T')+'Z');
-  if(info.applicationMethod!=='native'||!Number.isFinite(check)||Date.now()-check>30*86400000|| (info.closesOn&&Date.parse(info.closesOn+'T23:59:59Z')<Date.now()))return error(410,'closed','This vacancy is not accepting applications');
+  if(info.applicationMethod!=='native'||!Number.isFinite(activeUntil(job,info)))return error(410,'closed','This vacancy is not accepting applications');
   const daily=await env.JOBS_DB.prepare("SELECT count(*) AS n FROM job_applications WHERE applicant_email=? AND created_at>=datetime('now','-1 day')").bind(email).first();
   if(Number(daily?.n||0)>=5)return error(429,'limit','Daily application limit reached');
   const prior=await env.JOBS_DB.prepare("SELECT id FROM job_applications WHERE job_id=? AND applicant_email=? AND status != 'deleted' LIMIT 1").bind(rawId,email).first();

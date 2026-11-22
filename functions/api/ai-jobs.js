@@ -1,13 +1,13 @@
-import {fetchOfficialJobs,classifyCreative,sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
-import {POLICY_VERSION,canUseCountry,cityCovered} from '../../lib/coverage-policy.js';
+import {fetchOfficialJobs,classifyCreative,specialistTag,sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
+import {POLICY_VERSION,canUseCountry,cityCovered,US_REGIONS} from '../../lib/coverage-policy.js';
 /** Studio Openings v1.0.1 — editorially selected, official AI/creative employer ATS feeds.
  * No generic scraping, user-provided URLs or fabricated job availability.
- * Seven independent shards, six sources maximum per request, four-hour edge cache.
+ * Eight independent shards, six sources maximum per request, four-hour edge cache.
  */
 const SOURCES=Object.freeze([
  ['greenhouse','anthropic','Anthropic'],['greenhouse','figma','Figma'],
  ['greenhouse','snorkelai','Snorkel AI'],['greenhouse','gusto','Gusto'],
- ['greenhouse','durable','Durable'],['greenhouse','warp','Warp'],
+ ['greenhouse','warp','Warp'],
  ['greenhouse','brightai','BrightAI'],['greenhouse','gatherai','Gather AI'],
  ['greenhouse','checkr','Checkr'],['greenhouse','customerio','Customer.io'],
  ['greenhouse','inmarket','InMarket'],['greenhouse','codepath','CodePath'],
@@ -23,10 +23,14 @@ const SOURCES=Object.freeze([
  ['ashby','strella','Strella'],['ashby','peec','Peec AI'],
  ['ashby','profound','Profound'],['ashby','read-ai','Read AI'],
  ['ashby','edra','Edra'],['ashby','traversal','Traversal'],
- ['ashby','mazehq','Maze'],['ashby','nectar-social','Nectar Social'],
- ['greenhouse','jazzx-ai','JazzX AI'],['lever','agtonomy','Agtonomy']
-].map(([provider,board_token,name])=>({provider,board_token,name})));
-const REJECT=/\b(?:software architect|solutions architect|cloud architect|data architect|sales|account manager|business development|recruiter|operations manager|finance|project manager|product manager|customer success|marketing manager|talent acquisition|open application|general application|talent pool)\b/i;
+ ['ashby','mazehq','Maze'],
+ ['greenhouse','jazzx-ai','JazzX AI'],['lever','agtonomy','Agtonomy'],
+ ['greenhouse','fashionnova','Fashion Nova','fashion'],['greenhouse','dept','DEPT®','web'],
+ ['lever','sfmoma','San Francisco Museum of Modern Art','museum'],
+ ['greenhouse','davidzwirnergallery','David Zwirner','culture'],
+ ['greenhouse','sharkninjaoperatingllc','SharkNinja','industrial']
+].map(([provider,board_token,name,focus])=>({provider,board_token,name,focus})));
+const REJECT=/\b(?:software architect|solutions architect|cloud architect|data architect|sales|account manager|business development|recruiter|operations manager|finance|project manager|product manager|customer success|marketing manager|talent acquisition|open application|general application|talent pool|industrial design opportunities at)\b/i;
 const US_CITIES=['San Francisco','New York','Los Angeles','Seattle','Boston','Austin','Chicago','Miami','Denver','Raleigh','San Diego','San Jose','Mountain View','Palo Alto','Menlo Park','Redwood City','Washington DC','Washington, DC','Portland','Philadelphia','Atlanta','Salt Lake City','Charlotte','Brooklyn','Irvine','Santa Monica'];
 const OTHER=[
  ['GB',['London','Manchester','Edinburgh','Bristol','Cambridge','Oxford'],/\b(?:UK|United Kingdom|England|Scotland)\b/i],
@@ -55,6 +59,10 @@ export function locationOf(raw){
    return null; // Remote alone does not establish applicant eligibility.
  }
  const mode=/\bhybrid\b/i.test(s)?'hybrid':'';
+ const usPlace=s.match(/^([\p{L}][\p{L} .'-]+),\s*([A-Z]{2}),\s*(?:USA|United States(?: of America)?)$/u);
+ if(usPlace&&Object.hasOwn(US_REGIONS,usPlace[2]))return {country:'US',kind:'office',mode};
+ if(/^Queens,\s*NY$/i.test(s))return {country:'US',kind:'office',mode};
+ if(/^Beverly Hills,\s*(?:CA|California)(?:,\s*(?:USA|United States))?$/i.test(s))return {country:'US',kind:'office',mode};
  if(!/\b(?:United Kingdom|Canada|Australia)\b/i.test(s)&&US_CITIES.some(c=>mentions(s,c)))return {country:'US',kind:'office',mode};
  for(const [country,cities,hint] of OTHER){
    if(canUseCountry(country)&&hint.test(s)&&cities.some(c=>mentions(s,c)&&cityCovered(country,c)))return {country,kind:'office',mode};
@@ -71,10 +79,11 @@ export function creativeRole(title,description=''){
 }
 export function normalize(row,source,now){
  const title=clean(row.title,125),role=creativeRole(title,row.description),loc=locationOf(row.location);
- const description=sourceExcerpt(row.description,1000);
- if(!role||!loc||description.length<130||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
+ if(!role||(source.focus&&source.focus!==role)||!loc||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
+ const description=sourceExcerpt(row.description,950);
+ if(description.length<130)return null;
  const n=Date.parse(row.posted||''),posted=Number.isFinite(n)&&n>946684800000&&n<=now+86400000?new Date(n).toISOString():'';
- const name=source.name,tags=[TAGS[role]];
+ const name=source.name,tags=[specialistTag(title,role)||TAGS[role]];
  const leadership=role==='visual'?(function(){
    const t=title.toLowerCase(),creative=/\bcreative[\s/-]+director\b|\bdirector[\s,-]+(?:of[\s-]+)?creative\b/.test(t),art=!creative&&(/\bart[\s/-]+director\b|\bdirector[\s,-]+of[\s-]+art\b/.test(t));
    if(creative)return ['Creative','Creative Direction',/\b(?:chief|executive|c-level)\b/.test(t)?'Executive':'Director'];
@@ -90,7 +99,7 @@ export function normalize(row,source,now){
    type:employmentTypeOf(row.employmentType,title,row.description),role,geoCountry:loc.country,geoPolicy:POLICY_VERSION,
    salary:'',posted,dateKind:posted?'posted':'added',relevance:92,tags,
    source:'Official careers · '+name,
-   sourceUrl:'https://'+(source.provider==='ashby'?'jobs.ashbyhq.com/':'job-boards.greenhouse.io/')+source.board_token,
+   sourceUrl:row.url,
    url:row.url,description,descriptionKind:'source-excerpt'};
 }
 async function loadBoard(source,now){
@@ -102,7 +111,7 @@ const HEAD={'content-type':'application/json; charset=utf-8','x-content-type-opt
 export async function onRequestGet({request}){
  const u=new URL(request.url),shard=Number(u.searchParams.get('shard'));
  if(!Number.isInteger(shard)||shard<0||shard>=Math.ceil(SOURCES.length/6))return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
- const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=3-safe-excerpt-architect&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
+ const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=7-specialist&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
  if(cache)try{const hit=await cache.match(key);if(hit)return hit;}catch(_){}
  const sources=SOURCES.slice(shard*6,shard*6+6),now=Date.now();
  const outcomes=await Promise.allSettled(sources.map(s=>loadBoard(s,now)));

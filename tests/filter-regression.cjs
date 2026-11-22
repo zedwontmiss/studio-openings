@@ -72,3 +72,9 @@ assert(!filtered.eligible(jobs[0],1,jobs),'Numeric callback override must not pa
 assert(filtered.eligible(jobs[1],'product',['Product Design','UX/UI']),'Saved snapshot override must work');
 assert(!filtered.eligible(jobs[3],'motion',['Motion Design']),'Saved role must respect Product filter');
 console.log('PASS: '+(cases.length+4)+' live/saved filter regressions');
+
+const specialty=make({keywords:[],selectedRoles:[]});
+assert.deepStrictEqual(specialty.jobKeywords({role:'fashion',title:'Photographer',tags:['Fashion']}),['Photography']);
+assert.deepStrictEqual(specialty.jobKeywords({role:'fashion',title:'Editorial Photo Retoucher',tags:['Photography']}),['Photography','Retouching']);
+assert.deepStrictEqual(specialty.jobKeywords({role:'web',title:'Creative Developer',tags:['Web Design']}),['Creative Technology']);
+assert.deepStrictEqual(specialty.jobKeywords({role:'web',title:'Web Designer'}),['Web Design']);

@@ -28,7 +28,7 @@
       <div><span>Visible yellow limit</span><strong>10</strong></div>
     </div>
     <div class="console-tools"><p class="caption">Standard $149 / 30 days · Featured $349 / 90 days · Manual invoice · Reverify vacancies every 30 days</p><div class="tools-right"><button id="refresh-button" type="button">Refresh</button><button id="lock-button" type="button">Lock</button></div></div>
-    <nav class="tabs" aria-label="Operator views"><button class="tab active" data-tab="requests" type="button">Requests</button><button class="tab" data-tab="approved" type="button">Approved jobs</button><button class="tab" data-tab="campaigns" type="button">Campaigns</button><button class="tab" data-tab="sources" type="button">Career sources</button></nav>
+    <nav class="tabs" aria-label="Operator views"><button class="tab active" data-tab="requests" type="button">Requests</button><button class="tab" data-tab="approved" type="button">Approved jobs</button><button class="tab" data-tab="campaigns" type="button">Campaigns</button><button class="tab" data-tab="sources" type="button">Career sources</button><button class="tab" data-tab="distribution" type="button">Distribution</button></nav>
     <div id="operation-error" class="notice" hidden role="status"></div>
     <section id="tab-requests"><h2>New submissions</h2><p class="hint">Employer workflow: review → send invoice manually → verify funds → publish. Visitor suggestions only need editorial review. All payment attestations are manual.</p><div id="requests-list" class="records"></div></section>
     <section id="tab-approved" hidden><h2>Approved jobs</h2><p class="hint">Only paid employer orders may be published. Featured campaigns require PREMIUM_ACTIVATION_ENABLED=true after testing. No automated email notices.</p><div id="approved-list" class="records"></div></section>
@@ -67,6 +67,16 @@
         <p id="source-map-feedback" class="source-map-feedback" role="status" aria-live="polite" hidden></p>
        </form>
       </div>
+    </section>
+    <section id="tab-distribution" hidden>
+      <h2>Distribution drafts</h2>
+      <p class="hint">Review the official vacancy before approving a draft. Preview exports are for a manual pilot after release.</p>
+      <button type="button" id="queue-refresh">Refresh queue</button> <button type="button" id="queue-setup" hidden>Initialize queue and metrics tables</button><p id="queue-message" role="status"></p>
+      <h3>Current vacancies</h3><div id="queue-candidates" class="records"></div>
+      <h3>Channel review</h3><div id="queue-entries" class="records"></div>
+      <div id="queue-output" hidden><label>Approved export<textarea id="queue-export" rows="7" readonly></textarea></label><button type="button" id="queue-copy">Copy text</button></div>
+      <details><summary>Queue history</summary><ol id="queue-history"></ol></details>
+      <details><summary>Recent daily traffic</summary><div id="queue-metrics"></div></details>
     </section>
     <p class="footer">Owner console v1.0 · This page is a shell; private records are supplied only after server authentication. Never share your operator secret.</p>
   </section>
