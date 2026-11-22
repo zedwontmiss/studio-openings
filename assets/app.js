@@ -659,9 +659,21 @@
     try { return new URL(window.location.href).searchParams.get('job') || ''; }
     catch(e){ return ''; }
   }
+  // Stable, opaque public handle: no encoded source URL or provider name.
+  // This is a URL alias, NOT encryption or a security boundary.
+  // The original job id stays available internally for API matching and saving.
+  function publicJobHandle(id){
+    var value=String(id||''),a=2166136261,b=3339675911,i,n;
+    for(i=0;i<value.length;i++){
+      n=value.charCodeAt(i);
+      a=Math.imul(a^n,16777619)>>>0;
+      b=Math.imul(b^(n+((i&255)<<8)),2246822519)>>>0;
+    }
+    return 'so-'+a.toString(36).padStart(7,'0')+b.toString(36).padStart(7,'0');
+  }
   function jobLinkFor(id){
     var url=new URL(window.location.href);
-    if(id) url.searchParams.set('job',String(id));
+    if(id)url.searchParams.set('job',publicJobHandle(id));
     else url.searchParams.delete('job');
     return url.href;
   }
@@ -677,10 +689,15 @@
   function syncJobFromUrl(){
     var id=jobIdFromUrl();
     if(!id){ closeDrawer(true); return; }
-    var job=state.jobs.filter(function(candidate){return String(candidate.id)===id;})[0];
+    var job=state.jobs.filter(function(candidate){
+      return String(candidate.id)===id || publicJobHandle(candidate.id)===id;
+    })[0];
     if(job){
+      // Legacy long source URLs continue to open; replace them in the address
+      // bar with the new short public identifier without adding history.
+      if(id!==publicJobHandle(job.id))updateJobUrl(job.id,'replace');
       // Do not change history or rerender the list on a browser Back/Forward event.
-      if(!activeJob || String(activeJob.id)!==id)openDrawer(job,null,true);
+      if(!activeJob || String(activeJob.id)!==String(job.id))openDrawer(job,null,true);
       $('job-link-message').hidden=true;
     }else{
       closeDrawer(true);
