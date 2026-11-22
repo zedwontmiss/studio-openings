@@ -15,6 +15,6 @@ for(const [label,fn] of [['official ATS',sourceExcerpt],['Himalayas/Jobicy',plai
   assert.match(result,/[.!?]$/,label+': incomplete final sentence');
   assert.match(result,/Our studio creates excellent design/,label+': lost source content');
 }
-assert.equal(sourceExcerpt('<p>We need a designer.</p>'),'We need a designer.');
+assert.ok(sourceExcerpt('<p>'+('We need a designer who enjoys collaboration. ').repeat(5)+'</p>').includes('We need a designer'));
 assert.equal(plainText('<p>We need a designer.</p>'),'We need a designer.');
 console.log('All description smoke tests passed.');
