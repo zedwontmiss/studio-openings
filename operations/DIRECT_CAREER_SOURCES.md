@@ -5,6 +5,8 @@ the official employer website; a linked ATS is optional. No credentials or paid
 service is required. These adapters publish short excerpts and original links;
 they do not grant source SEO or social publication rights.
 
+**Owner correction:** Koto is now held from public aggregation because paid-listing outreach is active. Its adapter remains tested but its endpoint returns no jobs without crawling. Runway and Linear are held across every sourced public feed as well. Historical counts below describe discovery, not the currently published inventory. Further remains enabled; it is not one of the three confirmed outreach recipients.
+
 | Employer | Official page examined | Result |
 | --- | --- | --- |
 | Koto | https://koto.com/careers | Direct HTML adapter. Index contains 29 entries; 20 creative vacancies pass detail/title/location/application checks. Seven motion and two web roles. Strategy, client management, talent, writer and internship enquiries excluded. |
