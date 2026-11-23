@@ -1,5 +1,6 @@
 import {fetchOfficialJobs,classifyCreative,specialistTag,sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
 import {POLICY_VERSION,canUseCountry,cityCovered,US_REGIONS} from '../../lib/coverage-policy.js';
+import {outreachHeld} from '../../lib/outreach-policy.js';
 /** Studio Openings v1.0.1 — editorially selected, official AI/creative employer ATS feeds.
  * No generic scraping, user-provided URLs or fabricated job availability.
  * Eight independent shards, six sources maximum per request, four-hour edge cache.
@@ -107,6 +108,7 @@ export function normalize(row,source,now){
    url:row.url,description,descriptionKind:'source-excerpt'};
 }
 async function loadBoard(source,now){
+ if(outreachHeld(source.name))return [];
  const records=await fetchOfficialJobs(source,fetch,{includeDescription:true}),result=[];
  for(const row of records){const job=normalize(row,source,now);if(job)result.push(job);if(result.length===20)break;}
  return result;

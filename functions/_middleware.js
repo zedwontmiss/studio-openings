@@ -1,11 +1,12 @@
 import {DISCIPLINE_SLUGS} from '../lib/discipline-pages.js';
+import {applyOutreachPolicy} from '../lib/outreach-policy.js';
 
 const pages = new Set(['/', '/privacy', '/coverage', '/post-a-job', '/about', '/contact', '/terms',
   ...DISCIPLINE_SLUGS.map(slug => '/disciplines/' + slug)]);
 
 export async function onRequest(context) {
   const {hostname, pathname} = new URL(context.request.url);
-  const response = await context.next();
+  const response = await applyOutreachPolicy(await context.next(),pathname);
   const headers = new Headers(response.headers);
   const path = pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
   const publicPage = pages.has(path) || /^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path) || /^\/openings\/[a-z0-9-]{8,160}$/i.test(path);

@@ -37,6 +37,7 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - For initial cadences, pilot max ~1 relevant manually approved job/day for a new Reddit community and a few useful X posts/week; scale only with genuine audience engagement and platform compliance.
 - Never connect unknown social accounts or take paid actions without founder consent.
 - Outreach: research ~2–50-person independent creative firms with verified active hiring. No bulk unsolicited mail, no applicant-only recruiting inbox marketing, honor relevant email laws and opt-outs.
+- Before recommending or scheduling paid-listing outreach, check `lib/outreach-policy.js` and public inventory. Put active outreach employers on the sourcing hold before outreach; do not automatically aggregate their vacancies while asking them to pay for a listing. Current owner-confirmed holds: Koto, Runway, Linear. Independently approved employer submissions may still publish through their existing payment/review gates. Do not auto-release a hold on a timer. Preserve this rule for subsequent outreach.
 
 ## Expected behavior from Codex
 1. Inspect code, current branches and recent commits; do not reconstruct project from scratch.

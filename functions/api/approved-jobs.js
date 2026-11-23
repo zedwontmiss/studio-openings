@@ -1,6 +1,7 @@
 import {EMPLOYER_ROWS,activeUntil} from '../../lib/job-lifecycle.js';
 import {eligibleJob} from '../../lib/seo-jobs.js';
 import {remoteEligibility,officeLocation,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
+import {outreachHeld} from '../../lib/outreach-policy.js';
 /** Public read-only, APPROVED-only job feed from D1. Never exposes submitter email. */
 const ROLES=new Set(['architecture','interior','industrial','product','visual','motion','fashion','web','museum','culture']);
 function validHTTPS(value){
@@ -10,6 +11,7 @@ function validHTTPS(value){
 function publicJob(row,now,nativeEnabled){
  let data;
  try{data=JSON.parse(row.job_data);}catch{return null;}
+ if(row.submission_type!=='employer'&&outreachHeld(data?.company,data?.url))return null;
  if(!data||typeof data!=='object'||!ROLES.has(data.role)||!data.title||!data.company||!data.location)return null;
  const applicationMethod=data.applicationMethod||'external';
  if(!['external','native','email'].includes(applicationMethod))return null;
