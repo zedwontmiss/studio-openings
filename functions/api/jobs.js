@@ -83,6 +83,9 @@ function plainText(value, limit = 14000) {
     .replace(/([.!?][\"'’”)]?)([A-Z][a-z])/g,'$1\n\n$2').trim();
   return excerptText(clean,limit);
 }
+function stripHimalayasAttribution(text){
+  return String(text||'').replace(/(?:^|\n+)\s*Originally posted on Himalayas\.?\s*$/i,'').trimEnd();
+}
 function contains(re, title, body) {return re.test(title) || re.test(body);}
 
 /** Return a standardized role and a relevance score, or null to reject. */
@@ -255,7 +258,9 @@ function normJobicy(j,now){
 }
 function normHimalayas(j,now){
   const title=String(j.title||'').trim();
-  const description=plainText(j.description||j.excerpt);
+  // The source API appends a redundant attribution paragraph. Studio Openings
+  // already credits and links Himalayas in the drawer source footer.
+  const description=stripHimalayasAttribution(plainText(j.description||j.excerpt));
   const decision=classify({title,description,categories:[...(j.categories||[]),...(j.parentCategories||[])]});if(!decision)return null;
   const url=safeLink(j.applicationLink,'Himalayas');if(!url)return null;
   const geo=remoteEligibility(j.locationRestrictions,{timezones:j.timezoneRestrictions});
@@ -286,7 +291,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v1122-specialist&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v1123-clean-source-credit&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));
