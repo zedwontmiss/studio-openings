@@ -7,7 +7,7 @@
     product:'Product / UX / UI', visual:'Graphic / Brand', motion:'Motion / 3D', fashion:'Fashion / Photography',
     web:'Web / Creative Tech', museum:'Museum / Exhibition', culture:'Arts / Cultural Production'
   };
-  var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, savedPeriod:'all', visible:10, review:false};
+  var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, savedPeriod:'all', visible:10, review:false,feedStatus:'loading'};
   // Category landing pages link to the existing filtered job board.
   // Only allow known disciplines; never use unchecked query input as HTML.
   try {
@@ -86,6 +86,7 @@
     if(role==='fashion' && /\b(?:photograph(?:er|y)|retoucher|photo (?:editor|stylist|producer))\b/.test(title))primary='Photography';
     if(role==='web' && /\bcreative (?:developer|technologist|technology)\b/.test(title))primary='Creative Technology';
     var tags=[primary];
+    if(role!=='motion'&&jobDisciplines(job).indexOf('motion')>=0)tags.push('Motion Design');
     if(primary==='Photography' && /\bretoucher\b/.test(title))tags.push('Retouching');
     if(primary==='Photography' && /\bfashion\b/.test(title))tags.push('Fashion');
     function add(label,condition){if(condition && tags.indexOf(label)<0)tags.push(label);}
@@ -273,12 +274,8 @@
   function loadFeaturedConfig(){
     // v0.13: prefer vetted, server-stored campaigns. Static empty fallback
     // preserves the existing safe behavior until migration/configuration.
-    function fallback(){return fetch('/assets/featured-jobs.json',{cache:'no-store',credentials:'omit'}).then(function(r){
-      if(!r.ok)throw Error('No featured configuration');return r.json();
-    });}
-    return fetch('/api/featured-jobs',{cache:'no-store',credentials:'omit'}).then(function(r){
-      if(!r.ok)throw Error('Premium inventory unavailable');return r.json();
-    }).catch(fallback).then(setFeaturedConfig).catch(function(){setFeaturedConfig(null);});
+    function fallback(){return fetchFeedJSON('/assets/featured-jobs.json',3000);}
+    return fetchFeedJSON('/api/featured-jobs',3000).catch(fallback).then(setFeaturedConfig).catch(function(){setFeaturedConfig(null);});
   }
 
   // Saved jobs v0.9.1: lightweight snapshots in this browser, not a cloud account.
@@ -530,13 +527,21 @@
     }
     return roleLabels[r]?r:'culture';
   }
+  function jobDisciplines(job){
+    var primary=categoryFor(job),roles=[primary],title=trim(job.title).toLowerCase();
+    if(primary==='not-creative')return roles;
+    // Mixed disciplines must be stated in the title, not merely mentioned in a brief.
+    if(/\bmotion(?:\s*(?:&|and|\/)\s*graphic)?\s+(?:designer|design|graphics?)\b|\b(?:3d|vfx|character|game) artist\b|\banimator\b/.test(title)&&roles.indexOf('motion')<0)roles.push('motion');
+    if(/\bgraphic(?:\s*(?:&|and|\/)\s*motion)?\s+designer\b/.test(title)&&roles.indexOf('visual')<0)roles.push('visual');
+    return roles;
+  }
   function dateLabel(job) {
     var src=trim(job.posted), d=src?new Date(src):null;
     var action=job.dateKind==='updated'?'Updated':job.dateKind==='added'||/direct|curated/i.test(trim(job.source))?'Added':'Posted';
     if(d&&!isNaN(d.getTime())&&d.getTime()<=Date.now()+86400000)
       return {label:action+' '+d.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}),date:src};
     var checked=trim(job.verifiedAt);
-    d=checked?new Date(checked+'T12:00:00'):null;
+    d=checked?new Date(/^\d{4}-\d{2}-\d{2}$/.test(checked)?checked+'T12:00:00':checked):null;
     if(d&&!isNaN(d.getTime()))return {label:'Checked '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'}),date:checked};
     return {label:'Date unavailable',date:''};
   }
@@ -610,6 +615,24 @@
   // from a physical worksite location alone.
   function usMatch(loc) {return /\b(us|usa|united states|washington|california|new york|ny|dc|norfolk|salisbury|americas|worldwide|global)\b/i.test(loc);}
   function worldwideMatch(loc){return /\b(worldwide|anywhere|all countries|global)\b/i.test(loc);}
+  var countryNames={US:'United States',CA:'Canada',GB:'United Kingdom',CH:'Switzerland',DE:'Germany',FR:'France',NL:'Netherlands',BE:'Belgium',LU:'Luxembourg',AT:'Austria',IE:'Ireland',DK:'Denmark',SE:'Sweden',NO:'Norway',FI:'Finland',IS:'Iceland',SG:'Singapore',AU:'Australia',NZ:'New Zealand',AE:'United Arab Emirates',SA:'Saudi Arabia',QA:'Qatar',JP:'Japan',KR:'South Korea',CY:'Cyprus',IT:'Italy',ES:'Spain'};
+  function countryMatch(job,code){
+    var location=trim(job.location),country=countryNames[code];if(!country)return false;
+    if(String(job.geoCountry||'').toUpperCase()===code)return true;
+    if(new RegExp('\\b'+country+'\\b','i').test(location))return true;
+    if(code==='GB'&&/\b(?:UK|U\.K\.|England|Scotland|Wales|Northern Ireland)\b/i.test(location))return true;
+    if(code==='US'&&usMatch(location)&&!(/\b(?:americas|global|worldwide)\b/i.test(location)))return true;
+    // Global applicant eligibility is useful in every country; an office or
+    // an unspecified regional label never implies worldwide eligibility.
+    return (job.locationKind==='eligibility'||job.mode==='remote')&&worldwideMatch(location);
+  }
+  function refreshRegionOptions(){
+    var select=$('region'),selected=state.region;
+    select.textContent='';select.appendChild(new Option('Anywhere','all'));
+    Object.keys(countryNames).filter(function(code){return code==='US'||state.jobs.some(function(job){return !worldwideMatch(trim(job.location))&&countryMatch(job,code);});}).sort(function(a,b){return countryNames[a].localeCompare(countryNames[b]);}).forEach(function(code){select.appendChild(new Option(countryNames[code],code.toLowerCase()));});
+    select.appendChild(new Option('Worldwide remote only','worldwide'));
+    select.value=selected;if(!select.value){state.region='all';select.value='all';}
+  }
   function matchesType(job,value){
     var t=trim(job.type).toLowerCase();
     if(value==='all')return true;
@@ -621,9 +644,9 @@
   function eligible(job,verifiedRole,verifiedTags){
     var role=(typeof verifiedRole==='string'&&roleLabels[verifiedRole])?verifiedRole:categoryFor(job);
     if(role==='not-creative')return false;
-    if(state.selectedRoles.length&&state.selectedRoles.indexOf(role)<0)return false;
+    if(state.selectedRoles.length&&!state.selectedRoles.some(function(selected){return selected===role||jobDisciplines(job).indexOf(selected)>=0;}))return false;
     
-    if(state.region==='us'&&!usMatch(trim(job.location)))return false;
+    if(state.region!=='all'&&state.region!=='worldwide'&&!countryMatch(job,state.region.toUpperCase()))return false;
     if(state.region==='worldwide'&&!worldwideMatch(trim(job.location)))return false;
     if(state.mode!=='all'&&trim(job.mode).toLowerCase()!==state.mode)return false;
     if(!matchesType(job,state.type))return false;
@@ -633,7 +656,7 @@
       var matched=state.keywordMatch==='all' ? state.keywords.every(function(k){return tags.indexOf(k)>=0;}) : state.keywords.some(function(k){return tags.indexOf(k)>=0;});
       if(!matched)return false;
     }
-    var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority].join(' ').toLowerCase();
+    var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,jobSearchTags(job).join(' ')].join(' ').toLowerCase();
     return !state.query||state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
   }
   function sortJobs(a,b){
@@ -1068,7 +1091,7 @@
     $('system-message').hidden=state.onlySaved||state.jobs.length>0;
     $('list-footnote').hidden=state.onlySaved;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
-    $('results-summary').textContent=state.onlySaved?'Your shortlist':state.review?'Official firm source review · 17 Nov 2026':'Current listings';
+    $('results-summary').textContent=state.onlySaved?'Your shortlist':state.review?'Official firm source review · 17 Nov 2026':state.feedStatus==='loading'?'Loading jobs…':state.feedStatus==='error'?'Feed unavailable':'Current listings';
     var wasOpen=!$('job-drawer').hidden;
     closeDrawer(true);
     if(wasOpen)updateJobUrl(null,'replace');
@@ -1246,9 +1269,17 @@
       return link.href+'|'+trim(job.title).toLowerCase()+'|'+trim(job.location).toLowerCase();
     }catch(e){return '';}
   }
+  function fetchFeedJSON(url,timeout){
+    return new Promise(function(resolve,reject){
+      var controller=typeof AbortController!=='undefined'?new AbortController():null;
+      var timer=setTimeout(function(){if(controller)controller.abort();reject(Error('Feed timed out'));},timeout||10000);
+      var options={credentials:'omit',cache:'no-store'};if(controller)options.signal=controller.signal;
+      fetch(url,options).then(function(response){if(!response.ok)throw Error('Feed unavailable');return response.json();}).then(function(data){clearTimeout(timer);resolve(data);},function(error){clearTimeout(timer);reject(error);});
+    });
+  }
   function loadLive(){
     var urls=['/api/approved-jobs','/api/indexed-jobs','/api/firm-jobs','/api/editorial-jobs','/api/jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/ai-jobs?shard=7','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3','/api/direct-jobs?shard=0','/api/direct-jobs?shard=1'];
-    Promise.all([loadFeaturedConfig(),Promise.all(urls.map(function(url){return fetch(url,{credentials:'omit'}).then(function(response){if(!response.ok)throw Error(url+' unavailable');return response.json();}).then(function(value){return {status:'fulfilled',value:value};},function(){return {status:'rejected'};});}))]).then(function(all){
+    Promise.all([loadFeaturedConfig(),Promise.all(urls.map(function(url){return fetchFeedJSON(url).then(function(value){return {status:'fulfilled',value:value};},function(){return {status:'rejected'};});}))]).then(function(all){
       var items=all[1];
       var seen=Object.create(null),links=Object.create(null),records=[],latest=null,success=0;
       items.forEach(function(outcome){
@@ -1266,15 +1297,20 @@
       });
       if(!success)throw Error('No current feeds available');
       state.jobs=records;
+      state.feedStatus='ready';
+      refreshRegionOptions();
       $('system-message').hidden=state.jobs.length>0;
       if(!state.jobs.length)$('system-message').textContent='No current creative vacancies were returned by the connected feeds.';
-      $('updated-label').textContent='Feed fetched '+new Date(latest||Date.now()).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+      var partial=success<urls.length||items.some(function(item){return item.value&&Array.isArray(item.value.failed)&&item.value.failed.length;});
+      $('updated-label').textContent=(partial?'Some sources unavailable · updated ':'Feed fetched ')+new Date(latest||Date.now()).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
       hydrateSavedEntries();render();syncJobFromUrl();
     }).catch(function(){
+      state.feedStatus='error';
       $('system-message').hidden=false;
       $('updated-label').textContent='Feed unavailable';
       $('system-message').textContent='Current jobs could not be loaded. Please try later. Offline review records are not substituted for current vacancies.';
       $('results-summary').textContent='Feed unavailable';
+      render();
     });
   }
   if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();

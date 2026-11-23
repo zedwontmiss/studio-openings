@@ -120,7 +120,7 @@
  var soLocationEntry={get:function(){
    if(soLocationSelected)return Object.assign({},soLocationSelected);
    if(soCitySearch.value.trim())return null;
-   if(soCountry.value&&(!soRegion.value||(form.querySelector('input[name="mode"]:checked')||{}).value==='remote')){
+   if(soCountry.value&&(!soRegion.value||(form.elements.namedItem('mode')||{}).value==='remote')){
      return {kind:'country',countryCode:soCountry.value,regionCode:''};
    }
    return null;
@@ -268,6 +268,7 @@
    if(!input)return;
    var outer=issue.name==='permission'?form.querySelector('.submission-consent'):input.closest('label');
    if(!outer)return;
+   var optionalSection=outer.closest('details');if(optionalSection)optionalSection.open=true;
    outer.classList.add('so-invalid-field');
    input.setAttribute('aria-invalid','true');
    var id='so-error-'+issue.name;

@@ -106,11 +106,14 @@
    var salary=labelled(lines,/^(?:salary|compensation|pay range|remuneration)\s*[:\-]\s*(.+)$/i);
    var modeText=labelled(lines,/^(?:work arrangement|working mode|work location type|arrangement|work mode)\s*[:\-]\s*(.+)$/i);
    var typeText=labelled(lines,/^(?:employment|employment type|job type|contract type)\s*[:\-]\s*(.+)$/i);
+   var shortTerms=lines.filter(function(line){return /^(?:(?:full[ -]time|part[ -]time|contract|freelance|internship|hybrid|remote|on[ -]site)[\s,;/]*)+$/i.test(line);}).join(' ');
+   if(!modeText)modeText=shortTerms;if(!typeText)typeText=shortTerms;
    var output={
      title:title.slice(0,120),company:labelled(lines,/^(?:company|employer|organization|organisation|studio)\s*[:\-]\s*(.+)$/i).slice(0,100),
      location:labelled(lines,/^(?:location|based in|work location)\s*[:\-]\s*(.+)$/i).slice(0,90),
      salary:salary.slice(0,75),eligibility:labelled(lines,/^(?:eligibility|work authorization|work authorisation|eligible applicants)\s*[:\-]\s*(.+)$/i).slice(0,170),
-     description:cleaned.slice(0,4800),mode:'',type:'',role:''
+     description:cleaned.slice(0,4800),mode:'',type:'',role:'',
+     url:labelled(lines,/^(?:apply at|apply here|application url|apply)\s*[:\-]?\s*(https:\/\/\S+)\s*$/i).slice(0,600)
    };
    if(/hybrid/i.test(modeText))output.mode='hybrid';else if(/on[- ]site|in[- ]office/i.test(modeText))output.mode='onsite';else if(/remote/i.test(modeText))output.mode='remote';
    if(/full[- ]time/i.test(typeText))output.type='Full-time';else if(/part[- ]time/i.test(typeText))output.type='Part-time';else if(/contract|freelance/i.test(typeText))output.type='Contract';else if(/intern/i.test(typeText))output.type='Internship';
@@ -118,13 +121,17 @@
    return output;
  }
  function apply(parsed){
-   var form=byId('submission-form'),changed=0;
+   var form=byId('submission-form'),filled=[];
    if(!form)return;
    Object.keys(parsed).forEach(function(key){
      var el=form.elements.namedItem(key);
-     if(el&&parsed[key]){el.value=parsed[key];changed++;}
+     // Location needs a verified selection. Never overwrite an employer's edits.
+     if(key==='location')return;
+     if(el&&parsed[key]&&!el.value){el.value=parsed[key];filled.push(key);el.dispatchEvent(new Event('change',{bubbles:true}));var section=el.closest('details');if(section)section.open=true;}
    });
-   info('Extracted '+changed+' field'+(changed===1?'':'s')+'. Review every field and correct anything missing before submitting.');
+   var names={title:'job title',company:'company',role:'discipline',type:'employment',mode:'arrangement',url:'application URL',description:'description',salary:'salary',eligibility:'eligibility'};
+   var missing=['title','company','mode','role','contactEmail'].filter(function(key){var el=form.elements.namedItem(key);return el&&!el.value;}).map(function(key){return names[key]||'contact email';});
+   info((filled.length?'Filled '+filled.map(function(key){return names[key]||key;}).join(', ')+'. ':'No empty fields could be filled. ')+(parsed.location?'Source location: '+parsed.location+'. ':'')+'Choose a verified location below'+(missing.length?' and complete '+missing.join(', '):'')+'. Review all details; existing entries were kept.');
  }
  document.addEventListener('DOMContentLoaded',function(){
    var file=byId('job-document'),paste=byId('job-paste'),button=byId('import-document');

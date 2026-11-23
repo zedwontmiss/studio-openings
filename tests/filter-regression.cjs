@@ -67,6 +67,17 @@ for(const [name,expected,filters] of cases){
  assert.deepStrictEqual(jobs.filter(j=>api.eligible(j)).map(j=>j.id),expected,name);
 }
 const filtered=make({...base,selectedRoles:['product'],keywords:['Product Design']});
+const mixed={id:'mixed',title:'Senior Motion & Graphic Designer',role:'visual',company:'Silverback Strategies',location:'United States',mode:'remote'};
+for(const role of ['motion','visual'])assert(make({...base,selectedRoles:[role]}).eligible(mixed),'Mixed title must match '+role);
+assert(make(base).jobKeywords(mixed).includes('Motion Design'));
+assert(!make({...base,selectedRoles:['motion']}).eligible({...mixed,title:'Graphic Designer',description:'We collaborate with motion designers.'}),'Description mentions do not add disciplines');
+assert(!make({...base,selectedRoles:['motion']}).eligible({...mixed,title:'Motion Capture Engineer'}),'Motion engineering is not automatically motion design');
+assert(make({...base,region:'gb'}).eligible({title:'Web Designer',role:'web',location:'London, United Kingdom'}));
+assert(!make({...base,region:'us'}).eligible({title:'Web Designer',role:'web',location:'London, United Kingdom'}));
+assert(make({...base,region:'ca'}).eligible({title:'Designer',role:'visual',location:'Toronto',geoCountry:'CA'}));
+assert(!make({...base,region:'ca'}).eligible({title:'Designer',role:'visual',location:'Los Angeles, CA',geoCountry:'US'}));
+assert(!make({...base,region:'gb'}).eligible({title:'Designer',role:'visual',location:'Europe',locationKind:'eligibility'}));
+assert(make({...base,region:'gb'}).eligible({title:'Designer',role:'visual',location:'Worldwide',mode:'remote',locationKind:'eligibility'}));
 assert(filtered.eligible(jobs[1],1,jobs),'Numeric callback override must be ignored for an actual Product job');
 assert(!filtered.eligible(jobs[0],1,jobs),'Numeric callback override must not pass a Visual job');
 assert(filtered.eligible(jobs[1],'product',['Product Design','UX/UI']),'Saved snapshot override must work');
