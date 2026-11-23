@@ -28,8 +28,10 @@ const SOURCES=Object.freeze([
  ['greenhouse','fashionnova','Fashion Nova','fashion'],['greenhouse','dept','DEPT®','web'],
  ['lever','sfmoma','San Francisco Museum of Modern Art','museum'],
  ['greenhouse','davidzwirnergallery','David Zwirner','culture'],
- ['greenhouse','sharkninjaoperatingllc','SharkNinja','industrial']
-].map(([provider,board_token,name,focus])=>({provider,board_token,name,focus})));
+ ['greenhouse','sharkninjaoperatingllc','SharkNinja','industrial'],
+ ['ashby','linear','Linear'],['ashby','granola','Granola','',{'London':'London, United Kingdom'}],
+ ['ashby','sierra','Sierra']
+].map(([provider,board_token,name,focus,locations])=>({provider,board_token,name,focus,locations})));
 const REJECT=/\b(?:software architect|solutions architect|cloud architect|data architect|sales|account manager|business development|recruiter|operations manager|finance|project manager|product manager|customer success|marketing manager|talent acquisition|open application|general application|talent pool|industrial design opportunities at)\b/i;
 const US_CITIES=['San Francisco','New York','Los Angeles','Seattle','Boston','Austin','Chicago','Miami','Denver','Raleigh','San Diego','San Jose','Mountain View','Palo Alto','Menlo Park','Redwood City','Washington DC','Washington, DC','Portland','Philadelphia','Atlanta','Salt Lake City','Charlotte','Brooklyn','Irvine','Santa Monica'];
 const OTHER=[
@@ -58,6 +60,7 @@ export function locationOf(raw){
    if(/\b(?:Europe|European Union|EMEA|APAC|LATAM)\b/i.test(s))return {country:'',kind:'eligibility',mode:'remote'};
    return null; // Remote alone does not establish applicant eligibility.
  }
+ if(/^(?:North America|Europe)$/i.test(s))return {country:'',kind:'eligibility',mode:''};
  const mode=/\bhybrid\b/i.test(s)?'hybrid':'';
  const usPlace=s.match(/^([\p{L}][\p{L} .'-]+),\s*([A-Z]{2}),\s*(?:USA|United States(?: of America)?)$/u);
  if(usPlace&&Object.hasOwn(US_REGIONS,usPlace[2]))return {country:'US',kind:'office',mode};
@@ -78,7 +81,8 @@ export function creativeRole(title,description=''){
  return '';
 }
 export function normalize(row,source,now){
- const title=clean(row.title,125),role=creativeRole(title,row.description),loc=locationOf(row.location);
+ const title=clean(row.title,125),role=creativeRole(title,row.description);
+ const location=source.locations?.[row.location]||row.location,loc=locationOf(location);
  if(!role||(source.focus&&source.focus!==role)||!loc||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
  const description=sourceExcerpt(row.description,950);
  if(description.length<130)return null;
@@ -95,7 +99,7 @@ export function normalize(row,source,now){
  if(role==='visual'&&!leadership&&/\bbrand\b/i.test(title))tags.push('Branding');
  if(role==='motion'&&/\b3D\b/i.test(title))tags.push('3D');
  return {id:'ai-'+source.provider+'-'+source.board_token+'-'+String(row.uid).slice(0,60),
-   title,company:name,location:clean(row.location,140),locationKind:loc.kind,mode:loc.mode,
+   title,company:name,location:clean(location,140),locationKind:loc.kind,mode:loc.mode,
    type:employmentTypeOf(row.employmentType,title,row.description),role,geoCountry:loc.country,geoPolicy:POLICY_VERSION,
    salary:'',posted,dateKind:posted?'posted':'added',relevance:92,tags,
    source:'Official careers · '+name,
@@ -111,7 +115,7 @@ const HEAD={'content-type':'application/json; charset=utf-8','x-content-type-opt
 export async function onRequestGet({request}){
  const u=new URL(request.url),shard=Number(u.searchParams.get('shard'));
  if(!Number.isInteger(shard)||shard<0||shard>=Math.ceil(SOURCES.length/6))return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
- const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=7-specialist&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
+ const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=8-ai-design&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
  if(cache)try{const hit=await cache.match(key);if(hit)return hit;}catch(_){}
  const sources=SOURCES.slice(shard*6,shard*6+6),now=Date.now();
  const outcomes=await Promise.allSettled(sources.map(s=>loadBoard(s,now)));
