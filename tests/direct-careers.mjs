@@ -16,6 +16,7 @@ const job=normalizeDirect(detail,rows[0],koto,now);
 assert.equal(job.role,'motion');assert.equal(job.geoCountry,'US');assert.equal(job.posted,'');
 assert.equal(Date.parse(job.expiresAt),now+6*3600000);assert.equal(job.mode,'');
 assert.ok(job.description.includes(prose));assert.ok(!job.description.includes('Unrelated footer'));
+assert.ok(!normalizeDirect(detail.replace('<p>'+prose+'</p>','<ul><li><p>'+prose+'</p></li></ul>'),rows[0],koto,now).description.includes('•\n'));
 assert.equal(normalizeDirect(detail.replace('applications/new','removed'),rows[0],koto),null);
 assert.equal(normalizeDirect(detail.replace('<h1>Motion Design Director','<h1>Role closed'),rows[0],koto),null);
 assert.equal(elementAt('<div><div>inner</div>outer</div><div>other</div>',0),'<div><div>inner</div>outer</div>');
