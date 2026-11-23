@@ -291,7 +291,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v1122-specialist&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v1123-clean-source-credit&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));
