@@ -83,6 +83,9 @@ function plainText(value, limit = 14000) {
     .replace(/([.!?][\"'’”)]?)([A-Z][a-z])/g,'$1\n\n$2').trim();
   return excerptText(clean,limit);
 }
+function stripHimalayasAttribution(text){
+  return String(text||'').replace(/(?:^|\n+)\s*Originally posted on Himalayas\.?\s*$/i,'').trimEnd();
+}
 function contains(re, title, body) {return re.test(title) || re.test(body);}
 
 /** Return a standardized role and a relevance score, or null to reject. */
@@ -255,7 +258,9 @@ function normJobicy(j,now){
 }
 function normHimalayas(j,now){
   const title=String(j.title||'').trim();
-  const description=plainText(j.description||j.excerpt);
+  // The source API appends a redundant attribution paragraph. Studio Openings
+  // already credits and links Himalayas in the drawer source footer.
+  const description=stripHimalayasAttribution(plainText(j.description||j.excerpt));
   const decision=classify({title,description,categories:[...(j.categories||[]),...(j.parentCategories||[])]});if(!decision)return null;
   const url=safeLink(j.applicationLink,'Himalayas');if(!url)return null;
   const geo=remoteEligibility(j.locationRestrictions,{timezones:j.timezoneRestrictions});
