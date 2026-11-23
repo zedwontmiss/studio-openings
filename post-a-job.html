@@ -30,9 +30,9 @@
 <h2 id="submission-title">Post a creative job</h2><p class="submission-lede">Complete the details for editorial review. If accepted, we will contact you about the invoice.</p>
 <div class="submission-modes" hidden aria-hidden="true"><button type="button" id="mode-employer">I'm hiring</button><button type="button" id="mode-suggest">Suggest a vacancy</button></div>
 <form id="submission-form" novalidate>
-      <div class="post-group"><small>01 / VACANCY DETAILS</small><h3>What position are you hiring for?</h3><p>Import an existing job description or fill out the verified vacancy details below.</p></div><section class="document-import" aria-label="Import existing vacancy">
-        <strong>Have a job description already?</strong>
-        <p>Upload a document or paste its text. We'll prefill the form for you to review.</p>
+      <div class="post-group"><small>01 / VACANCY DETAILS</small><h3>What position are you hiring for?</h3><p>Fill in the vacancy below, or use an existing description to get started.</p></div><details class="document-import" aria-label="Import existing vacancy">
+        <summary>Import an existing job description (optional)</summary>
+        <p>Upload or paste text to fill recognized fields. Existing entries are kept. You will still need to verify the location and complete any missing details.</p>
         <label for="job-document">PDF, DOCX, TXT or Markdown (max 4 MB)</label>
         <input id="job-document" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
         <label for="job-paste">Or paste job description</label>
@@ -40,7 +40,7 @@
         <button id="import-document" class="submission-secondary" type="button">Extract details</button>
         <p id="import-status" class="import-status" role="status" hidden></p>
         <small>Text extraction happens in your browser. Original documents are not uploaded or stored. PDF extraction requires an internet connection; scanned PDFs may not work.</small>
-      </section>
+      </details>
       <label>Job title <span aria-hidden="true">*</span><input name="title" type="text" minlength="3" maxlength="120" autocomplete="off" placeholder="e.g. Architectural Designer" required></label>
       <label>Company / studio <span aria-hidden="true">*</span><input name="company" type="text" maxlength="100" placeholder="Hiring organization" required></label>
       <div class="post-group"><small>02 / WORKPLACE</small><h3>Location, work mode &amp; eligibility</h3><p>Choose a verified location so applicants can understand where they would work.</p></div><div class="submission-two"><label>Location <span aria-hidden="true">*</span><input name="location" type="text" maxlength="90" placeholder="City, country / Worldwide" required></label>
@@ -61,7 +61,7 @@
         <label>Company website (optional)<input name="companyWebsite" type="url" maxlength="350" placeholder="https://company.com"></label>
       </div>
       <div class="submission-two"><label>Salary (optional)<input name="salary" type="text" maxlength="75" placeholder="USD 70k–90k / yr"></label><label>Closes on (optional)<input name="closesOn" type="date"></label></div>
-      <label>Eligibility / work-authorisation notes (optional)<input name="eligibility" type="text" maxlength="170" placeholder="e.g. US only"></label>
+      <details><summary>Eligibility and visa details (optional)</summary><label>Eligibility / work-authorisation notes (optional)<input name="eligibility" type="text" maxlength="170" placeholder="e.g. US only"></label></details>
       <div class="post-group"><small>04 / JOB DESCRIPTION</small><h3>Give candidates the full details</h3><p>Responsibilities, qualifications, expected experience, compensation and benefits. A sufficiently detailed posting is easier to verify and evaluate.</p></div><label>Job description <textarea name="description" rows="9" maxlength="4800" placeholder="About the role&#10;&#10;Responsibilities&#10;• ...&#10;&#10;Qualifications&#10;• ...&#10;&#10;Benefits and compensation&#10;• ..."></textarea></label><p class="post-fine">We recommend at least 240 characters for a complete public job page.</p>
       <div class="submission-consent"><label><input name="permission" type="checkbox" required> <span id="submission-permission-text">I represent the hiring organization or have permission to submit this vacancy for public listing.</span></label></div>
       <p id="submission-error" class="submission-error" role="alert" hidden></p>
@@ -81,5 +81,5 @@
 <div id="submission-backdrop" hidden></div>
 </main>
 <footer class="post-footer"><a href="/">Browse jobs</a> · <a href="/contact.html">Contact</a> · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a> · Studio Openings</footer>
-<script src="/assets/document-import.js" defer></script><script src="/assets/submission.js" defer></script>
+<script src="/assets/document-import.js?v=1123-form" defer></script><script src="/assets/submission.js?v=1123-form" defer></script>
 </body></html>
