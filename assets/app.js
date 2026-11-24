@@ -381,29 +381,8 @@
   }
   // Saved Jobs remains a separate shortlist but honors the same active filters.
   // Stored bookmarks are never deleted by filtering.
-  var resultsToolbar=document.querySelector('.results-toolbar');
-  var resultsSortLabel=resultsToolbar.querySelector('label');
-  var savedShortcut=document.createElement('button');
-  savedShortcut.type='button';savedShortcut.id='saved-shortcut';savedShortcut.className='saved-shortcut';
-  savedShortcut.setAttribute('aria-pressed','false');
-  resultsToolbar.insertBefore(savedShortcut,resultsSortLabel);
-  var savedPanel=document.createElement('section');savedPanel.id='saved-library';savedPanel.className='saved-library';savedPanel.hidden=true;
-  var savedHead=document.createElement('div');savedHead.className='saved-library-head';
-  var savedTitle=document.createElement('h2');savedTitle.textContent='Saved jobs';
-  var savedBack=document.createElement('button');savedBack.type='button';savedBack.textContent='Back to all jobs';savedBack.className='saved-back';
-  savedHead.appendChild(savedTitle);savedHead.appendChild(savedBack);savedPanel.appendChild(savedHead);
-  var savedExplain=document.createElement('p');savedExplain.className='saved-explain';
-  savedExplain.textContent='Saved privately in this browser only. No account or cross-device sync.';savedPanel.appendChild(savedExplain);
-  var savedTabs=document.createElement('div');savedTabs.className='saved-tabs';savedTabs.setAttribute('role','group');savedTabs.setAttribute('aria-label','Saved date range');
-  var savedAll=document.createElement('button'),savedWeek=document.createElement('button');
-  [savedAll,savedWeek].forEach(function(b){b.type='button';savedTabs.appendChild(b);});
-  savedAll.textContent='All saved';savedWeek.textContent='Last 7 days';savedPanel.appendChild(savedTabs);
-  var savedFilterInfo=document.createElement('p');savedFilterInfo.className='saved-filter-info';savedFilterInfo.hidden=true;
-  savedPanel.appendChild(savedFilterInfo);
-  var savedListing=document.createElement('div');savedListing.className='saved-listing';savedPanel.appendChild(savedListing);
-  $('job-list').parentNode.insertBefore(savedPanel,$('job-list'));
-  function toggleSavedView(force){state.onlySaved=typeof force==='boolean'?force:!state.onlySaved;state.visible=10;render();}
-  savedShortcut.addEventListener('click',function(){toggleSavedView();});
+  var resultsSortLabel=document.querySelector('.sidebar-sort');
+
   savedBack.addEventListener('click',function(){toggleSavedView(false);});
   savedAll.addEventListener('click',function(){state.savedPeriod='all';render();});
   savedWeek.addEventListener('click',function(){state.savedPeriod='week';render();});
@@ -1078,9 +1057,9 @@
     feedBusy=false;
     renderKeywords();
     $('saved-count').textContent=saved.length;
-    savedShortcut.textContent='Saved jobs ('+saved.length+')';
-    savedShortcut.setAttribute('aria-pressed',String(state.onlySaved));
-    savedShortcut.classList.toggle('active',state.onlySaved);
+
+
+
     $('saved-toggle').setAttribute('aria-pressed',String(state.onlySaved));
     $('saved-toggle').classList.toggle('active',state.onlySaved);
     var selected=state.selectedRoles.length;
@@ -1230,7 +1209,7 @@
     if(pos>=0)saved.splice(pos,1);
     else saved.push(snapshotForJob(activeJob,null));
     persist();updateDrawerSaved();
-    $('saved-count').textContent=saved.length;savedShortcut.textContent='Saved jobs ('+saved.length+')';
+    $('saved-count').textContent=saved.length;
     refreshJobMarkers();
     if(state.onlySaved){closeDrawer(false);render();}
   });

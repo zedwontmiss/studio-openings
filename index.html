@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <link rel="canonical" href="https://s-o.app/">
   
-  <link rel="stylesheet" href="assets/styles.css?v=1111-mobile">
+  <link rel="stylesheet" href="assets/styles.css?v=1124-clean-list">
     
 <link rel="stylesheet" href="/assets/growth.css">
 <link rel="stylesheet" href="/assets/public-design.css?v=20261124"><link rel="stylesheet" href="/assets/global-search.css?v=4"></head>
@@ -19,7 +19,7 @@
 <header class="so-public-header" id="top"><div class="so-header-shell"><a class="so-brand" href="/">studio openings</a><nav class="so-primary" aria-label="Main navigation"><a href="/" aria-current="page">jobs</a><a href="/studio">studio</a><a href="/article">article</a></nav><nav class="so-utility" aria-label="Site information"><a href="/post-a-job.html" id="nav-submit">post a job</a><span class="so-utility-desktop"><a href="/about.html">about</a><a href="/coverage.html">bring to your city</a><a href="/contact.html">contact</a></span><details class="so-utility-more"><summary>more</summary><div class="so-utility-pop"><a href="/about.html">about</a><a href="/coverage.html">bring to your city</a><a href="/contact.html">contact</a></div></details></nav></div></header>
 <main class="shell">
 <section class="directory" id="jobs">
-  <div class="global-search"><h1 class="visually-hidden">Search Studio Openings</h1><label for="search" class="visually-hidden">Search jobs, studios and articles</label><input type="text" id="search" placeholder="SEARCH HERE" autocomplete="off" aria-describedby="global-search-help"><span id="global-search-help" class="visually-hidden">Search jobs, studios and articles. Job filters apply only to jobs.</span></div><section id="global-discovery" aria-label="Studio and article search results" hidden><div id="global-discovery-results"></div></section><div class="global-feed-status"><span class="updated" id="updated-label">Checking job feeds…</span></div>
+  <div class="global-search"><h1 class="visually-hidden">Search Studio Openings</h1><label for="search" class="visually-hidden">Search jobs, studios and articles</label><input type="text" id="search" placeholder="SEARCH HERE" autocomplete="off" aria-describedby="global-search-help"><span id="global-search-help" class="visually-hidden">Search jobs, studios and articles. Job filters apply only to jobs.</span></div><section id="global-discovery" aria-label="Studio and article search results" hidden><div id="global-discovery-results"></div></section><div class="global-feed-status" hidden><span class="updated" id="updated-label">Checking job feeds…</span></div>
   <div class="content-grid">
     <aside class="sidebar" aria-label="Filters">
       <button id="mobile-filter-toggle" class="mobile-filter-toggle" type="button" aria-expanded="false" aria-controls="filters-body">Filters <span id="filter-indicator">+</span></button>
@@ -48,19 +48,19 @@
         <div class="compact-select"><label for="work-mode">Arrangement</label><select id="work-mode"><option value="all">Any</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></div>
         <div class="compact-select"><label for="job-type">Employment</label><select id="job-type"><option value="all">Any</option><option value="full-time">Full-time</option><option value="contract">Contract</option><option value="part-time">Part-time</option><option value="internship">Internship</option></select></div>
         <label class="pay-check"><input id="has-pay" type="checkbox"> Salary disclosed</label>
-        <div class="filter-actions"><button type="button" id="saved-toggle" aria-pressed="false">Saved <span id="saved-count">0</span></button><button type="button" id="reset">Clear all</button><button type="button" id="copy-filters">Copy filters</button></div>
-        <span id="filter-share-status" class="visually-hidden" role="status" aria-live="polite"></span>
-      </div>
-    </aside>
-    <div class="results-panel">
-      <div id="preferences-bar" class="preferences-bar" hidden>
+        <div class="compact-select sidebar-sort"><label for="sort">Sort</label><select id="sort"><option value="relevant">Best match</option><option value="newest">Newest activity</option><option value="az">Job title</option><option value="company">Employer</option></select></div><div id="preferences-bar" class="preferences-bar" hidden>
         <span class="preferences-label">Your keywords</span>
         <div class="selected-keywords" id="selected-keywords" aria-label="Selected keyword preferences"></div>
         <label class="add-keyword-label" for="add-keyword"><span class="visually-hidden">Add another keyword</span><select id="add-keyword" aria-label="Add another keyword"><option value="">+ Add keyword</option></select></label>
         <label class="keyword-match-label" for="keyword-match">Match <select id="keyword-match"><option value="any">any</option><option value="all">all</option></select></label>
         <button type="button" class="clear-mini" id="clear-keywords">Clear</button>
+      </div><div class="filter-actions"><button type="button" id="saved-toggle" aria-pressed="false">Saved jobs (<span id="saved-count">0</span>)</button><button type="button" id="reset">Clear all</button><button type="button" id="copy-filters">Copy filters</button></div>
+        <span id="filter-share-status" class="visually-hidden" role="status" aria-live="polite"></span>
       </div>
-      <div class="results-toolbar"><span id="results-summary" aria-live="polite">Loading jobs…</span><label>Sort <select id="sort"><option value="relevant">Best match</option><option value="newest">Newest activity</option><option value="az">Job title</option><option value="company">Employer</option></select></label></div>
+    </aside>
+    <div class="results-panel">
+      
+      <div class="results-toolbar"><span class="filter-title" id="results-summary" aria-live="polite">Loading jobs…</span></div>
       
       <div id="job-link-message" class="system-message" role="status" hidden></div>
       <div id="system-message" class="system-message" role="status">Fetching jobs…</div>
@@ -131,7 +131,7 @@
 
 <script src="assets/filter-links.js?v=1124" defer></script>
 <script src="/assets/global-search.js?v=3" defer></script>
-<script src="assets/app.js?v=1124-live-search2" defer></script>
+<script src="assets/app.js?v=1124-clean-list" defer></script>
 <script src="assets/native-apply.js" defer></script>
 
 <script>
