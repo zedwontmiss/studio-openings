@@ -362,7 +362,7 @@
 
  // Scene uses the same in-memory operator credential, but an independent preview-only endpoint.
  var sceneRevision=0,sceneBusy=false;
- function clearScene(){sceneRevision++;sceneBusy=false;['scene-topics','scene-replies','scene-reports','scene-feedback'].forEach(function(id){$(id).textContent='';});$('scene-refresh').disabled=false;}
+ function clearScene(){ $('scene-retention-result').textContent='';$('scene-retention-run').disabled=true;sceneRevision++;sceneBusy=false;['scene-topics','scene-replies','scene-reports','scene-feedback'].forEach(function(id){$(id).textContent='';});$('scene-refresh').disabled=false;}
  function sceneAPI(input){return fetch('/api/scene-moderation',{method:input?'POST':'GET',credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:input?JSON.stringify(input):undefined}).then(function(r){return r.json().then(function(v){if(!r.ok)throw Error(v.error||'Scene unavailable');return v;});});}
  function sceneCurrent(session,revision){return !!token&&session===token&&revision===sceneRevision&&selectedTab==='scene';}
  function sceneAction(kind,id,status){
@@ -396,6 +396,15 @@
    setMessage('scene-feedback',message||'');
   },function(err){if(sceneCurrent(session,revision)){['scene-topics','scene-replies','scene-reports'].forEach(function(id){$(id).textContent='';});setMessage('scene-feedback',err.message+' — Scene may be disabled or its preview schema may not be installed.');}}).then(function(){if(sceneCurrent(session,revision)){sceneBusy=false;$('scene-refresh').disabled=false;}});
  }
+ function retentionRequest(run){
+  if(!token||selectedTab!=='scene'||sceneBusy)return;
+  if(run&&!confirm('Permanently delete eligible expired records in isolated Preview D1? Published discussions and unresolved reports are protected.'))return;
+  var session=token,revision=sceneRevision;
+  $('scene-retention-run').disabled=true;$('scene-retention-check').disabled=true;
+  fetch('/api/scene-retention',{method:run?'POST':'GET',credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:run?JSON.stringify({confirm:'purge-expired-scene-preview'}):undefined}).then(function(r){return r.json().then(function(v){if(!r.ok)throw Error(v.error||'Retention unavailable');return v;});}).then(function(v){if(!sceneCurrent(session,revision))return;var counts=run?v.deleted:v.eligible;setMessage('scene-retention-result',(run?'Deleted: ':'Eligible: ')+Object.keys(counts).map(function(k){return k+' '+counts[k];}).join(' · '));$('scene-retention-run').disabled=run||!Object.keys(counts).some(function(k){return counts[k]>0;});},function(err){if(sceneCurrent(session,revision))setMessage('scene-retention-result',err.message);}).then(function(){if(session===token)$('scene-retention-check').disabled=false;});
+ }
+ $('scene-retention-check').addEventListener('click',function(){retentionRequest(false);});
+ $('scene-retention-run').addEventListener('click',function(){retentionRequest(true);});
  $('scene-refresh').addEventListener('click',function(){loadScene();});
 
  $('unlock-button').addEventListener('click',unlock);$('operator-key').addEventListener('keydown',function(e){if(e.key==='Enter')unlock();});$('refresh-button').addEventListener('click',function(){api('GET').then(function(d){data=d;render();}).catch(function(err){if(/access|invalid|configured/i.test(err.message))lock(err.message);else {$('operation-error').hidden=false;setMessage('operation-error',err.message);}});});$('lock-button').addEventListener('click',function(){lock('Operator console locked.');});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.addEventListener('click',function(){selectTab(btn.getAttribute('data-tab'));});});$('cancel-action').addEventListener('click',closeAction);$('execute-action').addEventListener('click',execute);$('confirm-backdrop').addEventListener('click',function(e){if(e.target===$('confirm-backdrop'))closeAction();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('confirm-backdrop').hidden)closeAction();});

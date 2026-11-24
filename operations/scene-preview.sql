@@ -33,3 +33,9 @@ CREATE TABLE IF NOT EXISTS scene_rate_buckets (
  count INTEGER NOT NULL,
  expires_at INTEGER NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS idx_scene_rate_expiry ON scene_rate_buckets(expires_at);
+CREATE INDEX IF NOT EXISTS idx_scene_topic_retention ON scene_topics(status,reviewed_at);
+CREATE INDEX IF NOT EXISTS idx_scene_reply_retention ON scene_replies(status,reviewed_at);
+CREATE INDEX IF NOT EXISTS idx_scene_report_topic ON scene_reports(topic_id,status);
+CREATE INDEX IF NOT EXISTS idx_scene_report_reply ON scene_reports(reply_id,status);

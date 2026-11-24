@@ -118,3 +118,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Owner correction supersedes previous Jobs search ordering: restore original global homepage search immediately showing matching Studio/Article titles ABOVE intact jobs grid, with no waiting for job feed or pagination. Only Studio and Article pages restrict search to own section. Scene operator tab staged using existing private console and credential; no activation.
 
 - Scene topic/reply/report composer and mandatory server-side Turnstile verification staged. Writes require isolated Preview, read/write flags, separate rate secret, Scene site key/secret. No automatic activation or migration. Preserve existing global Jobs search and scoped Studio/Article search.
+
+- Scene retention staged: operator-only dry-run and separately gated bounded purge, preserve published/pending records and unresolved reports; proposed 30-day rejected/removed, 90-day reviewed reports from creation, expired rate buckets. Never apply schema or enable flags without isolation and approval. No automatic deletion schedule.

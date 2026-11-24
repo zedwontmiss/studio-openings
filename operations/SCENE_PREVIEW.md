@@ -20,3 +20,14 @@ Read-only city Scene UI now staged: latest/popular, published topic and reply vi
 Operator console Scene tab implemented using existing in-memory secret, contextual pending topics/replies/reports, explicit publish/reject/remove/review actions, text-only rendering, stale session response guards. Schema and flags remain disabled. Before writes: challenge, retention/cleanup, privacy terms, independent integration/security testing. Reports are reviewed separately from removal. No new database or production changes.
 
 Anonymous topic/reply/report composers staged behind strict Preview writes gate. Turnstile required server-side for every submission, with hostname/action checks and separate Scene site key and secret; no raw IP sent in verification request by this code. Challenge script loads only when an enabled composer is opened. No flags, keys, schema or real submissions configured. Retention/deletion, legal review, rate limit validation, CSP/Turnstile browser and D1 integration tests remain mandatory. Existing moderation still required.
+
+## Retention pilot (proposed durations, owner/legal review required)
+Rate buckets eligible at expiry; rejected/removed records eligible 30 days after review; reviewed reports eligible 90 days after creation (not review timestamp, existing schema limitation). No pending or published content automatically deleted. Topics with any dependent replies/reports are retained; blocked dependencies require manual resolution. Authenticated dry-run counts and separately flagged, explicitly confirmed bounded cleanup; no scheduler configured. Scene retention is not a general D1 deletion endpoint. Backups/platform logs have separate retention. No guarantee of erasure from backups. Contact requests require manual verification; anonymous authors have no self-service deletion yet.
+
+## Preview activation order
+1. Compare actual D1 IDs in Cloudflare; do not proceed if shared with production.
+2. Run staged SQL only on isolated Preview. Confirm four tables/indexes.
+3. Set SCENE_ENABLED=true for read/moderation testing. Keep SCENE_WRITES_ENABLED and SCENE_RETENTION_ENABLED off.
+4. Configure separate Scene Turnstile credentials restricted to preview hostname and rate secret. Test reject/approve/report and malicious content with synthetic test fixtures only, then remove fixtures. Enable writes only after privacy and security review.
+5. Dry-run retention and verify protected records survive. Explicitly enable cleanup only for approved testing. Review logs, remove fixtures, disable write flags when not testing.
+6. Pilot London/New York only after adding a city allowlist, original editorial prompts, published rules, moderation capacity, abuse and deletion policies. No production launch without owner approval.

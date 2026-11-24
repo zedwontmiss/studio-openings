@@ -66,3 +66,6 @@ Owner clarified original global homepage behavior must stay exactly as before sc
 
 ### Scene anonymous composer and challenge
 Added gated topic/reply/report forms, lazy Turnstile challenge and mandatory server verification (hostname/action). All accepted content pending moderation; no accounts or public names. No flags/keys/schema applied; retention/deletion, privacy review, integration/security testing pending. Production unchanged. Browser composer syntax checked; full test suite not run.
+
+### Scene retention and activation readiness
+Added bounded retention dry-run/purge on isolated Preview D1, explicit operator confirmation and separate SCENE_RETENTION_ENABLED flag. Preserve published/pending content and dependencies; no cascade. Proposed retention periods require owner/legal review. Updated operator tab and activation checklist. No migrations, secrets, flags or schedules configured. JS syntax only checked; SQL/API integration pending. No production changes.
