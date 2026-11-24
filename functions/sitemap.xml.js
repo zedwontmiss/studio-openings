@@ -1,3 +1,4 @@
+import {STUDIO_PATHS} from '../lib/studio-routes.js';
 import {ARTICLE_PATHS} from '../lib/editorial-routes.js';
 import {EMPLOYER_ROWS} from '../lib/job-lifecycle.js';
 import {eligibleJob} from '../lib/seo-jobs.js';
@@ -7,7 +8,7 @@ const escapeXML=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(
 export async function onRequestGet({request,env}){
  const root='https://s-o.app';
  const rows=[{url:root+'/'},{url:root+'/privacy'},{url:root+'/coverage'},{url:root+'/post-a-job'},{url:root+'/about'},{url:root+'/contact'},{url:root+'/terms'}];
- for(const path of ["/studio","/article",...ARTICLE_PATHS,"/studio/dixonbaxi","/studio/framestore","/studio/further","/studio/gagosian","/studio/industrial-color","/studio/moma-ps1","/studio/ragged-edge","/studio/whitney-museum"])rows.push({url:root+path});
+ for(const path of ["/studio","/article",...ARTICLE_PATHS,...STUDIO_PATHS])rows.push({url:root+path});
  for(const slug of DISCIPLINE_SLUGS)rows.push({url:root+'/disciplines/'+slug});
  if(env?.JOBS_DB){
   try{const r=await env.JOBS_DB.prepare(EMPLOYER_ROWS+" WHERE s.status='approved' AND s.submission_type='employer' AND s.reviewed_at>=datetime('now','-31 days') ORDER BY s.id").all();

@@ -87,3 +87,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Desktop header retains compact right-aligned Craigslist-style navigation with consistent spacing between Jobs and Contact; left wordmark and right S/O remain anchored. Discipline groups collapsed by default; no vertical sidebar divider. Mobile-specific redesign deferred by owner. Registry location records distinguish studio/office from gallery or museum; city-level evidence is not proof of hiring.
 
 - Studio country/city filters use canonical country+region+city identity; same office must match both. Generated compact assets/studio-search.json supplies cross-index studio search. Maintain static names-only index and internal links. No geographic landing pages until meaningful verified coverage.
+
+- Generate canonical studio profiles with operations/build-studio-profiles.mjs and --check. Preserve independently authored overview, official source links and jobQuery. Generated STUDIO_PATHS supplies dynamic sitemap; static sitemap must also be updated when adding new profiles. Existing search links are not exact employer-job associations.

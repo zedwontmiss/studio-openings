@@ -25,7 +25,9 @@
         "reviewedOn": "2026-11-24",
         "reviewStatus": "previously-reviewed-career-source"
       },
-      "employerVerified": false
+      "employerVerified": false,
+      "overview": "The studio's dedicated recruitment site provides the starting point for brand and design opportunities. Review the role's actual mix of identity, visual systems and production work.",
+      "jobQuery": "DixonBaxi"
     },
     {
       "id": "framestore",
@@ -99,7 +101,9 @@
         "reviewedOn": "2026-11-24",
         "reviewStatus": "previously-reviewed-career-source"
       },
-      "employerVerified": false
+      "employerVerified": false,
+      "overview": "Framestore's careers page links to its official recruitment board. For VFX and motion roles, check the specified production pipeline, reel requirements, office and contract terms.",
+      "jobQuery": "Framestore"
     },
     {
       "id": "further",
@@ -135,7 +139,9 @@
         "reviewedOn": "2026-11-24",
         "reviewStatus": "previously-reviewed-career-source"
       },
-      "employerVerified": false
+      "employerVerified": false,
+      "overview": "The former DesignStudio careers route redirects to Further. Use the current Further careers site rather than relying on older recruitment links under the former name.",
+      "jobQuery": "Further"
     },
     {
       "id": "gagosian",
@@ -161,7 +167,9 @@
         "reviewedOn": "2026-11-24",
         "reviewStatus": "previously-reviewed-career-source"
       },
-      "employerVerified": false
+      "employerVerified": false,
+      "overview": "The gallery's jobs page is the official starting point for recruitment. Our source review included image archival work involving photography and image processing. Check current responsibilities carefully.",
+      "jobQuery": "Gagosian"
     },
     {
       "id": "industrial-color",
@@ -195,7 +203,9 @@
         "reviewedOn": "2026-11-24",
         "reviewStatus": "previously-reviewed-career-source"
       },
-      "employerVerified": false
+      "employerVerified": false,
+      "overview": "The company's about page links to the CoCreativ recruitment board. Search the original board for Industrial Color roles and confirm the employer and division before applying.",
+      "jobQuery": "Industrial Color"
     },
     {
       "id": "moma-ps1",
@@ -221,7 +231,9 @@
         "reviewedOn": "2026-11-24",
         "reviewStatus": "previously-reviewed-career-source"
       },
-      "employerVerified": false
+      "employerVerified": false,
+      "overview": "The institution's jobs page links to the MoMA recruitment system. Applicants should check that the original vacancy specifically identifies PS1 and its location rather than assuming that every MoMA position is a PS1 role.",
+      "jobQuery": "MoMA PS1"
     },
     {
       "id": "ragged-edge",
@@ -247,7 +259,9 @@
         "reviewedOn": "2026-11-24",
         "reviewStatus": "previously-reviewed-career-source"
       },
-      "employerVerified": false
+      "employerVerified": false,
+      "overview": "The agency's Join page lists individual opportunities and links to its application system. For design work, read the actual scope of the brief and check the expected office attendance.",
+      "jobQuery": "Ragged Edge"
     },
     {
       "id": "whitney-museum",
@@ -273,7 +287,9 @@
         "reviewedOn": "2026-11-24",
         "reviewStatus": "previously-reviewed-career-source"
       },
-      "employerVerified": false
+      "employerVerified": false,
+      "overview": "The museum's job-postings page directs visitors to its recruitment site. Reviewed source material included exhibition registrar and web operations roles, illustrating the range of creative and technical work in cultural institutions.",
+      "jobQuery": "Whitney"
     }
   ]
 }

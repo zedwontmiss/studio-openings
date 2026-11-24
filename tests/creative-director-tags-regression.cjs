@@ -26,7 +26,7 @@ assert.strictEqual(chief.visible[2],'Executive');
 assert.strictEqual(profile({title:'Marketing Director',description:'brand campaigns'}),null);
 assert.strictEqual(profile({title:'Graphic Designer',description:'creative direction'}),null);
 assert.strictEqual(profile({title:'Creative Director',description:''}).searchable.includes('Advertising'),false);
-assert(app.includes('jobSearchTags(job).forEach(function(word)'), 'Keyword picker uses searchable role terms');
+assert(app.includes('searchTag(shortTagLabel(word))'), 'Clickable tags use visible global search');
 assert(app.includes(')?verifiedTags:jobSearchTags(job);'), 'Keyword filters use searchable role terms');
 assert(app.includes('if(direction)return direction.visible;'), 'UI displays three canonical badges');
 assert(app.includes('return tags.slice(0,3);'), 'Other roles retain existing max-three badge policy');
