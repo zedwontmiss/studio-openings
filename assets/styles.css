@@ -612,3 +612,13 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 
 /* Keep transient feed status out of the public layout. */
 #system-message,#feed-progress{display:none!important}
+
+/* Sidebar: right-aligned disclosure controls, whitespace instead of rules. */
+.sidebar .filter-group{border:0;padding:7px 0}
+.sidebar .filter-group summary{justify-content:space-between}
+.sidebar .filter-group summary:before{display:none;content:none}
+.sidebar .filter-group summary:after{content:'+';font-size:15px;font-weight:400;line-height:1;color:#555;text-align:right;margin-left:auto}
+.sidebar .filter-group[open] summary:after{content:'−'}
+.sidebar .filter-divider{border:0;margin:12px 0;height:0}
+.sidebar .filter-actions,.sidebar .filters-body,.sidebar .mobile-filter-toggle{border-top:0;border-bottom:0}
+.sidebar #clear-disciplines:disabled{opacity:.45;cursor:default;text-decoration:none}

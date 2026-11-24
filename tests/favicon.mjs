@@ -19,7 +19,9 @@ for(const page of ['functions/disciplines/[slug].js','functions/jobs/[id].js','f
 const ico=readFileSync(new URL('../favicon.ico',import.meta.url));
 const apple=readFileSync(new URL('../assets/apple-touch-icon.png',import.meta.url));
 const svg=readFileSync(new URL('../assets/favicon.svg',import.meta.url),'utf8');
-assert.match(svg,/>s\/o<\/text>/,'favicon must display the Studio Openings s/o mark');
+assert.match(svg,/>S\/O<\/text>/,'favicon must display the Studio Openings s/o mark');
 assert.deepEqual([...ico.subarray(0,4)],[0,0,1,0],'favicon.ico must be a Windows icon');
 assert.deepEqual([...apple.subarray(0,8)],[137,80,78,71,13,10,26,10],'apple-touch-icon must be a PNG');
 console.log('Favicon links and browser-compatible assets passed.');
+
+assert.ok(!svg.includes('<rect'),'favicon must have transparent background and no border');

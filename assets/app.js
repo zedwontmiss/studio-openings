@@ -1056,7 +1056,7 @@
     $('saved-toggle').classList.toggle('active',state.onlySaved);
     var selected=state.selectedRoles.length;
     $('filter-indicator').textContent=selected?selected+' selected':(document.querySelector('.sidebar').classList.contains('expanded')?'−':'+');
-    $('clear-disciplines').textContent=selected?'clear ('+selected+')':'all';
+    $('clear-disciplines').textContent='clear';$('clear-disciplines').disabled=!selected;
     // Array.filter passes (job, index, array). Do not forward index/array as
     // Saved Jobs' optional verified role and tags override parameters.
     var list=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
