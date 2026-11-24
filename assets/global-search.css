@@ -26,3 +26,7 @@
 @media(min-width:731px){.directory .sidebar{position:-webkit-sticky;position:sticky;top:132px;max-height:calc(100vh - 144px);overflow-y:auto;align-self:start;background:#fff}}
 @media(max-width:730px){.global-search{padding-top:10px;margin-top:-10px}.directory .sidebar{position:static}}
 html{scroll-padding-top:132px}
+
+/* Prevent the browser from preserving the old job-row position as results above it change. */
+html,body,.directory{overflow-anchor:none}
+html{scroll-behavior:auto}

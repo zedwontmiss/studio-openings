@@ -175,6 +175,17 @@
     if((job.applicationMethod||'external')==='external'&&!safeUrl(job.url))return false;
     return categoryFor(job)!=='not-creative'&&jobKeywords(job).length>0;
   }
+  function renderSearchFromTop(){
+    // Reset before changing result heights; repeat after layout to defeat scroll anchoring.
+    window.scrollTo(0,0);
+    try{render();}finally{
+      window.scrollTo(0,0);
+      if(window.requestAnimationFrame)window.requestAnimationFrame(function(){
+        window.scrollTo(0,0);
+        window.requestAnimationFrame(function(){window.scrollTo(0,0);});
+      });
+    }
+  }
   function searchTag(label){
     // Tags are shortcuts into the visible query, never a second hidden filter.
     var term=String(label||'').trim(),q=state.query.trim();
@@ -185,7 +196,7 @@
       if(parts.every(function(p,j){return p.toLowerCase()===words[i+j].toLowerCase();})){at=i;break;}
     }
     if(at>=0)words.splice(at,parts.length);else words=words.concat(parts);
-    state.query=words.join(' ');$('search').value=state.query;state.onlySaved=false;state.visible=10;render();window.scrollTo(0,0);
+    state.query=words.join(' ');$('search').value=state.query;state.onlySaved=false;state.visible=10;renderSearchFromTop();
   }
   function tagInQuery(label){
     var query=' '+state.query.toLowerCase().replace(/\s+/g,' ').trim()+' ';
@@ -1093,7 +1104,7 @@
 
 
 
-  $('search').addEventListener('input',function(){state.query=this.value.trim();if(state.query)state.onlySaved=false;state.visible=10;render();window.scrollTo(0,0);});
+  $('search').addEventListener('input',function(){state.query=this.value.trim();if(state.query)state.onlySaved=false;state.visible=10;renderSearchFromTop();});
   $('region').addEventListener('change',function(){state.region=this.value;state.visible=10;render();});
   $('job-type').addEventListener('change',function(){state.type=this.value;state.visible=10;render();});
   $('work-mode').addEventListener('change',function(){state.mode=this.value;state.visible=10;render();});
