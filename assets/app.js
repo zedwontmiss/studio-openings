@@ -7,7 +7,7 @@
     product:'Product / UX / UI', visual:'Graphic / Brand', motion:'Motion / 3D', fashion:'Fashion / Photography',
     web:'Web / Creative Tech', museum:'Museum / Exhibition', culture:'Arts / Cultural Production'
   };
-  var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, savedPeriod:'all', visible:10, review:false,feedStatus:'loading'};
+  var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', city:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, savedPeriod:'all', visible:10, review:false,feedStatus:'loading'};
   // Category landing pages link to the existing filtered job board.
   // Only allow known disciplines; never use unchecked query input as HTML.
   try {
@@ -165,6 +165,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('.so-primary a'),function(link){
       var url=new URL(link.href,window.location.href);
       if(state.query)url.searchParams.set('q',state.query.slice(0,120));else url.searchParams.delete('q');
+      if(url.pathname==='/'&&state.city)url.searchParams.set('city',state.city);else url.searchParams.delete('city');
       link.href=url.pathname+url.search;
     });
   }
@@ -395,7 +396,7 @@
     return days===0?'Saved today':days===1?'Saved yesterday':'Saved '+new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
   }
   function savedHasActiveFilters(){
-    return !!(state.selectedRoles.length||state.query||
+    return !!(state.selectedRoles.length||state.query||state.city||
       state.region!=='all'||state.mode!=='all'||state.type!=='all'||state.hasPay);
   }
   function savedMatchesFilters(item,job){
@@ -404,7 +405,7 @@
     if(roleLabels[item.role])return eligible(item,item.role,item.tags||[]);
     // Legacy bookmarks can have no role/location/tags. Never classify their
     // unknown metadata as Culture or claim to match a skill or work arrangement.
-    if(state.selectedRoles.length||
+    if(state.selectedRoles.length||state.city||
        state.region!=='all'||state.mode!=='all'||state.type!=='all'||state.hasPay)return false;
     if(!state.query)return true;
     var text=[item.title,item.company,item.source].join(' ').toLowerCase();
@@ -625,6 +626,7 @@
   function eligible(job,verifiedRole,verifiedTags){
     var role=(typeof verifiedRole==='string'&&roleLabels[verifiedRole])?verifiedRole:categoryFor(job);
     if(role==='not-creative')return false;
+    if(state.city&&(!window.SOAPPLocalGeo||!window.SOAPPLocalGeo.matches(job,state.city)))return false;
     if(state.selectedRoles.length&&!state.selectedRoles.some(function(selected){return selected===role||jobDisciplines(job).indexOf(selected)>=0;}))return false;
     
     if(state.region!=='all'&&state.region!=='worldwide'&&!countryMatch(job,state.region.toUpperCase()))return false;
@@ -1053,6 +1055,7 @@
   }
   function render(){
     preserveSearchNavigation();
+    var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href='/'+city.slug;}
     if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
@@ -1089,7 +1092,7 @@
   }
   function reset(){
     try{if(window.StudioOpeningFilterLinks)window.history.replaceState(window.history.state,'',window.StudioOpeningFilterLinks.clear(window.location.href));}catch(e){}
-    state.selectedRoles=[];state.query='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'relevant';state.visible=10;
+    state.selectedRoles=[];state.query='';state.city='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'relevant';state.visible=10;
     $('search').value='';$('region').value='all';$('job-type').value='all';$('work-mode').value='all';$('has-pay').checked=false;$('sort').value=state.sort;
     Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=false;});
     render();

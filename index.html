@@ -20,7 +20,7 @@
 <main class="shell">
 <section class="directory" id="jobs">
   <div class="global-search"><h1 class="visually-hidden">Creative job openings</h1><label for="search" class="visually-hidden">Search jobs, studios and articles</label><input type="text" id="search" placeholder="search here" autocomplete="off" aria-describedby="global-search-help"><span id="global-search-help" class="visually-hidden">Job filters apply only to jobs.</span></div><section id="global-discovery" aria-label="Studio and article search results" hidden><div id="global-discovery-results"></div></section><div class="global-feed-status" hidden><span class="updated" id="updated-label">Checking job feeds…</span></div>
-  <div class="content-grid">
+  <div id="local-job-scope" hidden style="font-size:13px;margin:0 0 10px">Local jobs · <a href="/">City</a> · <a href="/">All locations</a></div><div class="content-grid">
     <aside class="sidebar" aria-label="Filters">
       <button id="mobile-filter-toggle" class="mobile-filter-toggle" type="button" aria-expanded="false" aria-controls="filters-body">Filters <span id="filter-indicator">+</span></button>
       <div class="filters-body" id="filters-body">
@@ -123,9 +123,9 @@
   <span class="job-bottom"><span class="job-salary"></span><span class="job-notice" hidden></span></span>
 </button></article></template>
 
-<script src="assets/filter-links.js?v=1124" defer></script>
+<script src="/assets/local-geo.js?v=1" defer></script><script src="assets/filter-links.js?v=1125-city" defer></script>
 <script src="/assets/global-search.js?v=5" defer></script>
-<script src="assets/app.js?v=1125-neutral" defer></script>
+<script src="assets/app.js?v=1125-city" defer></script>
 <script src="assets/native-apply.js" defer></script>
 
 <script>

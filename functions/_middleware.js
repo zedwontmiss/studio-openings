@@ -18,7 +18,7 @@ export async function onRequest(context) {
     return new Response(null,{status:308,headers:{location:destination.href,'cache-control':'no-store','x-robots-tag':hostname==='s-o.app'?'noindex':'noindex, nofollow'}});
   }
   let response = await applyOutreachPolicy(await context.next(),pathname);
-  if ((pathname==='/'||pathname==='/index.html') && context.request.method==='GET' && (hostname!=='s-o.app'||context.env?.PUBLIC_INVENTORY_ENABLED==='true')) response=await seedHomepage(response,context);
+  if ((pathname==='/'||pathname==='/index.html') && !new URL(context.request.url).searchParams.has('city') && context.request.method==='GET' && (hostname!=='s-o.app'||context.env?.PUBLIC_INVENTORY_ENABLED==='true')) response=await seedHomepage(response,context);
   if (context.request.method==='GET' && STUDIO_PATHS.includes(pathname) && (hostname==='development.studio-openings.pages.dev'||context.env?.STUDIO_ASSOCIATIONS_ENABLED==='true')) response=await seedStudioJobs(response,context,pathname.slice('/studio/'.length));
   const headers = new Headers(response.headers);
   const path = pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
