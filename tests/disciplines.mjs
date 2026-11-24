@@ -3,11 +3,7 @@ import {readFileSync} from 'node:fs';
 
 const data=readFileSync('lib/discipline-pages.js','utf8');
 const {DISCIPLINES,DISCIPLINE_SLUGS}=await import('data:text/javascript;base64,'+Buffer.from(data).toString('base64'));
-const source=readFileSync('functions/disciplines/[slug].js','utf8');
-const routeModule=source.replace(/^import .*;$/gm,'');
-const mockURL=class {constructor(value){this.hostname=String(value).split('/')[2];}};
-const fn=new Function('DISCIPLINES','DISCIPLINE_SLUGS','URL',routeModule.replace(/^export /gm,'')+';return onRequestGet;');
-const handler=fn(DISCIPLINES,DISCIPLINE_SLUGS,mockURL);
+const {onRequestGet:handler}=await import('../functions/disciplines/[slug].js');
 
 assert.equal(DISCIPLINE_SLUGS.length,10);
 const home=readFileSync('index.html','utf8');
