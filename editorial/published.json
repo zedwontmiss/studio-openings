@@ -1,0 +1,283 @@
+{
+  "featured": "remote-design-jobs-eligibility",
+  "articles": [
+    {
+      "slug": "creative-job-search-checklist",
+      "title": "A checklist for evaluating creative job openings",
+      "description": "Assess role scope, portfolio expectations, work location and the original application source before applying.",
+      "category": "Career",
+      "date": "2026-11-24",
+      "status": "published",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A job title alone rarely tells you what a creative role involves. Before sending an application, use the original employer posting to check the following details."
+        },
+        {
+          "type": "heading",
+          "text": "1. Read the actual responsibilities"
+        },
+        {
+          "type": "paragraph",
+          "text": "Distinguish concept development from production, management and technical coordination. An architecture role may emphasize documentation or BIM rather than concept design. A creative director may own strategy and team leadership, while a graphic designer may focus on execution. Match the responsibilities to the work you want to do."
+        },
+        {
+          "type": "heading",
+          "text": "2. Check location and eligibility separately"
+        },
+        {
+          "type": "paragraph",
+          "text": "Remote does not necessarily mean worldwide. Confirm permitted countries, time zones, work authorization, office attendance and any relocation requirements. If eligibility is missing, ask rather than assuming it."
+        },
+        {
+          "type": "heading",
+          "text": "3. Match your portfolio to the role"
+        },
+        {
+          "type": "paragraph",
+          "text": "Choose relevant examples that explain your contribution, constraints and outcomes. For architecture, technical drawings and project stages may matter alongside visual work. For motion or VFX, a focused reel may be more relevant than a general portfolio."
+        },
+        {
+          "type": "heading",
+          "text": "4. Compare compensation and contract scope"
+        },
+        {
+          "type": "paragraph",
+          "text": "Check currency, pay period, employment type and whether a figure is gross or net. A freelance day rate cannot be directly compared with annual employee pay without accounting for unpaid time and benefits."
+        },
+        {
+          "type": "heading",
+          "text": "5. Verify the original vacancy"
+        },
+        {
+          "type": "paragraph",
+          "text": "Use the employer's authoritative career page or application system to confirm the opening is current. A directory entry can become outdated between checks. Avoid sending unnecessary sensitive documents to an unverified recipient."
+        },
+        {
+          "type": "heading",
+          "text": "Continue your search"
+        },
+        {
+          "type": "links",
+          "links": [
+            {
+              "label": "Architecture",
+              "path": "/disciplines/architecture"
+            },
+            {
+              "label": "Interiors",
+              "path": "/disciplines/interior"
+            },
+            {
+              "label": "Product / UX",
+              "path": "/disciplines/product"
+            },
+            {
+              "label": "Graphic / Brand",
+              "path": "/disciplines/visual"
+            },
+            {
+              "label": "Motion / 3D",
+              "path": "/disciplines/motion"
+            }
+          ]
+        },
+        {
+          "type": "links",
+          "links": [
+            {
+              "label": "Explore studio career sources",
+              "path": "/studio"
+            },
+            {
+              "label": "Further",
+              "path": "/studio/further"
+            },
+            {
+              "label": "Framestore",
+              "path": "/studio/framestore"
+            },
+            {
+              "label": "Whitney Museum",
+              "path": "/studio/whitney-museum"
+            },
+            {
+              "label": "Browse all jobs",
+              "path": "/"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "path": "/disciplines/architecture",
+          "label": "Browse architecture jobs"
+        },
+        {
+          "path": "/studio",
+          "label": "Browse all studios"
+        }
+      ]
+    },
+    {
+      "slug": "remote-design-jobs-eligibility",
+      "title": "Remote does not always mean worldwide.",
+      "description": "How to read location restrictions, time zones and employment arrangements in creative job advertisements.",
+      "category": "Career",
+      "date": "2026-11-24",
+      "status": "published",
+      "blocks": [
+        {
+          "type": "heading",
+          "text": "Start with the employer's location language"
+        },
+        {
+          "type": "paragraph",
+          "text": "A remote job can still require residence in a particular country or region. A company might employ workers only where it has payroll infrastructure, or require proximity to clients or regular team meetings. The company's headquarters is not proof of where you can work."
+        },
+        {
+          "type": "heading",
+          "text": "Distinguish the work arrangement from eligibility"
+        },
+        {
+          "type": "paragraph",
+          "text": "Remote describes where the work takes place. Eligibility describes who may apply or where they may be based. Hybrid generally requires some office attendance, but the frequency is employer-specific. Look for explicit country lists, office requirements, travel expectations and time-zone overlap."
+        },
+        {
+          "type": "heading",
+          "text": "Read ambiguous listings conservatively"
+        },
+        {
+          "type": "paragraph",
+          "text": "If a vacancy says remote but gives only an office city, do not assume that the city is the sole eligible location or that every country is eligible. Ask the employer which jurisdictions are supported. A useful question is: Can a person residing in my country apply, and would this be an employee or contractor arrangement?"
+        },
+        {
+          "type": "heading",
+          "text": "Compare the practical terms"
+        },
+        {
+          "type": "paragraph",
+          "text": "Before accepting an offer, confirm working hours, currency, pay period, equipment responsibilities and the applicable contract. A contractor arrangement may shift tax, insurance and unpaid leave responsibilities to you. Obtain appropriate professional advice for cross-border employment questions."
+        }
+      ],
+      "related": [
+        {
+          "path": "/disciplines/product",
+          "label": "Browse product and UX jobs"
+        },
+        {
+          "path": "/disciplines/motion",
+          "label": "Browse motion and 3D jobs"
+        }
+      ]
+    },
+    {
+      "slug": "architecture-portfolio-role-checklist",
+      "title": "Your architecture portfolio should answer the job brief.",
+      "description": "A practical approach to tailoring project evidence for concept, technical and BIM-focused architecture roles.",
+      "category": "Practice",
+      "date": "2026-11-24",
+      "status": "published",
+      "blocks": [
+        {
+          "type": "heading",
+          "text": "Identify what the practice needs"
+        },
+        {
+          "type": "paragraph",
+          "text": "An architectural designer, technical architect and BIM coordinator may work on the same project but provide different evidence of competence. Read the role's responsibilities before selecting portfolio pages. Separate software familiarity from experience delivering a specific project stage."
+        },
+        {
+          "type": "heading",
+          "text": "Select projects by contribution"
+        },
+        {
+          "type": "paragraph",
+          "text": "For each project, explain the brief, your responsibilities, the team context and the decisions you contributed to. A concept role might benefit from diagrams and iterations. A documentation role might benefit from coordinated drawings and detail development. Show only work you have permission to share."
+        },
+        {
+          "type": "heading",
+          "text": "Make the evidence easy to inspect"
+        },
+        {
+          "type": "paragraph",
+          "text": "Use legible drawings, captions, consistent scales where relevant and a short explanation of the problem solved. Avoid an entire portfolio of polished renders if the vacancy asks for technical coordination. A short, relevant selection can communicate more than an unedited archive."
+        },
+        {
+          "type": "heading",
+          "text": "Check the application instructions"
+        },
+        {
+          "type": "paragraph",
+          "text": "Practices may request a file size limit, a particular format, a cover letter or a professional registration. Confirm these requirements on the original vacancy. Never claim a qualification or individual responsibility you did not hold."
+        }
+      ],
+      "related": [
+        {
+          "path": "/disciplines/architecture",
+          "label": "Browse architecture jobs"
+        },
+        {
+          "path": "/disciplines/interior",
+          "label": "Browse interiors jobs"
+        }
+      ]
+    },
+    {
+      "slug": "creative-employer-career-pages",
+      "title": "Beyond the job board: finding the original creative employer.",
+      "description": "Why official career pages matter, and how to use a studio directory without confusing discovery with live hiring.",
+      "category": "Studio",
+      "date": "2026-11-24",
+      "status": "published",
+      "blocks": [
+        {
+          "type": "heading",
+          "text": "The employer is the source of truth"
+        },
+        {
+          "type": "paragraph",
+          "text": "A directory helps you discover practices you might not know. It cannot guarantee that a vacancy is still available when you visit. Follow the original employer recruitment page to check the role, location, eligibility and application requirements."
+        },
+        {
+          "type": "heading",
+          "text": "Different studios recruit in different ways"
+        },
+        {
+          "type": "paragraph",
+          "text": "Some practices use a dedicated careers page, while others link to an applicant tracking system. Further has a current careers route under its own name; Framestore links from its careers site to its recruitment board. The Whitney Museum directs applicants through its job-postings page. These examples come from Studio Openings' reviewed career-source directory, not an assertion of active openings."
+        },
+        {
+          "type": "heading",
+          "text": "Build a studio shortlist"
+        },
+        {
+          "type": "paragraph",
+          "text": "Choose employers by the type of work, the role you want and the places where you can work. Review their official projects and recruitment instructions. Keep track of the date you checked the source rather than assuming a historical vacancy remains active."
+        },
+        {
+          "type": "heading",
+          "text": "Use discovery and verification together"
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with the Studio Openings directory and follow each individual profile to the official source. If the job board has related results, inspect those as a separate discovery step. An employer profile is not a paid advertisement or a guarantee of a partnership."
+        }
+      ],
+      "related": [
+        {
+          "path": "/studio/further",
+          "label": "Further"
+        },
+        {
+          "path": "/studio/framestore",
+          "label": "Framestore"
+        },
+        {
+          "path": "/studio/whitney-museum",
+          "label": "Whitney Museum"
+        }
+      ]
+    }
+  ]
+}

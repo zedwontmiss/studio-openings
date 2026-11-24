@@ -1,7 +1,8 @@
+import {ARTICLE_PATHS} from '../lib/editorial-routes.js';
 import {DISCIPLINE_SLUGS} from '../lib/discipline-pages.js';
 import {applyOutreachPolicy} from '../lib/outreach-policy.js';
 
-const pages = new Set(['/', '/privacy', '/coverage', '/post-a-job', '/about', '/contact', '/terms', '/studio', '/article', '/article/creative-job-search-checklist', '/article/remote-design-jobs-eligibility', '/article/architecture-portfolio-role-checklist', '/article/creative-employer-career-pages', '/studio/dixonbaxi', '/studio/framestore', '/studio/further', '/studio/gagosian', '/studio/industrial-color', '/studio/moma-ps1', '/studio/ragged-edge', '/studio/whitney-museum',
+const pages = new Set(['/', '/privacy', '/coverage', '/post-a-job', '/about', '/contact', '/terms', '/studio', '/article', ...ARTICLE_PATHS, '/studio/dixonbaxi', '/studio/framestore', '/studio/further', '/studio/gagosian', '/studio/industrial-color', '/studio/moma-ps1', '/studio/ragged-edge', '/studio/whitney-museum',
   ...DISCIPLINE_SLUGS.map(slug => '/disciplines/' + slug)]);
 
 export async function onRequest(context) {
