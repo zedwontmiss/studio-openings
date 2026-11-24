@@ -9,3 +9,5 @@ for(const p of ['functions/disciplines/[slug].js','functions/jobs/[id].js','func
 for(const p of ['assets/styles.css','assets/editorial.css','assets/growth.css','assets/public-design.css'])assert.ok(!/Georgia,serif|Arial,Helvetica,sans-serif/.test(read(p)),p+' Helvetica first');
 assert.ok(read('index.html').includes('id="search"'),'Existing functional search retained');
 console.log('Unified public navigation and font tests passed.');
+
+assert.ok(publicHeader("jobs").includes('class="so-brand" href="/">studio openings</a>'));assert.ok(publicHeader("about").endsWith('<a class="so-about-mark" href="/about.html" aria-label="About Studio Openings" aria-current="page">S/O</a></div></header>'));

@@ -52,3 +52,8 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 @media(max-width:370px){.so-header-shell,.site-footer .shell,main.shell,main.growth-page:not(.growth-article),main.editorial-home,main.post-shell{padding-left:10px;padding-right:10px}}
 
 .so-public-header .so-brand[aria-current=page]{text-decoration:underline}
+
+.so-public-header .so-about-mark{order:3;margin-left:19px;font-size:20px;font-weight:700;letter-spacing:-.035em;white-space:nowrap;text-decoration:none;line-height:1.2}
+.so-public-header .so-about-mark[aria-current=page],.so-public-header .so-about-mark:hover{text-decoration:underline}
+@media(max-width:730px){.so-public-header .so-about-mark{font-size:14px;margin-left:10px}}
+@media(max-width:370px){.so-public-header .so-about-mark{font-size:12px;margin-left:7px}.so-primary a,.so-utility>a,.so-utility-more{margin-left:5px}.so-public-header .so-brand{font-size:11px}}
