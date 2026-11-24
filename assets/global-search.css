@@ -15,14 +15,8 @@
 
 /* A live query shows only actual matches, not empty-state copy or feed chrome. */
 .global-query-active .global-feed-status,.global-query-active #empty-state,.global-query-active #system-message,.global-query-active #feed-progress,.global-query-active #feed-end,.global-query-active #list-footnote,.global-query-active .discipline-seo-links,.global-query-active #job-link-message{display:none!important}
-.global-query-active.global-no-job-matches .content-grid{display:none!important}
 
-/* Search mode is title-only; normal job browsing retains its complete metadata. */
-.global-query-active .content-grid{display:block}
-.global-query-active .sidebar,.global-query-active .results-toolbar,.global-query-active #preferences-bar,.global-query-active .job-open-company,.global-query-active .job-keywords,.global-query-active .job-open-details,.global-query-active .job-age-group{display:none!important}
-.global-query-active .job-head{display:block;padding:7px 0}
-.global-query-active .job-head .job-title{font-size:20px;line-height:1.2;white-space:normal;overflow:visible;text-overflow:clip}
-.global-query-active .job-head .job-title-text{white-space:normal;overflow:visible;text-overflow:clip}
-.global-query-active .job-row{padding:0 0 5px}
-.global-query-active .job-list{border:0}
-@media(max-width:730px){.global-result-group a,.global-query-active .job-head .job-title{font-size:18px}}
+
+
+/* Studio and article matches appear above the intact jobs grid. */
+@media(max-width:730px){.global-result-group a{font-size:18px}}
