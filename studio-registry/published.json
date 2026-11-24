@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "studios": [
+    {
+      "id": "dixonbaxi",
+      "slug": "dixonbaxi",
+      "name": "DixonBaxi",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Brand and design",
+      "aliases": [],
+      "offices": [],
+      "source": {
+        "url": "https://joinus.dixonbaxi.com",
+        "reviewedOn": "2026-11-24",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false
+    },
+    {
+      "id": "framestore",
+      "slug": "framestore",
+      "name": "Framestore",
+      "disciplines": [
+        "motion"
+      ],
+      "summary": "Motion and VFX",
+      "aliases": [],
+      "offices": [],
+      "source": {
+        "url": "https://www.framestore.com/careers",
+        "reviewedOn": "2026-11-24",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false
+    },
+    {
+      "id": "further",
+      "slug": "further",
+      "name": "Further",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Brand and design",
+      "aliases": [
+        "DesignStudio"
+      ],
+      "offices": [],
+      "source": {
+        "url": "https://www.further.group/careers",
+        "reviewedOn": "2026-11-24",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false
+    },
+    {
+      "id": "gagosian",
+      "slug": "gagosian",
+      "name": "Gagosian",
+      "disciplines": [
+        "fashion"
+      ],
+      "summary": "Arts and photography",
+      "aliases": [],
+      "offices": [],
+      "source": {
+        "url": "https://gagosian.com/jobs/",
+        "reviewedOn": "2026-11-24",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false
+    },
+    {
+      "id": "industrial-color",
+      "slug": "industrial-color",
+      "name": "Industrial Color",
+      "disciplines": [
+        "fashion"
+      ],
+      "summary": "Photography and image production",
+      "aliases": [],
+      "offices": [],
+      "source": {
+        "url": "https://industrialcolor.com/about/",
+        "reviewedOn": "2026-11-24",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false
+    },
+    {
+      "id": "moma-ps1",
+      "slug": "moma-ps1",
+      "name": "MoMA PS1",
+      "disciplines": [
+        "culture"
+      ],
+      "summary": "Arts and cultural production",
+      "aliases": [],
+      "offices": [],
+      "source": {
+        "url": "https://www.momaps1.org/en/about/jobs",
+        "reviewedOn": "2026-11-24",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false
+    },
+    {
+      "id": "ragged-edge",
+      "slug": "ragged-edge",
+      "name": "Ragged Edge",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Brand and design",
+      "aliases": [],
+      "offices": [],
+      "source": {
+        "url": "https://raggededge.com/join",
+        "reviewedOn": "2026-11-24",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false
+    },
+    {
+      "id": "whitney-museum",
+      "slug": "whitney-museum",
+      "name": "Whitney Museum of American Art",
+      "disciplines": [
+        "museum"
+      ],
+      "summary": "Museums and exhibitions",
+      "aliases": [],
+      "offices": [],
+      "source": {
+        "url": "https://whitney.org/about/job-postings",
+        "reviewedOn": "2026-11-24",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false
+    }
+  ]
+}
