@@ -1089,6 +1089,7 @@
     // Array.filter passes (job, index, array). Do not forward index/array as
     // Saved Jobs' optional verified role and tags override parameters.
     var list=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
+    var directory=$('jobs');if(directory)directory.classList.toggle('global-no-job-matches',!!state.query&&!state.onlySaved&&!list.length);
     $('system-message').hidden=state.onlySaved||state.jobs.length>0;
     $('list-footnote').hidden=state.onlySaved;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
@@ -1123,7 +1124,7 @@
   $('clear-keywords').addEventListener('click',function(){state.keywords=[];state.visible=10;persistKeywords();render();});
   $('add-keyword').addEventListener('change',function(){if(this.value)toggleKeyword(this.value);});
   $('keyword-match').addEventListener('change',function(){state.keywordMatch=this.value==='all'?'all':'any';state.visible=10;persistKeywords();render();});
-  $('search').addEventListener('input',function(){state.query=this.value.trim();state.visible=10;render();});
+  $('search').addEventListener('input',function(){state.query=this.value.trim();if(state.query)state.onlySaved=false;state.visible=10;render();});
   $('region').addEventListener('change',function(){state.region=this.value;state.visible=10;render();});
   $('job-type').addEventListener('change',function(){state.type=this.value;state.visible=10;render();});
   $('work-mode').addEventListener('change',function(){state.mode=this.value;state.visible=10;render();});
