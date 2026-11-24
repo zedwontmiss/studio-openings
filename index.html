@@ -14,13 +14,12 @@
   <link rel="stylesheet" href="assets/styles.css?v=1111-mobile">
     
 <link rel="stylesheet" href="/assets/growth.css">
-<link rel="stylesheet" href="/assets/public-design.css?v=20261124"></head>
+<link rel="stylesheet" href="/assets/public-design.css?v=20261124"><link rel="stylesheet" href="/assets/global-search.css?v=1"></head>
 <body>
 <header class="so-public-header" id="top"><div class="so-header-shell"><a class="so-brand" href="/">studio openings</a><nav class="so-primary" aria-label="Main navigation"><a href="/" aria-current="page">jobs</a><a href="/studio">studio</a><a href="/article">article</a></nav><nav class="so-utility" aria-label="Site information"><a href="/post-a-job.html" id="nav-submit">post a job</a><span class="so-utility-desktop"><a href="/about.html">about</a><a href="/coverage.html">bring to your city</a><a href="/contact.html">contact</a></span><details class="so-utility-more"><summary>more</summary><div class="so-utility-pop"><a href="/about.html">about</a><a href="/coverage.html">bring to your city</a><a href="/contact.html">contact</a></div></details></nav></div></header>
 <main class="shell">
 <section class="directory" id="jobs">
-  <div class="list-intro"><h1>openings <span class="tiny-context">/ creative work, clearly listed</span></h1><span class="updated" id="updated-label">Checking job feeds…</span></div>
-  <div class="filters-search"><label for="search" class="search-label">Search</label><div class="search-wrap"><input type="search" id="search" placeholder="Title, company, city…" autocomplete="off"><span class="key-hint" aria-hidden="true">/</span></div></div>
+  <div class="global-search"><h1 class="visually-hidden">Search Studio Openings</h1><label for="search" class="visually-hidden">Search jobs, studios and articles</label><input type="search" id="search" placeholder="SEARCH HERE" autocomplete="off" aria-describedby="global-search-help"><span id="global-search-help" class="visually-hidden">Search jobs, studios and articles. Job filters apply only to jobs.</span></div><section id="global-discovery" aria-label="Studio and article search results" hidden><div id="global-discovery-status" role="status"></div><div id="global-discovery-results"></div></section><div class="global-feed-status"><span class="updated" id="updated-label">Checking job feeds…</span></div>
   <div class="content-grid">
     <aside class="sidebar" aria-label="Filters">
       <button id="mobile-filter-toggle" class="mobile-filter-toggle" type="button" aria-expanded="false" aria-controls="filters-body">Filters <span id="filter-indicator">+</span></button>
@@ -131,7 +130,8 @@
 </button></article></template>
 
 <script src="assets/filter-links.js?v=1124" defer></script>
-<script src="assets/app.js?v=1124-specialist" defer></script>
+<script src="/assets/global-search.js?v=1" defer></script>
+<script src="assets/app.js?v=1124-global" defer></script>
 <script src="assets/native-apply.js" defer></script>
 
 <script>

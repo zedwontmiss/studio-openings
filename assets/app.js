@@ -1072,6 +1072,7 @@
     },450);
   }
   function render(){
+    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
     feedBusy=false;
