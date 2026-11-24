@@ -75,3 +75,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Near-edge shared desktop frame (18px gutters, 2vw above 1600px); preserve narrower reading widths. Studio filters use the same ten discipline keys and three parent groups as Jobs. Do not invent firms to fill empty disciplines.
 
 - Global search is present on Jobs, Studio and Article indexes. Studio defaults to alphabetical names only with the existing discipline filter; Article defaults to headline/date only. Search uses existing job feed lazily on secondary indexes; local matches retain their index presentation and other content types appear below. Keep internal profile links and canonical URLs. Editorial generator owns article index markup; keep shared search shell synchronized with home when editing job UI.
+
+- Studio index is one alphabetical vertical column on all screen sizes. Header S/O wordmark links to About; remove redundant About from desktop and mobile utility navigation. Jobs remains the home navigation link.

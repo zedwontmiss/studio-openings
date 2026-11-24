@@ -35,7 +35,7 @@ html{scroll-behavior:auto}
 .so-index-page #jobs:not(.global-query-active) .content-grid{display:none}
 .so-index-page .studio-index-filters{display:flex;align-items:center;gap:12px;margin:12px 0 22px;font-size:12px}
 .so-index-page .studio-index-filters select{font:inherit;max-width:75%;padding:6px;border:1px solid #aaa;background:#fff}
-.so-index-page #studio-list{border:0;margin:0 0 24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 24px}
+.so-index-page #studio-list{border:0;margin:0 0 24px;display:block}
 .so-index-page #studio-list li{padding:10px 0;border:0}
 .so-index-page #studio-list h2{font:700 22px/1.2 Helvetica,Arial,sans-serif;margin:0}
 .so-index-page #studio-list .studio-profile-link{padding:0}
@@ -47,5 +47,5 @@ html{scroll-behavior:auto}
 .so-index-page #editorial-list .editorial-card h2{font:700 32px/1.13 Helvetica,Arial,sans-serif;letter-spacing:-.025em;margin:0 0 7px}
 .so-index-page #editorial-list time{font:700 13px/1.4 Helvetica,Arial,sans-serif}
 .so-index-page #editorial-list .editorial-summary{display:none}
-@media(max-width:730px){.so-index-page #studio-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.so-index-page #studio-list h2{font-size:18px}.so-index-page #editorial-list .editorial-card h2{font-size:25px}}
-@media(max-width:400px){.so-index-page #studio-list{grid-template-columns:1fr}}
+@media(max-width:730px){.so-index-page #studio-list h2{font-size:18px}.so-index-page #editorial-list .editorial-card h2{font-size:25px}}
+
