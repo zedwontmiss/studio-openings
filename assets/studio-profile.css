@@ -1,0 +1,14 @@
+.studio-public-profile{max-width:900px;margin:0 auto;padding:44px 18px 70px;color:#111}
+.studio-back{display:inline-block;font-size:12px;color:#666;margin-bottom:26px;text-decoration:none}
+.studio-public-profile h1{font:700 clamp(36px,6vw,78px)/1 Helvetica,Arial,sans-serif;letter-spacing:-.045em;margin:0 0 10px}
+.studio-specialism{font-size:15px;margin:0 0 14px}
+.studio-website,.studio-careers a{color:#111;font-weight:700;text-decoration:underline}
+.studio-intro{font-size:22px;line-height:1.45;max-width:680px;margin:36px 0 44px}
+.studio-public-profile section{margin:32px 0}
+.studio-public-profile section h2{font:400 12px/1.3 Helvetica,Arial,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:#666;margin:0 0 14px}
+.studio-locations ul,.studio-openings{list-style:none;margin:0;padding:0}
+.studio-locations li{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:5px 0;font:700 25px/1.2 Helvetica,Arial,sans-serif}
+.studio-locations small{font:400 12px/1.4 Helvetica,Arial,sans-serif;color:#666}
+.studio-openings li{padding:5px 0;font-size:15px}
+.studio-disclosure{margin-top:58px;color:#666;font-size:12px}
+@media(max-width:730px){.studio-public-profile{padding:30px 13px 44px}.studio-public-profile h1{font-size:36px}.studio-intro{font-size:18px}.studio-locations li{font-size:20px}}

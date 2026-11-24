@@ -65,7 +65,7 @@
     add('Graphic Design',/\bgraphic[\s-]+design\b/.test(source));
     return {visible:visible,searchable:searchable};
   }
-  function jobKeywords(job){
+  function jobKeywords(job,allTags){
     var role=categoryFor(job);
     if(!ROLE_TAG[role])return [];
     var title=String(job.title||'').toLowerCase();
@@ -75,6 +75,8 @@
     var primary=ROLE_TAG[role];
     if(role==='fashion' && /\b(?:photograph(?:er|y)|retoucher|photo (?:editor|stylist|producer))\b/.test(title))primary='Photography';
     if(role==='web' && /\bcreative (?:developer|technologist|technology)\b/.test(title))primary='Creative Technology';
+    if(role==='architecture'&&/\blandscape\b/.test(title))primary='Landscape Architecture';
+    if(role==='architecture'&&/\b(?:urban|regional|city|town)\s+plann?/.test(title))primary='Urban Planning';
     var tags=[primary];
     if(role!=='motion'&&jobDisciplines(job).indexOf('motion')>=0)tags.push('Motion Design');
     if(primary==='Photography' && /\bretoucher\b/.test(title))tags.push('Retouching');
@@ -92,7 +94,8 @@
     add('UX/UI',/\bux\b|\bui\b|user experience|user interface|interaction design/.test(title));
     add('Branding',/\bbrand(?:ing)?\b|identity design/.test(title));
     add('Illustration',/illustrat/.test(title));
-    add('3D',/\b3d\b|visuali[sz]ation|\bvfx\b/.test(title));
+    add('VFX',/\bvfx\b|visual effects|composit(?:or|ing)/.test(title));
+    add('3D',/\b3d\b|visuali[sz]ation/.test(title));
     add('Photography',/photograph/.test(title));
     add('Sound',/sound design|audio design/.test(title));
     // Every accepted role has one role-level tag. It describes a category,
@@ -107,9 +110,11 @@
     add('SketchUp',/\bsketchup\b/.test(details));
     add('Adobe Creative Cloud',/adobe creative cloud|adobe creative suite/.test(details));
     add('Photoshop',/\bphotoshop\b/.test(details));
-    add('Illustrator',/\billustrator\b/.test(details));
+    add('Illustrator',/adobe illustrator|\b(?:proficiency|experience|skills|knowledge)\s+(?:in|with|of)\s+illustrator\b/.test(details));
     add('InDesign',/\bindesign\b/.test(details));
     add('After Effects',/\bafter effects\b/.test(details));
+    add('Nuke',/\bnuke\b/.test(details));
+    add('Maya',/\b(?:autodesk maya|maya software|maya and|maya,|in maya)\b/.test(details));
     add('Vectorworks',/\bvectorworks\b/.test(details));
     add('Archicad',/\barchicad\b/.test(details));
     add('Grasshopper',/\bgrasshopper\b/.test(details));
@@ -120,33 +125,14 @@
     add('Lumion',/\blumion\b/.test(details));
     add('V-Ray',/\bv[ -]?ray\b/.test(details));
     if(job.source==='NYC Open Data')add('Public Sector',true);
-    return tags.slice(0,3);
+    return allTags?tags:tags.slice(0,3);
   }
   function jobSearchTags(job){
-    var shown=jobKeywords(job),lead=categoryFor(job)==='visual'?directionTagProfile(job):null;
+    var shown=jobKeywords(job,true),lead=categoryFor(job)==='visual'?directionTagProfile(job):null;
     return lead?lead.searchable:shown;
   }
-  // One explicitly assigned colour per editorial tag; never random hash collisions.
-  // No tag uses the baby-yellow Featured job row background.
-  var TAG_PALETTE={
-    'Creative':'#c1b4ec','Design':'#abd8d5','Creative Direction':'#d8a8cc','Art Direction':'#9dcee4','Director':'#becad7','Lead':'#c0cda9','Senior':'#edc3aa','Executive':'#c0bbdf',
-   'Architecture':'#b9d5ff','Landscape Architecture':'#9cd9b0','Interior':'#ffbcb0',
-   'Industrial Design':'#c6bdff','Product Design':'#a0d9e2','Graphic Design':'#ffc0da',
-   'Motion Design':'#b2bbe8','Fashion':'#f2a9db','Web Design':'#a4e2d0',
-   'Exhibition':'#d4b69f','Creative Arts':'#c1df9e','Preservation':'#c6a5ec',
-   'Urban Planning':'#82cfbd','CAD':'#a9bde2','UX/UI':'#e6adce',
-   'Branding':'#efa79f','Illustration':'#c9b2db','3D':'#8fc9e7',
-   'Retouching':'#e4bbac','Creative Technology':'#9ddbd0','Photography':'#f9b58f','Sound':'#99cfdb','Revit':'#86d7cf',
-   'AutoCAD':'#eba2a9','BIM':'#d0a1e9','Figma':'#d0bd9c',
-   'Rhino':'#b6b1ee','SketchUp':'#dcb0af','Adobe Creative Cloud':'#a9d2a0',
-   'Public Sector':'#b3c1d1','Vectorworks':'#a6d9bf','Archicad':'#cba5c1',
-   'Grasshopper':'#acc69c','Civil 3D':'#b4a6da','Blender':'#dbb5a5',
-   'Cinema 4D':'#adc6e4','After Effects':'#bea3d4','Photoshop':'#a9cce9',
-   'Illustrator':'#e9b1b8','InDesign':'#c5c8a1','Enscape':'#aac9d1',
-   'Lumion':'#d4c2a6','V-Ray':'#c2a8dd'
-  };
   // Compact labels are visual aliases only; canonical terms remain stored,
-  // searchable, screen-reader friendly and tied to the original tag palette.
+  // searchable, screen-reader friendly.
   var SHORT_TAG_LABELS={
     'Architecture':'Arch',
     'Art Direction':'AD',
@@ -167,8 +153,7 @@
     return Object.prototype.hasOwnProperty.call(SHORT_TAG_LABELS,word)
       ? SHORT_TAG_LABELS[word] : word;
   }
-  function tagColorFor(word){return TAG_PALETTE[word]||'#cad9e6';}
-  function styleTag(tag,word){tag.style.backgroundColor=tagColorFor(word);}
+  function styleTag(tag,word){tag.style.backgroundColor='transparent';}
   function displayableJob(job){
     if(!job||!job.id||!job.title||!job.company)return false;
     if(job.expiresAt && !(Date.parse(job.expiresAt)>Date.now()))return false;

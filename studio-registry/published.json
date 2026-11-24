@@ -17,7 +17,8 @@
           "city": "London",
           "sourceUrl": "https://www.dixonbaxi.com/contact",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "gb--england--london"
         }
       ],
       "source": {
@@ -26,8 +27,9 @@
         "reviewStatus": "previously-reviewed-career-source"
       },
       "employerVerified": false,
-      "overview": "The studio's dedicated recruitment site provides the starting point for brand and design opportunities. Review the role's actual mix of identity, visual systems and production work.",
-      "jobQuery": "DixonBaxi"
+      "overview": "Independent brand and design studio.",
+      "jobQuery": "DixonBaxi",
+      "website": "https://www.dixonbaxi.com/"
     },
     {
       "id": "framestore",
@@ -45,7 +47,8 @@
           "city": "New York",
           "sourceUrl": "https://www.framestore.com/our-studios",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
         },
         {
           "country": "US",
@@ -53,7 +56,8 @@
           "city": "Los Angeles",
           "sourceUrl": "https://www.framestore.com/our-studios",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "us--california--los-angeles"
         },
         {
           "country": "US",
@@ -61,7 +65,8 @@
           "city": "Chicago",
           "sourceUrl": "https://www.framestore.com/our-studios",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "us--illinois--chicago"
         },
         {
           "country": "CA",
@@ -69,7 +74,8 @@
           "city": "Montreal",
           "sourceUrl": "https://www.framestore.com/our-studios",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
         },
         {
           "country": "GB",
@@ -77,7 +83,8 @@
           "city": "London",
           "sourceUrl": "https://www.framestore.com/our-studios",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "gb--england--london"
         },
         {
           "country": "AU",
@@ -85,7 +92,8 @@
           "city": "Melbourne",
           "sourceUrl": "https://www.framestore.com/our-studios",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "au--victoria--melbourne"
         },
         {
           "country": "IN",
@@ -93,7 +101,8 @@
           "city": "Mumbai",
           "sourceUrl": "https://www.framestore.com/our-studios",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "in--maharashtra--mumbai"
         }
       ],
       "source": {
@@ -102,8 +111,9 @@
         "reviewStatus": "previously-reviewed-career-source"
       },
       "employerVerified": false,
-      "overview": "Framestore's careers page links to its official recruitment board. For VFX and motion roles, check the specified production pipeline, reel requirements, office and contract terms.",
-      "jobQuery": "Framestore"
+      "overview": "A creative studio working across visual effects and animation.",
+      "jobQuery": "Framestore",
+      "website": "https://www.framestore.com/"
     },
     {
       "id": "further",
@@ -123,7 +133,8 @@
           "city": "London",
           "sourceUrl": "https://www.further.group/studio/london",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "gb--england--london"
         },
         {
           "country": "US",
@@ -131,7 +142,8 @@
           "city": "New York",
           "sourceUrl": "https://www.further.group/studio/new-york",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
         }
       ],
       "source": {
@@ -140,8 +152,9 @@
         "reviewStatus": "previously-reviewed-career-source"
       },
       "employerVerified": false,
-      "overview": "The former DesignStudio careers route redirects to Further. Use the current Further careers site rather than relying on older recruitment links under the former name.",
-      "jobQuery": "Further"
+      "overview": "A brand and design practice, formerly known as DesignStudio.",
+      "jobQuery": "Further",
+      "website": "https://www.further.group/"
     },
     {
       "id": "gagosian",
@@ -159,7 +172,8 @@
           "city": "New York",
           "sourceUrl": "https://gagosian.com/locations/",
           "reviewedOn": "2026-11-24",
-          "kind": "gallery"
+          "kind": "gallery",
+          "cityId": "us--new-york--new-york"
         }
       ],
       "source": {
@@ -168,8 +182,9 @@
         "reviewStatus": "previously-reviewed-career-source"
       },
       "employerVerified": false,
-      "overview": "The gallery's jobs page is the official starting point for recruitment. Our source review included image archival work involving photography and image processing. Check current responsibilities carefully.",
-      "jobQuery": "Gagosian"
+      "overview": "A gallery working across modern and contemporary art.",
+      "jobQuery": "Gagosian",
+      "website": "https://gagosian.com/"
     },
     {
       "id": "industrial-color",
@@ -187,7 +202,8 @@
           "city": "New York",
           "sourceUrl": "https://industrialcolor.com/contact/",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
         },
         {
           "country": "US",
@@ -195,7 +211,8 @@
           "city": "Los Angeles",
           "sourceUrl": "https://industrialcolor.com/contact/",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "us--california--los-angeles"
         }
       ],
       "source": {
@@ -204,8 +221,9 @@
         "reviewStatus": "previously-reviewed-career-source"
       },
       "employerVerified": false,
-      "overview": "The company's about page links to the CoCreativ recruitment board. Search the original board for Industrial Color roles and confirm the employer and division before applying.",
-      "jobQuery": "Industrial Color"
+      "overview": "A creative production company specializing in photography and image production.",
+      "jobQuery": "Industrial Color",
+      "website": "https://industrialcolor.com/"
     },
     {
       "id": "moma-ps1",
@@ -223,7 +241,8 @@
           "city": "New York",
           "sourceUrl": "https://www.moma.org/visit/?location=ps1",
           "reviewedOn": "2026-11-24",
-          "kind": "museum"
+          "kind": "museum",
+          "cityId": "us--new-york--new-york"
         }
       ],
       "source": {
@@ -232,8 +251,9 @@
         "reviewStatus": "previously-reviewed-career-source"
       },
       "employerVerified": false,
-      "overview": "The institution's jobs page links to the MoMA recruitment system. Applicants should check that the original vacancy specifically identifies PS1 and its location rather than assuming that every MoMA position is a PS1 role.",
-      "jobQuery": "MoMA PS1"
+      "overview": "A contemporary art institution in New York.",
+      "jobQuery": "MoMA PS1",
+      "website": "https://www.momaps1.org/"
     },
     {
       "id": "ragged-edge",
@@ -251,7 +271,8 @@
           "city": "London",
           "sourceUrl": "https://raggededge.com/contact",
           "reviewedOn": "2026-11-24",
-          "kind": "office"
+          "kind": "office",
+          "cityId": "gb--england--london"
         }
       ],
       "source": {
@@ -260,8 +281,9 @@
         "reviewStatus": "previously-reviewed-career-source"
       },
       "employerVerified": false,
-      "overview": "The agency's Join page lists individual opportunities and links to its application system. For design work, read the actual scope of the brief and check the expected office attendance.",
-      "jobQuery": "Ragged Edge"
+      "overview": "An independent branding agency.",
+      "jobQuery": "Ragged Edge",
+      "website": "https://raggededge.com/"
     },
     {
       "id": "whitney-museum",
@@ -279,7 +301,8 @@
           "city": "New York",
           "sourceUrl": "https://whitney.org/visit",
           "reviewedOn": "2026-11-24",
-          "kind": "museum"
+          "kind": "museum",
+          "cityId": "us--new-york--new-york"
         }
       ],
       "source": {
@@ -288,8 +311,9 @@
         "reviewStatus": "previously-reviewed-career-source"
       },
       "employerVerified": false,
-      "overview": "The museum's job-postings page directs visitors to its recruitment site. Reviewed source material included exhibition registrar and web operations roles, illustrating the range of creative and technical work in cultural institutions.",
-      "jobQuery": "Whitney"
+      "overview": "A museum dedicated to American art and exhibitions.",
+      "jobQuery": "Whitney",
+      "website": "https://whitney.org/"
     }
   ]
 }
