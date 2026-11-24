@@ -1313,7 +1313,15 @@
     loadFeaturedConfig().then(function(){featuredReady=true;schedule();},function(){featuredReady=true;schedule();});
     function individual(url,i){fetchFeedJSON(url).then(function(value){outcomes[i]={value:value};},function(){outcomes[i]={};}).then(function(){pending--;schedule();});}
     var grouped={approved:0,indexed:1,editorial:3};
-    urls.forEach(function(url,i){if(i!==0&&i!==1&&i!==3)individual(url,i);});
+    // Snapshot pilot is opt-in and preview-only; normal live routes remain fallback.
+    var snapshotIndexes={};
+    urls.forEach(function(url,i){var match=url.match(/^\/api\/(ai|direct)-jobs\?shard=(\d+)$/);if(match)snapshotIndexes[match[1]+'-'+match[2]]=i;else if(i!==0&&i!==1&&i!==3)individual(url,i);});
+    function snapshotFallback(data){
+      var sources=data&&data.version===1&&data.sources||{};
+      Object.keys(snapshotIndexes).forEach(function(key){var i=snapshotIndexes[key],value=sources[key];if(value&&Array.isArray(value.jobs)){outcomes[i]={value:value};pending--;schedule();}else individual(urls[i],i);});
+    }
+    if(location.hostname==='development.studio-openings.pages.dev')fetchFeedJSON('/api/inventory-snapshots',1500).then(snapshotFallback,function(){snapshotFallback(null);});
+    else snapshotFallback(null);
     fetchFeedJSON('/api/public-inventory').then(function(data){
       if(!data||data.version!==1||!Array.isArray(data.sources))throw Error('Invalid inventory');
       Object.keys(grouped).forEach(function(name){
