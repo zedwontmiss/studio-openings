@@ -26,6 +26,7 @@ await assert.rejects(fetchPage(dixon.url,dixon,async(_url,{signal})=>new Promise
 
 const raw={id:12,title:'Animator',slug:'animator',status:'published',city:'London',country_code:'GB',location:'London, Greater London, United Kingdom',locations:[{city:'London',country_code:'GB'}],remote:false,hybrid:true,employment_type_code:'contract',careers_url:'https://framestore.recruitee.com/o/animator',careers_apply_url:'https://framestore.recruitee.com/o/animator/c/new',description:body,requirements:requirement.repeat(5),published_at:'2026-11-20 12:00:00 UTC'};
 const frame=normalizeFramestore(raw,now);assert.equal(frame.role,'motion');assert.equal(frame.type,'Contract');assert.equal(frame.posted,'2026-11-20T12:00:00.000Z');
+assert.equal(normalizeFramestore({...raw,hybrid:false,on_site:true},now).mode,'onsite');
 assert.equal(frame.expiresAt,'2026-11-24T06:00:00.000Z');
 for(const patch of [{status:'closed'},{remote:true},{title:'CG Supervisor (Expression of Interest)'},{title:'Freelance: CG - Chicago'},{close_at:'2026-11-23 12:00:00 UTC'},{close_at:'invalid'},{country_code:'US'},{locations:[]},{locations:[...raw.locations,{city:'Mumbai',country_code:'IN'}]},{careers_url:'https://evil.example/job'}])assert.equal(normalizeFramestore({...raw,...patch},now),null,JSON.stringify(patch));
 assert.equal(normalizeFramestore({...raw,close_at:'2026-11-24 02:00:00 UTC'},now).expiresAt,'2026-11-24T02:00:00.000Z');

@@ -48,7 +48,8 @@
         <div class="compact-select"><label for="work-mode">Arrangement</label><select id="work-mode"><option value="all">Any</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></div>
         <div class="compact-select"><label for="job-type">Employment</label><select id="job-type"><option value="all">Any</option><option value="full-time">Full-time</option><option value="contract">Contract</option><option value="part-time">Part-time</option><option value="internship">Internship</option></select></div>
         <label class="pay-check"><input id="has-pay" type="checkbox"> Salary disclosed</label>
-        <div class="filter-actions"><button type="button" id="saved-toggle" aria-pressed="false">Saved <span id="saved-count">0</span></button><button type="button" id="reset">Clear all</button></div>
+        <div class="filter-actions"><button type="button" id="saved-toggle" aria-pressed="false">Saved <span id="saved-count">0</span></button><button type="button" id="reset">Clear all</button><button type="button" id="copy-filters">Copy filters</button></div>
+        <span id="filter-share-status" class="visually-hidden" role="status" aria-live="polite"></span>
       </div>
     </aside>
     <div class="results-panel">
@@ -128,7 +129,8 @@
   <span class="job-bottom"><span class="job-salary"></span><span class="job-notice" hidden></span></span>
 </button></article></template>
 
-<script src="assets/app.js?v=1124-careers" defer></script>
+<script src="assets/filter-links.js?v=1124" defer></script>
+<script src="assets/app.js?v=1124-filter-links" defer></script>
 <script src="assets/native-apply.js" defer></script>
 
 <script>

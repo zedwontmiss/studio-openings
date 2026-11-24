@@ -629,7 +629,7 @@
   function refreshRegionOptions(){
     var select=$('region'),selected=state.region;
     select.textContent='';select.appendChild(new Option('Anywhere','all'));
-    Object.keys(countryNames).filter(function(code){return code==='US'||state.jobs.some(function(job){return !worldwideMatch(trim(job.location))&&countryMatch(job,code);});}).sort(function(a,b){return countryNames[a].localeCompare(countryNames[b]);}).forEach(function(code){select.appendChild(new Option(countryNames[code],code.toLowerCase()));});
+    Object.keys(countryNames).filter(function(code){return code==='US'||code.toLowerCase()===selected||state.jobs.some(function(job){return !worldwideMatch(trim(job.location))&&countryMatch(job,code);});}).sort(function(a,b){return countryNames[a].localeCompare(countryNames[b]);}).forEach(function(code){select.appendChild(new Option(countryNames[code],code.toLowerCase()));});
     select.appendChild(new Option('Worldwide remote only','worldwide'));
     select.value=selected;if(!select.value){state.region='all';select.value='all';}
   }
@@ -1108,6 +1108,7 @@
     feedControls();
   }
   function reset(){
+    try{if(window.StudioOpeningFilterLinks)window.history.replaceState(window.history.state,'',window.StudioOpeningFilterLinks.clear(window.location.href));}catch(e){}
     state.keywords=[];state.keywordMatch='any';persistKeywords();state.selectedRoles=[];state.query='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'relevant';state.visible=10;
     $('search').value='';$('region').value='all';$('job-type').value='all';$('work-mode').value='all';$('has-pay').checked=false;$('sort').value=state.sort;
     Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=false;});
@@ -1311,6 +1312,25 @@
       $('system-message').textContent='Current jobs could not be loaded. Please try later. Offline review records are not substituted for current vacancies.';
       $('results-summary').textContent='Feed unavailable';
       render();
+    });
+  }
+  // Shared filters override browser-local preferences for this visit only.
+  // Country controls are restored before and after live inventory arrives.
+  if(window.StudioOpeningFilterLinks){
+    try{
+      var linkedFilters=window.StudioOpeningFilterLinks.read(window.location.href,Object.keys(roleLabels),Object.keys(countryNames).map(function(code){return code.toLowerCase();}));
+      if(linkedFilters){
+        Object.keys(linkedFilters).forEach(function(key){state[key]=linkedFilters[key];});
+        Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=state.selectedRoles.indexOf(c.value)>=0;});
+        $('search').value=state.query;refreshRegionOptions();$('job-type').value=state.type;
+        $('work-mode').value=state.mode;$('has-pay').checked=state.hasPay;$('sort').value=state.sort;
+      }
+    }catch(e){}
+    $('copy-filters').addEventListener('click',function(){
+      var button=this,url=window.StudioOpeningFilterLinks.build(window.location.href,state);
+      function feedback(ok){button.textContent=ok?'Copied':'Try again';$('filter-share-status').textContent=ok?'Filter link copied. Saved jobs are private and are not included.':'Could not copy the filter link.';setTimeout(function(){button.textContent='Copy filters';},1800);}
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){feedback(true);},function(){feedback(clipboardFallback(url));});
+      else feedback(clipboardFallback(url));
     });
   }
   if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();
