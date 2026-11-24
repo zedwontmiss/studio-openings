@@ -63,3 +63,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Preserve saved-library initialization and toggleSavedView when moving controls. Public job listing must not display loading/fetching text; keep operational diagnostics in console/operator tools.
 
 - Global search is the only keyword filter. Clicking a visible job tag toggles its text in the search field; manual queries and tag terms share AND matching. No persisted hidden keyword preferences or separate keyword UI. Legacy shared tag links convert to visible query terms. Keep all non-keyword sidebar filters.
+
+- Shared public grid foundation in assets/public-design.css: 1200px outer frame, 22px desktop gutters, 13px mobile gutters, 792px reading measure, consistent 32px desktop/24px mobile top padding on editorial/utility pages. Preserve compact job layout and functional controls. Use section-appropriate typography; no oversized navigation.
