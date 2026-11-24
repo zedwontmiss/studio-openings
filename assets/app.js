@@ -1036,6 +1036,7 @@
     $('scroll-sentinel').hidden=!more;
     $('feed-progress').hidden=!more||!feedBusy;
     $('feed-end').hidden=state.onlySaved||!state.jobs.length||!feedJobs.length||more;
+    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query,!state.onlySaved&&!more&&state.feedStatus!=='loading');
   }
   function appendFeed(){
     if(feedBusy||state.onlySaved||state.visible>=feedJobs.length||!$('job-drawer').hidden)return;
@@ -1056,7 +1057,7 @@
   function render(){
     preserveSearchNavigation();
     var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href='/'+city.slug;}
-    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query);
+    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query,false);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
     feedBusy=false;
@@ -1337,7 +1338,5 @@
 
   }
   function startJobFeed(){if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();}
-  if(document.body.getAttribute('data-index-kind')&&!state.query&&!jobIdFromUrl()){
-    var started=false;$('search').addEventListener('input',function(){if(!started&&this.value.trim()){started=true;startJobFeed();}});
-  }else startJobFeed();
+  startJobFeed();
 })();
