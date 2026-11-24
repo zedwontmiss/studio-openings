@@ -89,3 +89,6 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 .so-public-header .so-utility .so-advertise{background:#fff4bf;color:#111;text-decoration:none;font-weight:700!important;padding:2px 0}
 .so-public-header .so-utility .so-advertise:hover,.so-public-header .so-utility .so-advertise[aria-current=page]{text-decoration:underline}
 .so-local-header .so-brand{white-space:normal;min-width:0}.so-local-header .so-primary a:nth-child(4){width:3.8em}
+
+/* Compact city directory link replaces longer coverage CTA. */
+.so-utility-desktop>a:nth-child(1){width:3.2em}
