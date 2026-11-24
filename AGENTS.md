@@ -89,3 +89,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Studio country/city filters use canonical country+region+city identity; same office must match both. Generated compact assets/studio-search.json supplies cross-index studio search. Maintain static names-only index and internal links. No geographic landing pages until meaningful verified coverage.
 
 - Generate canonical studio profiles with operations/build-studio-profiles.mjs and --check. Preserve independently authored overview, official source links and jobQuery. Generated STUDIO_PATHS supplies dynamic sitemap; static sitemap must also be updated when adding new profiles. Existing search links are not exact employer-job associations.
+
+- Feed reliability pass: preserve source priority and eligibility, progressively render successful feeds; do not dismiss open vacancy on passive updates. Hide loading/empty/error chrome from public UI; diagnostics in console/operator. Page H1 must describe index, separate from search label. Static HTML inventory and consolidated scheduled snapshot are next, not yet complete.

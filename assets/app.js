@@ -1084,7 +1084,7 @@
     // Array.filter passes (job, index, array). Do not forward index/array as
     // Saved Jobs' optional verified role and tags override parameters.
     var list=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
-    $('system-message').hidden=state.onlySaved||state.jobs.length>0;
+    $('system-message').hidden=true;
     $('list-footnote').hidden=state.onlySaved;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
     $('results-summary').textContent=state.onlySaved?'Your shortlist':state.review?'Official firm source review · 17 Nov 2026':'Current listings';
@@ -1093,7 +1093,7 @@
     if(wasOpen)updateJobUrl(null,'replace');
     savedPanel.hidden=!state.onlySaved;
     $('job-list').hidden=state.onlySaved;
-    $('empty-state').hidden=state.onlySaved||!(list.length===0&&state.jobs.length>0);
+    $('empty-state').hidden=true;
     feedJobs=list;
     feedControls();
     resultsSortLabel.hidden=state.onlySaved;
@@ -1275,40 +1275,44 @@
   }
   function loadLive(){
     var urls=['/api/approved-jobs','/api/indexed-jobs','/api/firm-jobs','/api/editorial-jobs','/api/jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/ai-jobs?shard=7','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3','/api/direct-jobs?shard=0','/api/direct-jobs?shard=1','/api/direct-jobs?shard=2','/api/direct-jobs?shard=3','/api/direct-jobs?shard=4','/api/direct-jobs?shard=5','/api/direct-jobs?shard=6','/api/direct-jobs?shard=7','/api/direct-jobs?shard=8'];
-    Promise.all([loadFeaturedConfig(),Promise.all(urls.map(function(url){return fetchFeedJSON(url).then(function(value){return {status:'fulfilled',value:value};},function(){return {status:'rejected'};});}))]).then(function(all){
-      var items=all[1];
+    var outcomes=new Array(urls.length),pending=urls.length,featuredReady=false,refreshPending=false;
+    // Rebuild in original source priority, not response arrival order.
+    // A slow or failed source must not block the first available listings.
+    function publish(final){
       var seen=Object.create(null),links=Object.create(null),records=[],latest=null,success=0;
-      items.forEach(function(outcome){
-        if(outcome.status!=='fulfilled'||!outcome.value||!Array.isArray(outcome.value.jobs))return;
+      outcomes.forEach(function(outcome){
+        if(!outcome||!outcome.value||!Array.isArray(outcome.value.jobs))return;
         success++;
         outcome.value.jobs.forEach(function(j){
           if(!displayableJob(j)||seen[j.id])return;
           var key=vacancyLinkKey(j);
-          if(key && links[key]){
-            liveAliases[j.id]=links[key];liveAliases[publicJobHandle(j.id)]=links[key];return;
-          }
+          if(key&&links[key]){liveAliases[j.id]=links[key];liveAliases[publicJobHandle(j.id)]=links[key];return;}
           records.push(j);seen[j.id]=true;if(key)links[key]=j.id;
         });
-        if(outcome.value.updatedAt)latest=outcome.value.updatedAt;
+        if(outcome.value.updatedAt&&(!latest||outcome.value.updatedAt>latest))latest=outcome.value.updatedAt;
       });
-      if(!success)throw Error('No current feeds available');
+      if(!final&&!records.length)return;
       state.jobs=records;
-      state.feedStatus='ready';
-      refreshRegionOptions();
-      $('system-message').hidden=state.jobs.length>0;
-      if(!state.jobs.length)$('system-message').textContent='No current creative vacancies were returned by the connected feeds.';
-      var partial=success<urls.length||items.some(function(item){return item.value&&(item.value.truncated||Array.isArray(item.value.failed)&&item.value.failed.length);});
-      $('updated-label').textContent=(partial?'Some sources unavailable · updated ':'Feed fetched ')+new Date(latest||Date.now()).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-      hydrateSavedEntries();render();syncJobFromUrl();
-    }).catch(function(error){
-      if(window.console&&console.error)console.error('SOAPP job feed failed',error);
-      state.feedStatus='error';
-      $('system-message').hidden=false;
-      $('updated-label').textContent='Feed unavailable';
-      $('system-message').textContent='Current jobs could not be loaded. Please try later. Offline review records are not substituted for current vacancies.';
-      $('results-summary').textContent='Current listings';
-      render();
-    });
+      state.feedStatus=final?(success?'ready':'error'):'loading';
+      refreshRegionOptions();hydrateSavedEntries();
+      $('system-message').hidden=true;
+      if(final){
+        var partial=success<urls.length||outcomes.some(function(o){return o&&o.value&&(o.value.truncated||(Array.isArray(o.value.failed)&&o.value.failed.length));});
+        $('updated-label').textContent=success?(partial?'Partial inventory':'Inventory ready'):'Feed unavailable';
+        if((partial||!success)&&window.console&&console.warn)console.warn('SOAPP feed status',{successful:success,total:urls.length,latest:latest});
+      }
+      // Passive updates must not dismiss an open vacancy or change its scroll.
+      if(!$('job-drawer').hidden){refreshPending=true;return;}
+      refreshPending=false;render();
+      if(final||!jobIdFromUrl())syncJobFromUrl();
+    }
+    function schedule(){
+      if(featuredReady&&pending===0){publish(true);return;}
+      if(featuredReady)publish(false);
+    }
+    loadFeaturedConfig().then(function(){featuredReady=true;schedule();},function(){featuredReady=true;schedule();});
+    urls.forEach(function(url,i){fetchFeedJSON(url).then(function(value){outcomes[i]={value:value};},function(){outcomes[i]={};}).then(function(){pending--;schedule();});});
+    // Subsequent user filters render the latest state; avoid disturbing the drawer.
   }
   // Shared filters override browser-local preferences for this visit only.
   // Country controls are restored before and after live inventory arrives.
