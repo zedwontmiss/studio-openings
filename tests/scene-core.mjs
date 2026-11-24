@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {sceneEnabled,cityFor,sceneText,sceneId,sameOrigin,readSceneInput} from '../lib/scene-core.js';
+const env={PREVIEW_D1_ISOLATED:'true',SCENE_ENABLED:'true',JOBS_DB:{}};
+assert.equal(sceneEnabled({request:new Request('https://s-o.app/'),env}),false);
+assert.equal(sceneEnabled({request:new Request('https://development.studio-openings.pages.dev/'),env}),true);
+assert.equal(sceneEnabled({request:new Request('https://development.studio-openings.pages.dev/'),env:{...env,PREVIEW_D1_ISOLATED:'false'}}),false);
+assert.ok(cityFor('london'));assert.equal(cityFor('unknown'),null);
+assert.equal(sceneText('  abc  ',2,10),'abc');assert.equal(sceneText('x',2,10),null);
+assert.equal(sceneText('abc\u0000def',2,10),null);assert.equal(sceneId('bad'),false);
+assert.equal(sameOrigin(new Request('https://example.com/',{headers:{origin:'https://evil.example'}})),false);
+assert.equal(await readSceneInput(new Request('https://example.com/',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({body:'a'.repeat(17000)})})),null);
+console.log('Scene core checks passed.');
