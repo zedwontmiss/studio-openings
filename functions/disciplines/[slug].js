@@ -1,3 +1,4 @@
+import {publicHeader,HEADER_CSS} from '../../lib/public-header.js';
 import {DISCIPLINES,DISCIPLINE_SLUGS} from '../../lib/discipline-pages.js';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const HEAD={'content-type':'text/html; charset=utf-8','cache-control':'public, max-age=600','x-content-type-options':'nosniff'};
@@ -15,15 +16,15 @@ export async function onRequestGet({params,request}){
 <title>${name} | Studio Openings</title>
 <meta name="description" content="${esc((item.intro).slice(0,155))}">
 <link rel="canonical" href="${canonical}">
-<style>html{font:14px/1.65 Arial,Helvetica,sans-serif;color:#202020;background:#fff}
-body{max-width:760px;margin:0 auto;padding:0 22px}
-header{border-bottom:1px solid #ddd;padding:18px 0}header a{color:#111;font-weight:bold;text-decoration:none;font-size:17px}
-main{padding:25px 0}h1{font-size:27px;line-height:1.25;margin:5px 0 18px}
+<style>html{font:14px/1.65 Helvetica,Arial,sans-serif;color:#202020;background:#fff}
+body{margin:0}main,footer{max-width:760px;margin-left:auto;margin-right:auto;padding-left:20px;padding-right:20px;box-sizing:border-box}
+
+main{padding-top:25px;padding-bottom:25px}h1{font-size:27px;line-height:1.25;margin:5px 0 18px}
 h2{font-size:17px;margin:24px 0 8px}p{margin:0 0 15px}li{margin-bottom:6px}
 a{color:#151515}.cta{display:inline-block;color:white;background:#111;text-decoration:none;padding:11px 16px;font-weight:bold;margin:15px 0 12px}
-.note{color:#666;font-size:12px}footer{border-top:1px solid #ddd;padding:22px 0;margin-top:30px;color:#666;font-size:12px}
-.other a{display:inline-block;margin:0 6px 7px 0}</style></head>
-<body><header><a href="/">studio openings</a></header>
+.note{color:#666;font-size:12px}footer{border-top:1px solid #ddd;padding-top:20px;padding-bottom:20px;margin-top:30px;color:#666;font-size:12px}
+.other a{display:inline-block;margin:0 6px 7px 0}</style>${HEADER_CSS}</head>
+<body>${publicHeader('jobs')}
 <main><p class="note">creative careers / ${esc(item.label)}</p>
 <h1>${name}</h1><p>${intro}</p>
 <h2>What this discipline covers</h2><ul>${focus}</ul>

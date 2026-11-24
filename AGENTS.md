@@ -48,3 +48,6 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 
 ## Product expansion and handoff (24 November 2026)
 - Read `operations/PRODUCT_ROADMAP_HANDOFF_2026-11-24.md` for owner-approved Jobs / Studio / Article strategy and deferred SOAPP Local vision. Preserve established UI and stable URLs. Prioritize security/Preview validation before geographic or editorial expansion. Do not implement community/forum, new monetization checkout or account systems until separately approved.
+
+## Public design identity
+- Owner approves Helvetica-first typography across public pages (Arial fallback; available regular/bold/italic weights, no paid fonts). Distinct SOAPP identity inspired by OMA/Medium/Substack, not a replica. Shared public header in `lib/public-header.js`, `assets/public-design.css`; all public pages and editorial templates must retain consistent primary jobs/studio/article links and accessible utility links. No duplicate small primary tabs or additional oversized search. Preserve existing job/studio filters and article reading layout; private operator UI is separate. Verify generated editorial files and mobile navigation after changes.

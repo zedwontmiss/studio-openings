@@ -1,0 +1,23 @@
+/* Shared Helvetica-first public identity. */
+html,body{font-family:Helvetica,Arial,sans-serif}button,input,select,textarea{font-family:inherit}
+.so-public-header,.so-public-header *{box-sizing:border-box}
+.so-public-header{width:100%;background:#fff;border-bottom:1px solid #222;color:#161616;font-family:Helvetica,Arial,sans-serif;font-weight:400;padding:0}
+.so-header-shell{max-width:1200px;margin:0 auto;padding:0 22px}
+.so-header-top{display:flex;justify-content:space-between;align-items:center;min-height:37px;padding:7px 0;border-bottom:1px solid #dedede}
+.so-public-header a{color:inherit;text-decoration:none}
+.so-brand{font-size:15px;font-weight:700;letter-spacing:-.035em;white-space:nowrap}
+.so-utility{display:flex;align-items:center;font-size:12px;line-height:1.4}
+.so-utility>a,.so-utility-desktop>a{margin-left:19px;white-space:nowrap}
+.so-utility a:hover,.so-utility a[aria-current=page]{text-decoration:underline}
+.so-utility-more{display:none;position:relative;margin-left:14px}
+.so-utility-more summary{cursor:pointer;font-size:12px}
+.so-utility-pop{position:absolute;z-index:30;right:0;top:100%;width:170px;border:1px solid #bbb;background:#fff;padding:8px 12px}
+.so-utility-pop a{display:block;padding:7px 0}
+.so-primary{display:flex;align-items:baseline;justify-content:space-between;padding:9px 0 12px;line-height:1}
+.so-primary a{font-size:56px;font-size:clamp(32px,5.3vw,68px);font-weight:700;letter-spacing:-.055em;white-space:nowrap;display:block;border-bottom:3px solid transparent;padding-bottom:4px}
+.so-primary a[aria-current=page]{border-color:#161616}.so-primary a:hover{color:#555}
+.so-public-header a:focus,.so-public-header summary:focus{outline:2px solid #222;outline-offset:3px}
+.editorial-masthead h1,.editorial-feature h2,.editorial-article-header h1{font-weight:700;letter-spacing:-.045em}
+.editorial-prose{font-size:18px;line-height:1.72}
+@media(max-width:730px){.so-header-shell{padding:0 13px}.so-utility-desktop{display:none}.so-utility-more{display:block}.so-header-top{min-height:35px}.so-primary{padding:7px 0 8px}.so-primary a{font-size:32px;font-size:clamp(25px,6.9vw,43px);border-bottom-width:2px;padding-bottom:3px;letter-spacing:-.045em}.editorial-prose{font-size:17px}}
+@media(max-width:370px){.so-brand{font-size:13px}.so-utility>a{margin-left:8px}.so-primary a{font-size:26px}.so-header-shell{padding:0 12px}}
