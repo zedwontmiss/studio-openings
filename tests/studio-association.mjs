@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {matchStudio,associatedJobs,studioJobsHTML} from '../lib/studio-jobs.js';
+const job={id:'one',title:'Designer <script>',company:'Framestore',location:'London',url:'https://www.framestore.com/careers/one'};
+assert.equal(matchStudio(job),'framestore');
+assert.equal(matchStudio({...job,company:'Other Framestore'}),null);
+assert.equal(matchStudio({...job,url:'https://framestore.com.evil.example/careers'}),null);
+assert.equal(matchStudio({...job,url:'https://example.com/job',description:'Framestore'}),null);
+assert.equal(matchStudio({...job,url:'https://jobs.example.com/one',sourceUrl:'https://www.framestore.com/careers'}),'framestore');
+const jobs=associatedJobs('framestore',[{jobs:[job,job,{...job,id:'two',expiresAt:'2000-01-01'},{...job,id:'three',applicationMethod:'email'}]}]);
+assert.equal(jobs.length,1);assert.ok(studioJobsHTML(jobs).includes('&lt;script&gt;'));assert.equal(studioJobsHTML([]),'');
+console.log('Studio association tests passed.');

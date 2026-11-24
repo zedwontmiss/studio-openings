@@ -39,3 +39,6 @@ Added bounded D1 snapshot schema proposal, Preview-only refresh/read endpoints, 
 
 ### SEO foundation
 Standardized public internal utility links to extensionless canonical paths; middleware redirects only known .html aliases (GET/HEAD, same host, preserve query). Updated shared header, generated pages and templates; added text-only Open Graph/Twitter metadata for primary indexes, studio profiles, utility pages and discipline pages; WebSite/Organization schema on root. Article schema remains unchanged. No job schema expansion, production merge, or external image dependencies. Route regression tests added; validate deployed redirects and full compiler output before release. Noindex remains on Preview.
+
+### Studio intelligence pilot
+Generated stable employer identities and conservative name+official-host matching, with external vacancy links only, dedupe, expiry and outreach filters. Studio profile SSR uses approved/indexed/editorial inventory and enabled fresh snapshot shards; no new external scans or schema. Unmatched ATS sources omitted pending reviewed mappings. Hidden section if no matches. Preview enabled, production opt-in. Reverse association and reviewed ATS identifiers next. Tests added, not executed; no current matched counts claimed.
