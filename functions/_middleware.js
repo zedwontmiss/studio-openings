@@ -1,3 +1,4 @@
+import {seedHomepage} from '../lib/public-inventory.js';
 import {STUDIO_PATHS} from '../lib/studio-routes.js';
 import {ARTICLE_PATHS} from '../lib/editorial-routes.js';
 import {DISCIPLINE_SLUGS} from '../lib/discipline-pages.js';
@@ -8,7 +9,8 @@ const pages = new Set(['/', '/privacy', '/coverage', '/post-a-job', '/about', '/
 
 export async function onRequest(context) {
   const {hostname, pathname} = new URL(context.request.url);
-  const response = await applyOutreachPolicy(await context.next(),pathname);
+  let response = await applyOutreachPolicy(await context.next(),pathname);
+  if ((pathname==='/'||pathname==='/index.html') && context.request.method==='GET' && (hostname!=='s-o.app'||context.env?.PUBLIC_INVENTORY_ENABLED==='true')) response=await seedHomepage(response,context);
   const headers = new Headers(response.headers);
   const path = pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
   const publicPage = pages.has(path) || /^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path) || /^\/openings\/[a-z0-9-]{8,160}$/i.test(path);

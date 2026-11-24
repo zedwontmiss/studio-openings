@@ -1311,7 +1311,17 @@
       if(featuredReady)publish(false);
     }
     loadFeaturedConfig().then(function(){featuredReady=true;schedule();},function(){featuredReady=true;schedule();});
-    urls.forEach(function(url,i){fetchFeedJSON(url).then(function(value){outcomes[i]={value:value};},function(){outcomes[i]={};}).then(function(){pending--;schedule();});});
+    function individual(url,i){fetchFeedJSON(url).then(function(value){outcomes[i]={value:value};},function(){outcomes[i]={};}).then(function(){pending--;schedule();});}
+    var grouped={approved:0,indexed:1,editorial:3};
+    urls.forEach(function(url,i){if(i!==0&&i!==1&&i!==3)individual(url,i);});
+    fetchFeedJSON('/api/public-inventory').then(function(data){
+      if(!data||data.version!==1||!Array.isArray(data.sources))throw Error('Invalid inventory');
+      Object.keys(grouped).forEach(function(name){
+        var i=grouped[name],source=data.sources.filter(function(s){return s.source===name;})[0];
+        if(!source||source.failed||!Array.isArray(source.jobs)){individual(urls[i],i);return;}
+        outcomes[i]={value:{jobs:source.jobs,updatedAt:data.generatedAt}};pending--;schedule();
+      });
+    }).catch(function(){Object.keys(grouped).forEach(function(name){var i=grouped[name];individual(urls[i],i);});});
     // Subsequent user filters render the latest state; avoid disturbing the drawer.
   }
   // Shared filters override browser-local preferences for this visit only.
