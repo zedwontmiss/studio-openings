@@ -1,7 +1,7 @@
 import {DISCIPLINE_SLUGS} from '../lib/discipline-pages.js';
 import {applyOutreachPolicy} from '../lib/outreach-policy.js';
 
-const pages = new Set(['/', '/privacy', '/coverage', '/post-a-job', '/about', '/contact', '/terms', '/studio', '/article', '/article/creative-job-search-checklist',
+const pages = new Set(['/', '/privacy', '/coverage', '/post-a-job', '/about', '/contact', '/terms', '/studio', '/article', '/article/creative-job-search-checklist', '/studio/dixonbaxi', '/studio/framestore', '/studio/further', '/studio/gagosian', '/studio/industrial-color', '/studio/moma-ps1', '/studio/ragged-edge', '/studio/whitney-museum',
   ...DISCIPLINE_SLUGS.map(slug => '/disciplines/' + slug)]);
 
 export async function onRequest(context) {
