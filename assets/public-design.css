@@ -84,3 +84,8 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 .so-primary a,.so-utility>a,.so-utility-desktop>a{margin-left:0;text-align:center}
 .so-public-header .so-about-mark{margin-left:19px}
 }
+
+/* Commercial gateway: compact highlight, no change to fixed header slots. */
+.so-public-header .so-utility .so-advertise{background:#fff4bf;color:#111;text-decoration:none;font-weight:700!important;padding:2px 0}
+.so-public-header .so-utility .so-advertise:hover,.so-public-header .so-utility .so-advertise[aria-current=page]{text-decoration:underline}
+.so-local-header .so-brand{white-space:normal;min-width:0}.so-local-header .so-primary a:nth-child(4){width:3.8em}

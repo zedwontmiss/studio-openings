@@ -7,7 +7,7 @@ import {sourceSeoJob} from '../lib/source-seo-policy.js';
 const escapeXML=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 export async function onRequestGet({request,env}){
  const root='https://s-o.app';
- const rows=[{url:root+'/'},{url:root+'/privacy'},{url:root+'/coverage'},{url:root+'/post-a-job'},{url:root+'/about'},{url:root+'/contact'},{url:root+'/terms'}];
+ const rows=[{url:root+'/'},{url:root+'/privacy'},{url:root+'/coverage'},{url:root+'/post-a-job'},{url:root+'/advertise'},{url:root+'/about'},{url:root+'/contact'},{url:root+'/terms'}];
  for(const path of ["/studio","/article",...ARTICLE_PATHS,...STUDIO_PATHS])rows.push({url:root+path});
  for(const slug of DISCIPLINE_SLUGS)rows.push({url:root+'/disciplines/'+slug});
  if(env?.JOBS_DB){

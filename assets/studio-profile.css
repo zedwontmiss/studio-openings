@@ -12,3 +12,5 @@
 .studio-openings li{padding:5px 0;font-size:15px}
 .studio-disclosure{margin-top:58px;color:#666;font-size:12px}
 @media(max-width:730px){.studio-public-profile{padding:30px 13px 44px}.studio-public-profile h1{font-size:36px}.studio-intro{font-size:18px}.studio-locations li{font-size:20px}}
+
+.studio-locations a{color:#111;text-decoration:none}.studio-locations a:hover{text-decoration:underline}

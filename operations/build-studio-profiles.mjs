@@ -1,3 +1,4 @@
+import {LOCAL_CITIES} from '../lib/local-cities.js';
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {DISCIPLINES} from '../lib/discipline-pages.js';
@@ -6,7 +7,8 @@ const countries={AU:'Australia',CA:'Canada',GB:'United Kingdom',IN:'India',US:'U
 function renderProfile(s,template,disciplines){
  const url='https://s-o.app/studio/'+s.slug;
  const website=s.website||s.source.url;
- const locations=s.offices.length?'<section class="studio-locations"><h2>Locations</h2><ul>'+s.offices.map(o=>'<li data-city-id="'+esc(o.cityId)+'"><span>'+esc(o.city)+'</span><small>'+esc(countries[o.country]||o.country)+'</small></li>').join('')+'</ul></section>':'';
+ const cityLinks=new Map(LOCAL_CITIES.map(c=>[c.id,'/'+c.slug]));
+ const locations=s.offices.length?'<section class="studio-locations"><h2>Locations</h2><ul>'+s.offices.map(o=>'<li data-city-id="'+esc(o.cityId)+'">'+(cityLinks.has(o.cityId)?'<a href="'+esc(cityLinks.get(o.cityId))+'">'+esc(o.city)+' ↗</a>':'<span>'+esc(o.city)+'</span>')+'<small>'+esc(countries[o.country]||o.country)+'</small></li>').join('')+'</ul></section>':'';
  const main='<main class="studio-public-profile"><a class="studio-back" href="/studio">studio / '+esc(s.summary)+'</a><h1>'+esc(s.name)+'</h1><p class="studio-specialism">'+esc(s.summary)+'</p><a class="studio-website" href="'+esc(website)+'" rel="noopener noreferrer">'+esc(website.replace(/^https:\/\/(?:www\.)?/,'').replace(/\/$/,''))+' ↗</a><p class="studio-intro">'+esc(s.overview)+'</p>'+locations+'<section id="studio-associated-jobs" aria-label="Open positions" hidden></section><section class="studio-careers"><h2>Careers</h2><a href="'+esc(s.source.url)+'" rel="noopener noreferrer">Explore opportunities ↗</a></section><p class="studio-disclosure">Independent directory. <a href="/contact">Suggest an update</a>.</p></main>';
  return template.replace(/@@(TITLE|DESCRIPTION|CANONICAL|MAIN)@@/g,(_,k)=>({TITLE:esc(s.name+' — Studio Openings'),DESCRIPTION:esc(s.overview),CANONICAL:url,MAIN:main})[k]);
 }
