@@ -63,3 +63,6 @@ Local navigation and body order Scene, Jobs, Article, Studio. Read-only Scene li
 
 ### Homepage search restoration / Scene moderation UI
 Owner clarified original global homepage behavior must stay exactly as before scope change. Restored immediate matching Studio/Article headings above jobs grid; removed secondary gating. Scoped Studio/Article pages remain unchanged. Added operator Scene tab to existing authenticated console, contextual reply/report joins, review/publish/reject/remove actions and session guards. Browser scripts parsed successfully; actual database/API/browser/CI tests pending. No schema applied, no flags enabled. Production unchanged.
+
+### Scene anonymous composer and challenge
+Added gated topic/reply/report forms, lazy Turnstile challenge and mandatory server verification (hostname/action). All accepted content pending moderation; no accounts or public names. No flags/keys/schema applied; retention/deletion, privacy review, integration/security testing pending. Production unchanged. Browser composer syntax checked; full test suite not run.

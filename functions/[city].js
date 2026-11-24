@@ -1,5 +1,5 @@
 import {findLocal,localPage} from '../lib/local-page.js';
-import {sceneEnabled,sceneId} from '../lib/scene-core.js';
+import {sceneEnabled,sceneId,sceneWritesEnabled} from '../lib/scene-core.js';
 export async function onRequestGet(context){
  const city=findLocal(String(context.params?.city||''));
  if(!city)return context.next();
@@ -15,5 +15,6 @@ export async function onRequestGet(context){
     const rows=await db.prepare("SELECT t.id,t.title,t.created_at,(SELECT COUNT(*) FROM scene_replies r WHERE r.topic_id=t.id AND r.status='published') AS reply_count FROM scene_topics t WHERE t.city_id=? AND t.status='published' ORDER BY "+order+" LIMIT 50").bind(city.id).all();scene={enabled:true,topics:rows.results||[]};}
   }catch{scene={enabled:false,topics:[]};}
  }
+ if(scene.enabled&&sceneWritesEnabled(context)){scene.writes=true;scene.siteKey=context.env.SCENE_TURNSTILE_SITE_KEY;}
  return new Response(localPage(city,scene),{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
 }
