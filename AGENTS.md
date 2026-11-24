@@ -45,3 +45,6 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 3. Run tests and fix errors before reporting completion; if environment cannot run something, say so plainly.
 4. Save changes to `development` and provide one concise Indonesian progress report: what changed, exact commit/PR, tests and next actionable item.
 5. Never make a production merge or purchase/enable APIs or social automation without owner authorization.
+
+## Product expansion and handoff (24 November 2026)
+- Read `operations/PRODUCT_ROADMAP_HANDOFF_2026-11-24.md` for owner-approved Jobs / Studio / Article strategy and deferred SOAPP Local vision. Preserve established UI and stable URLs. Prioritize security/Preview validation before geographic or editorial expansion. Do not implement community/forum, new monetization checkout or account systems until separately approved.
