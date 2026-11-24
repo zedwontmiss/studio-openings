@@ -16,7 +16,7 @@ export function renderRows(records){
   assert.equal(new URL(s.source.url).protocol,'https:');assert.match(s.source.reviewedOn,/^\d{4}-\d{2}-\d{2}$/);
   assert.equal(typeof s.employerVerified,'boolean');
  }
- return records.slice().sort((a,b)=>a.name.localeCompare(b.name,'en')).map(s=>'<li data-discipline="'+esc(s.disciplines.join(' '))+'"><a class="studio-profile-link" href="/studio/'+s.slug+'"><h2>'+esc(s.name)+'</h2><p hidden>'+esc([s.summary,...s.aliases].join(' '))+'</p></a></li>').join('');
+ return records.slice().sort((a,b)=>a.name.localeCompare(b.name,'en')).map(s=>'<li data-discipline="'+esc(s.disciplines.join(' '))+'"><a class="studio-profile-link" href="/studio/'+s.slug+'"><h2>'+esc(s.name)+'</h2><p hidden>'+esc([s.summary,...s.aliases,...s.offices.map(o=>o.city+' '+o.region+' '+o.country)].join(' '))+'</p></a></li>').join('');
 }
 const data=JSON.parse(read('studio-registry/published.json'));
 const html=read('studio.html'),pattern=/(<ul class="growth-list" id="studio-list">)[\s\S]*?(<\/ul>)/;

@@ -10,7 +10,16 @@
       ],
       "summary": "Brand and design",
       "aliases": [],
-      "offices": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.dixonbaxi.com/contact",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        }
+      ],
       "source": {
         "url": "https://joinus.dixonbaxi.com",
         "reviewedOn": "2026-11-24",
@@ -27,7 +36,64 @@
       ],
       "summary": "Motion and VFX",
       "aliases": [],
-      "offices": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://www.framestore.com/our-studios",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        },
+        {
+          "country": "US",
+          "region": "California",
+          "city": "Los Angeles",
+          "sourceUrl": "https://www.framestore.com/our-studios",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        },
+        {
+          "country": "US",
+          "region": "Illinois",
+          "city": "Chicago",
+          "sourceUrl": "https://www.framestore.com/our-studios",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        },
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://www.framestore.com/our-studios",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        },
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.framestore.com/our-studios",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        },
+        {
+          "country": "AU",
+          "region": "Victoria",
+          "city": "Melbourne",
+          "sourceUrl": "https://www.framestore.com/our-studios",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        },
+        {
+          "country": "IN",
+          "region": "Maharashtra",
+          "city": "Mumbai",
+          "sourceUrl": "https://www.framestore.com/our-studios",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        }
+      ],
       "source": {
         "url": "https://www.framestore.com/careers",
         "reviewedOn": "2026-11-24",
@@ -46,7 +112,24 @@
       "aliases": [
         "DesignStudio"
       ],
-      "offices": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.further.group/studio/london",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        },
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://www.further.group/studio/new-york",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        }
+      ],
       "source": {
         "url": "https://www.further.group/careers",
         "reviewedOn": "2026-11-24",
@@ -63,7 +146,16 @@
       ],
       "summary": "Arts and photography",
       "aliases": [],
-      "offices": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://gagosian.com/locations/",
+          "reviewedOn": "2026-11-24",
+          "kind": "gallery"
+        }
+      ],
       "source": {
         "url": "https://gagosian.com/jobs/",
         "reviewedOn": "2026-11-24",
@@ -80,7 +172,24 @@
       ],
       "summary": "Photography and image production",
       "aliases": [],
-      "offices": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://industrialcolor.com/contact/",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        },
+        {
+          "country": "US",
+          "region": "California",
+          "city": "Los Angeles",
+          "sourceUrl": "https://industrialcolor.com/contact/",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        }
+      ],
       "source": {
         "url": "https://industrialcolor.com/about/",
         "reviewedOn": "2026-11-24",
@@ -97,7 +206,16 @@
       ],
       "summary": "Arts and cultural production",
       "aliases": [],
-      "offices": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://www.moma.org/visit/?location=ps1",
+          "reviewedOn": "2026-11-24",
+          "kind": "museum"
+        }
+      ],
       "source": {
         "url": "https://www.momaps1.org/en/about/jobs",
         "reviewedOn": "2026-11-24",
@@ -114,7 +232,16 @@
       ],
       "summary": "Brand and design",
       "aliases": [],
-      "offices": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://raggededge.com/contact",
+          "reviewedOn": "2026-11-24",
+          "kind": "office"
+        }
+      ],
       "source": {
         "url": "https://raggededge.com/join",
         "reviewedOn": "2026-11-24",
@@ -131,7 +258,16 @@
       ],
       "summary": "Museums and exhibitions",
       "aliases": [],
-      "offices": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://whitney.org/visit",
+          "reviewedOn": "2026-11-24",
+          "kind": "museum"
+        }
+      ],
       "source": {
         "url": "https://whitney.org/about/job-postings",
         "reviewedOn": "2026-11-24",

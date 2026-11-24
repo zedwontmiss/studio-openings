@@ -622,3 +622,6 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 .sidebar .filter-divider{border:0;margin:12px 0;height:0}
 .sidebar .filter-actions,.sidebar .filters-body,.sidebar .mobile-filter-toggle{border-top:0;border-bottom:0}
 .sidebar #clear-disciplines:disabled{opacity:.45;cursor:default;text-decoration:none}
+
+/* Desktop filters use whitespace rather than a vertical rule. */
+.sidebar{border-right:0}

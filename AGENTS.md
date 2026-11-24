@@ -83,3 +83,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Navigation must not shift between active pages: reserve link widths, primary product links bold with active underline, utility links regular. Remove Copy filters and separate discipline clear, retain one Reset and Saved jobs. Opening any vacancy resets drawer scroll only. Preserve visible search query when switching primary tabs.
 
 - Studio registry source is studio-registry/published.json; run operations/build-studio-index.mjs and --check after changes. Stable IDs/slugs, multi-discipline array, office evidence, aliases and source review. Do not infer office locations or current hiring from careers URLs. Existing canonical profiles remain; generate new profiles and sitemap only after verified acquisition.
+
+- Desktop header navigation distributed evenly between anchored wordmarks. Discipline groups collapsed by default; no vertical sidebar divider. Mobile-specific redesign deferred by owner. Registry location records distinguish studio/office from gallery or museum; city-level evidence is not proof of hiring.

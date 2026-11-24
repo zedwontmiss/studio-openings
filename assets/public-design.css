@@ -73,3 +73,14 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 @media(min-width:731px){.so-utility{margin-left:12px}}
 @media(max-width:730px){.so-primary a,.so-utility>a,.so-utility-more{min-height:24px;display:flex;align-items:center;justify-content:center}.so-utility-more{display:block}.so-utility-more summary{min-height:24px;line-height:24px}}
 @media(max-width:370px){.so-primary a:nth-child(1){width:2.5em}.so-primary a:nth-child(2){width:3.2em}.so-primary a:nth-child(3){width:3.4em}.so-utility>a{width:4.8em}}
+
+/* Distribute desktop navigation evenly between the two anchored wordmarks. */
+@media(min-width:731px){
+.so-header-shell{justify-content:space-between}
+.so-public-header .so-brand{margin-right:0;flex:none}
+.so-primary,.so-utility,.so-utility-desktop{display:flex;align-items:center;justify-content:space-evenly}
+.so-primary,.so-utility{flex:1;min-width:0;margin:0}
+.so-utility-desktop{flex:2}
+.so-primary a,.so-utility>a,.so-utility-desktop>a{margin-left:0}
+.so-public-header .so-about-mark{margin-left:0}
+}
