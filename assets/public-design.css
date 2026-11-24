@@ -60,3 +60,16 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 
 /* Pointer focus should not leave a box; retain the keyboard focus indicator. */
 .so-public-header a:focus:not(:focus-visible),.so-public-header summary:focus:not(:focus-visible){outline:none}
+
+/* Reserve fixed link slots regardless of active font weight. */
+.so-primary a,.so-utility>a,.so-utility-desktop>a{display:inline-block;flex:none;text-align:center}
+.so-primary a{font-weight:700}
+.so-primary a:not([aria-current=page]){text-decoration:none}
+.so-primary a[aria-current=page]{text-decoration:underline}
+.so-primary a:nth-child(1){width:3em}.so-primary a:nth-child(2){width:3.6em}.so-primary a:nth-child(3){width:3.8em}
+.so-utility>a{width:5.2em}.so-utility-desktop>a:nth-child(1){width:8.5em}.so-utility-desktop>a:nth-child(2){width:3.8em}
+.so-utility a{font-weight:400!important}.so-utility a[aria-current=page]{text-decoration:underline}
+.so-public-header .so-about-mark{flex:none}
+@media(min-width:731px){.so-utility{margin-left:12px}}
+@media(max-width:730px){.so-primary a,.so-utility>a,.so-utility-more{min-height:24px;display:flex;align-items:center;justify-content:center}.so-utility-more{display:block}.so-utility-more summary{min-height:24px;line-height:24px}}
+@media(max-width:370px){.so-primary a:nth-child(1){width:2.5em}.so-primary a:nth-child(2){width:3.2em}.so-primary a:nth-child(3){width:3.4em}.so-utility>a{width:4.8em}}

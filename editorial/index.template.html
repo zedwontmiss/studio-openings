@@ -6,7 +6,7 @@
     <aside class="sidebar" aria-label="Filters">
       <button id="mobile-filter-toggle" class="mobile-filter-toggle" type="button" aria-expanded="false" aria-controls="filters-body">Filters <span id="filter-indicator">+</span></button>
       <div class="filters-body" id="filters-body">
-        <div class="filters-label-row"><span class="filter-title">Discipline</span><button type="button" id="clear-disciplines" class="clear-mini" aria-label="Clear discipline selections" disabled>clear</button></div>
+        <div class="filters-label-row"><span class="filter-title">Discipline</span></div>
         <div class="discipline-groups" id="discipline-groups">
           <details class="filter-group" open><summary>Built Environment</summary><div class="check-list">
             <label><input type="checkbox" name="discipline" value="architecture"><span>Architecture / Landscape / Urban</span></label>
@@ -30,7 +30,7 @@
         <div class="compact-select"><label for="work-mode">Arrangement</label><select id="work-mode"><option value="all">Any</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></div>
         <div class="compact-select"><label for="job-type">Employment</label><select id="job-type"><option value="all">Any</option><option value="full-time">Full-time</option><option value="contract">Contract</option><option value="part-time">Part-time</option><option value="internship">Internship</option></select></div>
         <label class="pay-check"><input id="has-pay" type="checkbox"> Salary disclosed</label>
-        <div class="compact-select sidebar-sort"><label for="sort">Sort</label><select id="sort"><option value="relevant">Best match</option><option value="newest">Newest activity</option><option value="az">Job title</option><option value="company">Employer</option></select></div><div class="filter-actions"><button type="button" id="saved-toggle" aria-pressed="false">Saved jobs (<span id="saved-count">0</span>)</button><button type="button" id="reset">Clear all</button><button type="button" id="copy-filters">Copy filters</button></div>
+        <div class="compact-select sidebar-sort"><label for="sort">Sort</label><select id="sort"><option value="relevant">Best match</option><option value="newest">Newest activity</option><option value="az">Job title</option><option value="company">Employer</option></select></div><div class="filter-actions"><button type="button" id="saved-toggle" aria-pressed="false">Saved jobs (<span id="saved-count">0</span>)</button><button type="button" id="reset">Reset</button></div>
         <span id="filter-share-status" class="visually-hidden" role="status" aria-live="polite"></span>
       </div>
     </aside>
@@ -105,7 +105,7 @@
 
 <script src="/assets/filter-links.js?v=1124" defer></script>
 <script src="/assets/global-search.js?v=4" defer></script>
-<script src="/assets/app.js?v=1124-index-search" defer></script>
+<script src="/assets/app.js?v=1124-ux2" defer></script>
 <script src="/assets/native-apply.js" defer></script>
 
 

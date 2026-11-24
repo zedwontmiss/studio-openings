@@ -175,7 +175,16 @@
     if((job.applicationMethod||'external')==='external'&&!safeUrl(job.url))return false;
     return categoryFor(job)!=='not-creative'&&jobKeywords(job).length>0;
   }
+  function preserveSearchNavigation(){
+    // Carry only the visible search query, not private saved state or job filters.
+    Array.prototype.forEach.call(document.querySelectorAll('.so-primary a'),function(link){
+      var url=new URL(link.href,window.location.href);
+      if(state.query)url.searchParams.set('q',state.query.slice(0,120));else url.searchParams.delete('q');
+      link.href=url.pathname+url.search;
+    });
+  }
   function renderSearchFromTop(){
+    preserveSearchNavigation();
     // Reset before changing result heights; repeat after layout to defeat scroll anchoring.
     window.scrollTo(0,0);
     try{render();}finally{
@@ -920,6 +929,9 @@
     document.body.style.paddingRight=scrollbarWidth?scrollbarWidth+'px':'';
     document.body.classList.add('drawer-open');
     $('drawer-close').focus();
+    var drawerScroll=$('job-drawer').querySelector('.drawer-scroll');
+    if(drawerScroll)drawerScroll.scrollTop=0;
+    $('job-drawer').scrollTop=0;
     markJobViewed(job.id);
   }
   function closeDrawer(fromUrl){
@@ -1055,6 +1067,7 @@
     },450);
   }
   function render(){
+    preserveSearchNavigation();
     if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
@@ -1067,7 +1080,7 @@
     $('saved-toggle').classList.toggle('active',state.onlySaved);
     var selected=state.selectedRoles.length;
     $('filter-indicator').textContent=selected?selected+' selected':(document.querySelector('.sidebar').classList.contains('expanded')?'−':'+');
-    $('clear-disciplines').textContent='clear';$('clear-disciplines').disabled=!selected;
+
     // Array.filter passes (job, index, array). Do not forward index/array as
     // Saved Jobs' optional verified role and tags override parameters.
     var list=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
@@ -1099,7 +1112,7 @@
   Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.addEventListener('change',function(){
     state.selectedRoles=Array.prototype.filter.call(document.querySelectorAll('input[name="discipline"]'),function(x){return x.checked;}).map(function(x){return x.value;});state.visible=10;render();
   });});
-  $('clear-disciplines').addEventListener('click',function(){state.selectedRoles=[];Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=false;});state.visible=10;render();});
+
   $('mobile-filter-toggle').addEventListener('click',function(){var expanded=$('mobile-filter-toggle').getAttribute('aria-expanded')==='true';$('mobile-filter-toggle').setAttribute('aria-expanded',String(!expanded));document.querySelector('.sidebar').classList.toggle('expanded',!expanded);render();});
 
 
@@ -1311,12 +1324,7 @@
         $('work-mode').value=state.mode;$('has-pay').checked=state.hasPay;$('sort').value=state.sort;
       }
     }catch(e){}
-    $('copy-filters').addEventListener('click',function(){
-      var button=this,url=window.StudioOpeningFilterLinks.build(window.location.href,state);
-      function feedback(ok){button.textContent=ok?'Copied':'Try again';$('filter-share-status').textContent=ok?'Filter link copied. Saved jobs are private and are not included.':'Could not copy the filter link.';setTimeout(function(){button.textContent='Copy filters';},1800);}
-      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){feedback(true);},function(){feedback(clipboardFallback(url));});
-      else feedback(clipboardFallback(url));
-    });
+
   }
   function startJobFeed(){if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();}
   if(document.body.getAttribute('data-index-kind')&&!state.query&&!jobIdFromUrl()){
