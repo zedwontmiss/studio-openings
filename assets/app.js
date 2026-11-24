@@ -1036,7 +1036,6 @@
     $('scroll-sentinel').hidden=!more;
     $('feed-progress').hidden=!more||!feedBusy;
     $('feed-end').hidden=state.onlySaved||!state.jobs.length||!feedJobs.length||more;
-    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query,!state.onlySaved&&!more&&state.feedStatus!=='loading');
   }
   function appendFeed(){
     if(feedBusy||state.onlySaved||state.visible>=feedJobs.length||!$('job-drawer').hidden)return;
@@ -1057,7 +1056,7 @@
   function render(){
     preserveSearchNavigation();
     var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href='/'+city.slug;}
-    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query,false);
+    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
     feedBusy=false;

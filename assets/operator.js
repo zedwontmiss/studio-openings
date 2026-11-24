@@ -5,7 +5,7 @@
  function el(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;}
  function setMessage(id,msg){$(id).textContent=msg||'';}
  function api(method,body){return fetch('/api/operator',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {error:'Invalid server response'};}).then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Request failed');return v;});});}
- function lock(msg){token='';clearQueue();sourceState={sources:[],maps:[]};$('operator-key').value='';$('console').hidden=true;$('lock-panel').hidden=false;setMessage('login-error',msg||'Operator console locked.');}
+ function lock(msg){token='';clearScene();clearQueue();sourceState={sources:[],maps:[]};$('operator-key').value='';$('console').hidden=true;$('lock-panel').hidden=false;setMessage('login-error',msg||'Operator console locked.');}
  function load(){return api('GET').then(function(d){data=d;$('lock-panel').hidden=true;$('console').hidden=false;render();loadSources();setMessage('login-error','');}).catch(function(err){lock(err.message);});}
  function unlock(){var value=$('operator-key').value.trim();if(value.length<32){setMessage('login-error','Enter the 32+ character operator secret.');return;}token=value;$('operator-key').value='';load();}
  function campaignFor(id){for(var i=0;i<data.campaigns.length;i++){if(data.campaigns[i].submissionId===id)return data.campaigns[i];}return null;}
@@ -94,7 +94,7 @@
  }
  function fill(id,items,kind){var host=$(id);host.textContent='';if(!items.length){host.appendChild(el('p','empty','No records in this view.'));return;}items.forEach(function(s){host.appendChild(record(s,kind));});}
  function render(){count();var requests=data.submissions.filter(function(s){return s.status==='pending';}),approved=data.submissions.filter(function(s){return s.status==='approved';}),campaignJobs=approved.filter(function(s){return !!campaignFor(s.id);});fill('requests-list',requests,'requests');fill('approved-list',approved,'approved');fill('campaigns-list',campaignJobs,'campaigns');selectTab(selectedTab);}
- function selectTab(tab){selectedTab=tab;if(tab==='distribution')loadQueue();['requests','approved','campaigns','sources','distribution'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
+ function selectTab(tab){selectedTab=tab;if(tab==='distribution')loadQueue();if(tab==='scene')loadScene();else clearScene();['requests','approved','campaigns','sources','distribution','scene'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
 
  // v0.14.2: opt-in registry, same tab-memory credential. Failures do not affect premium management.
  var sourceState={sources:[],maps:[]},indexHealth={},indexReady=false,indexEnvironment='',selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null,sourceInspectRevision=0,sourceInspectButton=null,sourceMapSaving=false;
@@ -359,5 +359,44 @@
  };
  $('queue-refresh').onclick=function(){clearQueue();loadQueue();};
  $('queue-copy').onclick=function(){var field=$('queue-export');field.focus();field.select();var copied=document.execCommand('copy');setMessage('queue-message',copied?'Copied approved text.':'Text selected for manual copy.');};
+
+ // Scene uses the same in-memory operator credential, but an independent preview-only endpoint.
+ var sceneRevision=0,sceneBusy=false;
+ function clearScene(){sceneRevision++;sceneBusy=false;['scene-topics','scene-replies','scene-reports','scene-feedback'].forEach(function(id){$(id).textContent='';});$('scene-refresh').disabled=false;}
+ function sceneAPI(input){return fetch('/api/scene-moderation',{method:input?'POST':'GET',credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:input?JSON.stringify(input):undefined}).then(function(r){return r.json().then(function(v){if(!r.ok)throw Error(v.error||'Scene unavailable');return v;});});}
+ function sceneCurrent(session,revision){return !!token&&session===token&&revision===sceneRevision&&selectedTab==='scene';}
+ function sceneAction(kind,id,status){
+  if(sceneBusy||!token||!confirm('Confirm '+status+' for this '+kind+'?'))return;
+  var session=token,revision=sceneRevision;sceneBusy=true;$('scene-refresh').disabled=true;
+  sceneAPI({kind:kind,id:id,status:status}).then(function(){if(sceneCurrent(session,revision)){sceneBusy=false;loadScene('Saved '+status+'.');}},function(err){if(sceneCurrent(session,revision)){sceneBusy=false;$('scene-refresh').disabled=false;setMessage('scene-feedback',err.message);}});
+ }
+ function sceneRecord(host,kind,item){
+  var card=el('article','record'),info=el('div'),actions=el('div','actions');
+  card.appendChild(info);card.appendChild(actions);
+  info.appendChild(el('h3','',item.title||item.topic_title|| (kind==='report'?'Report: '+item.reason:'Anonymous reply')));
+  info.appendChild(el('p','role',[item.city_id,item.created_at,item.id].filter(Boolean).join(' · ')));
+  if(item.parent_body)info.appendChild(el('p','','Parent discussion: '+item.parent_body));
+  if(item.body)info.appendChild(el('p','',item.body));
+  if(kind==='report'){
+   if(item.reply_body)info.appendChild(el('p','','Reported reply: '+item.reply_body));
+   if(item.topic_status==='published'&&!item.reply_id)actionButton(actions,'Remove topic','',function(){sceneAction('topic',item.topic_id,'removed');});
+   if(item.reply_id&&item.reply_status==='published')actionButton(actions,'Remove reply','',function(){sceneAction('reply',item.reply_id,'removed');});
+   actionButton(actions,'Mark report reviewed','',function(){sceneAction('report',item.id,'reviewed');});
+  }else{
+   if(kind==='topic'||item.topic_status==='published')actionButton(actions,'Publish','primary',function(){sceneAction(kind,item.id,'published');});
+   actionButton(actions,'Reject','',function(){sceneAction(kind,item.id,'rejected');});
+  }
+  host.appendChild(card);
+ }
+ function loadScene(message){
+  if(!token||selectedTab!=='scene'||sceneBusy)return;
+  var session=token,revision=++sceneRevision;sceneBusy=true;$('scene-refresh').disabled=true;
+  sceneAPI().then(function(d){if(!sceneCurrent(session,revision))return;
+   [['topics','topic'],['replies','reply'],['reports','report']].forEach(function(pair){var host=$('scene-'+pair[0]);host.textContent='';var rows=Array.isArray(d[pair[0]])?d[pair[0]]:[];if(!rows.length)host.appendChild(el('p','empty','No pending records.'));rows.forEach(function(item){sceneRecord(host,pair[1],item);});});
+   setMessage('scene-feedback',message||'');
+  },function(err){if(sceneCurrent(session,revision)){['scene-topics','scene-replies','scene-reports'].forEach(function(id){$(id).textContent='';});setMessage('scene-feedback',err.message+' — Scene may be disabled or its preview schema may not be installed.');}}).then(function(){if(sceneCurrent(session,revision)){sceneBusy=false;$('scene-refresh').disabled=false;}});
+ }
+ $('scene-refresh').addEventListener('click',function(){loadScene();});
+
  $('unlock-button').addEventListener('click',unlock);$('operator-key').addEventListener('keydown',function(e){if(e.key==='Enter')unlock();});$('refresh-button').addEventListener('click',function(){api('GET').then(function(d){data=d;render();}).catch(function(err){if(/access|invalid|configured/i.test(err.message))lock(err.message);else {$('operation-error').hidden=false;setMessage('operation-error',err.message);}});});$('lock-button').addEventListener('click',function(){lock('Operator console locked.');});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.addEventListener('click',function(){selectTab(btn.getAttribute('data-tab'));});});$('cancel-action').addEventListener('click',closeAction);$('execute-action').addEventListener('click',execute);$('confirm-backdrop').addEventListener('click',function(e){if(e.target===$('confirm-backdrop'))closeAction();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('confirm-backdrop').hidden)closeAction();});
 })();

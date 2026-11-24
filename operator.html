@@ -10,7 +10,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Studio Openings — Operator</title>
 <link rel="stylesheet" href="/assets/operator.css">
-<script defer src="/assets/operator.js"></script>
+<script defer src="/assets/operator.js?v=scene1"></script>
 </head>
 <body>
 <header class="masthead"><a href="/" class="brand">studio openings</a><span class="right">operator / private console</span></header>
@@ -30,7 +30,7 @@
       <div><span>Visible yellow limit</span><strong>10</strong></div>
     </div>
     <div class="console-tools"><p class="caption">Standard $149 / 30 days · Featured $349 / 90 days · Manual invoice · Reverify vacancies every 30 days</p><div class="tools-right"><button id="refresh-button" type="button">Refresh</button><button id="lock-button" type="button">Lock</button></div></div>
-    <nav class="tabs" aria-label="Operator views"><button class="tab active" data-tab="requests" type="button">Requests</button><button class="tab" data-tab="approved" type="button">Approved jobs</button><button class="tab" data-tab="campaigns" type="button">Campaigns</button><button class="tab" data-tab="sources" type="button">Career sources</button><button class="tab" data-tab="distribution" type="button">Distribution</button></nav>
+    <nav class="tabs" aria-label="Operator views"><button class="tab active" data-tab="requests" type="button">Requests</button><button class="tab" data-tab="approved" type="button">Approved jobs</button><button class="tab" data-tab="campaigns" type="button">Campaigns</button><button class="tab" data-tab="sources" type="button">Career sources</button><button class="tab" data-tab="scene" type="button">Scene</button><button class="tab" data-tab="distribution" type="button">Distribution</button></nav>
     <div id="operation-error" class="notice" hidden role="status"></div>
     <section id="tab-requests"><h2>New submissions</h2><p class="hint">Employer workflow: review → send invoice manually → verify funds → publish. Visitor suggestions only need editorial review. All payment attestations are manual.</p><div id="requests-list" class="records"></div></section>
     <section id="tab-approved" hidden><h2>Approved jobs</h2><p class="hint">Only paid employer orders may be published. Featured campaigns require PREMIUM_ACTIVATION_ENABLED=true after testing. No automated email notices.</p><div id="approved-list" class="records"></div></section>
@@ -70,7 +70,14 @@
        </form>
       </div>
     </section>
-    <section id="tab-distribution" hidden>
+    <section id="tab-scene" hidden>
+ <h2>Scene moderation</h2><p class="hint">Preview only. Review every anonymous submission before publication. Remove personal information, harassment, spam and unsupported allegations. Report dismissal does not remove content.</p>
+ <button type="button" id="scene-refresh">Refresh discussions</button><p id="scene-feedback" role="status"></p>
+ <h3>Pending topics</h3><div id="scene-topics" class="records"></div>
+ <h3>Pending replies</h3><div id="scene-replies" class="records"></div>
+ <h3>Reports</h3><div id="scene-reports" class="records"></div>
+ </section>
+ <section id="tab-distribution" hidden>
       <h2>Distribution drafts</h2>
       <p class="hint">Review the official vacancy before approving a draft. Preview exports are for a manual pilot after release.</p>
       <button type="button" id="queue-refresh">Refresh queue</button> <button type="button" id="queue-setup" hidden>Initialize queue and metrics tables</button><p id="queue-message" role="status"></p>

@@ -6,8 +6,8 @@ export async function onRequestGet(context){
  const db=context.env.JOBS_DB;
  const [topics,replies,reports]=await Promise.all([
  db.prepare("SELECT id,city_id,title,body,created_at FROM scene_topics WHERE status='pending' ORDER BY created_at LIMIT 100").all(),
- db.prepare("SELECT id,topic_id,body,created_at FROM scene_replies WHERE status='pending' ORDER BY created_at LIMIT 100").all(),
- db.prepare("SELECT id,topic_id,reply_id,reason,created_at FROM scene_reports WHERE status='pending' ORDER BY created_at LIMIT 100").all()
+ db.prepare("SELECT r.id,r.topic_id,r.body,r.created_at,t.city_id,t.title AS topic_title,t.body AS parent_body,t.status AS topic_status FROM scene_replies r JOIN scene_topics t ON t.id=r.topic_id WHERE r.status='pending' ORDER BY r.created_at LIMIT 100").all(),
+ db.prepare("SELECT p.id,p.topic_id,p.reply_id,p.reason,p.created_at,t.city_id,t.title AS topic_title,t.body AS parent_body,t.status AS topic_status,r.body AS reply_body,r.status AS reply_status FROM scene_reports p JOIN scene_topics t ON t.id=p.topic_id LEFT JOIN scene_replies r ON r.id=p.reply_id AND r.topic_id=p.topic_id WHERE p.status='pending' ORDER BY p.created_at LIMIT 100").all()
  ]);
  return sceneReply({topics:topics.results||[],replies:replies.results||[],reports:reports.results||[]});
  }catch{return sceneReply({error:'Moderation unavailable'},503);}
