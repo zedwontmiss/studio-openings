@@ -1,4 +1,4 @@
-import {fetchOfficialJobs,classifyCreative,specialistTag,sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
+import {fetchOfficialJobs,classifyCreative,specialistTag,vacancyExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
 import {POLICY_VERSION,canUseCountry,cityCovered,US_REGIONS} from '../../lib/coverage-policy.js';
 import {outreachHeld} from '../../lib/outreach-policy.js';
 /** Studio Openings v1.0.1 — editorially selected, official AI/creative employer ATS feeds.
@@ -85,7 +85,7 @@ export function normalize(row,source,now){
  const title=clean(row.title,125),role=creativeRole(title,row.description);
  const location=source.locations?.[row.location]||row.location,loc=locationOf(location);
  if(!role||(source.focus&&source.focus!==role)||!loc||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
- const description=sourceExcerpt(row.description,950);
+ const description=vacancyExcerpt(row.description,950);
  if(description.length<130)return null;
  const n=Date.parse(row.posted||''),posted=Number.isFinite(n)&&n>946684800000&&n<=now+86400000?new Date(n).toISOString():'';
  const name=source.name,tags=[specialistTag(title,role)||TAGS[role]];
@@ -117,7 +117,7 @@ const HEAD={'content-type':'application/json; charset=utf-8','x-content-type-opt
 export async function onRequestGet({request}){
  const u=new URL(request.url),shard=Number(u.searchParams.get('shard'));
  if(!Number.isInteger(shard)||shard<0||shard>=Math.ceil(SOURCES.length/6))return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
- const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=8-ai-design&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
+ const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=9-role-excerpts&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
  if(cache)try{const hit=await cache.match(key);if(hit)return hit;}catch(_){}
  const sources=SOURCES.slice(shard*6,shard*6+6),now=Date.now();
  const outcomes=await Promise.allSettled(sources.map(s=>loadBoard(s,now)));

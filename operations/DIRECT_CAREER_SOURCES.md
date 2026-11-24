@@ -25,7 +25,7 @@ they do not grant source SEO or social publication rights.
 ## Adapter operation
 
 `/api/direct-jobs?shard=0` scans Koto; shard 1 scans Further. Each request reads
-the current career index then the linked vacancy details, with three concurrent
+the current career index then the linked vacancy details, with six concurrent
 requests and a maximum of 36 details. Hosts and URL patterns are fixed in code.
 Redirects, oversized responses, missing application links, changed titles,
 unknown locations and broken layouts do not become published jobs.
@@ -39,3 +39,36 @@ inferred from the city. No D1 migration or scheduled Worker is required.
 The next source batches should target fashion/photography, industrial design,
 and arts institutions, while investigating the unresolved studio websites
 above. The 50-per-category goal remains open.
+
+## 24 November — second integrated batch
+
+| Employer | Official discovery evidence | Integrated result |
+| --- | --- | --- |
+| Ragged Edge | https://raggededge.com/join links individual `/join/` vacancies. | Four specific design roles. Match each detail title and its exact Teamtailor application slug; verify the role's London studio hiring information. Exclude freelance pools, internships enquiries and client-service jobs. |
+| DixonBaxi | https://dixonbaxi.com links https://joinus.dixonbaxi.com. | Two brand design vacancies. Read live index, detail article, London/Hybrid metadata and the exact application URL on connect.dixonbaxi.com. Producer excluded. |
+| Framestore | https://www.framestore.com/careers links its Recruitee board. | Public board has 30 records; 12 specific creative vacancies pass status, expiry, city/country, application URL and existing coverage checks. Mumbai is outside the current geography policy. Remote without eligibility, freelance pools and expressions of interest excluded. |
+| Heatherwick | Official studio website links https://jobs.heatherwick.com. | Senior Computational Designer still appears but its stated 1 November deadline has passed. Not integrated. Landscape role still requires its own review. |
+| Pearson Lloyd | https://pearsonlloyd.com/info/#jobs | Explicitly asks visitors to check back for future opportunities. No jobs added. |
+| Instrument | https://www.instrument.com/careers/ | Current links are freelance network/general motion applications. No specific vacancy counted. |
+| Made Thought | https://madethought.com/people/ | Two specific design vacancies link to its official Greenhouse board; integration remains pending. General/freelance applications excluded. |
+| Universal Design Studio | https://www.universaldesignstudio.com/contact/ | Found the correct official board link (Greenhouse `universal`). Requires classification review; not integrated in this batch. |
+| BUCK / Pentagram | Previously recorded careers URLs rechecked | No readable vacancy links in initial public HTML. Do not treat this as proof of no hiring. |
+
+New shards: 2 Ragged Edge, 3 DixonBaxi, 4 Framestore. HTML scans now use up to
+six concurrent details and an eight-second total budget, under the browser's
+ten-second deadline. Oversized responses, redirects and missing role proof fail
+closed. Partial scans/truncation remain explicit and get a five-minute cache;
+valid complete scans get four hours. Records expire at six hours or a sooner
+explicit source close date. There is no inferred posting date for HTML jobs.
+
+Direct and AI feed excerpts select verbatim role/responsibility/requirement
+sections where present, within the same 950-character ceiling. A single detected
+section falls back to the original beginning excerpt. No generated description,
+full-text republishing permission, SEO approval or social posting is implied.
+
+`node operations/check-source-health.mjs` reads Preview endpoints, checks scan
+health/expiry/outreach holds, and retries one failed request. The new GitHub
+workflow runs daily only after its separately approved merge into the default
+branch (GitHub does not activate scheduled workflows on development). It is a
+read-only health check/cache refresh, not activation of the D1 ingestion Worker.
+Public GitHub-hosted Actions use the repository's existing free infrastructure.

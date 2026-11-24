@@ -1278,7 +1278,7 @@
     });
   }
   function loadLive(){
-    var urls=['/api/approved-jobs','/api/indexed-jobs','/api/firm-jobs','/api/editorial-jobs','/api/jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/ai-jobs?shard=7','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3','/api/direct-jobs?shard=0','/api/direct-jobs?shard=1'];
+    var urls=['/api/approved-jobs','/api/indexed-jobs','/api/firm-jobs','/api/editorial-jobs','/api/jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/ai-jobs?shard=7','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3','/api/direct-jobs?shard=0','/api/direct-jobs?shard=1','/api/direct-jobs?shard=2','/api/direct-jobs?shard=3','/api/direct-jobs?shard=4'];
     Promise.all([loadFeaturedConfig(),Promise.all(urls.map(function(url){return fetchFeedJSON(url).then(function(value){return {status:'fulfilled',value:value};},function(){return {status:'rejected'};});}))]).then(function(all){
       var items=all[1];
       var seen=Object.create(null),links=Object.create(null),records=[],latest=null,success=0;
@@ -1301,7 +1301,7 @@
       refreshRegionOptions();
       $('system-message').hidden=state.jobs.length>0;
       if(!state.jobs.length)$('system-message').textContent='No current creative vacancies were returned by the connected feeds.';
-      var partial=success<urls.length||items.some(function(item){return item.value&&Array.isArray(item.value.failed)&&item.value.failed.length;});
+      var partial=success<urls.length||items.some(function(item){return item.value&&(item.value.truncated||Array.isArray(item.value.failed)&&item.value.failed.length);});
       $('updated-label').textContent=(partial?'Some sources unavailable · updated ':'Feed fetched ')+new Date(latest||Date.now()).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
       hydrateSavedEntries();render();syncJobFromUrl();
     }).catch(function(){
