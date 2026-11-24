@@ -609,3 +609,6 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 .sidebar .filter-actions{flex-wrap:wrap;justify-content:flex-start}
 .job-list .job-row{border:0;box-shadow:none}
 .global-feed-status[hidden]{display:none!important}
+
+/* Keep transient feed status out of the public layout. */
+#system-message,#feed-progress{display:none!important}

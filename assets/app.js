@@ -382,6 +382,23 @@
   // Saved Jobs remains a separate shortlist but honors the same active filters.
   // Stored bookmarks are never deleted by filtering.
   var resultsSortLabel=document.querySelector('.sidebar-sort');
+  var savedPanel=document.createElement('section');savedPanel.id='saved-library';savedPanel.className='saved-library';savedPanel.hidden=true;
+  var savedHead=document.createElement('div');savedHead.className='saved-library-head';
+  var savedTitle=document.createElement('h2');savedTitle.textContent='Saved jobs';
+  var savedBack=document.createElement('button');savedBack.type='button';savedBack.textContent='Back to all jobs';savedBack.className='saved-back';
+  savedHead.appendChild(savedTitle);savedHead.appendChild(savedBack);savedPanel.appendChild(savedHead);
+  var savedExplain=document.createElement('p');savedExplain.className='saved-explain';
+  savedExplain.textContent='Saved privately in this browser only. No account or cross-device sync.';savedPanel.appendChild(savedExplain);
+  var savedTabs=document.createElement('div');savedTabs.className='saved-tabs';savedTabs.setAttribute('role','group');savedTabs.setAttribute('aria-label','Saved date range');
+  var savedAll=document.createElement('button'),savedWeek=document.createElement('button');
+  [savedAll,savedWeek].forEach(function(b){b.type='button';savedTabs.appendChild(b);});
+  savedAll.textContent='All saved';savedWeek.textContent='Last 7 days';savedPanel.appendChild(savedTabs);
+  var savedFilterInfo=document.createElement('p');savedFilterInfo.className='saved-filter-info';savedFilterInfo.hidden=true;
+  savedPanel.appendChild(savedFilterInfo);
+  var savedListing=document.createElement('div');savedListing.className='saved-listing';savedPanel.appendChild(savedListing);
+  $('job-list').parentNode.insertBefore(savedPanel,$('job-list'));
+  function toggleSavedView(force){state.onlySaved=typeof force==='boolean'?force:!state.onlySaved;state.visible=10;render();}
+
 
   savedBack.addEventListener('click',function(){toggleSavedView(false);});
   savedAll.addEventListener('click',function(){state.savedPeriod='all';render();});
@@ -1071,7 +1088,7 @@
     $('system-message').hidden=state.onlySaved||state.jobs.length>0;
     $('list-footnote').hidden=state.onlySaved;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
-    $('results-summary').textContent=state.onlySaved?'Your shortlist':state.review?'Official firm source review · 17 Nov 2026':state.feedStatus==='loading'?'Loading jobs…':state.feedStatus==='error'?'Feed unavailable':'Current listings';
+    $('results-summary').textContent=state.onlySaved?'Your shortlist':state.review?'Official firm source review · 17 Nov 2026':'Current listings';
     var wasOpen=!$('job-drawer').hidden;
     closeDrawer(true);
     if(wasOpen)updateJobUrl(null,'replace');
@@ -1285,12 +1302,13 @@
       var partial=success<urls.length||items.some(function(item){return item.value&&(item.value.truncated||Array.isArray(item.value.failed)&&item.value.failed.length);});
       $('updated-label').textContent=(partial?'Some sources unavailable · updated ':'Feed fetched ')+new Date(latest||Date.now()).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
       hydrateSavedEntries();render();syncJobFromUrl();
-    }).catch(function(){
+    }).catch(function(error){
+      if(window.console&&console.error)console.error('SOAPP job feed failed',error);
       state.feedStatus='error';
       $('system-message').hidden=false;
       $('updated-label').textContent='Feed unavailable';
       $('system-message').textContent='Current jobs could not be loaded. Please try later. Offline review records are not substituted for current vacancies.';
-      $('results-summary').textContent='Feed unavailable';
+      $('results-summary').textContent='Current listings';
       render();
     });
   }
