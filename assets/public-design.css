@@ -42,3 +42,5 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
  main.editorial-reader .editorial-prose{font-size:17px}
 }
 @media(max-width:370px){.so-header-shell,.site-footer .shell,main.shell{padding-left:10px;padding-right:10px}}
+
+.so-public-header{position:-webkit-sticky;position:sticky;top:0;z-index:40}

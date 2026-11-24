@@ -67,3 +67,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Shared public grid foundation in assets/public-design.css: 1200px outer frame, 22px desktop gutters, 13px mobile gutters, 792px reading measure, consistent 32px desktop/24px mobile top padding on editorial/utility pages. Preserve compact job layout and functional controls. Use section-appropriate typography; no oversized navigation.
 
 - Sidebar categories use right-aligned plus/minus disclosure indicators, no horizontal separators. Discipline clear resets only discipline selections; disabled if none selected. Favicon is uppercase S/O on transparent background, without border.
+
+- Sticky compact public header, sticky homepage search and desktop sidebar. Mobile filters remain collapsible in document flow to avoid obstructing results. Preserve drawer stacking.
