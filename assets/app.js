@@ -20,15 +20,6 @@
   }catch(e){}
   // Tags are a publication requirement: 1–3 verified role/skill labels per job.
   // No user search counts, guessed qualifications, or random tag promotion.
-  var PREFERENCES_KEY='studio-openings.keywords.v05';
-  try {
-    var pref=JSON.parse(localStorage.getItem(PREFERENCES_KEY)||'{}');
-    if(pref && Array.isArray(pref.keywords)) {
-      var oldNames={Graphic:'Graphic Design',Product:'Product Design',Motion:'Motion Design',Industrial:'Industrial Design',Landscape:'Landscape Architecture',Adobe:'Adobe Creative Cloud'};
-      state.keywords=pref.keywords.filter(function(x){return typeof x==='string' && x.length<35;}).map(function(x){return oldNames[x]||x;}).filter(function(x,i,a){return a.indexOf(x)===i;}).slice(0,15);
-    }
-    if(pref && pref.match==='all')state.keywordMatch='all';
-  }catch(e){}
   // Consistent typography for titles coming from every feed, including curated jobs.
   // Only all-uppercase titles change; employer names and existing mixed-case remain untouched.
   function displayTitle(value){
@@ -44,7 +35,6 @@
       return part.slice(0,1).toUpperCase()+part.slice(1);
     });
   }
-  function persistKeywords(){try{localStorage.setItem(PREFERENCES_KEY,JSON.stringify({keywords:state.keywords,match:state.keywordMatch}));}catch(e){}}
   var ROLE_TAG={architecture:'Architecture',interior:'Interior',industrial:'Industrial Design',product:'Product Design',visual:'Graphic Design',motion:'Motion Design',fashion:'Fashion',web:'Web Design',museum:'Exhibition',culture:'Creative Arts'};
   // Creative leadership taxonomy. Source title establishes the exact role.
   // Adjacent skills are searchable only when the original posting supports them.
@@ -185,31 +175,21 @@
     if((job.applicationMethod||'external')==='external'&&!safeUrl(job.url))return false;
     return categoryFor(job)!=='not-creative'&&jobKeywords(job).length>0;
   }
-  function toggleKeyword(label){
-    var i=state.keywords.indexOf(label);
-    if(i>=0)state.keywords.splice(i,1);else if(state.keywords.length<15)state.keywords.push(label);
-    state.visible=10;persistKeywords();render();
+  function searchTag(label){
+    // Tags are shortcuts into the visible query, never a second hidden filter.
+    var term=String(label||'').trim(),q=state.query.trim();
+    if(!term)return;
+    var words=q.split(/\s+/).filter(Boolean),parts=term.split(/\s+/);
+    var at=-1;
+    for(var i=0;i<=words.length-parts.length;i++){
+      if(parts.every(function(p,j){return p.toLowerCase()===words[i+j].toLowerCase();})){at=i;break;}
+    }
+    if(at>=0)words.splice(at,parts.length);else words=words.concat(parts);
+    state.query=words.join(' ');$('search').value=state.query;state.onlySaved=false;state.visible=10;render();
   }
-  function renderKeywords(){
-    var active=state.keywords.length>0;
-    $('preferences-bar').hidden=!active;
-    $('keyword-match').value=state.keywordMatch;
-    var picker=$('add-keyword');picker.textContent='';
-    var blank=document.createElement('option');blank.value='';blank.textContent='+ Add keyword';picker.appendChild(blank);
-    var allKeywords=[];
-    state.jobs.forEach(function(job){jobSearchTags(job).forEach(function(word){if(allKeywords.indexOf(word)<0)allKeywords.push(word);});});
-    allKeywords.sort().forEach(function(word){
-      if(state.keywords.indexOf(word)>=0)return;
-      var option=document.createElement('option');option.value=word;option.textContent=word;picker.appendChild(option);
-    });
-    var el=$('selected-keywords');el.textContent='';
-    state.keywords.forEach(function(word){
-      var button=document.createElement('button');button.type='button';button.className='keyword-selected';
-      button.textContent=word+' ×';button.title='Remove '+word+' preference';
-      styleTag(button,word);
-      button.setAttribute('aria-label','Remove '+word+' preference');
-      button.addEventListener('click',function(){toggleKeyword(word);});el.appendChild(button);
-    });
+  function tagInQuery(label){
+    var query=' '+state.query.toLowerCase().replace(/\s+/g,' ').trim()+' ';
+    return query.indexOf(' '+label.toLowerCase()+' ')>=0;
   }
   // Sponsored campaigns lead each relevant filtered feed, with stable daily
   // rotation inside Featured; campaign eligibility is verified independently.
@@ -410,7 +390,7 @@
     return days===0?'Saved today':days===1?'Saved yesterday':'Saved '+new Date(t).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
   }
   function savedHasActiveFilters(){
-    return !!(state.selectedRoles.length||state.keywords.length||state.query||
+    return !!(state.selectedRoles.length||state.query||
       state.region!=='all'||state.mode!=='all'||state.type!=='all'||state.hasPay);
   }
   function savedMatchesFilters(item,job){
@@ -419,7 +399,7 @@
     if(roleLabels[item.role])return eligible(item,item.role,item.tags||[]);
     // Legacy bookmarks can have no role/location/tags. Never classify their
     // unknown metadata as Culture or claim to match a skill or work arrangement.
-    if(state.selectedRoles.length||state.keywords.length||
+    if(state.selectedRoles.length||
        state.region!=='all'||state.mode!=='all'||state.type!=='all'||state.hasPay)return false;
     if(!state.query)return true;
     var text=[item.title,item.company,item.source].join(' ').toLowerCase();
@@ -647,12 +627,8 @@
     if(state.mode!=='all'&&trim(job.mode).toLowerCase()!==state.mode)return false;
     if(!matchesType(job,state.type))return false;
     if(state.hasPay&&!trim(job.salary))return false;
-    if(state.keywords.length){
-      var tags=Array.isArray(verifiedTags)&&verifiedTags.every(function(t){return typeof t==='string';})?verifiedTags:jobSearchTags(job);
-      var matched=state.keywordMatch==='all' ? state.keywords.every(function(k){return tags.indexOf(k)>=0;}) : state.keywords.some(function(k){return tags.indexOf(k)>=0;});
-      if(!matched)return false;
-    }
-    var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,jobSearchTags(job).join(' ')].join(' ').toLowerCase();
+    var searchableTags=Array.isArray(verifiedTags)?verifiedTags:jobSearchTags(job);
+    var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,searchableTags.join(' '),searchableTags.map(shortTagLabel).join(' ')].join(' ').toLowerCase();
     return !state.query||state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
   }
   function sortJobs(a,b){
@@ -998,14 +974,14 @@
     var keywordContainer=row.querySelector('.job-keywords');
     jobKeywords(job).forEach(function(word){
       var chip=document.createElement('button');chip.type='button';chip.className='job-keyword';
-      if(state.keywords.indexOf(word)>=0)chip.classList.add('selected');
+      if(tagInQuery(shortTagLabel(word)))chip.classList.add('selected');
       // Compact visible tag, keep the canonical taxonomy for search and filtering.
       chip.textContent=shortTagLabel(word);
       chip.setAttribute('aria-label',word);
-      chip.setAttribute('aria-pressed',String(state.keywords.indexOf(word)>=0));
+      chip.setAttribute('aria-pressed',String(tagInQuery(shortTagLabel(word))));
       styleTag(chip,word);
-      chip.title=state.keywords.indexOf(word)>=0?'Remove '+word+' from preferences':'Add '+word+' to preferences';
-      chip.addEventListener('click',function(event){event.stopPropagation();toggleKeyword(word);});
+      chip.title=tagInQuery(shortTagLabel(word))?'Remove '+shortTagLabel(word)+' from search':'Add '+shortTagLabel(word)+' to search';
+      chip.addEventListener('click',function(event){event.stopPropagation();searchTag(shortTagLabel(word));});
       keywordContainer.appendChild(chip);
     });
     // Omit unverified metadata rather than repeating "Not specified" on every row.
@@ -1072,7 +1048,6 @@
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
     feedBusy=false;
-    renderKeywords();
     $('saved-count').textContent=saved.length;
 
 
@@ -1098,7 +1073,6 @@
     feedJobs=list;
     feedControls();
     resultsSortLabel.hidden=state.onlySaved;
-    $('preferences-bar').hidden=state.onlySaved||!state.keywords.length;
     if(state.onlySaved){renderSavedPanel();return;}
     var root=$('job-list');root.textContent='';var fragment=document.createDocumentFragment();
     list.slice(0,state.visible).forEach(function(job){fragment.appendChild(rowFor(job));});root.appendChild(fragment);
@@ -1106,7 +1080,7 @@
   }
   function reset(){
     try{if(window.StudioOpeningFilterLinks)window.history.replaceState(window.history.state,'',window.StudioOpeningFilterLinks.clear(window.location.href));}catch(e){}
-    state.keywords=[];state.keywordMatch='any';persistKeywords();state.selectedRoles=[];state.query='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'relevant';state.visible=10;
+    state.selectedRoles=[];state.query='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'relevant';state.visible=10;
     $('search').value='';$('region').value='all';$('job-type').value='all';$('work-mode').value='all';$('has-pay').checked=false;$('sort').value=state.sort;
     Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=false;});
     render();
@@ -1116,9 +1090,9 @@
   });});
   $('clear-disciplines').addEventListener('click',function(){state.selectedRoles=[];Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=false;});state.visible=10;render();});
   $('mobile-filter-toggle').addEventListener('click',function(){var expanded=$('mobile-filter-toggle').getAttribute('aria-expanded')==='true';$('mobile-filter-toggle').setAttribute('aria-expanded',String(!expanded));document.querySelector('.sidebar').classList.toggle('expanded',!expanded);render();});
-  $('clear-keywords').addEventListener('click',function(){state.keywords=[];state.visible=10;persistKeywords();render();});
-  $('add-keyword').addEventListener('change',function(){if(this.value)toggleKeyword(this.value);});
-  $('keyword-match').addEventListener('change',function(){state.keywordMatch=this.value==='all'?'all':'any';state.visible=10;persistKeywords();render();});
+
+
+
   $('search').addEventListener('input',function(){state.query=this.value.trim();if(state.query)state.onlySaved=false;state.visible=10;render();});
   $('region').addEventListener('change',function(){state.region=this.value;state.visible=10;render();});
   $('job-type').addEventListener('change',function(){state.type=this.value;state.visible=10;render();});
@@ -1318,7 +1292,9 @@
     try{
       var linkedFilters=window.StudioOpeningFilterLinks.read(window.location.href,Object.keys(roleLabels),Object.keys(countryNames).map(function(code){return code.toLowerCase();}));
       if(linkedFilters){
-        Object.keys(linkedFilters).forEach(function(key){state[key]=linkedFilters[key];});
+        Object.keys(linkedFilters).forEach(function(key){if(key!=='keywords'&&key!=='keywordMatch')state[key]=linkedFilters[key];});
+        // Older shared links expose their tags in the same visible search field.
+        (linkedFilters.keywords||[]).forEach(function(tag){var term=shortTagLabel(tag);if(!tagInQuery(term))state.query=(state.query+' '+term).trim();});
         Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=state.selectedRoles.indexOf(c.value)>=0;});
         $('search').value=state.query;refreshRegionOptions();$('job-type').value=state.type;
         $('work-mode').value=state.mode;$('has-pay').checked=state.hasPay;$('sort').value=state.sort;

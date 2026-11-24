@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const app=readFileSync(new URL('../assets/app.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const start=app.indexOf('  function searchTag('),end=app.indexOf('  // Sponsored campaigns',start);
+assert.ok(start>=0&&end>start);
+const state={query:'architect',onlySaved:true},input={value:''};
+const ctx={state,$:()=>input,render(){}};
+vm.createContext(ctx);vm.runInContext(app.slice(start,end),ctx);
+ctx.searchTag('Figma');assert.equal(state.query,'architect Figma');assert.equal(input.value,state.query);assert.equal(state.onlySaved,false);
+ctx.searchTag('figma');assert.equal(state.query,'architect');
+ctx.searchTag('Adobe CC');assert.equal(state.query,'architect Adobe CC');
+ctx.searchTag('Adobe CC');assert.equal(state.query,'architect');
+assert.ok(!html.includes('id="preferences-bar"'));assert.ok(!app.includes('state.keywords'));assert.ok(!app.includes('persistKeywords'));
+console.log('Global tag search checks passed.');

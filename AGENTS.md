@@ -61,3 +61,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Job board: all filters, sorting, keyword controls and saved jobs belong in the left sidebar. Current listings uses the same 12px bold hierarchy as Discipline. Hide feed-fetch timestamp, remove horizontal job list/row dividers; keep the global search underline and existing job metadata.
 
 - Preserve saved-library initialization and toggleSavedView when moving controls. Public job listing must not display loading/fetching text; keep operational diagnostics in console/operator tools.
+
+- Global search is the only keyword filter. Clicking a visible job tag toggles its text in the search field; manual queries and tag terms share AND matching. No persisted hidden keyword preferences or separate keyword UI. Legacy shared tag links convert to visible query terms. Keep all non-keyword sidebar filters.
