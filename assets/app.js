@@ -1318,5 +1318,8 @@
       else feedback(clipboardFallback(url));
     });
   }
-  if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();
+  function startJobFeed(){if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();}
+  if(document.body.getAttribute('data-index-kind')&&!state.query&&!jobIdFromUrl()){
+    var started=false;$('search').addEventListener('input',function(){if(!started&&this.value.trim()){started=true;startJobFeed();}});
+  }else startJobFeed();
 })();

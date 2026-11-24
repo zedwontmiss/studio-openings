@@ -23,8 +23,8 @@ export function compile(source,indexTemplate,readerTemplate){
  const feature=articles.find(a=>a.slug===source.featured)||articles[0];
  const featureHtml=feature?'<section class="editorial-feature"><div><p class="editorial-kicker">Featured · '+esc(feature.category)+'</p><h2><a href="'+href(feature)+'">'+esc(feature.title)+'</a></h2><p>'+esc(feature.description)+'</p>'+meta(feature)+'<a class="editorial-read" href="'+href(feature)+'">Read article →</a></div><div class="editorial-feature-art" aria-hidden="true"><span>CREATIVE<br>WORK.</span><small>SO / EDITORIAL</small></div></section>':'';
  const tabs=['All',...categories.filter(c=>articles.some(a=>a.category===c))];
- const cards=articles.map(a=>'<article class="editorial-card" data-category="'+a.category+'"><div><p class="editorial-kicker">'+a.category+'</p><h2><a href="'+href(a)+'">'+esc(a.title)+'</a></h2><p class="editorial-summary">'+esc(a.description)+'</p>'+meta(a)+'</div><a class="editorial-card-mark" href="'+href(a)+'" aria-label="Read '+esc(a.title)+'"><span aria-hidden="true">'+String(categories.indexOf(a.category)+1).padStart(2,'0')+'</span></a></article>').join('');
- out.set('article.html',fill(indexTemplate,{FEATURE:featureHtml,TABS:'<nav class="editorial-tabs" aria-label="Article categories" id="editorial-tabs" hidden>'+tabs.map((c,i)=>'<button type="button" data-category="'+c+'" aria-pressed="'+(i===0)+'">'+c+'</button>').join('')+'</nav>',CARDS:cards}));
+ const cards=articles.map(a=>'<article class="editorial-card" data-category="'+a.category+'"><h2><a href="'+href(a)+'">'+esc(a.title)+'</a></h2><time datetime="'+a.date+'">'+dateLabel(a.date)+'</time><p class="editorial-summary" hidden>'+esc(a.description)+'</p></article>').join('');
+ out.set('article.html',fill(indexTemplate,{FEATURE:featureHtml,TABS:'',CARDS:cards}));
  for(const a of articles){
   const body=a.blocks.map(b=>b.type==='links'?'<p>'+b.links.map(link).join(' · ')+'</p>':b.type==='heading'?'<h2>'+esc(b.text)+'</h2>':'<p>'+esc(b.text)+'</p>').join('');
   const words=a.blocks.map(b=>b.text||'').join(' ').trim().split(/\s+/).length;

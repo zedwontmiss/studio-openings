@@ -15,7 +15,9 @@ const studioRows=Array.from(directory.matchAll(/<li data-discipline="[^"]+">([\s
 
 const editorialIndex=read('article.html');const articleLinks=new Set(Array.from(editorialIndex.matchAll(/href="([^"]+)"/g),m=>m[1]));for(const p of pages.filter(p=>p.startsWith('/article/'))){assert.ok(articleLinks.has(p));const html=read(p.slice(1)+'.html');const json=html.match(/<script type="application\/ld\+json">([^<]+)<\/script>/);assert.ok(json);const schema=JSON.parse(json[1]);assert.equal(schema['@type'],'Article');assert.equal(schema.mainEntityOfPage,expectedOrigin+p);assert.ok(html.includes('class="editorial-prose"'));}assert.equal((read('article/feed.xml').match(/<item>/g)||[]).length,Math.min(50,ARTICLE_PATHS.length));
 
-assert.ok(!directory.includes("View profile"));assert.equal((directory.match(/class="studio-profile-action" aria-hidden="true">→<\/span>/g)||[]).length,studioRows.length);
+assert.ok(!directory.includes("View profile"));assert.ok(!directory.includes("studio-profile-action"));
 const contact=read("contact.html");assert.equal((contact.match(/mailto:/g)||[]).length,1);assert.ok(contact.includes('href="mailto:hello@s-o.app"'));assert.ok(!contact.includes(">Email</a>"));
 
 for(const key of ["architecture","interior","industrial","product","visual","motion","fashion","web","museum","culture"])assert.ok(directory.includes('<option value="'+key+'">'));
+
+for(const p of ["studio.html","article.html"]){const h=read(p);assert.equal((h.match(/id="search"/g)||[]).length,1);assert.ok(h.includes("data-index-kind="));assert.ok(h.includes("id=\"job-list\""));}
