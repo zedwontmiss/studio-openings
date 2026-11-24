@@ -15,7 +15,7 @@ export async function onRequestGet({params,request}){
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="alternate icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <title>${name} | Studio Openings</title>
 <meta name="description" content="${esc((item.intro).slice(0,155))}">
-<link rel="canonical" href="${canonical}">
+<link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:site_name" content="Studio Openings"><meta property="og:title" content="${name} | Studio Openings"><meta property="og:description" content="${esc(item.intro.slice(0,155))}"><meta property="og:url" content="${canonical}"><meta name="twitter:card" content="summary">
 <style>html{font:14px/1.65 Helvetica,Arial,sans-serif;color:#202020;background:#fff}
 body{margin:0}main,footer{max-width:760px;margin-left:auto;margin-right:auto;padding-left:20px;padding-right:20px;box-sizing:border-box}
 
@@ -32,7 +32,7 @@ a{color:#151515}.cta{display:inline-block;color:white;background:#111;text-decor
 <p>Openings change regularly. Use the live directory below for currently available listings, salary information when disclosed, and the original source link. No vacancy count or availability is implied by this page.</p>
 <a class="cta" href="${listUrl}">Browse ${esc(item.label)} openings</a>
 <h2>Explore other creative disciplines</h2><p class="other">${links}</p>
-</main><footer>Studio Openings · <a href="/about.html">About</a> · <a href="/contact.html">Contact</a></footer>
+</main><footer>Studio Openings · <a href="/about">About</a> · <a href="/contact">Contact</a></footer>
 </body></html>`;
  return new Response(html,{headers:preview?{...HEAD,'x-robots-tag':'noindex, nofollow'}:HEAD});
 }
