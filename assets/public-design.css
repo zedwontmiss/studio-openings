@@ -57,3 +57,6 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 .so-public-header .so-about-mark[aria-current=page],.so-public-header .so-about-mark:hover{text-decoration:underline}
 @media(max-width:730px){.so-public-header .so-about-mark{font-size:14px;margin-left:10px}}
 @media(max-width:370px){.so-public-header .so-about-mark{font-size:12px;margin-left:7px}.so-primary a,.so-utility>a,.so-utility-more{margin-left:5px}.so-public-header .so-brand{font-size:11px}}
+
+/* Pointer focus should not leave a box; retain the keyboard focus indicator. */
+.so-public-header a:focus:not(:focus-visible),.so-public-header summary:focus:not(:focus-visible){outline:none}

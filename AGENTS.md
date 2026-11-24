@@ -77,3 +77,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Global search is present on Jobs, Studio and Article indexes. Studio defaults to alphabetical names only with the existing discipline filter; Article defaults to headline/date only. Search uses existing job feed lazily on secondary indexes; local matches retain their index presentation and other content types appear below. Keep internal profile links and canonical URLs. Editorial generator owns article index markup; keep shared search shell synchronized with home when editing job UI.
 
 - Studio index is one alphabetical vertical column on all screen sizes. Header studio openings wordmark stays far left and links home. S/O logo sits far right and links to About; no duplicate About text in desktop or mobile utility navigation. Jobs also links home.
+
+- Keep compact Studio list spacing; suppress mouse-only header focus outline but preserve visible keyboard focus.
