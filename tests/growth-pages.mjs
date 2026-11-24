@@ -17,3 +17,5 @@ const editorialIndex=read('article.html');const articleLinks=new Set(Array.from(
 
 assert.ok(!directory.includes("View profile"));assert.equal((directory.match(/class="studio-profile-action" aria-hidden="true">→<\/span>/g)||[]).length,studioRows.length);
 const contact=read("contact.html");assert.equal((contact.match(/mailto:/g)||[]).length,1);assert.ok(contact.includes('href="mailto:hello@s-o.app"'));assert.ok(!contact.includes(">Email</a>"));
+
+for(const key of ["architecture","interior","industrial","product","visual","motion","fashion","web","museum","culture"])assert.ok(directory.includes('<option value="'+key+'">'));

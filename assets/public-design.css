@@ -44,3 +44,9 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 @media(max-width:370px){.so-header-shell,.site-footer .shell,main.shell{padding-left:10px;padding-right:10px}}
 
 .so-public-header{position:-webkit-sticky;position:sticky;top:0;z-index:40}
+
+/* Near-edge shared frame; keep narrow reading measure for long-form text. */
+.so-header-shell,.site-footer .shell,main.shell,main.growth-page:not(.growth-article),main.editorial-home,main.post-shell{max-width:none;padding-left:18px;padding-right:18px}
+@media(min-width:1600px){.so-header-shell,.site-footer .shell,main.shell,main.growth-page:not(.growth-article),main.editorial-home,main.post-shell{padding-left:2vw;padding-right:2vw}}
+@media(max-width:730px){.so-header-shell,.site-footer .shell,main.shell,main.growth-page:not(.growth-article),main.editorial-home,main.post-shell{padding-left:13px;padding-right:13px}}
+@media(max-width:370px){.so-header-shell,.site-footer .shell,main.shell,main.growth-page:not(.growth-article),main.editorial-home,main.post-shell{padding-left:10px;padding-right:10px}}

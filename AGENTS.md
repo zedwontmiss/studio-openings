@@ -71,3 +71,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Sticky compact public header, sticky homepage search and desktop sidebar. Mobile filters remain collapsible in document flow to avoid obstructing results. Preserve drawer stacking.
 
 - User-initiated global search edits and tag clicks return document scroll to top after rendering; passive feed updates and ordinary filters do not force scrolling.
+
+- Near-edge shared desktop frame (18px gutters, 2vw above 1600px); preserve narrower reading widths. Studio filters use the same ten discipline keys and three parent groups as Jobs. Do not invent firms to fill empty disciplines.
