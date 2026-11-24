@@ -185,7 +185,7 @@
       if(parts.every(function(p,j){return p.toLowerCase()===words[i+j].toLowerCase();})){at=i;break;}
     }
     if(at>=0)words.splice(at,parts.length);else words=words.concat(parts);
-    state.query=words.join(' ');$('search').value=state.query;state.onlySaved=false;state.visible=10;render();
+    state.query=words.join(' ');$('search').value=state.query;state.onlySaved=false;state.visible=10;render();window.scrollTo(0,0);
   }
   function tagInQuery(label){
     var query=' '+state.query.toLowerCase().replace(/\s+/g,' ').trim()+' ';
@@ -1093,7 +1093,7 @@
 
 
 
-  $('search').addEventListener('input',function(){state.query=this.value.trim();if(state.query)state.onlySaved=false;state.visible=10;render();});
+  $('search').addEventListener('input',function(){state.query=this.value.trim();if(state.query)state.onlySaved=false;state.visible=10;render();window.scrollTo(0,0);});
   $('region').addEventListener('change',function(){state.region=this.value;state.visible=10;render();});
   $('job-type').addEventListener('change',function(){state.type=this.value;state.visible=10;render();});
   $('work-mode').addEventListener('change',function(){state.mode=this.value;state.visible=10;render();});

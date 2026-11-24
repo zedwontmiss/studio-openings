@@ -69,3 +69,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Sidebar categories use right-aligned plus/minus disclosure indicators, no horizontal separators. Discipline clear resets only discipline selections; disabled if none selected. Favicon is uppercase S/O on transparent background, without border.
 
 - Sticky compact public header, sticky homepage search and desktop sidebar. Mobile filters remain collapsible in document flow to avoid obstructing results. Preserve drawer stacking.
+
+- User-initiated global search edits and tag clicks return document scroll to top after rendering; passive feed updates and ordinary filters do not force scrolling.
