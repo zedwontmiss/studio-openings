@@ -85,3 +85,5 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Studio registry source is studio-registry/published.json; run operations/build-studio-index.mjs and --check after changes. Stable IDs/slugs, multi-discipline array, office evidence, aliases and source review. Do not infer office locations or current hiring from careers URLs. Existing canonical profiles remain; generate new profiles and sitemap only after verified acquisition.
 
 - Desktop header retains compact right-aligned Craigslist-style navigation with consistent spacing between Jobs and Contact; left wordmark and right S/O remain anchored. Discipline groups collapsed by default; no vertical sidebar divider. Mobile-specific redesign deferred by owner. Registry location records distinguish studio/office from gallery or museum; city-level evidence is not proof of hiring.
+
+- Studio country/city filters use canonical country+region+city identity; same office must match both. Generated compact assets/studio-search.json supplies cross-index studio search. Maintain static names-only index and internal links. No geographic landing pages until meaningful verified coverage.

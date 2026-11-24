@@ -49,3 +49,6 @@ html{scroll-behavior:auto}
 .so-index-page #editorial-list .editorial-summary{display:none}
 @media(max-width:730px){.so-index-page #studio-list h2{font-size:18px}.so-index-page #editorial-list .editorial-card h2{font-size:25px}}
 
+
+.so-index-page .studio-index-filters{flex-wrap:wrap}
+.so-index-page .studio-index-filters select{width:auto;max-width:100%}
