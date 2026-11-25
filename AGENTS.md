@@ -142,3 +142,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Owner prefers meaningful milestone batches over micro-updates and delegates routine engineering decisions. Target 100 verified studio records; use operations/studio-acquisition-backlog.json as discovery leads only, not public data. No guessed offices, active jobs or partnerships. Keep production untouched until explicit release approval.
 
 - Directory-only independent evidence review may publish studio profiles on development without D1 career-source approval; never treat this as authorization to ingest vacancies. Production promotion requires owner approval. Brand identity sprint last; restraint, no forced slogans.
+
+- Studio geographic filter: owner prefers Excel-like country, region, city autocomplete, case-insensitive prefix matching, comma/Enter completion, keyboard/touch support. Native country/city selects retained hidden as generated data and fallback. No invented geography. Scope Studio only for initial review.

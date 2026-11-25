@@ -108,3 +108,6 @@ Prepared 148 distinct-name research leads across multiple disciplines and market
 
 ### Directory publication milestone — first verified additions
 Four official-source reviewed London profiles included in development registry. Generated geography, index, search, routes, profiles and sitemap; generator consistency checks executed with simulated filesystem/URL adapter. D1 source approval is separate from independent directory publication; no vacancy or employer partnership claims. Remaining inventory target and runtime testing open. Brand pages last, restrained editorial direction. Production unchanged.
+
+### Studio location autocomplete
+Replaced visible country/city selects on Studio with one hierarchical text field, suggestions derived from actual directory locations. Existing discipline selector and main search preserved. Native fallback retained, existing generators compatible. Pure model fixtures and script syntax checked; browser/deployment not verified. No new inventory, production unchanged.
