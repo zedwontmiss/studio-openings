@@ -138,3 +138,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Studio discovery: read-only isolated Preview operator candidates from approved career sources, flags identity conflicts and existing overlaps, excludes outreach holds. Vacancy locations never imply offices. Export for review only; no automatic publication or crawl.
 
 - Studio expansion uses offline review staging with explicit evidence review, collision and outreach checks; no automatic publication. Vacancy city mappings never establish offices. Preserve firm-first coverage.
+
+- Owner prefers meaningful milestone batches over micro-updates and delegates routine engineering decisions. Target 100 verified studio records; use operations/studio-acquisition-backlog.json as discovery leads only, not public data. No guessed offices, active jobs or partnerships. Keep production untouched until explicit release approval.

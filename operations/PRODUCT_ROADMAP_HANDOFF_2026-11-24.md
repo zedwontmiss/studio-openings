@@ -102,3 +102,6 @@ Four researched London practices staged in operations/studio-research-batch-001.
 
 ### Studio research reconciliation
 Rechecked four batch-001 official career and London location sources, corrected two evidence URLs, checked names against published registry. Staged two additional leads Industrial Facility and Artefact, with explicit career/office evidence gaps. No D1 access, no source approval, no new publication or vacancy claims. Next: actual registry generation once source approval is reconciled; prioritize geographic diversification. No production changes.
+
+### Studio acquisition milestone backlog
+Prepared 148 distinct-name research leads across multiple disciplines and markets, including existing feed allowlists and prior research batches. No new verified records or vacancy claims. Existing registry 8. Owner prefers larger milestone batches. D1 approval and evidence verification remain blockers; do not treat candidate count as published inventory.
