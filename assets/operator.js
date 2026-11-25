@@ -5,7 +5,7 @@
  function el(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n;}
  function setMessage(id,msg){$(id).textContent=msg||'';}
  function api(method,body){return fetch('/api/operator',{method:method,credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {error:'Invalid server response'};}).then(function(v){if(!r.ok||!v.ok)throw Error(v.error||'Request failed');return v;});});}
- function lock(msg){token='';clearInventoryHealth();clearScene();clearQueue();sourceState={sources:[],maps:[]};$('operator-key').value='';$('console').hidden=true;$('lock-panel').hidden=false;setMessage('login-error',msg||'Operator console locked.');}
+ function lock(msg){token='';clearStudioCandidates();clearInventoryHealth();clearScene();clearQueue();sourceState={sources:[],maps:[]};$('operator-key').value='';$('console').hidden=true;$('lock-panel').hidden=false;setMessage('login-error',msg||'Operator console locked.');}
  function load(){return api('GET').then(function(d){data=d;$('lock-panel').hidden=true;$('console').hidden=false;render();loadSources();setMessage('login-error','');}).catch(function(err){lock(err.message);});}
  function unlock(){var value=$('operator-key').value.trim();if(value.length<32){setMessage('login-error','Enter the 32+ character operator secret.');return;}token=value;$('operator-key').value='';load();}
  function campaignFor(id){for(var i=0;i<data.campaigns.length;i++){if(data.campaigns[i].submissionId===id)return data.campaigns[i];}return null;}
@@ -94,7 +94,7 @@
  }
  function fill(id,items,kind){var host=$(id);host.textContent='';if(!items.length){host.appendChild(el('p','empty','No records in this view.'));return;}items.forEach(function(s){host.appendChild(record(s,kind));});}
  function render(){count();var requests=data.submissions.filter(function(s){return s.status==='pending';}),approved=data.submissions.filter(function(s){return s.status==='approved';}),campaignJobs=approved.filter(function(s){return !!campaignFor(s.id);});fill('requests-list',requests,'requests');fill('approved-list',approved,'approved');fill('campaigns-list',campaignJobs,'campaigns');selectTab(selectedTab);}
- function selectTab(tab){selectedTab=tab;if(tab!=='sources')clearInventoryHealth();if(tab==='distribution')loadQueue();if(tab==='scene')loadScene();else clearScene();['requests','approved','campaigns','sources','distribution','scene'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
+ function selectTab(tab){selectedTab=tab;if(tab!=='sources'){clearInventoryHealth();clearStudioCandidates();}if(tab==='distribution')loadQueue();if(tab==='scene')loadScene();else clearScene();['requests','approved','campaigns','sources','distribution','scene'].forEach(function(name){$('tab-'+name).hidden=name!==tab;});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.className=btn.getAttribute('data-tab')===tab?'tab active':'tab';});}
 
  // v0.14.2: opt-in registry, same tab-memory credential. Failures do not affect premium management.
  var sourceState={sources:[],maps:[]},indexHealth={},indexReady=false,indexEnvironment='',selectedSource=null,selectedRaw='',selectedCity=null,sourceGeoRequest=0,sourceDebounce=null,sourceInspectRevision=0,sourceInspectButton=null,sourceMapSaving=false;
@@ -416,6 +416,22 @@
    var rows=Array.isArray(d.sources)?d.sources:[];rows.forEach(function(s){var item=el('article','record'),info=el('div');info.appendChild(el('h3','',s.source));info.appendChild(el('p','',s.status+' · '+(s.jobCount===null?'unknown count':s.jobCount+' jobs')+' · '+(s.fresh?'fresh snapshot':'no fresh snapshot')));item.appendChild(info);host.appendChild(item);});setMessage('inventory-health-result',rows.filter(function(s){return s.fresh;}).length+' / '+rows.length+' fresh snapshots');
   },function(e){if(token===session&&rev===inventoryRevision)setMessage('inventory-health-result',e.message);}).then(function(){if(token===session&&rev===inventoryRevision)$('inventory-health-refresh').disabled=false;});
  }
+ var candidateRevision=0,candidateData=null;
+ function clearStudioCandidates(){candidateRevision++;candidateData=null;$('studio-candidates-list').textContent='';$('studio-candidates-result').textContent='';$('studio-candidates-refresh').disabled=false;$('studio-candidates-copy').disabled=true;}
+ function loadStudioCandidates(){
+  if(!token||selectedTab!=='sources')return;
+  clearStudioCandidates();var session=token,rev=candidateRevision,host=$('studio-candidates-list');$('studio-candidates-refresh').disabled=true;
+  function current(){return token===session&&rev===candidateRevision&&selectedTab==='sources';}
+  fetch('/api/studio-candidates',{credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+session}}).then(function(r){if(!r.ok)throw Error('Studio discovery unavailable — check isolated Preview binding.');return r.json();}).then(function(d){
+   if(!current())return;candidateData=d;var rows=Array.isArray(d.candidates)?d.candidates:[];
+   rows.forEach(function(c){var card=el('article','record'),info=el('div');info.appendChild(el('h3','',c.name));info.appendChild(el('p','',c.status+' · '+c.disciplines.join(', ')));linkText(info,c.careerURL,'Review official career source');
+    info.appendChild(el('p','','Vacancy cities (not offices): '+(c.vacancyCities.map(function(x){return [x.city,x.region,x.country].filter(Boolean).join(', ');}).join(' / ')||'none mapped')));
+    if(c.existingMatches.length)info.appendChild(el('p','','Possible existing studios: '+c.existingMatches.map(function(x){return x.name;}).join(', ')));card.appendChild(info);host.appendChild(card);});
+   setMessage('studio-candidates-result',rows.length+' candidate groups'+(d.truncated?' · capped result; not exhaustive':'')+' · none automatically published');$('studio-candidates-copy').disabled=!rows.length;
+  }).catch(function(e){if(current())setMessage('studio-candidates-result',e.message);}).then(function(){if(current())$('studio-candidates-refresh').disabled=false;});
+ }
+ $('studio-candidates-refresh').addEventListener('click',loadStudioCandidates);
+ $('studio-candidates-copy').addEventListener('click',function(){if(candidateData&&token)setMessage('studio-candidates-result',copy(JSON.stringify(candidateData,null,2))?'Candidate export copied for review; not a publication file.':'Clipboard unavailable.');});
  $('inventory-health-refresh').addEventListener('click',loadInventoryHealth);
  $('unlock-button').addEventListener('click',unlock);$('operator-key').addEventListener('keydown',function(e){if(e.key==='Enter')unlock();});$('refresh-button').addEventListener('click',function(){api('GET').then(function(d){data=d;render();}).catch(function(err){if(/access|invalid|configured/i.test(err.message))lock(err.message);else {$('operation-error').hidden=false;setMessage('operation-error',err.message);}});});$('lock-button').addEventListener('click',function(){lock('Operator console locked.');});Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(btn){btn.addEventListener('click',function(){selectTab(btn.getAttribute('data-tab'));});});$('cancel-action').addEventListener('click',closeAction);$('execute-action').addEventListener('click',execute);$('confirm-backdrop').addEventListener('click',function(e){if(e.target===$('confirm-backdrop'))closeAction();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('confirm-backdrop').hidden)closeAction();});
 })();

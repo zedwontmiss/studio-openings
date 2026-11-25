@@ -90,3 +90,6 @@ Staged durable least-recent-attempt rotation, health table/API, source timestamp
 
 ### Vacancy lifecycle and health visibility
 Separate raw upstream UID presence from normalized eligibility so parsing failures do not count as vacancy closure. Complete scans only; first miss hidden, second retired; 72h stale limit remains. Explicit isolated Preview write gate. Indexed candidate cap 500 and canonical link dedup in indexed/initial SSR; drawer passive updates replay on close. Operator Career sources health panel staged. Syntax and selected identity checks only; integration/scale tests and security findings remain open. Production unchanged.
+
+### Studio discovery pipeline
+Read-only candidate grouping from approved career sources and vacancy city mappings; operator review and JSON copy. No new public records, crawl, DB table or flags. Independent office/identity review required. Bounded 500 sources / 3000 mappings. Full integration pending. Production unchanged.
