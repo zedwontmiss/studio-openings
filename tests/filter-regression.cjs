@@ -20,12 +20,12 @@ assert(src.includes('state.jobs.filter(function(job){return eligible(job);})'),
 const compiled=[
  between('  var roleLabels = {','  var state ='),
  between('  var ROLE_TAG={','  function jobKeywords(job,allTags){'),
- between('  function jobKeywords(job,allTags){','  // One explicitly assigned colour'),
+ between('  function jobKeywords(job,allTags){','  function styleTag('),
  between('  function categoryFor(job) {','  function dateLabel(job)'),
  'function trim(v){return String(v||"").trim();}',
  between('  function usMatch(loc)','  function effectiveSort()')
 ].join('\n');
-const make=new Function('state',compiled+'\nreturn {eligible,categoryFor,jobKeywords};');
+const make=new Function('state',compiled+'\nreturn {eligible,categoryFor,jobKeywords,jobSearchTags};');
 const jobs=[
  {id:'art',title:'Art Director',company:'Example Graphic Studio',role:'visual',location:'Eligible: United States',mode:'remote',type:'Full-time',salary:'$140k'},
  {id:'ux',title:'Principal UX Designer',company:'Example Game Company',role:'product',location:'Eligible: United States',mode:'remote',type:'Full-time',salary:'$160k',tags:['Product Design','UX/UI']},
@@ -63,8 +63,8 @@ const cases=[
  ['employer search',['ux'],{query:'game company'}]
 ];
 for(const [name,expected,filters] of cases){
- const api=make({...base,...filters});
- assert.deepStrictEqual(jobs.filter(j=>api.eligible(j)).map(j=>j.id),expected,name);
+ const api=make({...base,...filters,query:filters.query||''});
+ assert.deepStrictEqual(jobs.filter(j=>api.eligible(j)&&(!filters.keywords|| (filters.keywordMatch==='all'?filters.keywords.every(k=>api.jobSearchTags(j).includes(k)):filters.keywords.some(k=>api.jobSearchTags(j).includes(k))))).map(j=>j.id),expected,name);
 }
 const filtered=make({...base,selectedRoles:['product'],keywords:['Product Design']});
 const mixed={id:'mixed',title:'Senior Motion & Graphic Designer',role:'visual',company:'Silverback Strategies',location:'United States',mode:'remote'};
