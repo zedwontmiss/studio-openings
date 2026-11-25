@@ -64,3 +64,7 @@ html{scroll-behavior:auto}
 .so-index-page .so-article-index{margin:12px auto 28px}
 @media(min-width:731px){.directory .sidebar{padding-top:0}.directory .filters-label-row,.directory .results-toolbar{min-height:16px;margin-bottom:5px}}
 @media(max-width:730px){.directory .mobile-filter-toggle{text-transform:uppercase}.so-index-page .studio-index-filters.type-studio-layout{grid-template-columns:1fr 1fr;column-gap:12px}.so-index-page .type-studio-layout #studio-category-options{grid-template-columns:1fr}}
+
+/* Shared sponsored title marker; no line-height or row-height change. */
+.so-sponsored-marker{position:relative;top:-.72em;vertical-align:baseline;font-size:.45em;line-height:0;letter-spacing:0;margin-left:.2em;color:#c51620;font-weight:700;white-space:nowrap}
+.so-sponsored-title{color:#c51620!important}
