@@ -14,3 +14,5 @@
 @media(max-width:730px){.studio-public-profile{padding:30px 13px 44px}.studio-public-profile h1{font-size:36px}.studio-intro{font-size:18px}.studio-locations li{font-size:20px}}
 
 .studio-locations a{color:#111;text-decoration:none}.studio-locations a:hover{text-decoration:underline}
+
+.studio-location-meta{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;justify-content:flex-end}.studio-locations .studio-map-link{font:400 12px/1.4 Helvetica,Arial,sans-serif;text-decoration:underline;white-space:nowrap}.studio-map-link:hover{color:#555}

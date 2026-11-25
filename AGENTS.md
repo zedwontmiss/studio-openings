@@ -204,3 +204,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Inventory expansion: add 10 directory-only firms in US/Canada with official career and office evidence dated 2026-11-25. No vacancy ingestion or employer endorsement. Keep existing city set and visual baseline. Publication compiler now regenerates canonical geography rather than retaining only existing city IDs. Production unchanged.
 
 - Owner approved recurring maintenance. Stage GitHub Actions Preview-only scheduler with explicit repository variable kill switch and separate dedicated secrets. One snapshot shard per ten minutes and one approved board per thirty minutes, bounded timeout and no retry burst. Default branch main required for live schedules; no merge or activation without actual D1 isolation verification. No recurring studio publication, outreach or alert email.
+
+- Owner wants compact Scene studio lists, names only. Put Google Maps search links on recorded office locations in studio profiles; no embedded maps, paid API, street address inference or new location verification.
