@@ -1048,7 +1048,7 @@
   }
   function render(){
     preserveSearchNavigation();
-    var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href='/?filters=1&city='+encodeURIComponent(city.slug)+'#jobs';}
+    var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href=window.location.hostname==='development.studio-openings.pages.dev'&&city.slug!=='mumbai'?'/'+city.slug:'/?filters=1&city='+encodeURIComponent(city.slug)+'#jobs';}
     if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.onlySaved?'':state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
