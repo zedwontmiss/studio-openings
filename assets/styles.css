@@ -629,3 +629,6 @@ button.saved-entry-title{text-decoration:underline;text-decoration-color:#888;te
 /* Monochrome editorial tags: Featured yellow is the sole job-row accent. */
 .job-keyword,.keyword-selected{background:transparent!important;border:1px solid #bdbdbd;color:#333;font-weight:400;box-shadow:none}
 .job-keyword:hover,.job-keyword.selected,.job-keyword.selected:hover,.keyword-selected,.keyword-selected:hover{background:#222!important;color:#fff;border-color:#222;filter:none;box-shadow:none}
+
+/* Shortlist uses the same quiet visual hierarchy as current listings. */
+.saved-library{border:0;padding-top:8px}.saved-library .saved-entry{border:0;padding-top:12px;padding-bottom:12px}.saved-library .saved-entry.is-featured{background:#fff4bf}.saved-library .saved-tabs button{border-radius:0}.saved-library .saved-entry-status{font-size:11px}

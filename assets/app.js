@@ -370,7 +370,7 @@
   var resultsSortLabel=document.querySelector('.sidebar-sort');
   var savedPanel=document.createElement('section');savedPanel.id='saved-library';savedPanel.className='saved-library';savedPanel.hidden=true;
   var savedHead=document.createElement('div');savedHead.className='saved-library-head';
-  var savedTitle=document.createElement('h2');savedTitle.textContent='Saved jobs';
+  var savedTitle=document.createElement('h2');savedTitle.textContent='Your shortlist';
   var savedBack=document.createElement('button');savedBack.type='button';savedBack.textContent='Back to all jobs';savedBack.className='saved-back';
   savedHead.appendChild(savedTitle);savedHead.appendChild(savedBack);savedPanel.appendChild(savedHead);
   var savedExplain=document.createElement('p');savedExplain.className='saved-explain';
@@ -383,7 +383,9 @@
   savedPanel.appendChild(savedFilterInfo);
   var savedListing=document.createElement('div');savedListing.className='saved-listing';savedPanel.appendChild(savedListing);
   $('job-list').parentNode.insertBefore(savedPanel,$('job-list'));
-  function toggleSavedView(force){state.onlySaved=typeof force==='boolean'?force:!state.onlySaved;state.visible=10;render();}
+  function savedViewFromUrl(){try{return new URL(window.location.href).searchParams.get('saved')==='1';}catch(e){return false;}}
+  function syncSavedUrl(){try{var u=new URL(window.location.href);if(state.onlySaved)u.searchParams.set('saved','1');else u.searchParams.delete('saved');window.history.replaceState(window.history.state,'',u.href);}catch(e){}}
+  function toggleSavedView(force){state.onlySaved=typeof force==='boolean'?force:!state.onlySaved;state.visible=10;syncSavedUrl();render();window.scrollTo(0,0);}
 
 
   savedBack.addEventListener('click',function(){toggleSavedView(false);});
@@ -459,9 +461,9 @@
       row.appendChild(title);
       var company=document.createElement('p');company.className='saved-entry-company';company.textContent=(job&&job.company)||item.company||'Employer information unavailable';row.appendChild(company);
       var meta=document.createElement('p');meta.className='saved-entry-meta';
-      meta.textContent=savedDateLabel(item.savedAt)+(item.source?' · '+item.source:'');row.appendChild(meta);
+      meta.textContent=savedDateLabel(item.savedAt);row.appendChild(meta);
       var status=document.createElement('p');status.className=job?'saved-entry-status':'saved-entry-status is-unavailable';
-      status.textContent=job?'In current listings':'Not in current listings — vacancy status unverified';row.appendChild(status);
+      status.textContent=job?'In current listings':state.feedStatus==='loading'?'Checking current availability — saved copy': 'Not in current listings — vacancy status unverified';row.appendChild(status);
       var actions=document.createElement('div');actions.className='saved-entry-actions';
       if(job){
         var review=document.createElement('button');review.type='button';review.textContent='Review job';
@@ -1043,7 +1045,7 @@
   function render(){
     preserveSearchNavigation();
     var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href=window.location.hostname==='development.studio-openings.pages.dev'?'/'+city.slug:'/?filters=1&city='+encodeURIComponent(city.slug)+'#jobs';}
-    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query);
+    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.onlySaved?'':state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
     feedBusy=false;
@@ -1062,7 +1064,7 @@
     $('system-message').hidden=true;
     $('list-footnote').hidden=state.onlySaved;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
-    $('results-summary').textContent=state.onlySaved?'Your shortlist':state.review?'Official firm source review · 17 Nov 2026':'Current listings';
+    $('results-summary').textContent=state.onlySaved?'Saved jobs':state.review?'Official firm source review · 17 Nov 2026':'Current listings';
     var wasOpen=!$('job-drawer').hidden;
     closeDrawer(true);
     if(wasOpen)updateJobUrl(null,'replace');
@@ -1079,7 +1081,7 @@
   }
   function reset(){
     try{if(window.StudioOpeningFilterLinks)window.history.replaceState(window.history.state,'',window.StudioOpeningFilterLinks.clear(window.location.href));}catch(e){}
-    state.selectedRoles=[];state.query='';state.city='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'auto';state.visible=10;
+    state.selectedRoles=[];state.query='';state.city='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;syncSavedUrl();state.sort=state.review?'review':'auto';state.visible=10;
     $('search').value='';$('region').value='all';$('job-type').value='all';$('work-mode').value='all';$('has-pay').checked=false;$('sort').value=state.sort;
     Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=false;});
     render();
@@ -1092,7 +1094,7 @@
 
 
 
-  $('search').addEventListener('input',function(){state.query=this.value.trim();if(state.query)state.onlySaved=false;state.visible=10;renderSearchFromTop();});
+  $('search').addEventListener('input',function(){state.query=this.value.trim();state.visible=10;renderSearchFromTop();});
   $('region').addEventListener('change',function(){state.region=this.value;state.visible=10;render();});
   $('job-type').addEventListener('change',function(){state.type=this.value;state.visible=10;render();});
   $('work-mode').addEventListener('change',function(){state.mode=this.value;state.visible=10;render();});
@@ -1327,5 +1329,6 @@
 
   }
   function startJobFeed(){if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();}
+  if(savedViewFromUrl()){state.onlySaved=true;render();}
   startJobFeed();
 })();
