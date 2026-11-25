@@ -93,3 +93,6 @@ Separate raw upstream UID presence from normalized eligibility so parsing failur
 
 ### Studio discovery pipeline
 Read-only candidate grouping from approved career sources and vacancy city mappings; operator review and JSON copy. No new public records, crawl, DB table or flags. Independent office/identity review required. Bounded 500 sources / 3000 mappings. Full integration pending. Production unchanged.
+
+### Studio expansion review gate
+Current branch already contained candidate discovery; added offline validation/staging and tests. Fixture checks passed with stubbed dependencies; Node/Cloudflare integration pending. No public records added. Next actual verified studio batch and generated-page validation. Prior audits remain release QA inputs, not current verified defects.

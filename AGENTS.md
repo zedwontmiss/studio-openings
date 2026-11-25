@@ -136,3 +136,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Lifecycle: complete official board scans only retire truly absent upstream UIDs; partial scans cannot increase miss count, first complete absence hides indexed job, second retires. Present but unnormalized remains subject to existing 72h last-seen expiry. Require explicit Preview isolation for ingest writes. Indexed candidate cap raised to 500; exact URL dedup on server and client, no name-only merging. Operator feed health read-only panel. No activation or production changes.
 
 - Studio discovery: read-only isolated Preview operator candidates from approved career sources, flags identity conflicts and existing overlaps, excludes outreach holds. Vacancy locations never imply offices. Export for review only; no automatic publication or crawl.
+
+- Studio expansion uses offline review staging with explicit evidence review, collision and outreach checks; no automatic publication. Vacancy city mappings never establish offices. Preserve firm-first coverage.
