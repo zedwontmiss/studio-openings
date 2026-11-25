@@ -60,7 +60,7 @@ for(const path of ['/about','/disciplines/architecture','/jobs/'+employerId,'/op
 }
 let injected='';
 globalThis.HTMLRewriter=class {
-  on(selector,handler){assert.equal(selector,'head');handler.element({append(value){injected=value;}});return this;}
+  on(selector,handler){if(selector==='head')handler.element({append(value){if(value.includes('/assets/traffic.js'))injected=value;},setInnerContent(){}});else if(selector==='a[href]')handler.element({getAttribute(){return '/scene';},remove(){},setAttribute(){}});else if(selector==='#job-list')handler.element({setInnerContent(){}});else assert.fail('Unexpected selector: '+selector);return this;}
   transform(response){return response;}
 };
 for(const [settings,headers,enabled] of [[env,{},true],[{...env,TRAFFIC_ENABLED:'false'},{},false],[{...env,PREVIEW_D1_ISOLATED:'false'},{},false],[env,{DNT:'1'},false]]){
@@ -137,8 +137,8 @@ assert.equal((await count(event)).status,204);
 await count({...event,event:'apply'});await count({...event,event:'apply'});await count(event,{DNT:'1'});await count(event,{'Sec-GPC':'1'});
 assert.equal((await count(event,{origin:'https://other.example'})).status,403);
 assert.equal((await count({...event,referral:'person@example.com'})).status,422);
-assert.deepEqual(sql.prepare('SELECT event,total FROM traffic_daily ORDER BY event').all().map(r=>[r.event,r.total]),[['apply',2],['view',1],['visit',1]]);
-assert.equal(sql.prepare('SELECT count(*) AS n FROM traffic_daily WHERE job_key=?').get(secondId).n,3);
+assert.deepEqual(sql.prepare('SELECT event,total FROM traffic_daily ORDER BY event').all().map(r=>[r.event,r.total]),[['apply',2],['listing',1],['view',1],['visit',1]]);
+assert.equal(sql.prepare('SELECT count(*) AS n FROM traffic_daily WHERE job_key=?').get(secondId).n,4);
 await count({...event,entry:false,job:'person@example.com'});
 assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM traffic_daily WHERE job_key LIKE '%@%'").get().n,0);
 sql.close();

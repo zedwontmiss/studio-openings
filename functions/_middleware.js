@@ -34,10 +34,10 @@ export async function onRequest(context) {
   let output = new Response(response.body, {status:response.status, statusText:response.statusText, headers});
   if(response.status===200&&headers.get('content-type')?.startsWith('text/html')&&typeof HTMLRewriter!=='undefined'){
     headers.delete('content-length');headers.delete('etag');
-    if(!reviewHost(hostname))headers.set('cache-control','no-store');
+    headers.set('cache-control','no-store');
     output=new HTMLRewriter().on('a[href]',{element(el){
       const href=el.getAttribute('href'),next=publicLink(href);
-      if(!reviewHost(hostname)&&deferredPath(next)){
+      if(hiddenReleasePath(hostname,next)){
         if(LOCAL_PATHS.includes(next.split(/[?#]/,1)[0]))el.setAttribute('href','/?filters=1&city='+encodeURIComponent(next.split(/[?#]/,1)[0].slice(1))+'#jobs');
         else el.remove();
         return;
