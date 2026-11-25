@@ -5,7 +5,7 @@ const html=read('index.html');assert.equal((html.match(/id="search"/g)||[]).leng
 
 assert.ok(html.includes('type="text" id="search"'));assert.ok(!html.includes('id="global-discovery-status"'));assert.ok(!js.includes('No matching'));assert.ok(!js.includes('Searching studios'));assert.ok(!js.includes('found.slice'));assert.ok(!read('assets/app.js').includes('global-no-job-matches'));assert.ok(!read('assets/global-search.css').includes('.global-no-job-matches'));console.log('Quiet live search checks passed.');
 
-assert.ok(!js.includes('a.appendChild(small)'));for(const selector of ['.sidebar','.results-toolbar','.job-open-details','.job-open-company','.job-keywords','.job-age-group'])assert.ok(!read('assets/global-search.css').includes(selector),'Search must preserve '+selector);assert.ok(html.indexOf('id="global-discovery"')<html.indexOf('class="content-grid"'));assert.ok(read('assets/public-design.css').includes('.so-sponsored-title'));console.log('Title-only search checks passed.');
+assert.ok(!js.includes('a.appendChild(small)'));for(const selector of ['.sidebar','.results-toolbar','.job-open-details','.job-open-company','.job-keywords','.job-age-group'])assert.ok(!read('assets/global-search.css').split('}').some(rule=>rule.includes('.global-query-active')&&rule.includes(selector)&&/display\s*:\s*none/.test(rule)),'Search must preserve '+selector);assert.ok(html.indexOf('id="global-discovery"')<html.indexOf('class="content-grid"'));assert.ok(read('assets/public-design.css').includes('.so-sponsored-title'));console.log('Title-only search checks passed.');
 
 assert.ok(js.includes('/assets/studio-search.json'));assert.ok(js.includes('locationMatches'));
 

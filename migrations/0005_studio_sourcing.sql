@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS studio_sourcing_decisions (studio_id TEXT PRIMARY KEY, mode TEXT NOT NULL CHECK(mode IN ('standard','directory-only','commercial-prospect','editorial-prospect')), reason TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 1, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);
