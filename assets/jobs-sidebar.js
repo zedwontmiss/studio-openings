@@ -5,7 +5,7 @@ function fire(el){var e=d.createEvent('Event');e.initEvent('change',true,false);
 function make(id){
  var select=d.getElementById(id);if(!select)return;
  var wrap=select.parentNode,label=wrap.querySelector('label'),details=d.createElement('details'),summary=d.createElement('summary'),heading=d.createElement('span'),value=d.createElement('span'),list=d.createElement('div');
- details.className='sidebar-choice';heading.textContent=label.textContent;summary.appendChild(heading);details.appendChild(summary);value.className='sidebar-current';details.appendChild(value);list.className='sidebar-options';details.appendChild(list);wrap.appendChild(details);
+ details.className='sidebar-choice';heading.textContent=label.textContent;summary.appendChild(heading);details.appendChild(summary);value.className='sidebar-current';list.className='sidebar-options';details.appendChild(list);wrap.appendChild(details);wrap.appendChild(value);
  var signature='',search=null;
  if(id==='region'){search=d.createElement('input');search.type='search';search.className='sidebar-country-search';search.placeholder='search country';search.setAttribute('aria-label','Search country or region');search.autocomplete='off';details.insertBefore(search,list);search.addEventListener('input',filter);search.addEventListener('keydown',function(e){if(e.key==='Enter'){var visible=Array.prototype.filter.call(list.children,function(b){return !b.hidden;});if(visible.length===1){e.preventDefault();visible[0].click();}}});details.addEventListener('toggle',function(){if(!details.open){search.value='';filter();}});}
  function filter(){var q=search?search.value.trim().toLowerCase():'';Array.prototype.forEach.call(list.children,function(b){b.hidden=b.textContent.toLowerCase().indexOf(q)<0;});}
