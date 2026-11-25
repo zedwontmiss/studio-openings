@@ -30,7 +30,12 @@ main.commercial-shell{max-width:900px;margin:0 auto;padding:34px 22px 62px}.comm
 .commercial-shell .commercial-bundle-heading h3{margin:0}
 .commercial-shell .commercial-bundle-heading .commercial-bundle-action{align-self:baseline;margin:0;flex:none}
 .commercial-shell .post-card{background:#fff}
-.commercial-shell .post-card:hover,.commercial-shell .post-card:focus-within{background:#fff4bf}
+.commercial-shell .post-card:not(.post-card-featured):hover,.commercial-shell .post-card:not(.post-card-featured):focus-within{background:#f2f2f2}
+.commercial-shell .post-card-featured:hover,.commercial-shell .post-card-featured:focus-within{background:#fff4bf}
+.commercial-shell .commercial-option:hover .so-sponsored-title,.commercial-shell .commercial-option:focus-within .so-sponsored-title{text-decoration:underline}
+.commercial-shell .commercial-bundle:hover,.commercial-shell .commercial-bundle:focus-within{background:#181818;color:#fff}
+.commercial-shell .commercial-bundle:hover p,.commercial-shell .commercial-bundle:focus-within p{color:#fff!important}
+.commercial-shell .commercial-bundle:hover .commercial-bundle-action,.commercial-shell .commercial-bundle:focus-within .commercial-bundle-action{background:#fff;color:#181818}
 @media(max-width:650px){
  .commercial-shell .commercial-options{display:block}
  .commercial-shell .commercial-option{display:block}
