@@ -152,3 +152,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Jobs design correction: retain original vertical left sidebar and results on right; expandable plus/minus text choices for country, arrangement, employment and sort. Preserve existing discipline groups, salary checkbox, saved/reset, automatic sorting. Studio horizontal category layout unchanged.
 
 - Jobs sidebar refinements: selected summary only when collapsed; country search on expansion, other filters options only. Keep Studio untouched. Repair extracted ranking regression harness to include effectiveSort.
+
+- Jobs sidebar focus uses underline, not rectangular outline. Feed recovery: bound individual fetches to four concurrent requests, 25-second per-request deadline starts at dispatch, preserve rendered rows until replacement fragment is ready. No additional sources, retry loops, schedules or quota increases authorized. Live source counts still need verification; no claim of full inventory recovery. Preserve Studio and production.

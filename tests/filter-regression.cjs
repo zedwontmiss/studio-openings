@@ -19,11 +19,11 @@ assert(src.includes('state.jobs.filter(function(job){return eligible(job);})'),
  'Do not pass eligible directly to Array.filter: callback index/array are not saved metadata');
 const compiled=[
  between('  var roleLabels = {','  var state ='),
- between('  var ROLE_TAG={','  function jobKeywords(job){'),
- between('  function jobKeywords(job){','  // One explicitly assigned colour'),
+ between('  var ROLE_TAG={','  function jobKeywords(job,allTags){'),
+ between('  function jobKeywords(job,allTags){','  // One explicitly assigned colour'),
  between('  function categoryFor(job) {','  function dateLabel(job)'),
  'function trim(v){return String(v||"").trim();}',
- between('  function usMatch(loc)','  function sortJobs(a,b)')
+ between('  function usMatch(loc)','  function effectiveSort()')
 ].join('\n');
 const make=new Function('state',compiled+'\nreturn {eligible,categoryFor,jobKeywords};');
 const jobs=[

@@ -12,7 +12,7 @@
 .sidebar-choice:not([open]) .sidebar-options{display:none}
 .sidebar-choice button{background:none;border:0;padding:5px 0;font:12px Helvetica,Arial,sans-serif;text-align:left;color:#111;cursor:pointer}
 .sidebar-choice button[aria-pressed=true]{text-decoration:underline;font-weight:bold}
-.sidebar-choice button:focus,.sidebar-choice summary:focus{outline:1px solid #111;outline-offset:2px}
+.sidebar-choice button:focus,.sidebar-choice summary:focus{outline:none;text-decoration:underline}.sidebar-choice button:focus:not(:focus-visible),.sidebar-choice summary:focus:not(:focus-visible){text-decoration:none}.sidebar-choice button[aria-pressed=true]{text-decoration:underline}
 .sidebar .filter-divider{height:1px;background:#ddd;margin:12px 0}
 .sidebar .filter-actions{justify-content:space-between}
 @media(max-width:730px){.sidebar .discipline-groups{display:block}.sidebar .sidebar-enhanced{margin:12px 0}}

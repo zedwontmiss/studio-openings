@@ -1073,8 +1073,8 @@
     feedControls();
     resultsSortLabel.hidden=state.onlySaved;if(window.SOAPPTypeFilters)window.SOAPPTypeFilters.refresh();
     if(state.onlySaved){renderSavedPanel();return;}
-    var root=$('job-list');root.textContent='';var fragment=document.createDocumentFragment();
-    list.slice(0,state.visible).forEach(function(job){fragment.appendChild(rowFor(job));});root.appendChild(fragment);
+    var root=$('job-list');var fragment=document.createDocumentFragment();
+    list.slice(0,state.visible).forEach(function(job){fragment.appendChild(rowFor(job));});root.textContent='';root.appendChild(fragment);
     feedControls();
   }
   function reset(){
@@ -1251,7 +1251,9 @@
   }
   function loadLive(){
     var urls=['/api/approved-jobs','/api/indexed-jobs','/api/firm-jobs','/api/editorial-jobs','/api/jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/ai-jobs?shard=7','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3','/api/direct-jobs?shard=0','/api/direct-jobs?shard=1','/api/direct-jobs?shard=2','/api/direct-jobs?shard=3','/api/direct-jobs?shard=4','/api/direct-jobs?shard=5','/api/direct-jobs?shard=6','/api/direct-jobs?shard=7','/api/direct-jobs?shard=8'];
-    var outcomes=new Array(urls.length),pending=urls.length,featuredReady=false;
+    var outcomes=new Array(urls.length),pending=urls.length,featuredReady=false,queue=[],running=0;
+    // Bound browser concurrency; queue time must not consume network timeout.
+    function pump(){while(running<4&&queue.length){var task=queue.shift();running++;task();}}
     // Rebuild in original source priority, not response arrival order.
     // A slow or failed source must not block the first available listings.
     function publish(final){
@@ -1287,7 +1289,7 @@
       if(featuredReady)publish(false);
     }
     loadFeaturedConfig().then(function(){featuredReady=true;schedule();},function(){featuredReady=true;schedule();});
-    function individual(url,i){fetchFeedJSON(url).then(function(value){outcomes[i]={value:value};},function(){outcomes[i]={};}).then(function(){pending--;schedule();});}
+    function individual(url,i){queue.push(function(){fetchFeedJSON(url,25000).then(function(value){outcomes[i]={value:value};},function(error){outcomes[i]={error:String(error)};}).then(function(){running--;pending--;try{schedule();}finally{pump();}});});pump();}
     var grouped={approved:0,indexed:1,editorial:3};
     // Snapshot pilot is opt-in and preview-only; normal live routes remain fallback.
     var snapshotIndexes={};
@@ -1298,7 +1300,7 @@
     }
     if(location.hostname==='development.studio-openings.pages.dev')fetchFeedJSON('/api/inventory-snapshots',1500).then(snapshotFallback,function(){snapshotFallback(null);});
     else snapshotFallback(null);
-    fetchFeedJSON('/api/public-inventory').then(function(data){
+    fetchFeedJSON('/api/public-inventory',12000).then(function(data){
       if(!data||data.version!==1||!Array.isArray(data.sources))throw Error('Invalid inventory');
       Object.keys(grouped).forEach(function(name){
         var i=grouped[name],source=data.sources.filter(function(s){return s.source===name;})[0];
