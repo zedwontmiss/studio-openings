@@ -92,3 +92,7 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 
 /* Compact city directory link replaces longer coverage CTA. */
 .so-utility-desktop>a:nth-child(1){width:3.2em}
+
+/* Scene is a primary destination; utility remains advertise and contact. */
+.so-primary a:nth-child(4){width:3.8em}.so-utility-desktop>a:nth-child(1){width:3.8em}
+@media(max-width:370px){.so-primary a:nth-child(4){width:3.2em}}

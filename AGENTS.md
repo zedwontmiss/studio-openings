@@ -120,3 +120,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Scene topic/reply/report composer and mandatory server-side Turnstile verification staged. Writes require isolated Preview, read/write flags, separate rate secret, Scene site key/secret. No automatic activation or migration. Preserve existing global Jobs search and scoped Studio/Article search.
 
 - Scene retention staged: operator-only dry-run and separately gated bounded purge, preserve published/pending records and unresolved reports; proposed 30-day rejected/removed, 90-day reviewed reports from creation, expired rate buckets. Never apply schema or enable flags without isolation and approval. No automatic deletion schedule.
+
+- Owner approved Scene as fourth global primary nav destination, replacing Cities utility. /scene gateway, /cities redirects; canonical geographic IDs and city paths unchanged. London/New York only pilot reads/writes; other local directories accessible. Retention durations approved by owner, legal/privacy and integration review still required. Editorial starters private drafts, never fake anonymous community posts.

@@ -7,7 +7,7 @@ import {ARTICLE_PATHS} from '../lib/editorial-routes.js';
 import {DISCIPLINE_SLUGS} from '../lib/discipline-pages.js';
 import {applyOutreachPolicy} from '../lib/outreach-policy.js';
 
-const pages = new Set(['/', '/privacy', '/coverage', '/cities', '/post-a-job', '/advertise', '/about', '/contact', '/terms', '/studio', '/article', ...ARTICLE_PATHS, ...STUDIO_PATHS, ...LOCAL_PATHS,
+const pages = new Set(['/', '/privacy', '/coverage', '/scene', '/scene-guidelines', '/post-a-job', '/advertise', '/about', '/contact', '/terms', '/studio', '/article', ...ARTICLE_PATHS, ...STUDIO_PATHS, ...LOCAL_PATHS,
   ...DISCIPLINE_SLUGS.map(slug => '/disciplines/' + slug)]);
 
 export async function onRequest(context) {
@@ -23,7 +23,7 @@ export async function onRequest(context) {
   const headers = new Headers(response.headers);
   const path = pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '');
   const publicPage = pages.has(path) || /^\/jobs\/SO-[A-Z0-9-]{6,45}$/i.test(path) || /^\/openings\/[a-z0-9-]{8,160}$/i.test(path);
-  if (path==='/cities' || LOCAL_PATHS.includes(path) || hostname !== 's-o.app' || response.status >= 400 || (!publicPage && !['/robots.txt','/sitemap.xml'].includes(path))) {
+  if ((path==='/scene'||path==='/scene-guidelines') || LOCAL_PATHS.includes(path) || hostname !== 's-o.app' || response.status >= 400 || (!publicPage && !['/robots.txt','/sitemap.xml'].includes(path))) {
     headers.set('X-Robots-Tag', 'noindex, nofollow');
   } else if (publicPage && response.status === 200) {
     headers.set('Link', '<https://s-o.app' + path + '>; rel="canonical"');

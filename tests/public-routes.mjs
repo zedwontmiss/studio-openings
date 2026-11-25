@@ -8,3 +8,5 @@ assert.equal(canonicalAlias('/index.html',paths),'/');
 assert.equal(publicLink('/contact.html?x=1#top'),'/contact?x=1#top');
 assert.equal(publicLink('https://example.org/contact.html'),'https://example.org/contact.html');
 console.log('Public route alias checks passed.');
+
+assert.equal(canonicalAlias('/cities',new Set()),'/scene');assert.equal(canonicalAlias('/cities.html',new Set()),'/scene');

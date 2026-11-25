@@ -1,8 +1,8 @@
-import {sceneEnabled,cityFor,sceneId,sceneText,sameOrigin,sceneReply,readSceneInput,consumeSceneRate,sceneWritesEnabled,verifySceneChallenge} from '../../lib/scene-core.js';
+import {sceneEnabled,cityFor,sceneId,sceneText,sameOrigin,sceneReply,readSceneInput,consumeSceneRate,sceneWritesEnabled,verifySceneChallenge,scenePilotCity} from '../../lib/scene-core.js';
 export async function onRequestGet(context){
  if(!sceneEnabled(context))return sceneReply({enabled:false},503);
  const p=new URL(context.request.url).searchParams,city=cityFor(p.get('city')),topic=p.get('topic'),sort=p.get('sort')==='popular'?'popular':'latest';
- if(!city||topic&&!sceneId(topic))return sceneReply({error:'Invalid city or topic'},400);
+ if(!city||!scenePilotCity(city.slug)||topic&&!sceneId(topic))return sceneReply({error:'Invalid city or topic'},400);
  try{
  const db=context.env.JOBS_DB;
  if(topic){
@@ -21,7 +21,7 @@ export async function onRequestPost(context){
  if(!sceneWritesEnabled(context))return sceneReply({error:'Posting unavailable'},503);
  if(!sameOrigin(context.request))return sceneReply({error:'Invalid origin'},403);
  const input=await readSceneInput(context.request),city=cityFor(input?.city),kind=input?.kind;
- if(!city||!['topic','reply','report'].includes(kind))return sceneReply({error:'Invalid submission'},400);
+ if(!city||!scenePilotCity(city.slug)||!['topic','reply','report'].includes(kind))return sceneReply({error:'Invalid submission'},400);
  const title=kind==='topic'?sceneText(input.title,8,160):null,body=kind==='topic'?sceneText(input.body,10,3000):kind==='reply'?sceneText(input.body,2,2000):null;
  if(kind==='topic'&&(!title||!body)||kind==='reply'&&!body||kind!=='topic'&&!sceneId(input.topicId))return sceneReply({error:'Invalid submission'},422);
  if(kind==='report'&&(!['spam','harassment','privacy','false_claim','other'].includes(input.reason)||input.replyId&&!sceneId(input.replyId)))return sceneReply({error:'Invalid report'},422);

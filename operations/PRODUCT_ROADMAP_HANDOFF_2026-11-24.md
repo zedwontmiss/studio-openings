@@ -69,3 +69,6 @@ Added gated topic/reply/report forms, lazy Turnstile challenge and mandatory ser
 
 ### Scene retention and activation readiness
 Added bounded retention dry-run/purge on isolated Preview D1, explicit operator confirmation and separate SCENE_RETENTION_ENABLED flag. Preserve published/pending content and dependencies; no cascade. Proposed retention periods require owner/legal review. Updated operator tab and activation checklist. No migrations, secrets, flags or schedules configured. JS syntax only checked; SQL/API integration pending. No production changes.
+
+### Scene brand and pilot scope
+Promoted Scene to fourth primary nav, /scene gateway, legacy /cities alias. London and New York allowlisted on both public read and write APIs and city server rendering; flags remain disabled. Draft community guidelines and private editorial starter prompts added, no fabricated posts or engagement. Retention owner-approved; privacy/security/isolated DB and browser checks pending. Production unchanged.

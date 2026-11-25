@@ -1,10 +1,10 @@
 import {findLocal,localPage} from '../lib/local-page.js';
-import {sceneEnabled,sceneId,sceneWritesEnabled} from '../lib/scene-core.js';
+import {sceneEnabled,sceneId,sceneWritesEnabled,scenePilotCity} from '../lib/scene-core.js';
 export async function onRequestGet(context){
  const city=findLocal(String(context.params?.city||''));
  if(!city)return context.next();
  let scene={enabled:false,topics:[]};
- if(sceneEnabled(context)){
+ if(sceneEnabled(context)&&scenePilotCity(city.slug)){
   try{
    const p=new URL(context.request.url).searchParams,db=context.env.JOBS_DB,topic=p.get('topic');
    if(topic&&sceneId(topic)){
