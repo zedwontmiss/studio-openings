@@ -19,16 +19,12 @@ export function renderRows(records){
   assert.equal(new URL(s.source.url).protocol,'https:');assert.match(s.source.reviewedOn,/^\d{4}-\d{2}-\d{2}$/);
   assert.equal(typeof s.employerVerified,'boolean');
  }
- return records.slice().sort((a,b)=>a.name.localeCompare(b.name,'en')).map(s=>'<li data-discipline="'+esc(s.disciplines.join(' '))+'" data-locations="'+esc(s.offices.map(locationKey).join(';'))+'"><a class="studio-profile-link" href="/studio/'+s.slug+'"><h2>'+esc(s.name)+'</h2><p hidden>'+esc(searchText(s))+'</p></a></li>').join('');
+ return records.slice().sort((a,b)=>a.name.localeCompare(b.name,'en')).map(s=>'<li data-discipline="'+esc(s.disciplines.join(' '))+'" data-locations="'+esc(s.offices.map(locationKey).join(';'))+'"><a class="studio-profile-link" href="/studio/'+s.slug+'"><h2>'+esc(s.name)+'</h2><p hidden data-aliases="'+esc(s.aliases.join(' '))+'">'+esc(searchText(s))+'</p></a></li>').join('');
 }
 const data=JSON.parse(read('studio-registry/published.json'));
 const html=read('studio.html'),pattern=/(<ul class="growth-list" id="studio-list">)[\s\S]*?(<\/ul>)/;
 assert.ok(pattern.test(html));
-const geography=Array.from(new Map(data.studios.flatMap(s=>s.offices).map(o=>[locationKey(o),o])).values()).sort((a,b)=>a.city.localeCompare(b.city,'en'));
-const availableCountries=Array.from(new Set(geography.map(o=>o.country))).sort((a,b)=>(countries[a]||a).localeCompare(countries[b]||b,'en'));
-const countryOptions='<option value="">Anywhere</option>'+availableCountries.map(c=>'<option value="'+esc(c)+'">'+esc(countries[c]||c)+'</option>').join('');
-const cityOptions='<option value="">All cities</option>'+geography.map(o=>'<option value="'+esc(locationKey(o))+'" data-country="'+esc(o.country)+'">'+esc(o.city+', '+(countries[o.country]||o.country))+'</option>').join('');
-const next=html.replace(pattern,(_,a,b)=>a+renderRows(data.studios)+b).replace(/(<select id="studio-country">)[\s\S]*?(<\/select>)/,(_,a,b)=>a+countryOptions+b).replace(/(<select id="studio-city">)[\s\S]*?(<\/select>)/,(_,a,b)=>a+cityOptions+b);
+const next=html.replace(pattern,(_,a,b)=>a+renderRows(data.studios)+b);
 const search=JSON.stringify(data.studios.slice().sort((a,b)=>a.name.localeCompare(b.name,'en')).map(s=>({path:'/studio/'+s.slug,title:s.name,text:searchText(s)})))+'\n';
 if(process.argv.includes('--check'))assert.equal(read('assets/studio-search.json'),search,'Studio search index out of sync');else writeFileSync(file('assets/studio-search.json'),search);
 if(process.argv.includes('--check'))assert.equal(html,next,'Studio index out of sync');else writeFileSync(file('studio.html'),next);

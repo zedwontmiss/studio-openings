@@ -144,3 +144,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Directory-only independent evidence review may publish studio profiles on development without D1 career-source approval; never treat this as authorization to ingest vacancies. Production promotion requires owner approval. Brand identity sprint last; restraint, no forced slogans.
 
 - Studio geographic filter: owner prefers Excel-like country, region, city autocomplete, case-insensitive prefix matching, comma/Enter completion, keyboard/touch support. Native country/city selects retained hidden as generated data and fallback. No invented geography. Scope Studio only for initial review.
+
+- Owner clarified OMA-inspired Studio: one existing large search for firm names, aliases, country, state/region or city; no location dropdown or second input. Category is sole filter, text-based collapsible + category. No changes to Jobs or Article search scope. Preview currently observed stale; verify Pages deployment before claiming live.

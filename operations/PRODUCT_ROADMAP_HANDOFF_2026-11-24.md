@@ -111,3 +111,6 @@ Four official-source reviewed London profiles included in development registry. 
 
 ### Studio location autocomplete
 Replaced visible country/city selects on Studio with one hierarchical text field, suggestions derived from actual directory locations. Existing discipline selector and main search preserved. Native fallback retained, existing generators compatible. Pure model fixtures and script syntax checked; browser/deployment not verified. No new inventory, production unchanged.
+
+### Unified Studio search / category-only filter
+Removed country/city controls and separate autocomplete. Main search matches firm name/alias and geographic prefixes independently; comma components must match one office. Category-only text disclosure replaces native select with progressive fallback. Generator updated. Selected model checks passed; live deployment and keyboard/browser tests pending. Owner screenshot showed old eight-studio build. Production unchanged.
