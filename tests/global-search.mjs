@@ -10,3 +10,5 @@ assert.ok(!js.includes('a.appendChild(small)'));for(const selector of ['.sidebar
 assert.ok(js.includes('/assets/studio-search.json'));assert.ok(js.includes('locationMatches'));
 
 for(const p of ['studio.html','article.html','editorial/index.template.html']){const s=read(p);assert.ok(!s.includes('id="job-list"'));assert.ok(!s.includes('assets/app.js'));assert.ok(!s.includes('id="global-discovery"'));}assert.ok(js.includes('if(!kind)sources.forEach'));assert.ok(!js.includes('secondaryAllowed'));assert.ok(!read('assets/app.js').includes('SOAPPGlobalSearch.update(state.query,false)'));
+
+const css=read('assets/global-search.css');assert.ok(css.includes('input#search:focus::placeholder{color:transparent;opacity:0}'));assert.ok(css.includes('width:2px;height:46px'));assert.ok(js.includes('document.activeElement===input&&!input.value&&!composing'));assert.ok(js.includes("'compositionstart'"));assert.ok(!js.includes('input.focus();'),'Resting placeholder must remain visible until intentional focus');

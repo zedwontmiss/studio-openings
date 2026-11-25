@@ -36,7 +36,15 @@ if(kind){
 }
 if(localSelect)localSelect.addEventListener('change',draw);
 if(country&&city){country.addEventListener('change',function(){city.value='';Array.prototype.forEach.call(city.options,function(o){o.hidden=!!(o.value&&country.value&&o.getAttribute('data-country')!==country.value);o.disabled=o.hidden;});draw();});city.addEventListener('change',draw);}
-// Use the native blinking caret. Avoid opening the mobile keyboard automatically
-// and do not steal focus from an incoming job deep link.
-if(root.matchMedia&&root.matchMedia('(min-width: 731px) and (pointer: fine)').matches&&!root.location.search&&!root.location.hash){input.focus();}
+// Preserve the resting placeholder until the user focuses the field.
+// A thicker decorative caret is used only while empty; native editing remains intact.
+var searchShell=input.parentNode,composing=false;
+function syncSearchCaret(){if(!searchShell||!searchShell.classList)return;searchShell.classList.toggle('so-empty-focus',document.activeElement===input&&!input.value&&!composing);}
+input.addEventListener('focus',syncSearchCaret);
+input.addEventListener('blur',syncSearchCaret);
+input.addEventListener('input',syncSearchCaret);
+input.addEventListener('compositionstart',function(){composing=true;syncSearchCaret();});
+input.addEventListener('compositionend',function(){composing=false;syncSearchCaret();});
+root.addEventListener('focus',syncSearchCaret);
+syncSearchCaret();
 })(window);

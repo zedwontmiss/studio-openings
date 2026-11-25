@@ -68,3 +68,13 @@ html{scroll-behavior:auto}
 /* Shared sponsored title marker; no line-height or row-height change. */
 .so-sponsored-marker{position:relative;top:-.72em;vertical-align:baseline;font-size:.45em;line-height:0;letter-spacing:0;margin-left:.2em;color:#c51620;font-weight:700;white-space:nowrap}
 .so-sponsored-title{color:#c51620!important}
+
+/* Hide the hint on focus; retain the native caret for nonempty text and IME. */
+.global-search input#search:focus::placeholder{color:transparent;opacity:0}
+.global-search input#search:focus::-webkit-input-placeholder{color:transparent}
+.global-search input#search:focus:-ms-input-placeholder{color:transparent}
+.global-search.so-empty-focus input#search:focus{caret-color:transparent}
+.global-search.so-empty-focus:after{content:'';position:absolute;left:0;top:18px;width:2px;height:46px;background:#111;pointer-events:none;animation:so-search-blink 1s step-end infinite}
+@keyframes so-search-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@media(max-width:730px){.global-search.so-empty-focus:after{top:14px;height:31px}}
+@media(prefers-reduced-motion:reduce){.global-search.so-empty-focus:after{animation:none}}
