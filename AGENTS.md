@@ -140,3 +140,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Studio expansion uses offline review staging with explicit evidence review, collision and outreach checks; no automatic publication. Vacancy city mappings never establish offices. Preserve firm-first coverage.
 
 - Owner prefers meaningful milestone batches over micro-updates and delegates routine engineering decisions. Target 100 verified studio records; use operations/studio-acquisition-backlog.json as discovery leads only, not public data. No guessed offices, active jobs or partnerships. Keep production untouched until explicit release approval.
+
+- Directory-only independent evidence review may publish studio profiles on development without D1 career-source approval; never treat this as authorization to ingest vacancies. Production promotion requires owner approval. Brand identity sprint last; restraint, no forced slogans.

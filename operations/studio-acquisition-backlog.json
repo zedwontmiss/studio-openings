@@ -2,7 +2,7 @@
   "version": 1,
   "status": "research-backlog-not-published",
   "note": "Names are discovery leads, not confirmed operating employers, offices, source approvals or active vacancies. Existing source URLs are copied from repository allowlists, not revalidated. Market hints and disciplines are search priorities only. Resolve identity/brand overlaps, including Layer/Benjamin Hubert, and verify official evidence before publication. No automated crawl or new D1 writes.",
-  "existingPublishedCount": 8,
+  "existingPublishedCount": 12,
   "candidates": [
     {
       "name": "Pentagram",
@@ -10,9 +10,9 @@
       "marketHint": "United Kingdom",
       "evidence": "https://www.pentagram.com/",
       "origin": "prior research batch 001",
-      "status": "research-required",
-      "officeVerified": false,
-      "careerVerified": false,
+      "status": "directory-reviewed",
+      "officeVerified": true,
+      "careerVerified": true,
       "activeVacanciesVerified": false
     },
     {
@@ -21,9 +21,9 @@
       "marketHint": "United Kingdom",
       "evidence": "https://ustwo.com/",
       "origin": "prior research batch 001",
-      "status": "research-required",
-      "officeVerified": false,
-      "careerVerified": false,
+      "status": "directory-reviewed",
+      "officeVerified": true,
+      "careerVerified": true,
       "activeVacanciesVerified": false
     },
     {
@@ -32,9 +32,9 @@
       "marketHint": "United Kingdom",
       "evidence": "https://www.designbridge.com/",
       "origin": "prior research batch 001",
-      "status": "research-required",
-      "officeVerified": false,
-      "careerVerified": false,
+      "status": "directory-reviewed",
+      "officeVerified": true,
+      "careerVerified": true,
       "activeVacanciesVerified": false
     },
     {
@@ -43,9 +43,9 @@
       "marketHint": "United Kingdom",
       "evidence": "https://www.adjaye.com/",
       "origin": "prior research batch 001",
-      "status": "research-required",
-      "officeVerified": false,
-      "careerVerified": false,
+      "status": "directory-reviewed",
+      "officeVerified": true,
+      "careerVerified": true,
       "activeVacanciesVerified": false
     },
     {

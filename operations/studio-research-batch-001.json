@@ -1,7 +1,7 @@
 {
-  "status": "research-staged-not-published",
+  "status": "included-in-development-directory",
   "reviewedOn": "2026-11-25",
-  "note": "Official career and London office evidence rechecked 2026-11-25. Independent directory research only; D1 source approval and active vacancy status not confirmed.",
+  "note": "Official identity, London location and careers pages reviewed. Directory listing only; D1 recruitment source approval and active vacancies not confirmed.",
   "records": [
     {
       "identityEvidence": "https://www.pentagram.com/",
@@ -29,7 +29,7 @@
         "source": {
           "url": "https://www.pentagram.com/careers",
           "reviewedOn": "2026-11-25",
-          "reviewStatus": "research-pending-operator-approval"
+          "reviewStatus": "independently-reviewed-directory-source"
         },
         "employerVerified": false,
         "overview": "Independent design consultancy working across visual identity, publications and digital experiences.",
@@ -63,7 +63,7 @@
         "source": {
           "url": "https://ustwo.com/join-us/",
           "reviewedOn": "2026-11-25",
-          "reviewStatus": "research-pending-operator-approval"
+          "reviewStatus": "independently-reviewed-directory-source"
         },
         "employerVerified": false,
         "overview": "Digital product studio working across experience design and software development.",
@@ -97,7 +97,7 @@
         "source": {
           "url": "https://www.designbridge.com/join",
           "reviewedOn": "2026-11-25",
-          "reviewStatus": "research-pending-operator-approval"
+          "reviewStatus": "independently-reviewed-directory-source"
         },
         "employerVerified": false,
         "overview": "Brand design agency working across identity and creative communications.",
@@ -107,7 +107,7 @@
     },
     {
       "identityEvidence": "https://www.adjaye.com/who-we-are/",
-      "careerURL": "https://www.adjaye.com/contact/careers-2/",
+      "careerURL": "https://www.adjaye.com/contact/careers-london/",
       "record": {
         "id": "adjaye-associates",
         "slug": "adjaye-associates",
@@ -129,9 +129,9 @@
           }
         ],
         "source": {
-          "url": "https://www.adjaye.com/contact/careers-2/",
+          "url": "https://www.adjaye.com/contact/careers-london/",
           "reviewedOn": "2026-11-25",
-          "reviewStatus": "research-pending-operator-approval"
+          "reviewStatus": "independently-reviewed-directory-source"
         },
         "employerVerified": false,
         "overview": "Architecture practice working across cultural, civic and residential projects.",

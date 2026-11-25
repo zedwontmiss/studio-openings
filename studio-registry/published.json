@@ -314,6 +314,126 @@
       "overview": "A museum dedicated to American art and exhibitions.",
       "jobQuery": "Whitney",
       "website": "https://whitney.org/"
+    },
+    {
+      "id": "pentagram",
+      "slug": "pentagram",
+      "name": "Pentagram",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Brand and graphic design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.pentagram.com/contact",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://www.pentagram.com/careers",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent design consultancy working across visual identity, publications and digital experiences.",
+      "jobQuery": "Pentagram",
+      "website": "https://www.pentagram.com/"
+    },
+    {
+      "id": "ustwo",
+      "slug": "ustwo",
+      "name": "ustwo",
+      "disciplines": [
+        "product"
+      ],
+      "summary": "Digital product design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://ustwo.com/contact-us/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://ustwo.com/join-us/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Digital product studio working across experience design and software development.",
+      "jobQuery": "ustwo",
+      "website": "https://ustwo.com/"
+    },
+    {
+      "id": "design-bridge-and-partners",
+      "slug": "design-bridge-and-partners",
+      "name": "Design Bridge and Partners",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Brand design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.designbridge.com/about",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://www.designbridge.com/join",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Brand design agency working across identity and creative communications.",
+      "jobQuery": "Design Bridge and Partners",
+      "website": "https://www.designbridge.com/"
+    },
+    {
+      "id": "adjaye-associates",
+      "slug": "adjaye-associates",
+      "name": "Adjaye Associates",
+      "disciplines": [
+        "architecture"
+      ],
+      "summary": "Architecture",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.adjaye.com/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://www.adjaye.com/contact/careers-london/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Architecture practice working across cultural, civic and residential projects.",
+      "jobQuery": "Adjaye Associates",
+      "website": "https://www.adjaye.com/"
     }
   ]
 }

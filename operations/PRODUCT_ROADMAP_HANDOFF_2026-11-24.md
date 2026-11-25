@@ -105,3 +105,6 @@ Rechecked four batch-001 official career and London location sources, corrected 
 
 ### Studio acquisition milestone backlog
 Prepared 148 distinct-name research leads across multiple disciplines and markets, including existing feed allowlists and prior research batches. No new verified records or vacancy claims. Existing registry 8. Owner prefers larger milestone batches. D1 approval and evidence verification remain blockers; do not treat candidate count as published inventory.
+
+### Directory publication milestone — first verified additions
+Four official-source reviewed London profiles included in development registry. Generated geography, index, search, routes, profiles and sitemap; generator consistency checks executed with simulated filesystem/URL adapter. D1 source approval is separate from independent directory publication; no vacancy or employer partnership claims. Remaining inventory target and runtime testing open. Brand pages last, restrained editorial direction. Production unchanged.
