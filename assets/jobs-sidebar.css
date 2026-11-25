@@ -18,3 +18,7 @@
 @media(max-width:730px){.sidebar .discipline-groups{display:block}.sidebar .sidebar-enhanced{margin:12px 0}}
 
 .sidebar .sidebar-choice[open] .sidebar-current{display:none}.sidebar-country-search{width:100%;box-sizing:border-box;margin:6px 0 0;border:0;border-bottom:1px solid #aaa;border-radius:0;background:transparent;color:#111;font:13px Helvetica,Arial,sans-serif;padding:4px 0;-webkit-appearance:none}.sidebar-country-search::placeholder{color:#777}.sidebar-choice:not([open]) .sidebar-country-search,.sidebar-options button[hidden]{display:none!important}.sidebar-country-search:focus{outline:0;border-color:#111}
+
+/* Show only explicit, non-default selections below collapsed headings. */
+.sidebar .sidebar-choice .sidebar-current[hidden],.sidebar .sidebar-choice[open] .sidebar-current{display:none!important}
+.sidebar .sidebar-choice:not([open]) .sidebar-current:not([hidden]){display:block;padding-left:9px}
