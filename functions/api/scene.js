@@ -22,7 +22,7 @@ export async function onRequestPost(context){
  if(!sameOrigin(context.request))return sceneReply({error:'Invalid origin'},403);
  const input=await readSceneInput(context.request),city=cityFor(input?.city),kind=input?.kind;
  if(!city||!scenePilotCity(city.slug)||!['topic','reply','report'].includes(kind))return sceneReply({error:'Invalid submission'},400);
- const title=kind==='topic'?sceneText(input.title,8,160):null,body=kind==='topic'?sceneText(input.body,10,3000):kind==='reply'?sceneText(input.body,2,2000):null;
+ const title=kind==='topic'?sceneText(input.title,10,160):null,body=kind==='topic'?(typeof input.body==='string'&&!input.body.trim()&&title?title:sceneText(input.body,10,3000)):kind==='reply'?sceneText(input.body,2,2000):null;
  if(kind==='topic'&&(!title||!body)||kind==='reply'&&!body||kind!=='topic'&&!sceneId(input.topicId))return sceneReply({error:'Invalid submission'},422);
  if(kind==='report'&&(!['spam','harassment','privacy','false_claim','other'].includes(input.reason)||input.replyId&&!sceneId(input.replyId)))return sceneReply({error:'Invalid report'},422);
  if(!await verifySceneChallenge(context,input.challenge,kind))return sceneReply({error:'Please complete the verification again'},403);

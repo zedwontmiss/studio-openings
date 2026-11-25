@@ -75,3 +75,6 @@ Promoted Scene to fourth primary nav, /scene gateway, legacy /cities alias. Lond
 
 ### Section masthead
 Owner requested studio openings / jobs, studio, article, scene and existing city names. Brand links About, S/O links Contact; remove standalone contact/more from shared header. Updated static pages, generated templates and profiles, dynamic public header helper and Local header. Existing About content retained pending credo copy approval. Full browser and regression tests pending. Production unchanged.
+
+### Scene community-led activation
+Owner rejected polls and requested simple noticeboard; topic details optional, title-only posts supported within existing schema constraints. Added contributor interest page using current email and outreach playbook, refined criticism/meetup rules. No actual outreach, records, credentials or flags changed. Data consolidation remains next sprint. Full tests pending.
