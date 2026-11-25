@@ -4,7 +4,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert');
 const root=path.join(__dirname,'..');
 const app=fs.readFileSync(path.join(root,'assets/app.js'),'utf8');
 const start=app.indexOf('  function directionTagProfile(job){');
-const end=app.indexOf('  function jobKeywords(job){',start);
+const end=app.indexOf('  function jobKeywords(job,allTags){',start);
 assert(start>=0&&end>start,'Leadership taxonomy source must exist');
 const make=new Function(app.slice(start,end)+'\nreturn directionTagProfile;');
 const profile=make();
@@ -29,7 +29,7 @@ assert.strictEqual(profile({title:'Creative Director',description:''}).searchabl
 assert(app.includes('searchTag(shortTagLabel(word))'), 'Clickable tags use visible global search');
 assert(app.includes(')?verifiedTags:jobSearchTags(job);'), 'Keyword filters use searchable role terms');
 assert(app.includes('if(direction)return direction.visible;'), 'UI displays three canonical badges');
-assert(app.includes('return tags.slice(0,3);'), 'Other roles retain existing max-three badge policy');
+assert(app.includes('return allTags?tags:tags.slice(0,3);'), 'Other roles retain existing max-three badge policy');
 const backend=fs.readFileSync(path.join(root,'functions/api/jobs.js'),'utf8');
 assert(backend.includes('const leadership=directionTags(title,description,role);if(leadership)return leadership;'));
 const ai=fs.readFileSync(path.join(root,'functions/api/ai-jobs.js'),'utf8');
