@@ -176,3 +176,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Employer relationships workspace uses authenticated isolated Preview D1, stable published studio IDs, manual activity history and opt-out tracking. No automated email, contact harvesting, personal data collection or changes to sourcing policy. Initialization requires owner confirmation. Existing outreach holds remain unchanged.
 
 - Selective sourcing decisions are staged in isolated Preview D1. Reviewed export compiles only on development into the shared outreach policy; fixed Koto/Runway/Linear holds are immutable here. Directory profiles and employer-paid feed are unaffected. Standard means eligible under existing rules, not automatic approval. Do not commit private rationale exports. No rules activated by this implementation commit.
+
+- Independent editorial workspace: isolated Preview D1, draft/review/export; private contributor and source notes excluded from public artifacts. Sponsored records rejected. Compiler validates additions on clean development branch; no live publishing, new author accounts or automatic messages. Existing article presentation unchanged.
