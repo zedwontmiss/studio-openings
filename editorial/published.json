@@ -1,5 +1,5 @@
 {
-  "featured": "remote-design-jobs-eligibility",
+  "featured": "new-york-creative-studios",
   "articles": [
     {
       "slug": "creative-job-search-checklist",
@@ -282,6 +282,214 @@
         }
       ],
       "cityIds": []
+    },
+    {
+      "slug": "london-creative-studios",
+      "title": "London: where design studios meet cultural institutions",
+      "description": "A selective starting point for finding brand, digital design, architecture, motion and exhibition employers in London.",
+      "category": "Studio",
+      "date": "2026-11-25",
+      "status": "published",
+      "cityIds": [
+        "gb--england--london"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A creative career in London does not have to follow a single discipline. Our directory brings together independent design practices, international production teams and cultural institutions. This is a curated starting point, not a ranking or a comprehensive map of London's creative economy."
+        },
+        {
+          "type": "heading",
+          "text": "Brand and visual identity"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pentagram, DixonBaxi, Ragged Edge, Further and Design Bridge and Partners offer different starting points for exploring brand and visual design. Examine their published projects and look for the balance between strategy, identity systems and production. A portfolio for a branding role should make the underlying design decisions as clear as the finished work."
+        },
+        {
+          "type": "heading",
+          "text": "Digital products and moving images"
+        },
+        {
+          "type": "paragraph",
+          "text": "ustwo is a digital product design entry in our directory; Framestore represents motion and visual effects. These fields often ask for different evidence: product designers can explain interactions and constraints, while motion applicants can show timing, storytelling and their contribution to a reel."
+        },
+        {
+          "type": "heading",
+          "text": "Architecture and exhibition work"
+        },
+        {
+          "type": "paragraph",
+          "text": "Adjaye Associates represents architecture in this selection. Tate, the Victoria and Albert Museum and the Design Museum provide another route into creative work through cultural institutions. Look beyond job titles such as designer: exhibition production, interpretation, digital experiences and technical coordination may also be relevant."
+        },
+        {
+          "type": "heading",
+          "text": "How to use this guide"
+        },
+        {
+          "type": "paragraph",
+          "text": "This selection is based on the London location records in the Studio Openings directory as of 25 November 2026. Follow each profile to its official website or career source. An entry does not establish a current vacancy, a partnership, a salary level or the size of its London office. Check the employer directly before applying."
+        },
+        {
+          "type": "heading",
+          "text": "Explore the studios"
+        },
+        {
+          "type": "links",
+          "links": [
+            {
+              "label": "Pentagram",
+              "path": "/studio/pentagram"
+            },
+            {
+              "label": "DixonBaxi",
+              "path": "/studio/dixonbaxi"
+            },
+            {
+              "label": "Ragged Edge",
+              "path": "/studio/ragged-edge"
+            },
+            {
+              "label": "Further",
+              "path": "/studio/further"
+            },
+            {
+              "label": "Design Bridge and Partners",
+              "path": "/studio/design-bridge-and-partners"
+            },
+            {
+              "label": "ustwo",
+              "path": "/studio/ustwo"
+            },
+            {
+              "label": "Framestore",
+              "path": "/studio/framestore"
+            },
+            {
+              "label": "Adjaye Associates",
+              "path": "/studio/adjaye-associates"
+            },
+            {
+              "label": "Tate",
+              "path": "/studio/tate"
+            },
+            {
+              "label": "Victoria and Albert Museum",
+              "path": "/studio/victoria-and-albert-museum"
+            },
+            {
+              "label": "Design Museum",
+              "path": "/studio/design-museum"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "path": "/studio",
+          "label": "Explore the full Studio directory"
+        },
+        {
+          "path": "/",
+          "label": "Browse current creative openings"
+        }
+      ]
+    },
+    {
+      "slug": "new-york-creative-studios",
+      "title": "New York: creative work beyond the design agency",
+      "description": "Explore architecture, brand design, image production, visual effects and cultural institutions through a selective New York studio guide.",
+      "category": "Studio",
+      "date": "2026-11-25",
+      "status": "published",
+      "cityIds": [
+        "us--new-york--new-york"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A design job search in New York can extend beyond conventional studios. The city records in our directory include architecture, brand design, production and cultural employers. Use this selection to broaden an employer shortlist rather than as a claim about the entire local job market."
+        },
+        {
+          "type": "heading",
+          "text": "Architecture and visual identity"
+        },
+        {
+          "type": "paragraph",
+          "text": "SHoP Architects is an architecture entry, while Further is listed for brand and design. Compare the work shown on their official sites before choosing portfolio examples. Technical project delivery and visual identity require different forms of evidence, even when both involve complex collaboration."
+        },
+        {
+          "type": "heading",
+          "text": "Image production and visual effects"
+        },
+        {
+          "type": "paragraph",
+          "text": "Industrial Color and Framestore are starting points for exploring image production and motion or VFX. Examine role descriptions for the distinction between creative direction, production coordination, technical execution and specialist craft. Do not infer responsibilities from a company name alone."
+        },
+        {
+          "type": "heading",
+          "text": "Museums and galleries"
+        },
+        {
+          "type": "paragraph",
+          "text": "Gagosian, MoMA PS1 and the Whitney Museum are listed under arts, culture or museum-related work. Creative opportunities in institutions can involve exhibitions, production and image-related responsibilities as well as conventional design. The specific vacancy, not the directory category, determines the actual requirements."
+        },
+        {
+          "type": "heading",
+          "text": "A practical shortlist"
+        },
+        {
+          "type": "paragraph",
+          "text": "Select employers whose work matches your skills, then check their original recruitment channels. This guide uses the seven New York directory entries recorded on 25 November 2026. It is not a representative employment survey, a list of currently hiring organizations or a recommendation to relocate. Verify location, eligibility and compensation with each employer."
+        },
+        {
+          "type": "heading",
+          "text": "Explore the studios"
+        },
+        {
+          "type": "links",
+          "links": [
+            {
+              "label": "SHoP Architects",
+              "path": "/studio/shop-architects"
+            },
+            {
+              "label": "Further",
+              "path": "/studio/further"
+            },
+            {
+              "label": "Industrial Color",
+              "path": "/studio/industrial-color"
+            },
+            {
+              "label": "Framestore",
+              "path": "/studio/framestore"
+            },
+            {
+              "label": "Gagosian",
+              "path": "/studio/gagosian"
+            },
+            {
+              "label": "MoMA PS1",
+              "path": "/studio/moma-ps1"
+            },
+            {
+              "label": "Whitney Museum of American Art",
+              "path": "/studio/whitney-museum"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "path": "/studio",
+          "label": "Explore the full Studio directory"
+        },
+        {
+          "path": "/",
+          "label": "Browse current creative openings"
+        }
+      ]
     }
   ]
 }
