@@ -19,9 +19,17 @@ jobs:
         run: |
           set -euo pipefail
           while IFS= read -r -d '' file; do
-            node --input-type=module --check < "$file"
+            node --input-type=module --check < "$file" || { echo "::error file=$file::JavaScript syntax check failed"; exit 1; }
           done < <(find assets functions lib worker -type f -name '*.js' -print0 2>/dev/null || true)
       - name: Run all regression and integration suites
         run: |
           set -euo pipefail
-          for suite in tests/*.cjs tests/*.mjs; do node "$suite"; done
+          failed=0
+          for suite in tests/*.cjs tests/*.mjs; do
+            echo "Running $suite"
+            if ! node "$suite"; then
+              echo "::error file=$suite::Regression suite failed"
+              failed=1
+            fi
+          done
+          exit "$failed"
