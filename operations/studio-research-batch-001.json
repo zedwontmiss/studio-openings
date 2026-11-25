@@ -1,7 +1,7 @@
 {
   "status": "research-staged-not-published",
   "reviewedOn": "2026-11-25",
-  "note": "Official public pages reviewed via search results; not an export from approved D1 sources. London office evidence only; additional offices and active vacancies not asserted. Requires operator source approval, conflict check and publication review.",
+  "note": "Official career and London office evidence rechecked 2026-11-25. Independent directory research only; D1 source approval and active vacancy status not confirmed.",
   "records": [
     {
       "identityEvidence": "https://www.pentagram.com/",
@@ -20,7 +20,7 @@
             "country": "GB",
             "region": "England",
             "city": "London",
-            "sourceUrl": "https://www.pentagram.com/",
+            "sourceUrl": "https://www.pentagram.com/contact",
             "reviewedOn": "2026-11-25",
             "kind": "office",
             "cityId": "gb--england--london"
@@ -88,7 +88,7 @@
             "country": "GB",
             "region": "England",
             "city": "London",
-            "sourceUrl": "https://www.designbridge.com/news/design-bridge-and-partners-strengthens-leadership-team",
+            "sourceUrl": "https://www.designbridge.com/about",
             "reviewedOn": "2026-11-25",
             "kind": "office",
             "cityId": "gb--england--london"

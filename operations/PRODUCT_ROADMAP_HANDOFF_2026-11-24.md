@@ -99,3 +99,6 @@ Current branch already contained candidate discovery; added offline validation/s
 
 ### Studio acquisition batch 001
 Four researched London practices staged in operations/studio-research-batch-001.json with official evidence. No D1 source approval, active vacancy confirmation or publication. Existing registry unchanged. Next: reconcile operator sources and approve generation; expand disciplines and geographies.
+
+### Studio research reconciliation
+Rechecked four batch-001 official career and London location sources, corrected two evidence URLs, checked names against published registry. Staged two additional leads Industrial Facility and Artefact, with explicit career/office evidence gaps. No D1 access, no source approval, no new publication or vacancy claims. Next: actual registry generation once source approval is reconciled; prioritize geographic diversification. No production changes.

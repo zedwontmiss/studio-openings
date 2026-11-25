@@ -1,0 +1,27 @@
+{
+  "status": "research-staged-not-published",
+  "reviewedOn": "2026-11-25",
+  "records": [
+    {
+      "name": "Industrial Facility",
+      "discipline": "industrial",
+      "website": "https://www.industrialfacility.co.uk/",
+      "identityEvidence": "https://www.industrialfacility.co.uk/about-us",
+      "officeEvidence": "https://www.industrialfacility.co.uk/contact",
+      "city": "London",
+      "country": "GB",
+      "careerStatus": "unverified-current-career-source",
+      "note": "Official studio and address confirmed; dated 2025 recruitment PDF is not evidence of current vacancy."
+    },
+    {
+      "name": "Artefact",
+      "discipline": "product",
+      "website": "https://www.artefactgroup.com/",
+      "careerURL": "https://www.artefactgroup.com/careers/",
+      "identityEvidence": "https://www.artefactgroup.com/careers/",
+      "officeStatus": "needs-independent-office-confirmation",
+      "note": "Official design agency careers page confirmed; do not infer Seattle office from historical knowledge."
+    }
+  ],
+  "note": "Research leads only. Not publication records; office and career evidence gaps deliberately retained."
+}
