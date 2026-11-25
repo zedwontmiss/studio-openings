@@ -168,3 +168,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Directory expanded from 19 to 27 records using official location/career sources; no live vacancy claim, sponsorship or ingestion approval. Preserve existing UI and current pilot city scope.
 
 - Studio-first operational strategy: directory membership separate from vacancy ingestion. Operator Studios workspace supports research and browser-local draft edits/export/import; not a live publishing system. Draft relationship and sourcing intentions have no side effects. No outreach or production merge.
+
+- Persistent studio drafts: isolated Preview D1 only, explicit initialization, authenticated same-origin writes, revision conflict protection, evidence staging. Public registry remains generated/static; reviewed draft export is not publication. No schema activation by commit alone.
