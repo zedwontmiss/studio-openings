@@ -14,9 +14,9 @@ function part(start,end){
 }
 const premiumBlock=part('  var featuredById=Object.create(null);','  function loadFeaturedConfig(){');
 function createEngine(sort){
- const state={sort:sort||'relevant'};
+ const state={sort:sort||'relevant',query:'designer'};
  const sortJobs=(a,b)=>a.title.localeCompare(b.title);
- return new Function('state','sortJobs',premiumBlock+'\nreturn {rankedFeed,isFeatured,setFeaturedConfig};')(state,sortJobs);
+ return new Function('state','sortJobs',part('  function effectiveSort(){','  function relevanceScore(job){')+premiumBlock+'\nreturn {rankedFeed,isFeatured,setFeaturedConfig};')(state,sortJobs);
 }
 const day=(delta)=>new Date(Date.now()+delta*86400000).toISOString().slice(0,10);
 const active={startsOn:day(-3),endsOn:day(25),approved:true};

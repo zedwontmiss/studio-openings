@@ -16,3 +16,5 @@
 .sidebar .filter-divider{height:1px;background:#ddd;margin:12px 0}
 .sidebar .filter-actions{justify-content:space-between}
 @media(max-width:730px){.sidebar .discipline-groups{display:block}.sidebar .sidebar-enhanced{margin:12px 0}}
+
+.sidebar .sidebar-choice[open] .sidebar-current{display:none}.sidebar-country-search{width:100%;box-sizing:border-box;margin:6px 0 0;border:0;border-bottom:1px solid #aaa;border-radius:0;background:transparent;color:#111;font:13px Helvetica,Arial,sans-serif;padding:4px 0;-webkit-appearance:none}.sidebar-country-search::placeholder{color:#777}.sidebar-choice:not([open]) .sidebar-country-search,.sidebar-options button[hidden]{display:none!important}.sidebar-country-search:focus{outline:0;border-color:#111}
