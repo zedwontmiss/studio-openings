@@ -55,14 +55,18 @@ async function scan(db,source,fetcher,lease,token){
  const proof=[lease,token,source.id];
  const statements=jobs.map(j=>db.prepare("INSERT INTO source_job_snapshots(id,source_id,job_json,state,scan_token,last_seen_at,miss_count) SELECT ?,?,?,'active',?,CURRENT_TIMESTAMP,0 WHERE "+guard+" ON CONFLICT(id) DO UPDATE SET job_json=excluded.job_json,state='active',scan_token=excluded.scan_token,last_seen_at=CURRENT_TIMESTAMP,miss_count=0").bind(j.id,source.id,JSON.stringify(j),token,...proof));
  const complete=scan.complete&&jobs.length<100;
- if(complete)statements.push(db.prepare("UPDATE source_job_snapshots SET miss_count=miss_count+1,state=CASE WHEN miss_count>=1 THEN 'retired' ELSE state END WHERE source_id=? AND state='active' AND scan_token<>? AND "+guard).bind(source.id,token,...proof));
+ // A job present upstream but temporarily failing normalization is not proof of closure.
+ const present=new Set((scan.presentUIDs||rows.map(r=>r.uid)).map(uid=>String(uid).toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,60)).filter(uid=>uid.length>=4));
+ const existing=complete?await db.prepare("SELECT id FROM source_job_snapshots WHERE source_id=? AND state='active'").bind(source.id).all():{results:[]};
+ const missing=complete?(existing.results||[]).filter(r=>r.id.startsWith('registry-'+source.id+'-')&&!present.has(r.id.slice(('registry-'+source.id+'-').length))):[];
+ for(const row of missing)statements.push(db.prepare("UPDATE source_job_snapshots SET miss_count=miss_count+1,state=CASE WHEN miss_count>=1 THEN 'retired' ELSE state END WHERE id=? AND source_id=? AND state='active' AND scan_token<>? AND "+guard).bind(row.id,source.id,token,...proof));
  if(statements.length)await db.batch(statements);
- await health(db,source.id,'ok',rows.length,jobs.length);
+ await health(db,source.id,complete?'ok':'partial',rows.length,jobs.length);
  return {ok:true,source:source.employer_name,atsJobs:rows.length,indexed:jobs.length,verifiedLocations:lookup.size,retirement:complete?'double-confirmed':'skipped'};
 }
 export async function onRequestPost({request,env}){
  if(!env?.JOBS_DB)return respond({ok:false,error:'Preview D1 is not bound.'},503);
- if(!preview(request))return respond({ok:false,error:'Preview sync only.'},403);
+ if(!preview(request)||env.PREVIEW_D1_ISOLATED!=='true')return respond({ok:false,error:'Isolated Preview sync only.'},403);
  if(!auth(request,env))return respond({ok:false,error:'Unauthorized.'},401);
  // Manual operator sync is available after Preview bootstrap. Scheduled workers
  // require separate explicit activation and may not bypass the operator workflow.

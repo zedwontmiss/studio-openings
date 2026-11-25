@@ -921,6 +921,7 @@
     $('job-drawer').scrollTop=0;
     markJobViewed(job.id);
   }
+  var deferredFeedRender=false;
   function closeDrawer(fromUrl){
     closeShareMenu();
     if(!fromUrl)updateJobUrl(null,'replace');
@@ -932,6 +933,7 @@
     activeJob=null;
     if(lastOpener&&document.contains(lastOpener))lastOpener.focus();
     lastOpener=null;
+    if(deferredFeedRender){deferredFeedRender=false;render();}
   }
   function detailPath(job){
     var path=String(job&&job.detailUrl||'');
@@ -1240,9 +1242,10 @@
     syncJobFromUrl();
   }
   function vacancyLinkKey(job){
-    if(!job.url)return '';
+    if(!job||!job.url)return '';
     try{
       var link=new URL(job.url);
+      if(link.protocol!=='https:'||link.username||link.password)return '';
       link.hash='';
       var keys=[];link.searchParams.forEach(function(_,k){if(/^utm_|^gh_src$/i.test(k))keys.push(k);});
       keys.forEach(function(k){link.searchParams.delete(k);});
@@ -1250,7 +1253,7 @@
       if(/^(?:job-boards\.greenhouse\.io|jobs\.(?:eu\.)?lever\.co|jobs\.ashbyhq\.com)$/.test(link.hostname) && link.pathname.split('/').filter(Boolean).length>=2){
         return link.origin+link.pathname.replace(/\/apply\/?$|\/$/,'');
       }
-      return link.href+'|'+trim(job.title).toLowerCase()+'|'+trim(job.location).toLowerCase();
+      return link.href+'|'+String(job.title||'').trim().toLowerCase()+'|'+String(job.location||'').trim().toLowerCase();
     }catch(e){return '';}
   }
   function fetchFeedJSON(url,timeout){
@@ -1263,7 +1266,7 @@
   }
   function loadLive(){
     var urls=['/api/approved-jobs','/api/indexed-jobs','/api/firm-jobs','/api/editorial-jobs','/api/jobs','/api/source-jobs','/api/ai-jobs?shard=0','/api/ai-jobs?shard=1','/api/ai-jobs?shard=2','/api/ai-jobs?shard=3','/api/ai-jobs?shard=4','/api/ai-jobs?shard=5','/api/ai-jobs?shard=6','/api/ai-jobs?shard=7','/api/source-jobs?shard=1','/api/source-jobs?shard=2','/api/source-jobs?shard=3','/api/direct-jobs?shard=0','/api/direct-jobs?shard=1','/api/direct-jobs?shard=2','/api/direct-jobs?shard=3','/api/direct-jobs?shard=4','/api/direct-jobs?shard=5','/api/direct-jobs?shard=6','/api/direct-jobs?shard=7','/api/direct-jobs?shard=8'];
-    var outcomes=new Array(urls.length),pending=urls.length,featuredReady=false,refreshPending=false;
+    var outcomes=new Array(urls.length),pending=urls.length,featuredReady=false;
     // Rebuild in original source priority, not response arrival order.
     // A slow or failed source must not block the first available listings.
     function publish(final){
@@ -1290,8 +1293,8 @@
         if((partial||!success)&&window.console&&console.warn)console.warn('SOAPP feed status',{successful:success,total:urls.length,latest:latest});
       }
       // Passive updates must not dismiss an open vacancy or change its scroll.
-      if(!$('job-drawer').hidden){refreshPending=true;return;}
-      refreshPending=false;render();
+      if(!$('job-drawer').hidden){deferredFeedRender=true;return;}
+      deferredFeedRender=false;render();
       if(final||!jobIdFromUrl())syncJobFromUrl();
     }
     function schedule(){
