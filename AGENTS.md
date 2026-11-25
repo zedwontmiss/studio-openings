@@ -172,3 +172,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Persistent studio drafts: isolated Preview D1 only, explicit initialization, authenticated same-origin writes, revision conflict protection, evidence staging. Public registry remains generated/static; reviewed draft export is not publication. No schema activation by commit alone.
 
 - Reviewed studio publication batches can be exported from authenticated Preview workspace. Use operations/publish-studio-batch.mjs in clean development worktree, dry-run first, explicit --apply regenerates index/profiles/routes/search/sitemap/workspace. Independently verify evidence and test before committing. No automatic production publish or job ingestion. Do not commit private draft exports.
+
+- Employer relationships workspace uses authenticated isolated Preview D1, stable published studio IDs, manual activity history and opt-out tracking. No automated email, contact harvesting, personal data collection or changes to sourcing policy. Initialization requires owner confirmation. Existing outreach holds remain unchanged.

@@ -41,3 +41,5 @@ main{max-width:1140px;margin:0 auto;padding:30px 30px 60px}.pagehead{display:fle
 @media(max-width:680px){.source-map-gate{flex-direction:column;align-items:flex-start}}
 
 .workspace-controls{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.workspace-controls input,.workspace-controls select,.workspace-controls button,#workspace-more{padding:8px;border:1px solid #bbb;background:#fff}.workspace-controls input{flex:1 1 230px}.workspace-stats{font-weight:bold;margin:12px 0}.source-form textarea{display:block;width:100%;font:inherit;padding:8px;border:1px solid #ccc;margin:4px 0 12px}.tabs{flex-wrap:wrap}
+
+#crm-form input[type=checkbox]{display:inline-block;width:auto;margin:0 5px 0 0}#crm-detail{margin-top:24px}#crm-history .record{grid-template-columns:1fr}
