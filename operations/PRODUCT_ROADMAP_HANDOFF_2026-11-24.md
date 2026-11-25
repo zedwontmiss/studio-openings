@@ -81,3 +81,6 @@ Owner rejected polls and requested simple noticeboard; topic details optional, t
 
 ### v1 release freeze / owner review
 Owner approved big three release (Jobs, Studio, Article). Scene and local hubs remain visible on exact development hostname only, other hosts return 404 for deferred routes and remove public Scene navigation/links server-side. Studio location links retain utility via scoped Jobs. Community flags remain off, no migrations. Preview is not private authentication. Full Cloudflare runtime regression testing pending. Next data consolidation and inventory automation. Production unchanged.
+
+### Data consolidation foundation
+Canonical geography generator derives server and browser city records from existing studio registry; city ID resolver and conflicting location token rejection. Employer read model carries stable office city IDs; studioIdentity helper retains exact evidence match. No new employer facts, jobs, physical DB migration, or user-facing changes. Current seven cities only; source validation and broader region aliases, integration, inventory automation pending. Production unchanged.

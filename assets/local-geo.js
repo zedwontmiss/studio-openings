@@ -1,6 +1,6 @@
 (function(root){
  'use strict';
- var cities=[{"slug":"chicago","city":"Chicago","country":"US","region":"Illinois"},{"slug":"london","city":"London","country":"GB","region":"England"},{"slug":"los-angeles","city":"Los Angeles","country":"US","region":"California"},{"slug":"melbourne","city":"Melbourne","country":"AU","region":"Victoria"},{"slug":"montreal","city":"Montreal","country":"CA","region":"Quebec"},{"slug":"mumbai","city":"Mumbai","country":"IN","region":"Maharashtra"},{"slug":"new-york","city":"New York","country":"US","region":"New York"}];
+ var cities=[{"id":"us--illinois--chicago","slug":"chicago","city":"Chicago","country":"US","region":"Illinois"},{"id":"gb--england--london","slug":"london","city":"London","country":"GB","region":"England"},{"id":"us--california--los-angeles","slug":"los-angeles","city":"Los Angeles","country":"US","region":"California"},{"id":"au--victoria--melbourne","slug":"melbourne","city":"Melbourne","country":"AU","region":"Victoria"},{"id":"ca--quebec--montreal","slug":"montreal","city":"Montreal","country":"CA","region":"Quebec"},{"id":"in--maharashtra--mumbai","slug":"mumbai","city":"Mumbai","country":"IN","region":"Maharashtra"},{"id":"us--new-york--new-york","slug":"new-york","city":"New York","country":"US","region":"New York"}];
  function normalize(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');}
  function find(slug){return cities.filter(function(c){return c.slug===slug;})[0]||null;}
  var countries={US:['united states','usa','us'],GB:['united kingdom','uk','gb','england'],CA:['canada','ca'],AU:['australia','au'],IN:['india','in']};
@@ -17,6 +17,11 @@
   if(aliases.indexOf(parts[0])<0)return false;
   // An exact city plus independently reported country or a recognized region
   // is required. Do not treat a mention in employer, title or description as geography.
+  // Reject conflicting country/region tokens even if another token agrees.
+  var tail=parts.slice(1),allowed=countries[c.country].concat(regions[slug]);
+  if(tail.some(function(v){return allowed.indexOf(v)<0;}))return false;
+  // CA alone is ambiguous between California and Canada; require country evidence.
+  if(slug==='los-angeles'&&tail.length===1&&tail[0]==='ca'&&!job.geoCountry&&!(ref&&ref.countryCode))return false;
   var countryEvidence=String(job.geoCountry||'').toUpperCase()===c.country||
     !!(ref&&String(ref.countryCode||'').toUpperCase()===c.country)||
     parts.slice(1).some(function(v){return countries[c.country].indexOf(v)>=0;});
@@ -25,5 +30,6 @@
   if(parts.length>1&&!regionEvidence&&!parts.slice(1).every(function(v){return countries[c.country].indexOf(v)>=0;}))return false;
   return countryEvidence||regionEvidence;
  }
- root.SOAPPLocalGeo={find:find,matches:matches,cities:cities};
+ function cityId(job){var found=cities.filter(function(c){return matches(job,c.slug);});return found.length===1?found[0].id:null;}
+ root.SOAPPLocalGeo={find:find,matches:matches,cityId:cityId,cities:cities};
 })(typeof window!=='undefined'?window:globalThis);
