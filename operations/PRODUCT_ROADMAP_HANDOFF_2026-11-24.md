@@ -114,3 +114,6 @@ Replaced visible country/city selects on Studio with one hierarchical text field
 
 ### Unified Studio search / category-only filter
 Removed country/city controls and separate autocomplete. Main search matches firm name/alias and geographic prefixes independently; comma components must match one office. Category-only text disclosure replaces native select with progressive fallback. Generator updated. Selected model checks passed; live deployment and keyboard/browser tests pending. Owner screenshot showed old eight-studio build. Production unchanged.
+
+### Typographic filter and search sorting
+Jobs horizontal text filters with existing input state retained as hidden backing controls; Studio fixed-label category panel. Automatic sort chooses Latest or Relevance by query, explicit overrides retained; title-weighted deterministic search ranking, source date tie-break, existing featured priority unchanged. Syntax and selected scoring fixtures checked; full DOM/mobile/Cloudflare tests pending. Production unchanged.

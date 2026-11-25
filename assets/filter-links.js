@@ -16,7 +16,7 @@
       type:choice(params.get('type'),['full-time','part-time','contract','internship'],'all'),
       mode:choice(params.get('mode'),['remote','hybrid','onsite'],'all'),
       hasPay:params.get('pay')==='1',
-      sort:choice(params.get('sort'),['newest','az','company'],'relevant'),
+      sort:choice(params.get('sort'),['auto','relevant','newest','az','company'],'auto'),
       keywords:unique(params.getAll('tag'),15,35),
       keywordMatch:params.get('match')==='all'?'all':'any'
     };
@@ -29,7 +29,7 @@
     if(state.query)p.set('q',state.query.slice(0,120));
     ['region','type','mode'].forEach(function(key){if(state[key]!=='all')p.set(key,state[key]);});
     if(state.hasPay)p.set('pay','1');
-    if(['newest','az','company'].indexOf(state.sort)>=0)p.set('sort',state.sort);
+    if(['relevant','newest','az','company'].indexOf(state.sort)>=0)p.set('sort',state.sort);
     if(state.city&&root.SOAPPLocalGeo&&root.SOAPPLocalGeo.find(state.city))p.set('city',state.city);
     unique(state.keywords||[],15,35).forEach(function(tag){p.append('tag',tag);});
     if((state.keywords||[]).length&&state.keywordMatch==='all')p.set('match','all');

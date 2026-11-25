@@ -7,7 +7,7 @@
     product:'Product / UX / UI', visual:'Graphic / Brand', motion:'Motion / 3D', fashion:'Fashion / Photography',
     web:'Web / Creative Tech', museum:'Museum / Exhibition', culture:'Arts / Cultural Production'
   };
-  var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', city:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'relevant', onlySaved:false, savedPeriod:'all', visible:10, review:false,feedStatus:'loading'};
+  var state = {jobs:[], selectedRoles:[], keywords:[], keywordMatch:'any', query:'', city:'', region:'all', type:'all', mode:'all', hasPay:false, sort:'auto', onlySaved:false, savedPeriod:'all', visible:10, review:false,feedStatus:'loading'};
   // Category landing pages link to the existing filtered job board.
   // Only allow known disciplines; never use unchecked query input as HTML.
   try {
@@ -246,7 +246,7 @@
     var premium=ordered.filter(isActiveFeatured);
     if(!premium.length)return ordered;
     // Rotate among paying Featured employers once each UTC day in Best match.
-    if(state.sort==='relevant'){
+    if(effectiveSort()==='relevant'){
       var day=Math.floor(Date.now()/86400000);
       premium.sort(function(a,b){
         return rotateKey(a,day)-rotateKey(b,day)||String(a.id).localeCompare(String(b.id));
@@ -638,38 +638,23 @@
     var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,searchableTags.join(' '),searchableTags.map(shortTagLabel).join(' ')].join(' ').toLowerCase();
     return !state.query||state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
   }
+  function effectiveSort(){return state.sort==='auto'?(state.query?'relevant':'newest'):state.sort;}
+  function relevanceScore(job){
+    var q=state.query.toLowerCase().trim().replace(/\s+/g,' '),title=trim(job.title).toLowerCase(),tags=jobSearchTags(job).join(' ').toLowerCase(),company=trim(job.company).toLowerCase(),place=trim(job.location).toLowerCase();
+    if(!q)return 0;
+    var score=title===q?10000:title.indexOf(q)===0?6000:title.indexOf(q)>=0?4000:0;
+    q.split(' ').forEach(function(t){if(title.indexOf(t)>=0)score+=450;else if(tags.indexOf(t)>=0)score+=250;else if(company.indexOf(t)>=0||place.indexOf(t)>=0)score+=150;else score+=50;});
+    return score;
+  }
   function sortJobs(a,b){
-    // Organic quality/date ranking; sponsored spacing is handled by rankedFeed().
-    if(state.sort==='review')return (a.reviewOrder||0)-(b.reviewOrder||0);
-    if(state.sort==='az')return a.title.localeCompare(b.title);
-    if(state.sort==='company')return a.company.localeCompare(b.company);
-    if(state.sort==='relevant'){
-      // Career-first default: confirmed permanent/full-time > unknown > part-time/intern > hourly/contract.
-      // Never infer full-time from missing metadata; explicit sorts remain independent.
-      var typeRank=function(job){
-        var t=trim(job.type).toLowerCase();
-        if(/\b(contract|contractor|freelanc(?:e|er)|hourly|temporary|fixed[ -]?term)\b/.test(t))return 3;
-        if(/\bfull[ -]?time\b|\bfulltime\b|\bpermanent\b/.test(t))return 0;
-        if(/\bpart[ -]?time\b|\bparttime\b|\bintern(?:ship)?\b/.test(t))return 2;
-        return 1;
-      };
-      var typeDiff=typeRank(a)-typeRank(b);
-      if(typeDiff)return typeDiff;
-      var score=function(job){
-        var quality=Number(job.qualityScore);
-        if(isFinite(quality)&&quality>0)return quality;
-        var n=Number(job.relevance);
-        if(isFinite(n)&&n>0)return n;
-        return /direct|curated/i.test(trim(job.source))?96:0;
-      };
-      var diff=score(b)-score(a);
-      if(diff!==0)return diff;
-      // Geographic priority breaks quality ties; it never outranks relevance.
-      var tier=function(j){var n=Number(j.geoTier);return n===1||n===2?n:9;};
-      var geoDiff=tier(a)-tier(b);if(geoDiff)return geoDiff;
-    }
-    var ad=a.posted?Date.parse(a.posted):0, bd=b.posted?Date.parse(b.posted):0;
-    return (isFinite(bd)?bd:0)-(isFinite(ad)?ad:0);
+    var mode=effectiveSort();
+    if(mode==='review')return (a.reviewOrder||0)-(b.reviewOrder||0);
+    if(mode==='az')return a.title.localeCompare(b.title)||String(a.id).localeCompare(String(b.id));
+    if(mode==='company')return a.company.localeCompare(b.company)||a.title.localeCompare(b.title)||String(a.id).localeCompare(String(b.id));
+    if(mode==='relevant'&&state.query){var diff=relevanceScore(b)-relevanceScore(a);if(diff)return diff;}
+    // Use source-supplied activity timestamp; unknown dates sort last.
+    var ad=Date.parse(a.posted||''),bd=Date.parse(b.posted||'');
+    return (isFinite(bd)?bd:0)-(isFinite(ad)?ad:0)||String(a.id).localeCompare(String(b.id));
   }
   var activeJob=null,lastOpener=null;
   // A shareable vacancy address keeps the existing list layout unchanged.
@@ -1086,7 +1071,7 @@
     $('empty-state').hidden=true;
     feedJobs=list;
     feedControls();
-    resultsSortLabel.hidden=state.onlySaved;
+    resultsSortLabel.hidden=state.onlySaved;if(window.SOAPPTypeFilters)window.SOAPPTypeFilters.refresh();
     if(state.onlySaved){renderSavedPanel();return;}
     var root=$('job-list');root.textContent='';var fragment=document.createDocumentFragment();
     list.slice(0,state.visible).forEach(function(job){fragment.appendChild(rowFor(job));});root.appendChild(fragment);
@@ -1094,7 +1079,7 @@
   }
   function reset(){
     try{if(window.StudioOpeningFilterLinks)window.history.replaceState(window.history.state,'',window.StudioOpeningFilterLinks.clear(window.location.href));}catch(e){}
-    state.selectedRoles=[];state.query='';state.city='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'relevant';state.visible=10;
+    state.selectedRoles=[];state.query='';state.city='';state.region='all';state.type='all';state.mode='all';state.hasPay=false;state.onlySaved=false;state.sort=state.review?'review':'auto';state.visible=10;
     $('search').value='';$('region').value='all';$('job-type').value='all';$('work-mode').value='all';$('has-pay').checked=false;$('sort').value=state.sort;
     Array.prototype.forEach.call(document.querySelectorAll('input[name="discipline"]'),function(c){c.checked=false;});
     render();
@@ -1112,7 +1097,7 @@
   $('job-type').addEventListener('change',function(){state.type=this.value;state.visible=10;render();});
   $('work-mode').addEventListener('change',function(){state.mode=this.value;state.visible=10;render();});
   $('has-pay').addEventListener('change',function(){state.hasPay=this.checked;state.visible=10;render();});
-  $('sort').addEventListener('change',function(){state.sort=this.value;render();});
+  $('sort').addEventListener('change',function(){state.sort=this.value;state.visible=10;render();});
   $('saved-toggle').addEventListener('click',function(){toggleSavedView();});
   $('reset').addEventListener('click',reset);$('empty-reset').addEventListener('click',reset);
   // One visitor scroll triggers one eight-job reveal; no observer cascade.
