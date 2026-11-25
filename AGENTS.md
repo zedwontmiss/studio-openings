@@ -154,3 +154,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Jobs sidebar refinements: selected summary only when collapsed; country search on expansion, other filters options only. Keep Studio untouched. Repair extracted ranking regression harness to include effectiveSort.
 
 - Jobs sidebar focus uses underline, not rectangular outline. Feed recovery: bound individual fetches to four concurrent requests, 25-second per-request deadline starts at dispatch, preserve rendered rows until replacement fragment is ready. No additional sources, retry loops, schedules or quota increases authorized. Live source counts still need verification; no claim of full inventory recovery. Preserve Studio and production.
+
+- Approved Jobs and Studio visual baseline frozen. Browser-tab favicon is independent of the on-page S/O contact mark; fixed vector path and 16/32 ICO, no border. New independently reviewed directory entries do not authorize vacancy ingestion. No new scheduled work, paid features or production changes.

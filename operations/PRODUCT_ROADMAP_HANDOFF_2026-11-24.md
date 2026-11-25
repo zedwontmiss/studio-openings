@@ -117,3 +117,6 @@ Removed country/city controls and separate autocomplete. Main search matches fir
 
 ### Typographic filter and search sorting
 Jobs horizontal text filters with existing input state retained as hidden backing controls; Studio fixed-label category panel. Automatic sort chooses Latest or Relevance by query, explicit overrides retained; title-weighted deterministic search ranking, source date tie-break, existing featured priority unchanged. Syntax and selected scoring fixtures checked; full DOM/mobile/Cloudflare tests pending. Production unchanged.
+
+### Directory expansion and favicon correction
+Seven additional official-source directory profiles (19 total), Bristol added to geographic matcher; generated module exports preserved and consistency checked using in-memory adapters. No new vacancies asserted, no source approval or D1 writes. Fixed-outline tab favicon and dual-size ICO, cache-busted on Jobs and Studio. Actual Chrome and full CI verification pending. Preserve approved layouts and leave brand pages for final sprint.

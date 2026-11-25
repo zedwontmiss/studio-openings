@@ -434,6 +434,219 @@
       "overview": "Architecture practice working across cultural, civic and residential projects.",
       "jobQuery": "Adjaye Associates",
       "website": "https://www.adjaye.com/"
+    },
+    {
+      "id": "studio-gang",
+      "slug": "studio-gang",
+      "name": "Studio Gang",
+      "disciplines": [
+        "architecture"
+      ],
+      "summary": "Architecture and urban design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "Illinois",
+          "city": "Chicago",
+          "sourceUrl": "https://studiogang.com/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--illinois--chicago"
+        }
+      ],
+      "source": {
+        "url": "https://studiogang.com/opportunities/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Architecture and urban design practice working across buildings, public space and research.",
+      "jobQuery": "Studio Gang",
+      "website": "https://studiogang.com/"
+    },
+    {
+      "id": "shop-architects",
+      "slug": "shop-architects",
+      "name": "SHoP Architects",
+      "disciplines": [
+        "architecture"
+      ],
+      "summary": "Architecture",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://www.shoparc.com/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://www.shoparc.com/contact/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "New York architecture practice with a portfolio of buildings and urban projects.",
+      "jobQuery": "SHoP Architects",
+      "website": "https://www.shoparc.com/"
+    },
+    {
+      "id": "buck",
+      "slug": "buck",
+      "name": "BUCK",
+      "disciplines": [
+        "motion"
+      ],
+      "summary": "Motion and visual design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "California",
+          "city": "Los Angeles",
+          "sourceUrl": "https://entertainment.buck.co/about",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--california--los-angeles"
+        }
+      ],
+      "source": {
+        "url": "https://buck.co/careers",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Creative production studio working in animation, design and visual storytelling.",
+      "jobQuery": "BUCK",
+      "website": "https://buck.co/"
+    },
+    {
+      "id": "aardman",
+      "slug": "aardman",
+      "name": "Aardman",
+      "disciplines": [
+        "motion"
+      ],
+      "summary": "Animation",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "Bristol",
+          "sourceUrl": "https://jobs.aardman.com/vacancies/vacancy-search-results.aspx",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "gb--england--bristol"
+        }
+      ],
+      "source": {
+        "url": "https://jobs.aardman.com/vacancies/vacancy-search-results.aspx",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Animation studio producing character-led films and entertainment across stop-motion and other techniques.",
+      "jobQuery": "Aardman",
+      "website": "https://aardman.com/"
+    },
+    {
+      "id": "tate",
+      "slug": "tate",
+      "name": "Tate",
+      "disciplines": [
+        "museum"
+      ],
+      "summary": "Museums and exhibitions",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://jobsearch.tate.org.uk/jobs/search",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://jobsearch.tate.org.uk/jobs/search",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Art institution presenting British and international modern and contemporary art through collections and exhibitions.",
+      "jobQuery": "Tate",
+      "website": "https://www.tate.org.uk/"
+    },
+    {
+      "id": "victoria-and-albert-museum",
+      "slug": "victoria-and-albert-museum",
+      "name": "Victoria and Albert Museum",
+      "disciplines": [
+        "museum"
+      ],
+      "summary": "Art and design museums",
+      "aliases": [
+        "V&A",
+        "V and A"
+      ],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.vam.ac.uk/info/about-us/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://www.vam.ac.uk/info/careers",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Museum institution concerned with the collection and interpretation of art, design and material culture.",
+      "jobQuery": "Victoria and Albert Museum",
+      "website": "https://www.vam.ac.uk/"
+    },
+    {
+      "id": "design-museum",
+      "slug": "design-museum",
+      "name": "Design Museum",
+      "disciplines": [
+        "museum"
+      ],
+      "summary": "Design exhibitions",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://designmuseum.org/plan-your-visit/contact-information",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://careers.designmuseum.org/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Museum dedicated to contemporary design across architecture, objects, graphics and digital culture.",
+      "jobQuery": "Design Museum",
+      "website": "https://designmuseum.org/"
     }
   ]
 }
