@@ -647,6 +647,253 @@
       "overview": "Museum dedicated to contemporary design across architecture, objects, graphics and digital culture.",
       "jobQuery": "Design Museum",
       "website": "https://designmuseum.org/"
+    },
+    {
+      "id": "sfmoma",
+      "slug": "sfmoma",
+      "name": "San Francisco Museum of Modern Art",
+      "disciplines": [
+        "museum"
+      ],
+      "summary": "Museums and exhibitions",
+      "aliases": [
+        "SFMOMA"
+      ],
+      "offices": [
+        {
+          "country": "US",
+          "region": "California",
+          "city": "San Francisco",
+          "sourceUrl": "https://www.sfmoma.org/about/contact-us/",
+          "reviewedOn": "2026-11-25",
+          "kind": "museum",
+          "cityId": "us--california--san-francisco"
+        }
+      ],
+      "source": {
+        "url": "https://www.sfmoma.org/join-the-team/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "A museum focused on modern and contemporary art.",
+      "jobQuery": "San Francisco Museum of Modern Art",
+      "website": "https://www.sfmoma.org/"
+    },
+    {
+      "id": "perkins-will",
+      "slug": "perkins-will",
+      "name": "Perkins&Will",
+      "disciplines": [
+        "architecture"
+      ],
+      "summary": "Architecture and design",
+      "aliases": [
+        "Perkins and Will"
+      ],
+      "offices": [
+        {
+          "country": "US",
+          "region": "Illinois",
+          "city": "Chicago",
+          "sourceUrl": "https://perkinswill.com/studio/chicago/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--illinois--chicago"
+        }
+      ],
+      "source": {
+        "url": "https://perkinswill.com/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Architecture and design practice working across buildings and interiors.",
+      "jobQuery": "Perkins&Will",
+      "website": "https://perkinswill.com/"
+    },
+    {
+      "id": "architects-alliance",
+      "slug": "architects-alliance",
+      "name": "architects—Alliance",
+      "disciplines": [
+        "architecture"
+      ],
+      "summary": "Architecture and urban design",
+      "aliases": [
+        "architectsAlliance",
+        "a—A"
+      ],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Ontario",
+          "city": "Toronto",
+          "sourceUrl": "https://www.architectsalliance.com/contact",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--ontario--toronto"
+        }
+      ],
+      "source": {
+        "url": "https://www.architectsalliance.com/contact",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Toronto practice working across residential, institutional and civic architecture.",
+      "jobQuery": "architects—Alliance",
+      "website": "https://www.architectsalliance.com/"
+    },
+    {
+      "id": "ideo",
+      "slug": "ideo",
+      "name": "IDEO",
+      "disciplines": [
+        "product"
+      ],
+      "summary": "Product and experience design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "California",
+          "city": "San Francisco",
+          "sourceUrl": "https://www.ideo.com/sanfrancisco",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--california--san-francisco"
+        }
+      ],
+      "source": {
+        "url": "https://www.ideo.com/careers",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Design consultancy working across products, services and research.",
+      "jobQuery": "IDEO",
+      "website": "https://www.ideo.com/"
+    },
+    {
+      "id": "giant-ant",
+      "slug": "giant-ant",
+      "name": "Giant Ant",
+      "disciplines": [
+        "motion"
+      ],
+      "summary": "Animation and motion design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "British Columbia",
+          "city": "Vancouver",
+          "sourceUrl": "https://www.giantant.ca/about",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--british-columbia--vancouver"
+        }
+      ],
+      "source": {
+        "url": "https://www.giantant.ca/careers",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Vancouver creative studio working in animation and visual storytelling.",
+      "jobQuery": "Giant Ant",
+      "website": "https://www.giantant.ca/"
+    },
+    {
+      "id": "instrument",
+      "slug": "instrument",
+      "name": "Instrument",
+      "disciplines": [
+        "web"
+      ],
+      "summary": "Digital design and technology",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "Oregon",
+          "city": "Portland",
+          "sourceUrl": "https://www.instrument.com/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--oregon--portland"
+        }
+      ],
+      "source": {
+        "url": "https://www.instrument.com/careers",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Design and technology agency working across digital experiences and brands.",
+      "jobQuery": "Instrument",
+      "website": "https://www.instrument.com/"
+    },
+    {
+      "id": "metalab",
+      "slug": "metalab",
+      "name": "Metalab",
+      "disciplines": [
+        "product"
+      ],
+      "summary": "Digital product design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "British Columbia",
+          "city": "Victoria",
+          "sourceUrl": "https://www.metalab.com/about",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--british-columbia--victoria"
+        }
+      ],
+      "source": {
+        "url": "https://www.metalab.com/careers",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Design practice working on digital interfaces and product development.",
+      "jobQuery": "Metalab",
+      "website": "https://www.metalab.com/"
+    },
+    {
+      "id": "david-zwirner",
+      "slug": "david-zwirner",
+      "name": "David Zwirner",
+      "disciplines": [
+        "culture"
+      ],
+      "summary": "Contemporary art galleries",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://www.davidzwirner.com/galleries/new-york",
+          "reviewedOn": "2026-11-25",
+          "kind": "gallery",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://job-boards.greenhouse.io/davidzwirnergallery",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "independently-reviewed-directory-source"
+      },
+      "employerVerified": false,
+      "overview": "Contemporary art gallery presenting exhibitions and representing artists.",
+      "jobQuery": "David Zwirner",
+      "website": "https://www.davidzwirner.com/"
     }
   ]
 }

@@ -164,3 +164,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Owner approved small raised red (*) superscript for sponsored Studio and Article titles. Fictional examples injected client-side on exact development hostname only, never in registry/feed/sitemap/production; no genuine campaign or revenue activation. Future live sponsored results require clear visible disclosure and accessibility. Remove demo before launch.
 
 - Owner approved sponsored dummy typography on preview. Retention milestone: browser-local saved shortlist supports direct /?saved=1, renders saved snapshots immediately, keeps search within saved view, distinguishes pending feed from unverified vacancy status, removes source names from saved metadata. No login or cross-device sync. Favicon appearance still owner-reported unresolved; do not alter on-page S/O mark.
+
+- Directory expanded from 19 to 27 records using official location/career sources; no live vacancy claim, sponsorship or ingestion approval. Preserve existing UI and current pilot city scope.
