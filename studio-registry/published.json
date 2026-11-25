@@ -894,6 +894,341 @@
       "overview": "Contemporary art gallery presenting exhibitions and representing artists.",
       "jobQuery": "David Zwirner",
       "website": "https://www.davidzwirner.com/"
+    },
+    {
+      "id": "hok",
+      "slug": "hok",
+      "name": "HOK",
+      "disciplines": [
+        "architecture",
+        "interior"
+      ],
+      "summary": "Architecture and design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Ontario",
+          "city": "Toronto",
+          "sourceUrl": "https://www.hok.com/studios/toronto/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--ontario--toronto"
+        }
+      ],
+      "source": {
+        "url": "https://www.hok.com/people/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Multidisciplinary practice covering architecture, interiors and planning.",
+      "jobQuery": "HOK",
+      "website": "https://www.hok.com/"
+    },
+    {
+      "id": "dialog",
+      "slug": "dialog",
+      "name": "DIALOG",
+      "disciplines": [
+        "architecture",
+        "interior"
+      ],
+      "summary": "Architecture and urban design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Ontario",
+          "city": "Toronto",
+          "sourceUrl": "https://dialogdesign.ca/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--ontario--toronto"
+        },
+        {
+          "country": "CA",
+          "region": "British Columbia",
+          "city": "Vancouver",
+          "sourceUrl": "https://dialogdesign.ca/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--british-columbia--vancouver"
+        }
+      ],
+      "source": {
+        "url": "https://dialogdesign.ca/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Multidisciplinary design practice working across the built environment.",
+      "jobQuery": "DIALOG",
+      "website": "https://dialogdesign.ca/"
+    },
+    {
+      "id": "hcma",
+      "slug": "hcma",
+      "name": "hcma",
+      "disciplines": [
+        "architecture"
+      ],
+      "summary": "Architecture and design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "British Columbia",
+          "city": "Vancouver",
+          "sourceUrl": "https://hcma.ca/about/general-applications/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--british-columbia--vancouver"
+        },
+        {
+          "country": "CA",
+          "region": "British Columbia",
+          "city": "Victoria",
+          "sourceUrl": "https://hcma.ca/about/general-applications/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--british-columbia--victoria"
+        }
+      ],
+      "source": {
+        "url": "https://hcma.ca/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Architecture and design practice with studios in British Columbia.",
+      "jobQuery": "hcma",
+      "website": "https://hcma.ca/"
+    },
+    {
+      "id": "lemay",
+      "slug": "lemay",
+      "name": "Lemay",
+      "disciplines": [
+        "architecture",
+        "interior"
+      ],
+      "summary": "Architecture and design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://lemay.com/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
+        }
+      ],
+      "source": {
+        "url": "https://lemay.com/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Design practice working in architecture, landscape and interior environments.",
+      "jobQuery": "Lemay",
+      "website": "https://lemay.com/"
+    },
+    {
+      "id": "studios-architecture",
+      "slug": "studios-architecture",
+      "name": "STUDIOS Architecture",
+      "disciplines": [
+        "architecture",
+        "interior"
+      ],
+      "summary": "Architecture and interiors",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "California",
+          "city": "San Francisco",
+          "sourceUrl": "https://studios.com/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--california--san-francisco"
+        }
+      ],
+      "source": {
+        "url": "https://studios.com/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Architecture practice with workplace and interior design expertise.",
+      "jobQuery": "STUDIOS Architecture",
+      "website": "https://studios.com/"
+    },
+    {
+      "id": "wrns-studio",
+      "slug": "wrns-studio",
+      "name": "WRNS Studio",
+      "disciplines": [
+        "architecture",
+        "interior"
+      ],
+      "summary": "Architecture and interiors",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "California",
+          "city": "San Francisco",
+          "sourceUrl": "https://wrnsstudio.com/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--california--san-francisco"
+        }
+      ],
+      "source": {
+        "url": "https://wrnsstudio.com/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Architecture and design studio with a San Francisco practice.",
+      "jobQuery": "WRNS Studio",
+      "website": "https://wrnsstudio.com/"
+    },
+    {
+      "id": "bora",
+      "slug": "bora",
+      "name": "Bora Architecture & Interiors",
+      "disciplines": [
+        "architecture",
+        "interior"
+      ],
+      "summary": "Architecture and interiors",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "Oregon",
+          "city": "Portland",
+          "sourceUrl": "https://bora.co/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--oregon--portland"
+        }
+      ],
+      "source": {
+        "url": "https://bora.co/contact/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Portland architecture and interior design practice.",
+      "jobQuery": "Bora Architecture & Interiors",
+      "website": "https://bora.co/"
+    },
+    {
+      "id": "holst",
+      "slug": "holst",
+      "name": "Holst",
+      "disciplines": [
+        "architecture",
+        "interior"
+      ],
+      "summary": "Architecture and interiors",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "Oregon",
+          "city": "Portland",
+          "sourceUrl": "https://www.holstarc.com/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--oregon--portland"
+        }
+      ],
+      "source": {
+        "url": "https://www.holstarc.com/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Portland design practice working in architecture and interiors.",
+      "jobQuery": "Holst",
+      "website": "https://www.holstarc.com/"
+    },
+    {
+      "id": "shape-architecture",
+      "slug": "shape-architecture",
+      "name": "SHAPE Architecture",
+      "disciplines": [
+        "architecture"
+      ],
+      "summary": "Architecture",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "British Columbia",
+          "city": "Vancouver",
+          "sourceUrl": "https://shapearchitecture.ca/contact/",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--british-columbia--vancouver"
+        }
+      ],
+      "source": {
+        "url": "https://shapearchitecture.ca/careers/",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Architecture practice with a studio in Vancouver, British Columbia.",
+      "jobQuery": "SHAPE Architecture",
+      "website": "https://shapearchitecture.ca/"
+    },
+    {
+      "id": "moment-factory",
+      "slug": "moment-factory",
+      "name": "Moment Factory",
+      "disciplines": [
+        "motion",
+        "culture"
+      ],
+      "summary": "Multimedia and immersive experiences",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://momentfactory.com/pages/about",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
+        },
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://momentfactory.com/pages/about",
+          "reviewedOn": "2026-11-25",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://momentfactory.com/pages/careers",
+        "reviewedOn": "2026-11-25",
+        "reviewStatus": "previously-reviewed-career-source"
+      },
+      "employerVerified": false,
+      "overview": "Multimedia studio developing experiential environments and interactive productions.",
+      "jobQuery": "Moment Factory",
+      "website": "https://momentfactory.com/"
     }
   ]
 }

@@ -4,7 +4,6 @@ import {readFileSync,writeFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {reviewStudio} from '../lib/studio-review.js';
-import {LOCAL_CITIES} from '../lib/local-cities.js';
 const root=fileURLToPath(new URL('../',import.meta.url)),file=p=>new URL('../'+p,import.meta.url);
 const read=p=>readFileSync(file(p),'utf8'),write=(p,s)=>writeFileSync(file(p),s);
 const input=process.argv[2];assert.ok(input,'Usage: node operations/publish-studio-batch.mjs batch.json [--apply]');
@@ -23,8 +22,7 @@ assert.equal(execFileSync('git',['branch','--show-current'],{cwd:root,encoding:'
 assert.equal(execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim(),'','Use clean worktree; keep batch file outside repository');
 const studios=current.studios.concat(accepted),next={...current,studios};
 write('studio-registry/published.json',JSON.stringify(next,null,2)+'\n');
-const cities=LOCAL_CITIES.map(c=>({...c,studios:studios.filter(s=>s.offices.some(o=>o.cityId===c.id)).map(s=>({slug:s.slug,name:s.name,summary:s.summary}))}));
-write('lib/local-cities.js',"// Generated from the current studio registry; pilot city routes only.\nexport const LOCAL_CITIES=Object.freeze("+JSON.stringify(cities)+");\nexport const LOCAL_PATHS=Object.freeze(LOCAL_CITIES.map(c=>'/'+c.slug));\n");
+execFileSync(process.execPath,['operations/build-geography.mjs'],{cwd:root,stdio:'inherit'});
 const sitemap=read('sitemap.xml').replace(/<url><loc>https:\/\/s-o\.app\/studio\/[a-z0-9-]+<\/loc><\/url>/g,'');
 write('sitemap.xml',sitemap.replace('</urlset>',studios.map(s=>'<url><loc>https://s-o.app/studio/'+s.slug+'</loc></url>').join('')+'</urlset>'));
 const backlog=JSON.parse(read('operations/studio-acquisition-backlog.json')),norm=s=>String(s).normalize('NFKC').toLowerCase().trim().replace(/\s+/g,' '),names=new Set(studios.flatMap(s=>[s.name,...s.aliases].map(norm)));
