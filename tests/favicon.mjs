@@ -6,14 +6,14 @@ for(const page of staticPages){
   const html=readFileSync(new URL('../'+page,import.meta.url),'utf8');
   assert.match(html,/rel="icon" href="\/assets\/favicon\.svg(?:\?v=\d+)?" type="image\/svg\+xml"/,page+' must link the modern favicon');
   assert.match(html,/rel="alternate icon" href="\/favicon\.ico(?:\?v=\d+)?" sizes="any"/,page+' must link the legacy favicon');
-  assert.match(html,/rel="apple-touch-icon" href="\/assets\/apple-touch-icon\.png"/,page+' must link the iPhone icon');
+  assert.match(html,/rel="apple-touch-icon" href="\/assets\/apple-touch-icon\.png(?:\?v=[\w.-]+)?"/,page+' must link the iPhone icon');
 }
 
 for(const page of ['functions/disciplines/[slug].js','functions/jobs/[id].js','functions/openings/[id].js']){
   const source=readFileSync(new URL('../'+page,import.meta.url),'utf8');
   assert.match(source,/rel="icon" href="\/assets\/favicon\.svg(?:\?v=\d+)?"/,page+' must render the favicon');
   assert.match(source,/rel="alternate icon" href="\/favicon\.ico(?:\?v=\d+)?"/,page+' must render the legacy favicon');
-  assert.match(source,/rel="apple-touch-icon" href="\/assets\/apple-touch-icon\.png"/,page+' must render the iPhone icon');
+  assert.match(source,/rel="apple-touch-icon" href="\/assets\/apple-touch-icon\.png(?:\?v=[\w.-]+)?"/,page+' must render the iPhone icon');
 }
 
 const ico=readFileSync(new URL('../favicon.ico',import.meta.url));
