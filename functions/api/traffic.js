@@ -12,7 +12,7 @@ export async function onRequestPost({env,request}) {
     const raw=await request.text(); if(raw.length>512) return empty(413);
     value=JSON.parse(raw);
   } catch { return empty(400); }
-  if (!value || !['apply','view'].includes(value.event) || !subjects.has(value.referral) || typeof value.job!=='string' || value.job.length>160) return empty(422);
+  if (!value || !['apply','view','listing'].includes(value.event) || !subjects.has(value.referral) || typeof value.job!=='string' || value.job.length>160) return empty(422);
   const db=env.JOBS_DB;
   try{
     // Store an actual directory ID or a common bucket. Arbitrary input, full
@@ -25,6 +25,7 @@ export async function onRequestPost({env,request}) {
     }
     const count=event=>db.prepare("INSERT INTO traffic_daily(day,event,referral,job_key) VALUES(date('now'),?,?,?) ON CONFLICT(day,event,referral,job_key) DO UPDATE SET total=total+1").bind(event,value.referral,key);
     const ops=[count(value.event)];
+    if(value.event==='view'&&key)ops.push(count('listing'));
     if(value.entry===true && value.event==='view')ops.push(count('visit'));
     ops.push(db.prepare("DELETE FROM traffic_daily WHERE day<date('now','-89 days')"));
     await db.batch(ops);

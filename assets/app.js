@@ -814,6 +814,7 @@
     var method=job.applicationMethod||'external';
     if(method==='external'&&!safeUrl(job.url))return;
     activeJob=job;lastOpener=opener||null;
+    if(window.SOAPPTraffic)window.SOAPPTraffic.jobView(/^direct-so-/i.test(job.id)?job.id.slice(7).toUpperCase():/^registry-/.test(job.id)?job.id:'');
     $('job-drawer').setAttribute('data-swatch',swatchFor(job));
     $('job-link-message').hidden=true;
     if(!fromUrl)updateJobUrl(job.id,'push');

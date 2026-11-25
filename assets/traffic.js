@@ -27,6 +27,7 @@
   }
   var path=location.pathname.match(/^\/(?:jobs|openings)\/([a-z0-9-]+)$/i);
   record('view',path?path[1]:'');
+  window.SOAPPTraffic={jobView:function(id){record('listing',id||'');}};
   document.addEventListener('click',function(e){
     var link=e.target.closest && e.target.closest('[data-apply-job]');
     if(link && e.isTrusted && e.button===0 && !link.hidden) record('apply',link.getAttribute('data-apply-job'));
