@@ -8,3 +8,8 @@ assert.equal(validateSnapshot({...row,payload_json:JSON.stringify({jobs:[job],fa
 assert.equal(sourcePath('https://evil.example'),'');
 assert.equal(isolated({request:new Request('https://s-o.app/'),env:{PREVIEW_D1_ISOLATED:'true',INVENTORY_SNAPSHOT_ENABLED:'true',JOBS_DB:{}}}),false);
 console.log('Snapshot safety checks passed');
+
+assert.equal(validateSnapshot({...row,generated_at:now-17*60000},now).jobs.length,1);
+assert.equal(validateSnapshot({...row,payload_json:JSON.stringify({jobs:[job],truncated:true})},now),null);
+assert.equal(validateSnapshot({...row,payload_json:JSON.stringify({jobs:[job],updatedAt:new Date(now-1).toISOString()})},now),null);
+assert.equal(validateSnapshot({...row,payload_json:JSON.stringify({jobs:[job],health:{status:'partial'}})},now),null);

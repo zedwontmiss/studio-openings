@@ -84,3 +84,6 @@ Owner approved big three release (Jobs, Studio, Article). Scene and local hubs r
 
 ### Data consolidation foundation
 Canonical geography generator derives server and browser city records from existing studio registry; city ID resolver and conflicting location token rejection. Employer read model carries stable office city IDs; studioIdentity helper retains exact evidence match. No new employer facts, jobs, physical DB migration, or user-facing changes. Current seven cities only; source validation and broader region aliases, integration, inventory automation pending. Production unchanged.
+
+### Inventory synchronization reliability
+Staged durable least-recent-attempt rotation, health table/API, source timestamp preservation, five-hour snapshot window aligned with four-hour cache and 17-shard rotation; reject incomplete and truncated sources, shorten partial AI cache. No schema/cron/config activated. Proposed age tradeoff requires review; real D1/cache/worker tests and quota review pending. Editorial expiry unchanged. Production unchanged.

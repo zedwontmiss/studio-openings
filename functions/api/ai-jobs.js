@@ -128,7 +128,7 @@ export async function onRequestGet({request}){
    for(const job of o.value)if(!seen.has(job.url)){seen.add(job.url);jobs.push(job);}
  });
  if(!ok.length)return new Response(JSON.stringify({error:'Official sources unavailable',failed}),{status:503,headers:{...HEAD,'cache-control':'no-store'}});
- const response=new Response(JSON.stringify({jobs:jobs.slice(0,100),sources:ok,failed,updatedAt:new Date(now).toISOString(),geoPolicy:POLICY_VERSION}),{headers:{...HEAD,'cache-control':'public, max-age=300, s-maxage=14400'}});
+ const response=new Response(JSON.stringify({jobs:jobs.slice(0,100),truncated:jobs.length>100,sources:ok,failed,updatedAt:new Date(now).toISOString(),geoPolicy:POLICY_VERSION}),{headers:{...HEAD,'cache-control':failed.length||jobs.length>100?'public, max-age=60, s-maxage=300':'public, max-age=300, s-maxage=14400'}});
  if(cache)try{await cache.put(key,response.clone());}catch(_){}
  return response;
 }
