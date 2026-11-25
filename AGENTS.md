@@ -206,3 +206,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Owner approved recurring maintenance. Stage GitHub Actions Preview-only scheduler with explicit repository variable kill switch and separate dedicated secrets. One snapshot shard per ten minutes and one approved board per thirty minutes, bounded timeout and no retry burst. Default branch main required for live schedules; no merge or activation without actual D1 isolation verification. No recurring studio publication, outreach or alert email.
 
 - Owner wants compact Scene studio lists, names only. Put Google Maps search links on recorded office locations in studio profiles; no embedded maps, paid API, street address inference or new location verification.
+
+- Scene city studio names: owner approved compact 15px size, use bold Helvetica (700) instead of regular; retain spacing and names-only layout.
