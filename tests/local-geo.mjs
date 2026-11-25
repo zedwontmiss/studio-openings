@@ -17,3 +17,5 @@ assert.equal(m({location:'London, England, Canada'},'london'),false);
 assert.equal(m({location:'Los Angeles, CA'},'los-angeles'),false);
 assert.equal(m({location:'Los Angeles, CA, United States'},'los-angeles'),true);
 assert.equal(ctx.SOAPPLocalGeo.cityId({location:'London, England, United Kingdom'}),'gb--england--london');
+
+assert.equal(m({location:'Toronto, Ontario, Canada'},'toronto'),true);assert.equal(m({location:'Portland, Maine, United States'},'portland'),false);assert.equal(m({location:'Portland, Oregon, United States'},'portland'),true);assert.equal(m({location:'San Francisco, CA'},'san-francisco'),false);assert.equal(m({location:'Vancouver, Washington, United States'},'vancouver'),false);
