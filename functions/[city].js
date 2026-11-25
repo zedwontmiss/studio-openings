@@ -1,8 +1,10 @@
+import {reviewHost} from '../lib/release-scope.js';
 import {findLocal,localPage} from '../lib/local-page.js';
 import {sceneEnabled,sceneId,sceneWritesEnabled,scenePilotCity} from '../lib/scene-core.js';
 export async function onRequestGet(context){
  const city=findLocal(String(context.params?.city||''));
  if(!city)return context.next();
+ if(!reviewHost(new URL(context.request.url).hostname))return new Response('Not found',{status:404,headers:{'cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
  let scene={enabled:false,topics:[]};
  if(sceneEnabled(context)&&scenePilotCity(city.slug)){
   try{

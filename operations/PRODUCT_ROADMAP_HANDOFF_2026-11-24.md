@@ -78,3 +78,6 @@ Owner requested studio openings / jobs, studio, article, scene and existing city
 
 ### Scene community-led activation
 Owner rejected polls and requested simple noticeboard; topic details optional, title-only posts supported within existing schema constraints. Added contributor interest page using current email and outreach playbook, refined criticism/meetup rules. No actual outreach, records, credentials or flags changed. Data consolidation remains next sprint. Full tests pending.
+
+### v1 release freeze / owner review
+Owner approved big three release (Jobs, Studio, Article). Scene and local hubs remain visible on exact development hostname only, other hosts return 404 for deferred routes and remove public Scene navigation/links server-side. Studio location links retain utility via scoped Jobs. Community flags remain off, no migrations. Preview is not private authentication. Full Cloudflare runtime regression testing pending. Next data consolidation and inventory automation. Production unchanged.

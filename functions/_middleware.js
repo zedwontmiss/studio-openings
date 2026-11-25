@@ -1,3 +1,4 @@
+import {reviewHost,hiddenReleasePath,deferredPath} from '../lib/release-scope.js';
 import {LOCAL_PATHS} from '../lib/local-cities.js';
 import {seedStudioJobs} from '../lib/studio-jobs.js';
 import {canonicalAlias,publicLink} from '../lib/public-routes.js';
@@ -12,6 +13,7 @@ const pages = new Set(['/', '/privacy', '/coverage', '/scene', '/scene-guideline
 
 export async function onRequest(context) {
   const {hostname, pathname} = new URL(context.request.url);
+  if(hiddenReleasePath(hostname,pathname))return new Response('Not found',{status:404,headers:{'content-type':'text/plain; charset=utf-8','cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
   const alias=canonicalAlias(pathname,pages);
   if(alias&&['GET','HEAD'].includes(context.request.method)){
     const destination=new URL(context.request.url);destination.pathname=alias;
@@ -30,8 +32,18 @@ export async function onRequest(context) {
   }
   headers.set('X-Content-Type-Options', 'nosniff');
   let output = new Response(response.body, {status:response.status, statusText:response.statusText, headers});
-  if(publicPage&&response.status===200&&headers.get('content-type')?.startsWith('text/html')&&typeof HTMLRewriter!=='undefined'){
-    output=new HTMLRewriter().on('a[href]',{element(el){const href=el.getAttribute('href'),next=publicLink(href);if(next!==href)el.setAttribute('href',next);}}).transform(output);
+  if(response.status===200&&headers.get('content-type')?.startsWith('text/html')&&typeof HTMLRewriter!=='undefined'){
+    headers.delete('content-length');headers.delete('etag');
+    if(!reviewHost(hostname))headers.set('cache-control','no-store');
+    output=new HTMLRewriter().on('a[href]',{element(el){
+      const href=el.getAttribute('href'),next=publicLink(href);
+      if(!reviewHost(hostname)&&deferredPath(next)){
+        if(LOCAL_PATHS.includes(next.split(/[?#]/,1)[0]))el.setAttribute('href','/?filters=1&city='+encodeURIComponent(next.split(/[?#]/,1)[0].slice(1))+'#jobs');
+        else el.remove();
+        return;
+      }
+      if(next!==href)el.setAttribute('href',next);
+    }}).transform(new Response(response.body,{status:response.status,statusText:response.statusText,headers}));
   }
   const previewReady = hostname === 'development.studio-openings.pages.dev' && context.env?.PREVIEW_D1_ISOLATED === 'true';
   if (publicPage && response.status === 200 && context.request.method === 'GET' &&
