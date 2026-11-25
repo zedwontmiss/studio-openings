@@ -1019,23 +1019,26 @@
     employer.addEventListener('click',function(){openDrawer(job,employer);});
     return frag;
   }
+  // Keep a human-paced reveal, but scale each batch to the matched inventory.
+  function revealSize(total,visible){return Math.max(8,Math.ceil(total/7));}
   // A short reveal pause is intentional; native scrolling is never throttled.
   var feedJobs=[],feedBusy=false,feedTimer=null,feedVersion=0;
   function feedControls(){
     var more=!state.onlySaved&&state.visible<feedJobs.length;
+    var browse=$('job-browse-index');if(browse)browse.hidden=state.onlySaved||more||state.feedStatus==='loading';
     $('scroll-sentinel').hidden=!more;
     $('feed-progress').hidden=!more||!feedBusy;
     $('feed-end').hidden=state.onlySaved||!state.jobs.length||!feedJobs.length||more;
   }
   function appendFeed(){
     if(feedBusy||state.onlySaved||state.visible>=feedJobs.length||!$('job-drawer').hidden)return;
-    if($('scroll-sentinel').hidden||$('scroll-sentinel').getBoundingClientRect().top>window.innerHeight+160)return;
+    if($('scroll-sentinel').hidden||$('scroll-sentinel').getBoundingClientRect().top>window.innerHeight+320)return;
     feedBusy=true;var version=feedVersion;
     feedControls();
     feedTimer=setTimeout(function(){
       feedTimer=null;
       if(version!==feedVersion||state.onlySaved||!$('job-drawer').hidden){feedBusy=false;feedControls();return;}
-      var next=Math.min(feedJobs.length,state.visible+8),frag=document.createDocumentFragment();
+      var next=Math.min(feedJobs.length,state.visible+revealSize(feedJobs.length,state.visible)),frag=document.createDocumentFragment();
       feedJobs.slice(state.visible,next).forEach(function(job){frag.appendChild(rowFor(job));});
       $('job-list').appendChild(frag);
       state.visible=next;feedBusy=false;feedControls();
@@ -1045,7 +1048,7 @@
   }
   function render(){
     preserveSearchNavigation();
-    var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href=window.location.hostname==='development.studio-openings.pages.dev'?'/'+city.slug:'/?filters=1&city='+encodeURIComponent(city.slug)+'#jobs';}
+    var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href='/?filters=1&city='+encodeURIComponent(city.slug)+'#jobs';}
     if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.onlySaved?'':state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
@@ -1063,7 +1066,7 @@
     // Saved Jobs' optional verified role and tags override parameters.
     var list=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
     $('system-message').hidden=true;
-    $('list-footnote').hidden=state.onlySaved;
+    $('list-footnote').hidden=true;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
     $('results-summary').textContent=state.onlySaved?'Saved jobs':state.review?'Official firm source review · 17 Nov 2026':'Current listings';
     var wasOpen=!$('job-drawer').hidden;
@@ -1095,6 +1098,8 @@
 
 
 
+  var jobsNav=document.querySelector('.so-primary a[aria-current="page"]');
+  if(jobsNav)jobsNav.addEventListener('click',function(e){if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var dest=new URL(jobsNav.href,location.href);if(dest.pathname===location.pathname&&dest.search===location.search&&!location.hash){e.preventDefault();window.scrollTo(0,0);}});
   $('search').addEventListener('input',function(){state.query=this.value.trim();state.visible=10;renderSearchFromTop();});
   $('region').addEventListener('change',function(){state.region=this.value;state.visible=10;render();});
   $('job-type').addEventListener('change',function(){state.type=this.value;state.visible=10;render();});
@@ -1103,7 +1108,7 @@
   $('sort').addEventListener('change',function(){state.sort=this.value;state.visible=10;render();});
   $('saved-toggle').addEventListener('click',function(){toggleSavedView();});
   $('reset').addEventListener('click',reset);$('empty-reset').addEventListener('click',reset);
-  // One visitor scroll triggers one eight-job reveal; no observer cascade.
+  // One visitor scroll triggers one proportional reveal; no observer cascade.
   window.addEventListener('scroll',appendFeed,{passive:true});
   window.addEventListener('resize',function(){
     if(document.documentElement.scrollHeight<=window.innerHeight+10)appendFeed();
@@ -1284,7 +1289,17 @@
       }
       // Passive updates must not dismiss an open vacancy or change its scroll.
       if(!$('job-drawer').hidden){deferredFeedRender=true;return;}
-      deferredFeedRender=false;render();
+      deferredFeedRender=false;
+      if(!state.onlySaved&&window.pageYOffset>120&&feedJobs.length){
+        var updated=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
+        var byId=Object.create(null),used=Object.create(null);
+        updated.forEach(function(j){byId[j.id]=j;});
+        var oldVisible=feedJobs.slice(0,state.visible),kept=oldVisible.filter(function(j){return !!byId[j.id];});
+        if(kept.length===oldVisible.length){
+          feedJobs=kept.map(function(j){used[j.id]=true;return byId[j.id];}).concat(updated.filter(function(j){return !used[j.id];}));
+          state.visible=kept.length;feedControls();
+        }else render();
+      }else render();
       if(final||!jobIdFromUrl())syncJobFromUrl();
     }
     function schedule(){

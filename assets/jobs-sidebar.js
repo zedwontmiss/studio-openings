@@ -18,7 +18,7 @@ function make(id){
  }
  select.addEventListener('change',refresh);label.hidden=true;select.hidden=true;wrap.classList.add('sidebar-enhanced');items.push(refresh);refresh();
 }
-['region','work-mode','job-type','sort'].forEach(make);
+try{['region','work-mode','job-type','sort'].forEach(make);}catch(e){d.body.classList.add('sidebar-fallback');}
 window.SOAPPTypeFilters={refresh:function(){items.forEach(function(fn){fn();});}};
 var s=d.getElementById('search');if(s)s.addEventListener('input',window.SOAPPTypeFilters.refresh);
 })();

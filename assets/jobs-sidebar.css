@@ -22,3 +22,8 @@
 
 .sidebar .sidebar-enhanced > .sidebar-current{display:block;padding-left:9px;font-size:12px;color:#666;margin-top:6px}
 .sidebar .sidebar-enhanced > .sidebar-current[hidden],.sidebar .sidebar-choice[open] + .sidebar-current{display:none!important}
+
+/* Hide legacy native controls from first paint; only reveal completed enhanced groups. */
+.sidebar .compact-select:not(.sidebar-enhanced){visibility:hidden;min-height:24px}
+.sidebar .compact-select.sidebar-enhanced{visibility:visible}
+.sidebar-fallback .sidebar .compact-select:not(.sidebar-enhanced){visibility:visible}
