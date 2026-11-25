@@ -72,3 +72,6 @@ Added bounded retention dry-run/purge on isolated Preview D1, explicit operator 
 
 ### Scene brand and pilot scope
 Promoted Scene to fourth primary nav, /scene gateway, legacy /cities alias. London and New York allowlisted on both public read and write APIs and city server rendering; flags remain disabled. Draft community guidelines and private editorial starter prompts added, no fabricated posts or engagement. Retention owner-approved; privacy/security/isolated DB and browser checks pending. Production unchanged.
+
+### Section masthead
+Owner requested studio openings / jobs, studio, article, scene and existing city names. Brand links About, S/O links Contact; remove standalone contact/more from shared header. Updated static pages, generated templates and profiles, dynamic public header helper and Local header. Existing About content retained pending credo copy approval. Full browser and regression tests pending. Production unchanged.
