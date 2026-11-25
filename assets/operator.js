@@ -82,7 +82,7 @@
   }else if(kind==='approved'){
    actionButton(actions,'Close vacancy','',function(){showAction('close',s);});
    actionButton(actions,'Reverify','',function(){showAction('reverify',s);});
-   if(s.kind==='employer')actionButton(actions,'Copy publication email','',function(){emailDraft(s,'published');});
+   if(s.kind==='employer'){actionButton(actions,'Copy publication email','',function(){emailDraft(s,'published');});if(location.hostname==='development.studio-openings.pages.dev')actionButton(actions,'Get private management link','',function(){var session=token;fetch('/api/employer-management',{method:'POST',credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+session,'Content-Type':'application/json'},body:JSON.stringify({action:'issue',id:s.id})}).then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw Error(d.error||'Link unavailable');return d;});}).then(function(d){if(!session||session!==token)return;window.prompt('Copy this private Preview link and send only to the verified employer. Valid for 120 days.',d.url);}).catch(function(e){if(session===token){$('operation-error').hidden=false;setMessage('operation-error',e.message);}});});}
    if(campaign)actions.appendChild(el('span','status',campaign.status));
   }else if(kind==='campaigns'&&campaign){
    if(campaign.status==='active')actionButton(actions,'Pause','',function(){showAction('pause',s);});
