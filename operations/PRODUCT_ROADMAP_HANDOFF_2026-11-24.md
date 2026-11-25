@@ -96,3 +96,6 @@ Read-only candidate grouping from approved career sources and vacancy city mappi
 
 ### Studio expansion review gate
 Current branch already contained candidate discovery; added offline validation/staging and tests. Fixture checks passed with stubbed dependencies; Node/Cloudflare integration pending. No public records added. Next actual verified studio batch and generated-page validation. Prior audits remain release QA inputs, not current verified defects.
+
+### Studio acquisition batch 001
+Four researched London practices staged in operations/studio-research-batch-001.json with official evidence. No D1 source approval, active vacancy confirmation or publication. Existing registry unchanged. Next: reconcile operator sources and approve generation; expand disciplines and geographies.
