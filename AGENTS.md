@@ -170,3 +170,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Studio-first operational strategy: directory membership separate from vacancy ingestion. Operator Studios workspace supports research and browser-local draft edits/export/import; not a live publishing system. Draft relationship and sourcing intentions have no side effects. No outreach or production merge.
 
 - Persistent studio drafts: isolated Preview D1 only, explicit initialization, authenticated same-origin writes, revision conflict protection, evidence staging. Public registry remains generated/static; reviewed draft export is not publication. No schema activation by commit alone.
+
+- Reviewed studio publication batches can be exported from authenticated Preview workspace. Use operations/publish-studio-batch.mjs in clean development worktree, dry-run first, explicit --apply regenerates index/profiles/routes/search/sitemap/workspace. Independently verify evidence and test before committing. No automatic production publish or job ingestion. Do not commit private draft exports.
