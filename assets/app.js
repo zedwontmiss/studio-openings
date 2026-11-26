@@ -161,8 +161,14 @@
       ? SHORT_TAG_LABELS[word] : word;
   }
   function styleTag(tag,word){tag.style.backgroundColor='transparent';}
+  function recentPosting(job,now){
+   const value=job&&job.posted;
+   if(typeof value!=='string'||job.dateKind!=='posted'||!/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(value))return false;
+   const day=Date.parse(value.slice(0,10)+'T00:00:00Z'),posted=Date.parse(value);
+   return Number.isFinite(day)&&new Date(day).toISOString().slice(0,10)===value.slice(0,10)&&Number.isFinite(posted)&&posted<=now&&now-posted<=90*86400000;
+  }
   function displayableJob(job){
-    if(!job||!job.id||!job.title||!job.company)return false;
+    if(!job||!job.id||!job.title||!job.company||!recentPosting(job,Date.now()))return false;
     if(job.expiresAt && !(Date.parse(job.expiresAt)>Date.now()))return false;
     if((job.applicationMethod||'external')==='external'&&!safeUrl(job.url))return false;
     return categoryFor(job)!=='not-creative'&&jobKeywords(job).length>0;
