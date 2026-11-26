@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {qualifyStudio} from '../lib/studio-acquisition-gate.js';
 import {reviewStudio} from '../lib/studio-review.js';
 const root=fileURLToPath(new URL('../',import.meta.url)),file=p=>new URL('../'+p,import.meta.url);
 const read=p=>readFileSync(file(p),'utf8'),write=(p,s)=>writeFileSync(file(p),s);
@@ -12,9 +13,11 @@ const today=new Date().toISOString().slice(0,10);
 assert.equal(batch.version,1);assert.equal(batch.status,'reviewed-not-published');assert.ok(Array.isArray(batch.records)&&batch.records.length>0&&batch.records.length<=2000);
 const accepted=[];
 for(const r of batch.records){
+ const qualification=qualifyStudio(r,batch.qualifications?.[r.id],today);
+ assert.ok(qualification.ok,r.name+': '+qualification.errors.join('; '));
  const website=new URL(r.website);assert.equal(website.protocol,'https:');
  const result=reviewStudio({status:'review-required',name:r.name,domain:website.hostname.replace(/^www\./,''),careerURL:r.source?.url},{decision:'approve',record:r,identityEvidence:r.website,officeEvidenceReviewed:true,creativeScopeReviewed:true},current.studios.concat(accepted),today);
- assert.ok(result.ok,r.name+': '+(result.errors||[]).join('; '));accepted.push(result.record);
+ assert.ok(result.ok,r.name+': '+(result.errors||[]).join('; '));accepted.push({...result.record,foundingYear:r.foundingYear});
 }
 console.log(accepted.length+' validated additions; '+(current.studios.length+accepted.length)+' total.');
 if(!process.argv.includes('--apply'))process.exit(0);

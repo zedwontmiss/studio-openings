@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';import {qualifyStudio} from '../lib/studio-acquisition-gate.js';
+const today='2026-11-26',e={url:'https://example.com/about',reviewedOn:today,confirmed:true},r={website:'https://example.com',foundingYear:2021,offices:[{country:'CA',city:'Montreal'}]},v={identity:e,portfolio:e,operatingStatus:e,founding:e,relationships:[{...e,kind:'editorial',rationale:'Distinctive original work for an editorial feature.'}]};
+assert.ok(qualifyStudio(r,v,today).ok);
+assert.ok(!qualifyStudio({...r,offices:[{country:'ZA',city:'Cape Town'}]},v,today).ok);
+assert.ok(!qualifyStudio({...r,foundingYear:2016},v,today).ok);
+assert.ok(qualifyStudio({...r,foundingYear:2016},{...v,foundingDate:'2016-12-01'},today).ok);
+assert.ok(!qualifyStudio({...r,foundingYear:2016},{...v,foundingDate:'2016-11-26'},today).ok);
+assert.ok(!qualifyStudio(r,{...v,relationships:[]},today).ok);
+assert.ok(!qualifyStudio(r,{...v,founding:{...e,url:'https://unrelated.com/'}},today).ok);
+assert.ok(!qualifyStudio(r,{...v,relationships:[{...e,kind:'recruitment',rationale:'Potential recruitment fit for studio team.'}]},today).ok);
+assert.ok(!qualifyStudio({...r,foundingYearNote:'Conflict'},v,today).ok);
+console.log('Studio acquisition qualification passed.');
