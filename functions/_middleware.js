@@ -37,7 +37,9 @@ export async function onRequest(context) {
   if(response.status===200&&headers.get('content-type')?.startsWith('text/html')&&typeof HTMLRewriter!=='undefined'){
     headers.delete('content-length');headers.delete('etag');
     headers.set('cache-control','no-store');
-    output=new HTMLRewriter().on('a[href]',{element(el){
+    const rewriter=new HTMLRewriter();
+    if(STUDIO_PATHS.includes(path))rewriter.on('.studio-careers',{element(el){el.remove();}});
+    output=rewriter.on('a[href]',{element(el){
       const href=el.getAttribute('href'),next=publicLink(href);
       if(hiddenReleasePath(hostname,next)){
         if(LOCAL_PATHS.includes(next.split(/[?#]/,1)[0]))el.setAttribute('href','/?filters=1&city='+encodeURIComponent(next.split(/[?#]/,1)[0].slice(1))+'#jobs');

@@ -11,3 +11,5 @@ assert.equal(jobs.length,1);assert.ok(studioJobsHTML(jobs).includes('&lt;script&
 console.log('Studio association tests passed.');
 
 assert.equal(studioIdentity(job).id,'framestore');assert.ok(studioIdentity(job).cityIds.includes('gb--england--london'));assert.equal(studioIdentity({...job,company:'Unknown'}),null);
+
+assert.match(studioJobsHTML([{...jobs[0],detailUrl:'/jobs/SO-TEST123'}]),/href="\/jobs\/SO-TEST123"/);
