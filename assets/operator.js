@@ -408,7 +408,7 @@
  $('scene-refresh').addEventListener('click',function(){loadScene();});
 
  var inventoryRevision=0;
- function clearInventoryHealth(){probeRevision++;$('inventory-probe-result').textContent='';$('inventory-probe-run').disabled=false;clearCoverage();inventoryRevision++;$('inventory-health-list').textContent='';$('inventory-health-result').textContent='';$('inventory-health-refresh').disabled=false;}
+ function clearInventoryHealth(){batchRevision++;batchRunning=false;$('inventory-probe-all').disabled=false;$('inventory-probe-stop').disabled=true;$('inventory-probe-summary').textContent='';$('inventory-probe-report').textContent='';probeRevision++;$('inventory-probe-result').textContent='';$('inventory-probe-run').disabled=false;clearCoverage();inventoryRevision++;$('inventory-health-list').textContent='';$('inventory-health-result').textContent='';$('inventory-health-refresh').disabled=false;}
  function loadInventoryHealth(){
   if(!token||selectedTab!=='sources')return;
   var session=token,rev=++inventoryRevision,host=$('inventory-health-list');host.textContent='';$('inventory-health-refresh').disabled=true;
@@ -434,7 +434,21 @@
  $('studio-candidates-copy').addEventListener('click',function(){if(candidateData&&token)setMessage('studio-candidates-result',copy(JSON.stringify(candidateData,null,2))?'Candidate export copied for review; not a publication file.':'Clipboard unavailable.');});
  $('inventory-health-refresh').addEventListener('click',loadInventoryHealth);
  var probeRevision=0;
- $('inventory-probe-run').addEventListener('click',function(){var session=token,rev=++probeRevision,shard=$('inventory-probe-shard').value,btn=$('inventory-probe-run');if(!session||selectedTab!=='sources')return;btn.disabled=true;setMessage('inventory-probe-result','Testing '+shard+'…');function current(){return token===session&&rev===probeRevision&&selectedTab==='sources';}fetch('/api/inventory-probe?shard='+encodeURIComponent(shard),{credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+session}}).then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw Error(d.error||'Test unavailable');return d;});}).then(function(d){if(!current())return;setMessage('inventory-probe-result',d.source+' — '+d.state+(d.eligibleCount===null?' · eligible count unknown':' · '+d.eligibleCount+' unique dated eligible jobs · '+d.duplicates+' duplicates · '+d.undatedOrOld+' undated or old · '+d.filtered+' filtered · source timestamp '+d.updatedAt)+'. No snapshot saved.');}).catch(function(e){if(current())setMessage('inventory-probe-result',e.message);}).then(function(){if(current())btn.disabled=false;});});
+ var batchRevision=0,batchRunning=false,batchStop=false;
+ $('inventory-probe-stop').addEventListener('click',function(){batchStop=true;this.disabled=true;});
+ $('inventory-probe-all').addEventListener('click',function(){
+  if(!token||selectedTab!=='sources'||batchRunning||$('inventory-probe-run').disabled)return;
+  var session=token,rev=++batchRevision,keys=Array.prototype.map.call($('inventory-probe-shard').options,function(o){return o.value;}),done=0,valid=0,unknown=0,total=0,dupes=0,old=0;
+  batchRunning=true;batchStop=false;$('inventory-probe-all').disabled=true;$('inventory-probe-run').disabled=true;$('inventory-probe-stop').disabled=false;$('inventory-probe-report').textContent='';
+  function current(){return token===session&&rev===batchRevision&&selectedTab==='sources';}
+  function summary(s){setMessage('inventory-probe-summary',s+' · '+done+'/'+keys.length+' tested · '+valid+' valid · '+unknown+' unavailable or incomplete · '+total+' eligible across valid shards (before cross-shard deduplication) · '+dupes+' within-shard duplicates · '+old+' undated or old. No snapshots saved.');}
+  function finish(s){if(!current())return;batchRunning=false;$('inventory-probe-all').disabled=false;$('inventory-probe-run').disabled=false;$('inventory-probe-stop').disabled=true;summary(s);}
+  function next(){if(!current())return;if(batchStop||done===keys.length){finish(batchStop?'Stopped':'Completed');return;}var key=keys[done];summary('Testing '+key);
+   fetch('/api/inventory-probe?shard='+encodeURIComponent(key),{credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+session}}).then(function(r){if(r.status===401||r.status===403)throw Error('Operator access expired');if(!r.ok)return {state:'request failed',eligibleCount:null};return r.json();}).then(function(d){if(!current())return;done++;if(d.state==='valid'&&typeof d.eligibleCount==='number'){valid++;total+=d.eligibleCount;dupes+=d.duplicates||0;old+=d.undatedOrOld||0;}else unknown++;var item=el('article','record'),info=el('div');info.appendChild(el('h3','',key));info.appendChild(el('p','',d.state+(d.eligibleCount===null||d.eligibleCount===undefined?' · eligible count unknown':' · '+d.eligibleCount+' eligible')));item.appendChild(info);$('inventory-probe-report').appendChild(item);next();}).catch(function(e){if(current())finish('Interrupted: '+e.message);});
+  }next();
+ });
+
+ $('inventory-probe-run').addEventListener('click',function(){var session=token,rev=++probeRevision,shard=$('inventory-probe-shard').value,btn=$('inventory-probe-run');if(!session||selectedTab!=='sources')return;btn.disabled=true;$('inventory-probe-all').disabled=true;setMessage('inventory-probe-result','Testing '+shard+'…');function current(){return token===session&&rev===probeRevision&&selectedTab==='sources';}fetch('/api/inventory-probe?shard='+encodeURIComponent(shard),{credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+session}}).then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw Error(d.error||'Test unavailable');return d;});}).then(function(d){if(!current())return;setMessage('inventory-probe-result',d.source+' — '+d.state+(d.eligibleCount===null?' · eligible count unknown':' · '+d.eligibleCount+' unique dated eligible jobs · '+d.duplicates+' duplicates · '+d.undatedOrOld+' undated or old · '+d.filtered+' filtered · source timestamp '+d.updatedAt)+'. No snapshot saved.');}).catch(function(e){if(current())setMessage('inventory-probe-result',e.message);}).then(function(){if(current()){btn.disabled=false;$('inventory-probe-all').disabled=false;}});});
 
 
  var workspaceData=null,workspaceDrafts=[],workspaceLimit=30,workspaceEdit='',workspaceRevision=0;
