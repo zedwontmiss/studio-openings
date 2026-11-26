@@ -554,7 +554,8 @@
           "path": "/studio",
           "label": "Explore the Studio directory"
         }
-      ]
+      ],
+      "author": "Falah Ibrahim"
     }
   ]
 }

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {compile,build} from '../operations/build-editorial.mjs';
+import {compile,build,authorAvatar} from '../operations/build-editorial.mjs';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 build(true);
 const source=JSON.parse(read('editorial/published.json')),index=read('editorial/index.template.html'),reader=read('editorial/reader.template.html');
@@ -11,3 +11,5 @@ assert.throws(()=>compile({articles:[{...sample,slug:'../escape'}]},index,reader
 assert.throws(()=>compile({articles:[{...sample,related:[{label:'bad',path:'//evil.example'}]}]},index,reader));
 assert.throws(()=>compile({articles:[{slug:'private-draft',status:'unpublished',text:'private'}]},index,reader));
 console.log('Editorial compiler, stale outputs, publication and escaping tests passed.');
+
+assert.equal(authorAvatar('Falah Ibrahim').initials,'FI');assert.deepEqual(authorAvatar('Falah Ibrahim'),authorAvatar('Falah Ibrahim'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('<strong>Falah Ibrahim</strong>'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('"author":{"@type":"Person","name":"Falah Ibrahim"}'));
