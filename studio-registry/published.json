@@ -2762,6 +2762,310 @@
       "jobQuery": "LINNI",
       "website": "https://linni.co.uk/",
       "foundingYear": 2020
+    },
+    {
+      "id": "ogv-studio",
+      "slug": "ogv-studio",
+      "name": "OGV Studio",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Typography and publishing",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "NL",
+          "region": "North Holland",
+          "city": "Amsterdam",
+          "sourceUrl": "https://ogvstudio.com/About-1",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "nl--north-holland--amsterdam"
+        }
+      ],
+      "source": {
+        "url": "https://ogvstudio.com/About-1",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent practice founded in 2020, combining graphic design, typography, publishing and artistic research.",
+      "jobQuery": "OGV Studio",
+      "website": "https://ogvstudio.com/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "77-media",
+      "slug": "77-media",
+      "name": "77 Media",
+      "disciplines": [
+        "fashion",
+        "motion"
+      ],
+      "summary": "Photography and film production",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.77mediaofficial.net/studio",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://www.77mediaofficial.net/studio",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "London creative studio established in 2021, working across photography, music videos and campaigns.",
+      "jobQuery": "77 Media",
+      "website": "https://www.77mediaofficial.net/",
+      "foundingYear": 2021
+    },
+    {
+      "id": "raised-media",
+      "slug": "raised-media",
+      "name": "Raised Media Co.",
+      "disciplines": [
+        "fashion",
+        "motion"
+      ],
+      "summary": "Commercial photography and video",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://www.raisedmediaco.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://www.raisedmediaco.com/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent New York production practice founded in 2020, working across photography and video.",
+      "jobQuery": "Raised Media Co.",
+      "website": "https://www.raisedmediaco.com/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "studio-and",
+      "slug": "studio-and",
+      "name": "STUDIO&",
+      "disciplines": [
+        "visual",
+        "fashion"
+      ],
+      "summary": "Multidisciplinary creative direction",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://www.studioandandand.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        },
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.studioandandand.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        },
+        {
+          "country": "US",
+          "region": "California",
+          "city": "Los Angeles",
+          "sourceUrl": "https://www.studioandandand.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--california--los-angeles"
+        }
+      ],
+      "source": {
+        "url": "https://www.studioandandand.com/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent multidisciplinary creative studio founded in 2019 by Kate Foley and Alexandra Cronan.",
+      "jobQuery": "STUDIO&",
+      "website": "https://www.studioandandand.com/",
+      "foundingYear": 2019
+    },
+    {
+      "id": "boerum-studios",
+      "slug": "boerum-studios",
+      "name": "Boerum Studios",
+      "disciplines": [
+        "fashion",
+        "motion"
+      ],
+      "summary": "Photography and creative production",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "Brooklyn",
+          "sourceUrl": "https://www.boerumstudios.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--brooklyn"
+        }
+      ],
+      "source": {
+        "url": "https://www.boerumstudios.com/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Brooklyn production studio founded in 2021 by photographer and producer Oliver Covrett.",
+      "jobQuery": "Boerum Studios",
+      "website": "https://www.boerumstudios.com/",
+      "foundingYear": 2021
+    },
+    {
+      "id": "bean-studios",
+      "slug": "bean-studios",
+      "name": "Bean Studios",
+      "disciplines": [
+        "fashion"
+      ],
+      "summary": "Design and editorial photography",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.beanstudios.co.uk/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://www.beanstudios.co.uk/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent photography studio founded in 2018, documenting contemporary design culture.",
+      "jobQuery": "Bean Studios",
+      "website": "https://www.beanstudios.co.uk/",
+      "foundingYear": 2018
+    },
+    {
+      "id": "studio-vrij",
+      "slug": "studio-vrij",
+      "name": "Studio Vrij",
+      "disciplines": [
+        "web",
+        "culture"
+      ],
+      "summary": "Immersive and mixed reality",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "NL",
+          "region": "North Holland",
+          "city": "Amsterdam",
+          "sourceUrl": "https://www.studio-vrij.com/en/over-ons",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "nl--north-holland--amsterdam"
+        }
+      ],
+      "source": {
+        "url": "https://www.studio-vrij.com/en/over-ons",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Amsterdam creative technology practice founded in 2020, producing virtual and mixed-reality experiences.",
+      "jobQuery": "Studio Vrij",
+      "website": "https://www.studio-vrij.com/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "nxt-museum",
+      "slug": "nxt-museum",
+      "name": "Nxt Museum",
+      "disciplines": [
+        "museum",
+        "culture"
+      ],
+      "summary": "Immersive art and exhibitions",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "NL",
+          "region": "North Holland",
+          "city": "Amsterdam",
+          "sourceUrl": "https://nxtmuseum.com/about-nxt-museum",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "nl--north-holland--amsterdam"
+        }
+      ],
+      "source": {
+        "url": "https://nxtmuseum.com/about-nxt-museum",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Experimental art institution founded in 2019, focusing on immersive work at the intersection of art, sound and technology.",
+      "jobQuery": "Nxt Museum",
+      "website": "https://nxtmuseum.com/",
+      "foundingYear": 2019
+    },
+    {
+      "id": "antinomy",
+      "slug": "antinomy",
+      "name": "Antinomy Studio",
+      "disciplines": [
+        "visual",
+        "web"
+      ],
+      "summary": "Art direction and brand design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "NL",
+          "region": "North Holland",
+          "city": "Amsterdam",
+          "sourceUrl": "https://www.antinomy.studio/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "nl--north-holland--amsterdam"
+        }
+      ],
+      "source": {
+        "url": "https://www.antinomy.studio/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent creative practice founded in 2019, working across contemporary brand experiences.",
+      "jobQuery": "Antinomy Studio",
+      "website": "https://www.antinomy.studio/",
+      "foundingYear": 2019
     }
   ]
 }
