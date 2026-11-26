@@ -74,3 +74,5 @@
 .so-editorial-selected h2{font:700 26px/1.15 Helvetica,Arial,sans-serif;letter-spacing:-.025em;margin:0 0 12px}
 .so-editorial-archive-label{font:700 12px Helvetica,Arial,sans-serif;margin:28px 0 8px}
 @media(max-width:700px){.so-editorial-lead{padding:22px 18px}.so-editorial-lead h2{font-size:34px}.so-editorial-selection{display:block;margin:22px 0}.so-editorial-selected{margin:0 0 18px}.so-editorial-selected h2{font-size:23px}}
+
+.so-editorial-contribute{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:12px 0 20px;font:14px/1.5 Helvetica,Arial,sans-serif}.so-editorial-contribute p{margin:0}.so-editorial-contribute a{font-weight:700;color:#111;white-space:nowrap}.editorial-reader + .so-editorial-contribute{box-sizing:border-box;max-width:740px;margin:0 auto 28px;padding:0 24px}@media(max-width:700px){.so-editorial-contribute{font-size:12px;flex-wrap:wrap}}
