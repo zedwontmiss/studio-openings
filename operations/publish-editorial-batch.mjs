@@ -15,5 +15,4 @@ console.log(batch.articles.length+' validated independent articles; '+next.artic
 if(!process.argv.includes('--apply'))process.exit(0);
 assert.equal(execFileSync('git',['branch','--show-current'],{cwd:root,encoding:'utf8'}).trim(),'development');assert.equal(execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim(),'','Clean worktree required');
 writeFileSync(file('editorial/published.json'),JSON.stringify(next,null,2)+'\n');build(false);
-writeFileSync(file('lib/editorial-workspace-index.js'),'// Generated from published editorial registry; public metadata only.\nexport const EDITORIAL_WORKSPACE_INDEX='+JSON.stringify(next.articles.filter(a=>a.status==='published').map(({slug,title,category,date})=>({slug,title,category,date})))+';\n');
 console.log('Review generated changes and test before explicit development commit. No deployment performed.');
