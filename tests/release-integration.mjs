@@ -60,7 +60,7 @@ for(const path of ['/about','/disciplines/architecture','/jobs/'+employerId,'/op
 }
 let injected='';
 globalThis.HTMLRewriter=class {
-  on(selector,handler){if(selector==='head')handler.element({append(value){if(value.includes('/assets/traffic.js'))injected=value;},setInnerContent(){}});else if(selector==='a[href]')handler.element({getAttribute(){return '/scene';},remove(){},setAttribute(){}});else if(selector==='#job-list')handler.element({setInnerContent(){}});else assert.fail('Unexpected selector: '+selector);return this;}
+  on(selector,handler){if(selector==='head')handler.element({append(value){if(value.includes('/assets/traffic.js'))injected=value;},setInnerContent(){}});else if(selector==='a[href]')handler.element({getAttribute(){return '/scene';},remove(){},setAttribute(){}});else if(selector==='[data-signal-contact]')handler.element({remove(){}});else if(selector==='body')handler.element({append(){}});else if(selector==='#job-list')handler.element({setInnerContent(){}});else assert.fail('Unexpected selector: '+selector);return this;}
   transform(response){return response;}
 };
 for(const [settings,headers,enabled] of [[env,{},true],[{...env,TRAFFIC_ENABLED:'false'},{},false],[{...env,PREVIEW_D1_ISOLATED:'false'},{},false],[env,{DNT:'1'},false]]){

@@ -634,6 +634,15 @@
     if(value==='part-time')return /part[\s-]?time/.test(t);
     return t.indexOf(value)!==-1;
   }
+  function structuredJobQuery(query){
+    var q=String(query||'').trim().toLowerCase().replace(/\s+/g,' ');
+    var m=q.match(/^(.+?)\s+jobs?\s+in\s+(.+)$/);
+    if(!m)return null;
+    var labels={"architecture":"Architecture","interior":"Interior design","industrial":"Industrial design","product":"Product design","visual":"Graphic design","motion":"Motion design","fashion":"Fashion","web":"Web design","museum":"Museum","culture":"Arts and culture"},country=m[2],role=Object.keys(labels).filter(function(k){return labels[k].toLowerCase()===m[1];})[0];
+    var aliases={'us':'US','usa':'US','u.s.':'US','uk':'GB','u.k.':'GB'};
+    var code=aliases[country]||Object.keys(countryNames).filter(function(k){return countryNames[k].toLowerCase()===country;})[0];
+    if(!role||!code)return null;return {role:role,code:code};
+  }
   function eligible(job,verifiedRole,verifiedTags){
     var role=(typeof verifiedRole==='string'&&roleLabels[verifiedRole])?verifiedRole:categoryFor(job);
     if(engineeringTitle(job.title)||role==='not-creative')return false;
@@ -647,9 +656,11 @@
     if(state.hasPay&&!trim(job.salary))return false;
     var searchableTags=Array.isArray(verifiedTags)?verifiedTags:jobSearchTags(job);
     var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,searchableTags.join(' '),searchableTags.map(shortTagLabel).join(' ')].join(' ').toLowerCase();
+    var structured=structuredJobQuery(state.query);
+    if(structured)return (role===structured.role||jobDisciplines(job).indexOf(structured.role)>=0)&&countryMatch(job,structured.code);
     return !state.query||state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
   }
-  function effectiveSort(){return state.sort==='auto'?(state.query?'relevant':'newest'):state.sort;}
+  function effectiveSort(){return state.sort==='auto'?(state.query&&!structuredJobQuery(state.query)?'relevant':'newest'):state.sort;}
   function relevanceScore(job){
     var q=state.query.toLowerCase().trim().replace(/\s+/g,' '),title=trim(job.title).toLowerCase(),tags=jobSearchTags(job).join(' ').toLowerCase(),company=trim(job.company).toLowerCase(),place=trim(job.location).toLowerCase();
     if(!q)return 0;

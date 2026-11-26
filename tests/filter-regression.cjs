@@ -89,3 +89,5 @@ assert.deepStrictEqual(specialty.jobKeywords({role:'fashion',title:'Photographer
 assert.deepStrictEqual(specialty.jobKeywords({role:'fashion',title:'Editorial Photo Retoucher',tags:['Photography']}),['Photography','Retouching']);
 assert.deepStrictEqual(specialty.jobKeywords({role:'web',title:'Creative Developer',tags:['Web Design']}),['Creative Technology']);
 assert.deepStrictEqual(specialty.jobKeywords({role:'web',title:'Web Designer'}),['Web Design']);
+
+const structured=make({...base,query:'Motion design jobs in US'});assert.deepStrictEqual(jobs.filter(j=>structured.eligible(j)).map(j=>j.id),['motion']);const full=make({...base,query:'Motion design jobs in United States'});assert.deepStrictEqual(jobs.filter(j=>full.eligible(j)).map(j=>j.id),['motion']);assert(!full.eligible({title:'Electrical Designer',role:'motion',location:'United States'}));
