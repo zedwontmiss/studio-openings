@@ -1961,6 +1961,162 @@
       "overview": "Creative production practice working across visual effects, design and moving image.",
       "jobQuery": "The Mill",
       "website": "https://www.themill.com/"
+    },
+    {
+      "id": "mighty-fine",
+      "slug": "mighty-fine",
+      "name": "Mighty Fine",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Brand strategy and creative direction",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://mightyfinestudio.com/studio/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://mightyfinestudio.com/studio/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent creative studio established in 2025, working across identity, campaigns and brand experiences.",
+      "jobQuery": "Mighty Fine",
+      "website": "https://mightyfinestudio.com/",
+      "foundingYear": 2025
+    },
+    {
+      "id": "ordinal",
+      "slug": "ordinal",
+      "name": "ORDINAL",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Brand and packaging design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "KR",
+          "region": "Seoul",
+          "city": "Seoul",
+          "sourceUrl": "https://ordinal.kr/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "kr--seoul--seoul"
+        }
+      ],
+      "source": {
+        "url": "https://ordinal.kr/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent Seoul practice launched in 2026 with a focus on brand and packaging design.",
+      "jobQuery": "ORDINAL",
+      "website": "https://ordinal.kr/",
+      "foundingYear": 2026
+    },
+    {
+      "id": "wombot",
+      "slug": "wombot",
+      "name": "WOMBOT",
+      "disciplines": [
+        "motion"
+      ],
+      "summary": "Independent animation",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "AU",
+          "region": "Victoria",
+          "city": "Melbourne",
+          "sourceUrl": "https://wombot.studio/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "au--victoria--melbourne"
+        }
+      ],
+      "source": {
+        "url": "https://wombot.studio/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Animation studio launched in 2023 by a directing duo working across independent shorts, music videos and games.",
+      "jobQuery": "WOMBOT",
+      "website": "https://wombot.studio/",
+      "foundingYear": 2023
+    },
+    {
+      "id": "paramedia",
+      "slug": "paramedia",
+      "name": "Paramedia Studio",
+      "disciplines": [
+        "web",
+        "visual"
+      ],
+      "summary": "Web and graphic design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://paramedia.studio/about/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://paramedia.studio/about/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent creative practice founded in 2021, developing digital experiences and graphic identities.",
+      "jobQuery": "Paramedia Studio",
+      "website": "https://paramedia.studio/",
+      "foundingYear": 2021
+    },
+    {
+      "id": "martha",
+      "slug": "martha",
+      "name": "Martha",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Branding and art direction",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://www.frommartha.com/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
+        }
+      ],
+      "source": {
+        "url": "https://www.frommartha.com/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Montreal design practice founded in 2024, working across visual identity and art direction.",
+      "jobQuery": "Martha",
+      "website": "https://www.frommartha.com/",
+      "foundingYear": 2024
     }
   ]
 }
