@@ -1483,6 +1483,292 @@
       "overview": "Tokyo design practice working across objects, furniture and installations.",
       "jobQuery": "nendo",
       "website": "https://www.nendo.jp/en/"
+    },
+    {
+      "id": "wieden-kennedy",
+      "slug": "wieden-kennedy",
+      "name": "Wieden+Kennedy",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Advertising and creative direction",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "Oregon",
+          "city": "Portland",
+          "sourceUrl": "https://www.wk.com/about/office/portland/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--oregon--portland"
+        }
+      ],
+      "source": {
+        "url": "https://www.wk.com/about/office/portland/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent advertising agency working across brand campaigns and creative communications.",
+      "jobQuery": "Wieden+Kennedy",
+      "website": "https://www.wk.com/"
+    },
+    {
+      "id": "anomaly",
+      "slug": "anomaly",
+      "name": "Anomaly",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Advertising and brand strategy",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://anomaly.com/network",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        },
+        {
+          "country": "CA",
+          "region": "Ontario",
+          "city": "Toronto",
+          "sourceUrl": "https://anomaly.com/network",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "ca--ontario--toronto"
+        }
+      ],
+      "source": {
+        "url": "https://anomaly.com/network",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Creative agency combining brand strategy, advertising and communications.",
+      "jobQuery": "Anomaly",
+      "website": "https://anomaly.com/"
+    },
+    {
+      "id": "frog",
+      "slug": "frog",
+      "name": "frog",
+      "disciplines": [
+        "product",
+        "industrial"
+      ],
+      "summary": "Product and experience design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "California",
+          "city": "San Francisco",
+          "sourceUrl": "https://www.frog.co/studio/san-francisco",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--california--san-francisco"
+        }
+      ],
+      "source": {
+        "url": "https://www.frog.co/studio/san-francisco",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Design and innovation consultancy within Capgemini Invent.",
+      "jobQuery": "frog",
+      "website": "https://www.frog.co/"
+    },
+    {
+      "id": "smart-design",
+      "slug": "smart-design",
+      "name": "Smart Design",
+      "disciplines": [
+        "industrial",
+        "product"
+      ],
+      "summary": "Industrial and digital product design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "Brooklyn",
+          "sourceUrl": "https://www.smartdesignworldwide.com/jobs/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--brooklyn"
+        }
+      ],
+      "source": {
+        "url": "https://www.smartdesignworldwide.com/jobs/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Design consultancy working across physical products, digital experiences and services.",
+      "jobQuery": "Smart Design",
+      "website": "https://www.smartdesignworldwide.com/"
+    },
+    {
+      "id": "rodarte",
+      "slug": "rodarte",
+      "name": "Rodarte",
+      "disciplines": [
+        "fashion"
+      ],
+      "summary": "Fashion design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "California",
+          "city": "Los Angeles",
+          "sourceUrl": "https://shoprodarte.com/pages/about-us",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--california--los-angeles"
+        }
+      ],
+      "source": {
+        "url": "https://shoprodarte.com/pages/about-us",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Fashion label established in Los Angeles by Kate and Laura Mulleavy.",
+      "jobQuery": "Rodarte",
+      "website": "https://shoprodarte.com/"
+    },
+    {
+      "id": "panic",
+      "slug": "panic",
+      "name": "Panic",
+      "disciplines": [
+        "product",
+        "web"
+      ],
+      "summary": "Software and independent games",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "Oregon",
+          "city": "Portland",
+          "sourceUrl": "https://www.panic.com/jobs/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--oregon--portland"
+        }
+      ],
+      "source": {
+        "url": "https://www.panic.com/jobs/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent software company, game publisher and maker of the Playdate handheld system.",
+      "jobQuery": "Panic",
+      "website": "https://www.panic.com/"
+    },
+    {
+      "id": "behaviour-interactive",
+      "slug": "behaviour-interactive",
+      "name": "Behaviour Interactive",
+      "disciplines": [
+        "motion",
+        "product"
+      ],
+      "summary": "Video game development",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://www.bhvr.com/jobs/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
+        }
+      ],
+      "source": {
+        "url": "https://www.bhvr.com/jobs/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent video game developer working across PC, console and mobile games.",
+      "jobQuery": "Behaviour Interactive",
+      "website": "https://www.bhvr.com/"
+    },
+    {
+      "id": "daybreak-games",
+      "slug": "daybreak-games",
+      "name": "Daybreak Game Company",
+      "disciplines": [
+        "motion",
+        "product"
+      ],
+      "summary": "Video game development and publishing",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "California",
+          "city": "San Diego",
+          "sourceUrl": "https://www.daybreakgames.com/studios",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--california--san-diego"
+        }
+      ],
+      "source": {
+        "url": "https://www.daybreakgames.com/studios",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Game company developing and publishing online multiplayer games.",
+      "jobQuery": "Daybreak Game Company",
+      "website": "https://www.daybreakgames.com/"
+    },
+    {
+      "id": "2x4",
+      "slug": "2x4",
+      "name": "2x4",
+      "disciplines": [
+        "visual",
+        "web",
+        "interior"
+      ],
+      "summary": "Graphic design and environments",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://2x4.org/about/jobs/designer-interactive/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://2x4.org/about/jobs/designer-interactive/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Multidisciplinary design studio working across visual identities, digital media and environments.",
+      "jobQuery": "2x4",
+      "website": "https://2x4.org/"
     }
   ]
 }
