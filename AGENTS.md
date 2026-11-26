@@ -210,3 +210,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Scene city studio names: owner approved compact 15px size, use bold Helvetica (700) instead of regular; retain spacing and names-only layout.
 
 - Owner approved homepage cross-search preview cap of five matching studios and five matching articles, inclusive of highlighted matches. Highlights first only if query matches, then title relevance and stable existing order for ties. Dedicated index searches remain uncapped; no job feed changes.
+
+- Newsletter: owner selected Brevo, authenticated domain, created sender and list #3, provided public HTML embed with CAPTCHA. Dedicated /weekly review-host page only, no subscription API key or D1 subscriber duplication. Preserve form action, CAPTCHA, double opt-in settings and auto-hide. Client-side consent required; verify server-side required consent in Brevo and actual confirmation before release. No campaigns sent or production merge. Third-party scripts confined to weekly page.

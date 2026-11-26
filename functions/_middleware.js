@@ -13,6 +13,7 @@ const pages = new Set(['/', '/privacy', '/coverage', '/scene', '/scene-guideline
 
 export async function onRequest(context) {
   const {hostname, pathname} = new URL(context.request.url);
+  if(/^\/weekly(?:\.html|\/index\.html|\/)?$/i.test(pathname)&&!reviewHost(hostname))return new Response('Not found',{status:404,headers:{'cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
   if(hiddenReleasePath(hostname,pathname))return new Response('Not found',{status:404,headers:{'content-type':'text/plain; charset=utf-8','cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
   const alias=canonicalAlias(pathname,pages);
   if(alias&&['GET','HEAD'].includes(context.request.method)){
