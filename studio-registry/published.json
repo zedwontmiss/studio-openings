@@ -2117,6 +2117,367 @@
       "jobQuery": "Martha",
       "website": "https://www.frommartha.com/",
       "foundingYear": 2024
+    },
+    {
+      "id": "pandora-studio",
+      "slug": "pandora-studio",
+      "name": "Pandora Studio",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Brand identity and creative direction",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://bypandora.studio/about/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://bypandora.studio/about/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent design practice founded in 2023, developing brand identities and creative direction for businesses.",
+      "jobQuery": "Pandora Studio",
+      "website": "https://bypandora.studio/",
+      "foundingYear": 2023
+    },
+    {
+      "id": "by-default",
+      "slug": "by-default",
+      "name": "By Default",
+      "disciplines": [
+        "web",
+        "product"
+      ],
+      "summary": "Inclusive creative technology",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://bydefault.studio/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://bydefault.studio/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Creative technology studio established in 2023 with a focus on inclusive digital design.",
+      "jobQuery": "By Default",
+      "website": "https://bydefault.studio/",
+      "foundingYear": 2023
+    },
+    {
+      "id": "savoirfaire",
+      "slug": "savoirfaire",
+      "name": "SavoirFaire",
+      "disciplines": [
+        "visual",
+        "web"
+      ],
+      "summary": "Digital and branding design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "Brooklyn",
+          "sourceUrl": "https://www.savoirfaire.nyc/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--brooklyn"
+        }
+      ],
+      "source": {
+        "url": "https://www.savoirfaire.nyc/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Brooklyn creative studio founded in 2020, working across digital design and branding.",
+      "jobQuery": "SavoirFaire",
+      "website": "https://www.savoirfaire.nyc/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "gustav-studio",
+      "slug": "gustav-studio",
+      "name": "Gustav Studio",
+      "disciplines": [
+        "visual",
+        "web"
+      ],
+      "summary": "Art direction and brand design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://www.gustav-studio.com/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://www.gustav-studio.com/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent New York agency founded in 2023 by a creative duo, working across campaigns, identities and digital experiences.",
+      "jobQuery": "Gustav Studio",
+      "website": "https://www.gustav-studio.com/",
+      "foundingYear": 2023
+    },
+    {
+      "id": "sotanaka",
+      "slug": "sotanaka",
+      "name": "SOTANAKA",
+      "disciplines": [
+        "industrial"
+      ],
+      "summary": "Furniture, lighting and objects",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "JP",
+          "region": "Tokyo",
+          "city": "Tokyo",
+          "sourceUrl": "https://sotanaka.com/bio.html",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "jp--tokyo--tokyo"
+        }
+      ],
+      "source": {
+        "url": "https://sotanaka.com/bio.html",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent Tokyo design studio established in 2020 by Soichiro Tanaka, producing furniture, lighting and objects.",
+      "jobQuery": "SOTANAKA",
+      "website": "https://sotanaka.com/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "synosys-design",
+      "slug": "synosys-design",
+      "name": "Synosys Design",
+      "disciplines": [
+        "interior",
+        "visual",
+        "web"
+      ],
+      "summary": "Experimental spatial and brand design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "JP",
+          "region": "Tokyo",
+          "city": "Tokyo",
+          "sourceUrl": "https://synosys-design.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "jp--tokyo--tokyo"
+        }
+      ],
+      "source": {
+        "url": "https://synosys-design.com/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Tokyo experimental design practice founded in 2019, working across spaces, branding and experiences.",
+      "jobQuery": "Synosys Design",
+      "website": "https://synosys-design.com/",
+      "foundingYear": 2019
+    },
+    {
+      "id": "labsixfive",
+      "slug": "labsixfive",
+      "name": "LABSIXFIVE",
+      "disciplines": [
+        "visual",
+        "motion"
+      ],
+      "summary": "Illustration and CGI",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "SG",
+          "region": "Singapore",
+          "city": "Singapore",
+          "sourceUrl": "https://www.labsixfive.com/about-us",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "sg--singapore--singapore"
+        }
+      ],
+      "source": {
+        "url": "https://www.labsixfive.com/about-us",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Singapore studio founded in 2019, working across illustration, graphic design and computer-generated imagery.",
+      "jobQuery": "LABSIXFIVE",
+      "website": "https://www.labsixfive.com/",
+      "foundingYear": 2019
+    },
+    {
+      "id": "neue-graphic",
+      "slug": "neue-graphic",
+      "name": "Neue Graphic",
+      "disciplines": [
+        "visual",
+        "web"
+      ],
+      "summary": "Brand and digital design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "AU",
+          "region": "Victoria",
+          "city": "Melbourne",
+          "sourceUrl": "https://neuegraphic.co/studio",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "au--victoria--melbourne"
+        },
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://neuegraphic.co/studio",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://neuegraphic.co/studio",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent practice established in 2025, working across brand identity, digital design and creative direction from Melbourne and London.",
+      "jobQuery": "Neue Graphic",
+      "website": "https://neuegraphic.co/",
+      "foundingYear": 2025
+    },
+    {
+      "id": "emission",
+      "slug": "emission",
+      "name": "EMISSION",
+      "disciplines": [
+        "culture",
+        "interior",
+        "industrial"
+      ],
+      "summary": "Light art and installations",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "JP",
+          "region": "Tokyo",
+          "city": "Tokyo",
+          "sourceUrl": "https://www.lucent-design.co.jp/en/emission/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "jp--tokyo--tokyo"
+        }
+      ],
+      "source": {
+        "url": "https://www.lucent-design.co.jp/en/emission/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Tokyo art studio founded in 2020 by Takahiro Matsuo, creating light-based installations and objects.",
+      "jobQuery": "EMISSION",
+      "website": "https://www.lucent-design.co.jp/en/emission/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "kiq",
+      "slug": "kiq",
+      "name": "KiQ",
+      "disciplines": [
+        "product",
+        "web",
+        "visual"
+      ],
+      "summary": "Design and creative technology",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "JP",
+          "region": "Tokyo",
+          "city": "Tokyo",
+          "sourceUrl": "https://kiq.design/about/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "jp--tokyo--tokyo"
+        }
+      ],
+      "source": {
+        "url": "https://kiq.design/about/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Tokyo design studio established in 2020, working across branding, interactive experiences and technology.",
+      "jobQuery": "KiQ",
+      "website": "https://kiq.design/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "editspace",
+      "slug": "editspace",
+      "name": "Editspace",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Graphic design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "AU",
+          "region": "Victoria",
+          "city": "Melbourne",
+          "sourceUrl": "https://www.editspace.com.au/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "au--victoria--melbourne"
+        }
+      ],
+      "source": {
+        "url": "https://www.editspace.com.au/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Graphic design studio founded in 2019 in Melbourne, working with clients across music, events and other sectors.",
+      "jobQuery": "Editspace",
+      "website": "https://www.editspace.com.au/",
+      "foundingYear": 2019
     }
   ]
 }
