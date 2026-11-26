@@ -1,3 +1,4 @@
+import {engineeringTitle} from '../../lib/job-scope.js';
 import {EMPLOYER_ROWS,activeUntil} from '../../lib/job-lifecycle.js';
 import {eligibleJob} from '../../lib/seo-jobs.js';
 import {remoteEligibility,officeLocation,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
@@ -12,7 +13,7 @@ function publicJob(row,now,nativeEnabled){
  let data;
  try{data=JSON.parse(row.job_data);}catch{return null;}
  if(row.submission_type!=='employer'&&outreachHeld(data?.company,data?.url))return null;
- if(!data||typeof data!=='object'||!ROLES.has(data.role)||!data.title||!data.company||!data.location)return null;
+ if(!data||typeof data!=='object'||!ROLES.has(data.role)||!data.title||engineeringTitle(data.title)||!data.company||!data.location)return null;
  const applicationMethod=data.applicationMethod||'external';
  if(!['external','native','email'].includes(applicationMethod))return null;
  if(applicationMethod==='external'&&!validHTTPS(data.url))return null;

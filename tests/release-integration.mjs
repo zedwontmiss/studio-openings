@@ -141,5 +141,31 @@ assert.deepEqual(sql.prepare('SELECT event,total FROM traffic_daily ORDER BY eve
 assert.equal(sql.prepare('SELECT count(*) AS n FROM traffic_daily WHERE job_key=?').get(secondId).n,4);
 await count({...event,entry:false,job:'person@example.com'});
 assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM traffic_daily WHERE job_key LIKE '%@%'").get().n,0);
+
+// Exercise real operator endpoints against disposable SQLite only; no money or email.
+const pilotId='SO-TEST-PAYMENT01';
+sql.prepare("INSERT INTO job_submissions(id,status,submission_type,job_title,company,contact_email,job_data) VALUES(?,'pending','employer',?,?,?,?)").run(pilotId,data.title,data.company,'fixture@example.net',JSON.stringify({...data,url:'https://example.com/jobs/payment-pilot'}));
+sql.prepare("INSERT INTO job_orders(submission_id,tier,price_usd,status) VALUES(?,'standard',149,'pending_review')").run(pilotId);
+const paymentAct=(action,extra={})=>operator({env,request:request('/api/operator',{id:pilotId,action,...extra})});
+const visible=async()=> (await (await feed({env})).json()).jobs.some(j=>j.id==='direct-'+pilotId.toLowerCase());
+assert.equal(await visible(),false);
+assert.equal((await paymentAct('publish',{reviewConfirmed:true})).status,409);
+assert.equal((await paymentAct('mark_paid',{paymentConfirmed:true,paymentReference:'FIXTURE-ONLY'})).status,409);
+assert.equal((await paymentAct('review')).status,422);
+assert.equal((await paymentAct('review',{reviewConfirmed:true})).status,200);
+assert.equal((await paymentAct('invoice_sent')).status,422);
+assert.equal((await paymentAct('invoice_sent',{invoiceSentConfirmed:true})).status,200);
+assert.equal((await paymentAct('publish',{reviewConfirmed:true})).status,409);
+assert.equal((await paymentAct('mark_paid',{paymentReference:'FIXTURE-ONLY'})).status,422);
+assert.equal((await paymentAct('mark_paid',{paymentConfirmed:true,paymentReference:'FIXTURE-ONLY'})).status,200);
+assert.equal(await visible(),false);
+assert.equal((await paymentAct('publish',{reviewConfirmed:true})).status,200);
+assert.equal(await visible(),true);
+assert.equal((await paymentAct('publish',{reviewConfirmed:true})).status,409);
+assert.equal((await paymentAct('close',{reviewConfirmed:true})).status,200);
+assert.equal(await visible(),false);
+assert.equal((await page(employerPage,pilotId)).status,404);
+console.log('Manual payment lifecycle fixture passed; no external payment or email.');
+
 sql.close();
 console.log('SQLite integration passed: idempotent migrations, review, operator closure, sitemap, source sync, queue cadence, retry, revocation and coarse analytics.');
