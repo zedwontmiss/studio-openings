@@ -2478,6 +2478,290 @@
       "jobQuery": "Editspace",
       "website": "https://www.editspace.com.au/",
       "foundingYear": 2019
+    },
+    {
+      "id": "ashlyn",
+      "slug": "ashlyn",
+      "name": "ASHLYN",
+      "disciplines": [
+        "fashion"
+      ],
+      "summary": "Fashion and tailoring",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://ashlynnewyork.com/pages/about-ashlyn",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://ashlynnewyork.com/pages/about-ashlyn",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent fashion label established in 2020, exploring modern tailoring and craftsmanship.",
+      "jobQuery": "ASHLYN",
+      "website": "https://ashlynnewyork.com/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "goose-byte",
+      "slug": "goose-byte",
+      "name": "Goose Byte",
+      "disciplines": [
+        "motion",
+        "product"
+      ],
+      "summary": "Independent games",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://goosebyte.games/studio/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
+        }
+      ],
+      "source": {
+        "url": "https://goosebyte.games/studio/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Game development studio founded in 2021 and independent since 2023, creating accessible solo and cooperative games.",
+      "jobQuery": "Goose Byte",
+      "website": "https://goosebyte.games/",
+      "foundingYear": 2021
+    },
+    {
+      "id": "quint-studio",
+      "slug": "quint-studio",
+      "name": "Quint Studio",
+      "disciplines": [
+        "motion",
+        "product"
+      ],
+      "summary": "Independent game development",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://www.quintgamesstudio.com/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
+        }
+      ],
+      "source": {
+        "url": "https://www.quintgamesstudio.com/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Family-led independent game studio established in 2022, combining development, art and music.",
+      "jobQuery": "Quint Studio",
+      "website": "https://www.quintgamesstudio.com/",
+      "foundingYear": 2022
+    },
+    {
+      "id": "yrmos",
+      "slug": "yrmos",
+      "name": "YRMOS",
+      "disciplines": [
+        "fashion"
+      ],
+      "summary": "Independent fashion",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://yrmos.com/pages/about-the-brand",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://yrmos.com/pages/about-the-brand",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent fashion house founded in 2021, exploring clothing through materials, proportion and craftsmanship.",
+      "jobQuery": "YRMOS",
+      "website": "https://yrmos.com/",
+      "foundingYear": 2021
+    },
+    {
+      "id": "studiotasu",
+      "slug": "studiotasu",
+      "name": "studioTASU",
+      "disciplines": [
+        "interior",
+        "culture"
+      ],
+      "summary": "Spatial design and art production",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "JP",
+          "region": "Tokyo",
+          "city": "Tokyo",
+          "sourceUrl": "https://studiotasu.com/about/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "jp--tokyo--tokyo"
+        }
+      ],
+      "source": {
+        "url": "https://studiotasu.com/about/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Design agency established in 2022, working across hospitality interiors, furniture and contemporary art production.",
+      "jobQuery": "studioTASU",
+      "website": "https://studiotasu.com/",
+      "foundingYear": 2022
+    },
+    {
+      "id": "niceworkshop",
+      "slug": "niceworkshop",
+      "name": "NICEWORKSHOP",
+      "disciplines": [
+        "industrial",
+        "interior"
+      ],
+      "summary": "Experimental furniture and objects",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "KR",
+          "region": "Seoul",
+          "city": "Seoul",
+          "sourceUrl": "https://www.niceworkshop.net/info",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "kr--seoul--seoul"
+        }
+      ],
+      "source": {
+        "url": "https://www.niceworkshop.net/info",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent design practice established in 2021, exploring material properties through furniture, objects and spaces.",
+      "jobQuery": "NICEWORKSHOP",
+      "website": "https://www.niceworkshop.net/",
+      "foundingYear": 2021
+    },
+    {
+      "id": "saika-katagiri-studio",
+      "slug": "saika-katagiri-studio",
+      "name": "SAIKA KATAGIRI STUDIO",
+      "disciplines": [
+        "industrial"
+      ],
+      "summary": "Industrial design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "JP",
+          "region": "Tokyo",
+          "city": "Tokyo",
+          "sourceUrl": "https://saikakatagiri.com/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "jp--tokyo--tokyo"
+        }
+      ],
+      "source": {
+        "url": "https://saikakatagiri.com/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Industrial design studio incorporated in 2026, developing furniture, lighting and domestic products.",
+      "jobQuery": "SAIKA KATAGIRI STUDIO",
+      "website": "https://saikakatagiri.com/",
+      "foundingYear": 2026
+    },
+    {
+      "id": "raccoon-logic",
+      "slug": "raccoon-logic",
+      "name": "Raccoon Logic",
+      "disciplines": [
+        "motion",
+        "product"
+      ],
+      "summary": "Video game development",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://www.raccoonlogic.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
+        }
+      ],
+      "source": {
+        "url": "https://www.raccoonlogic.com/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent video game development studio founded in 2021.",
+      "jobQuery": "Raccoon Logic",
+      "website": "https://www.raccoonlogic.com/",
+      "foundingYear": 2021
+    },
+    {
+      "id": "linni",
+      "slug": "linni",
+      "name": "LINNI",
+      "disciplines": [
+        "fashion"
+      ],
+      "summary": "Fashion design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://linni.co.uk/collections/about-us",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://linni.co.uk/collections/about-us",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent London fashion label founded in 2020, with an artisanal approach to clothing.",
+      "jobQuery": "LINNI",
+      "website": "https://linni.co.uk/",
+      "foundingYear": 2020
     }
   ]
 }
