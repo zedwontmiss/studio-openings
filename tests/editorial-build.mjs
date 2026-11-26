@@ -13,3 +13,5 @@ assert.throws(()=>compile({articles:[{slug:'private-draft',status:'unpublished',
 console.log('Editorial compiler, stale outputs, publication and escaping tests passed.');
 
 assert.equal(authorAvatar('Falah Ibrahim').initials,'FI');assert.deepEqual(authorAvatar('Falah Ibrahim'),authorAvatar('Falah Ibrahim'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('<strong>Falah Ibrahim</strong>'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('"author":{"@type":"Person","name":"Falah Ibrahim"}'));
+
+assert.deepEqual(authorAvatar('Studio Openings'),{initials:'S/O',shade:'brand'});assert.ok(read('article.html').includes('id="editorial-magazine"'));assert.ok(read('article.html').includes('SELECTED / OWN WORK'));

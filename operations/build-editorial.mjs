@@ -14,6 +14,7 @@ function dateLabel(d){return new Intl.DateTimeFormat('en-US',{month:'short',day:
 function validDate(d){assert.match(d,/^\d{4}-\d{2}-\d{2}$/);assert.equal(new Date(d+'T00:00:00Z').toISOString().slice(0,10),d);}
 function fill(template,data){return template.replace(/@@([A-Z]+)@@/g,(_,key)=>{assert.ok(Object.hasOwn(data,key),'Missing template value '+key);return data[key];});}
 export function authorAvatar(name){
+ if(name==='Studio Openings')return {initials:'S/O',shade:'brand'};
  const words=name.trim().split(/\s+/),initials=(words[0].charAt(0)+(words.length>1?words[words.length-1].charAt(0):'')).toUpperCase();
  const palette=['#111111','#333333','#555555','#777777','#aaaaaa','#cccccc','#eeeeee','#ffffff'];
  let hash=0;for(let i=0;i<name.length;i++)hash=(hash*31+name.charCodeAt(i))>>>0;
@@ -31,8 +32,12 @@ export function compile(source,indexTemplate,readerTemplate){
  const feature=articles.find(a=>a.slug===source.featured)||articles[0];
  const featureHtml=feature?'<section class="editorial-feature"><div><p class="editorial-kicker">Featured · '+esc(feature.category)+'</p><h2><a href="'+href(feature)+'">'+esc(feature.title)+'</a></h2><p>'+esc(feature.description)+'</p>'+meta(feature)+'<a class="editorial-read" href="'+href(feature)+'">Read article →</a></div><div class="editorial-feature-art" aria-hidden="true"><span>CREATIVE<br>WORK.</span><small>SO / EDITORIAL</small></div></section>':'';
  const tabs=['All',...categories.filter(c=>articles.some(a=>a.category===c))];
+ const selected=articles.filter(a=>a!==feature).slice(0,2);
+ const lead=feature?'<section class="so-editorial-lead"><p class="so-editorial-eyebrow">SELECTED / '+esc(feature.series||feature.category)+'</p><h2><a href="'+href(feature)+'">'+esc(feature.title)+'</a></h2><p class="so-editorial-deck">'+esc(feature.description)+'</p>'+meta(feature)+'</section>':'';
+ const selection=selected.map(a=>'<section class="so-editorial-selected"><p class="so-editorial-eyebrow">'+esc(a.series||a.category)+'</p><h2><a href="'+href(a)+'">'+esc(a.title)+'</a></h2>'+meta(a)+'</section>').join('');
+ const magazine=lead+'<div class="so-editorial-selection">'+selection+'</div>';
  const cards=articles.map(a=>'<article class="editorial-card" data-category="'+a.category+'"><h2><a href="'+href(a)+'">'+esc(a.title)+'</a></h2><time datetime="'+a.date+'">'+dateLabel(a.date)+'</time><p class="editorial-summary" hidden>'+esc(a.description)+'</p></article>').join('');
- out.set('article.html',fill(indexTemplate,{FEATURE:featureHtml,TABS:'',CARDS:cards}));
+ out.set('article.html',fill(indexTemplate,{FEATURE:magazine,TABS:'',CARDS:cards}));
  for(const a of articles){
   const body=a.blocks.map(b=>b.type==='links'?'<p>'+b.links.map(link).join(' · ')+'</p>':b.type==='heading'?'<h2>'+esc(b.text)+'</h2>':'<p>'+esc(b.text)+'</p>').join('');
   const words=a.blocks.map(b=>b.text||'').join(' ').trim().split(/\s+/).length;
