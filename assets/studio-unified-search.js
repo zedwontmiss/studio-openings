@@ -1,7 +1,7 @@
 (function(root){
 'use strict';
-var countries={AU:'Australia',CA:'Canada',IN:'India',GB:'United Kingdom',US:'United States'};
-var aliases={US:['usa','united states of america'],GB:['uk','great britain','britain'],AU:[],CA:[],IN:[]};
+var countries={"AU":"Australia","CA":"Canada","IN":"India","GB":"United Kingdom","US":"United States","NL":"Netherlands","DE":"Germany","FR":"France","FI":"Finland","SG":"Singapore","JP":"Japan","KR":"South Korea","CH":"Switzerland","NO":"Norway","DK":"Denmark","SE":"Sweden","BE":"Belgium","AT":"Austria","IT":"Italy","ES":"Spain","PT":"Portugal","IE":"Ireland","NZ":"New Zealand","AE":"United Arab Emirates"};
+var aliases={US:['usa','united states of america'],GB:['uk','great britain','britain'],AU:[],CA:[],IN:[],KR:['korea','republic of korea'],NL:['holland'],AE:['uae']};
 function norm(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');}
 function prefix(value,query){return norm(value).indexOf(norm(query))===0;}
 function terms(text,q){var t=norm(text);return norm(q).split(' ').every(function(x){return t.indexOf(x)!==-1;});}
