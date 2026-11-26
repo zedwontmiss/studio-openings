@@ -218,3 +218,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Weekly visual direction approved: baby-yellow #f4efc0, oversized WEEKLY. Helvetica, no slogan, arrow or horizontal rule, black full-width button, compact monochrome form. Same-origin iframe reports actual content height with origin/source checks, viewport cap remains for small screens and error states. Keep Brevo configuration unchanged.
 
 - Owner approved SIGNAL. and sentence 'For the creatively employed and unemployed.' on yellow newsletter flyer. Keep /weekly route and Brevo integration; separate consent and privacy link layout, 22px S/O footer stamp.
+
+- SIGNAL visual follow-up: native checkbox instead of Brevo decorative span (preserve OPT_IN id/name/value/required), 16px kicker, wider headline, regular subline and darker placeholder. Verify provider submission before launch.
