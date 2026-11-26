@@ -31,5 +31,5 @@ write('sitemap.xml',sitemap.replace('</urlset>',studios.map(s=>'<url><loc>https:
 const backlog=JSON.parse(read('operations/studio-acquisition-backlog.json')),norm=s=>String(s).normalize('NFKC').toLowerCase().trim().replace(/\s+/g,' '),names=new Set(studios.flatMap(s=>[s.name,...s.aliases].map(norm)));
 const candidates=backlog.candidates.filter(x=>!names.has(norm(x.name))).map(x=>({name:x.name,discipline:x.discipline,marketHint:x.marketHint,evidence:x.evidence||null}));
 write('lib/studio-workspace.js','// Generated from directory registry and research backlog; no private contact data.\nexport const STUDIO_WORKSPACE='+JSON.stringify({studios,candidates})+';\n');
-for(const script of ['build-studio-index.mjs','build-studio-profiles.mjs','build-editorial.mjs'])execFileSync(process.execPath,['operations/'+script],{cwd:root,stdio:'inherit'});
+for(const script of ['build-studio-index.mjs','build-studio-profiles.mjs','build-studio-locations.mjs','build-editorial.mjs'])execFileSync(process.execPath,['operations/'+script],{cwd:root,stdio:'inherit'});
 console.log('Generated outputs ready for diff, tests and explicit development commit; no deployment performed.');
