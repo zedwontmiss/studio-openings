@@ -167,5 +167,33 @@ assert.equal(await visible(),false);
 assert.equal((await page(employerPage,pilotId)).status,404);
 console.log('Manual payment lifecycle fixture passed; no external payment or email.');
 
+// Featured rehearsal uses real submit/operator/feed handlers and disposable SQLite.
+// Only Turnstile's remote response is simulated; no network, payment or email.
+const {onRequestPost:submit}=await import('../functions/api/submit.js');
+const {onRequestGet:featured}=await import('../functions/api/featured-jobs.js');
+const fixtureEnv={...env,TURNSTILE_SECRET_KEY:'fixture-only',SUPPORT_EMAIL:'fixture@example.net',PREMIUM_ACTIVATION_ENABLED:'true'};
+const originalFetch=globalThis.fetch;
+let featuredId;
+try{
+ globalThis.fetch=async(url)=>{assert.equal(String(url),'https://challenges.cloudflare.com/turnstile/v0/siteverify');return Response.json({success:true,hostname:new URL(host).hostname,action:'submit_job'});};
+ const response=await submit({env:fixtureEnv,request:request('/api/submit',{...data,kind:'employer',postingPackage:'featured',contactEmail:'fixture-featured@example.net',permissionChecked:true,turnstileToken:'fixture-token-only',url:'https://example.com/jobs/featured-rehearsal'})});
+ const receipt=await response.json();assert.equal(response.status,201,JSON.stringify(receipt));assert.equal(receipt.priceUSD,349);featuredId=receipt.reference;
+}finally{globalThis.fetch=originalFetch;}
+const actFeatured=(action,extra={},overrides={})=>operator({env:{...fixtureEnv,...overrides},request:request('/api/operator',{id:featuredId,action,...extra})});
+const listed=async()=> (await (await feed({env:fixtureEnv})).json()).jobs.some(j=>j.id==='direct-'+featuredId.toLowerCase());
+const highlighted=async()=> (await (await featured({env:fixtureEnv})).json()).placements.some(j=>j.jobId==='direct-'+featuredId.toLowerCase());
+assert.equal(await listed(),false);assert.equal(await highlighted(),false);
+assert.equal((await actFeatured('review',{reviewConfirmed:true})).status,200);
+assert.equal((await actFeatured('invoice_sent',{invoiceSentConfirmed:true})).status,200);
+assert.equal((await actFeatured('publish',{reviewConfirmed:true})).status,409);
+assert.equal((await actFeatured('mark_paid',{paymentConfirmed:true,paymentReference:'FIXTURE-ONLY'})).status,200);
+assert.equal(await listed(),false);
+assert.equal((await actFeatured('publish',{reviewConfirmed:true},{PREMIUM_ACTIVATION_ENABLED:'false'})).status,403);
+assert.equal((await actFeatured('publish',{reviewConfirmed:true})).status,200);
+assert.equal(await listed(),true);assert.equal(await highlighted(),true);
+assert.equal((await actFeatured('pause')).status,200);assert.equal(await highlighted(),false);assert.equal(await listed(),true);
+assert.equal((await actFeatured('resume')).status,200);assert.equal(await highlighted(),true);
+assert.equal((await actFeatured('close',{reviewConfirmed:true})).status,200);assert.equal(await listed(),false);assert.equal(await highlighted(),false);
+console.log('Featured rehearsal passed: submission, $349 invoice state, payment attestation, activation gate, publication, placement, pause/resume and closure. Disposable SQLite only.');
 sql.close();
 console.log('SQLite integration passed: idempotent migrations, review, operator closure, sitemap, source sync, queue cadence, retry, revocation and coarse analytics.');
