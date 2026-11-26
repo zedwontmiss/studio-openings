@@ -1,6 +1,7 @@
+import {inspect} from './launch-readiness.js';
 import {inspectRepair,repairMissing} from '../../lib/preview-schema-repair.js';
 import {operatorAuthorized,sceneReply} from '../../lib/scene-core.js';import {reviewHost} from '../../lib/release-scope.js';import {previewReadiness} from '../../lib/preview-readiness.js';
-export async function onRequestGet({request,env}){if(!reviewHost(new URL(request.url).hostname)||!env?.JOBS_DB||!operatorAuthorized(request,env))return sceneReply({error:'Authenticated Preview required'},403);try{return sceneReply({...await previewReadiness(env),repair:await inspectRepair(env.JOBS_DB),repairEnabled:env.PREVIEW_D1_ISOLATED==='true'});}catch{return sceneReply({error:'Read-only readiness inspection unavailable'},503);}}
+export async function onRequestGet({request,env}){if(!reviewHost(new URL(request.url).hostname)||!env?.JOBS_DB||!operatorAuthorized(request,env))return sceneReply({error:'Authenticated Preview required'},403);try{return sceneReply({...await previewReadiness(env),coreComparison:(await inspect(env.JOBS_DB)).detail.coverage_requests,repair:await inspectRepair(env.JOBS_DB),repairEnabled:env.PREVIEW_D1_ISOLATED==='true'});}catch{return sceneReply({error:'Read-only readiness inspection unavailable'},503);}}
 
 export async function onRequestPost({request,env}){
  if(!reviewHost(new URL(request.url).hostname)||!env?.JOBS_DB||env.PREVIEW_D1_ISOLATED!=='true'||!operatorAuthorized(request,env)||request.headers.get('origin')!==new URL(request.url).origin)return sceneReply({error:'Authenticated isolated Preview and same origin required'},403);
