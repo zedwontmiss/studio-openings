@@ -408,7 +408,7 @@
  $('scene-refresh').addEventListener('click',function(){loadScene();});
 
  var inventoryRevision=0;
- function clearInventoryHealth(){clearCoverage();inventoryRevision++;$('inventory-health-list').textContent='';$('inventory-health-result').textContent='';$('inventory-health-refresh').disabled=false;}
+ function clearInventoryHealth(){probeRevision++;$('inventory-probe-result').textContent='';$('inventory-probe-run').disabled=false;clearCoverage();inventoryRevision++;$('inventory-health-list').textContent='';$('inventory-health-result').textContent='';$('inventory-health-refresh').disabled=false;}
  function loadInventoryHealth(){
   if(!token||selectedTab!=='sources')return;
   var session=token,rev=++inventoryRevision,host=$('inventory-health-list');host.textContent='';$('inventory-health-refresh').disabled=true;
@@ -433,6 +433,9 @@
  $('studio-candidates-refresh').addEventListener('click',loadStudioCandidates);
  $('studio-candidates-copy').addEventListener('click',function(){if(candidateData&&token)setMessage('studio-candidates-result',copy(JSON.stringify(candidateData,null,2))?'Candidate export copied for review; not a publication file.':'Clipboard unavailable.');});
  $('inventory-health-refresh').addEventListener('click',loadInventoryHealth);
+ var probeRevision=0;
+ $('inventory-probe-run').addEventListener('click',function(){var session=token,rev=++probeRevision,shard=$('inventory-probe-shard').value,btn=$('inventory-probe-run');if(!session||selectedTab!=='sources')return;btn.disabled=true;setMessage('inventory-probe-result','Testing '+shard+'…');function current(){return token===session&&rev===probeRevision&&selectedTab==='sources';}fetch('/api/inventory-probe?shard='+encodeURIComponent(shard),{credentials:'same-origin',cache:'no-store',headers:{Authorization:'Bearer '+session}}).then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw Error(d.error||'Test unavailable');return d;});}).then(function(d){if(!current())return;setMessage('inventory-probe-result',d.source+' — '+d.state+(d.eligibleCount===null?' · eligible count unknown':' · '+d.eligibleCount+' unique dated eligible jobs · '+d.duplicates+' duplicates · '+d.undatedOrOld+' undated or old · '+d.filtered+' filtered · source timestamp '+d.updatedAt)+'. No snapshot saved.');}).catch(function(e){if(current())setMessage('inventory-probe-result',e.message);}).then(function(){if(current())btn.disabled=false;});});
+
 
  var workspaceData=null,workspaceDrafts=[],workspaceLimit=30,workspaceEdit='',workspaceRevision=0;
  var workspaceKey='soapp.operator.studio-drafts.v1';
