@@ -80,5 +80,9 @@ check(app.includes('var list=rankedFeed(state.jobs.filter(function(job){return e
 check(app.includes('return savedMatchesFilters(item,jobIndex[item.id]);'),'Saved Jobs must filter before sponsored sorting');
 check(app.includes("if(activeFeatured)row.classList.add('is-featured');"),'Saved row receives Featured class');
 check(app.includes("star.textContent='★';star.title='Featured · Sponsored';"),'Saved row star disclosure');
-check(css.includes('.saved-entry.is-featured{background:#fff4bf;'),'Saved Featured background matches baby yellow');
-console.log('PASS: 22 Featured ranking, filtering, expiration, and Saved Jobs assertions');
+check(css.includes('.saved-entry.is-featured{background:#f4efc0;'),'Saved Featured background matches SIGNAL yellow');
+check(css.includes('.job-row.is-featured{background:#f4efc0}'),'Featured job background matches SIGNAL yellow');
+check(css.includes('.job-row.is-featured:hover{background:#f4efc0}'),'Featured hover matches SIGNAL yellow');
+check(css.includes('.saved-library .saved-entry.is-featured{background:#f4efc0}'),'Saved library matches SIGNAL yellow');
+check(css.includes('.featured-inquiry.is-selected{background:#f4efc0;'),'Featured package matches SIGNAL yellow');
+console.log('PASS: 26 Featured ranking, filtering, expiration, and Saved Jobs assertions');
