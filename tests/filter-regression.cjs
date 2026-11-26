@@ -21,7 +21,7 @@ const compiled=[
  between('  var roleLabels = {','  var state ='),
  between('  var ROLE_TAG={','  function jobKeywords(job,allTags){'),
  between('  function jobKeywords(job,allTags){','  function styleTag('),
- between('  function categoryFor(job) {','  function dateLabel(job)'),
+ between('  function engineeringTitle(title)','  function dateLabel(job)'),
  'function trim(v){return String(v||"").trim();}',
  between('  function usMatch(loc)','  function effectiveSort()')
 ].join('\n');

@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 // Read as ESM without needing a package.json or local build tools.
-const core=readFileSync('lib/source-registry-core.js','utf8');
+const scope=readFileSync('lib/job-scope.js','utf8').replace(/^export /gm,'');
+const core=scope+'\n'+readFileSync('lib/source-registry-core.js','utf8').replace(/^import .*;$/gm,'');
 const {sourceExcerpt}=await import('data:text/javascript;base64,'+Buffer.from(core).toString('base64'));
 const jobs=readFileSync('functions/api/jobs.js','utf8').replace(/^import .*;$/gm,'').replace(/^export /gm,'');
 const {plainText,stripHimalayasAttribution}=new Function(jobs+';return {plainText,stripHimalayasAttribution};')();
