@@ -1769,6 +1769,198 @@
       "overview": "Multidisciplinary design studio working across visual identities, digital media and environments.",
       "jobQuery": "2x4",
       "website": "https://2x4.org/"
+    },
+    {
+      "id": "commercial-type",
+      "slug": "commercial-type",
+      "name": "Commercial Type",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Typography and type design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://commercialtype.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        },
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://commercialtype.com/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://commercialtype.com/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent type foundry producing retail and commissioned typefaces.",
+      "jobQuery": "Commercial Type",
+      "website": "https://commercialtype.com/"
+    },
+    {
+      "id": "stink-films",
+      "slug": "stink-films",
+      "name": "Stink Films",
+      "disciplines": [
+        "motion"
+      ],
+      "summary": "Film and advertising production",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://stinkfilms.com/about/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://stinkfilms.com/about/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "International production company working with directors across commercial and film projects.",
+      "jobQuery": "Stink Films",
+      "website": "https://stinkfilms.com/"
+    },
+    {
+      "id": "division",
+      "slug": "division",
+      "name": "DIVISION",
+      "disciplines": [
+        "motion"
+      ],
+      "summary": "Film and music video production",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "FR",
+          "region": "Île-de-France",
+          "city": "Paris",
+          "sourceUrl": "https://www.division.global/contact",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "fr--ile-de-france--paris"
+        }
+      ],
+      "source": {
+        "url": "https://www.division.global/contact",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Paris production company working across moving image and creative production.",
+      "jobQuery": "DIVISION",
+      "website": "https://www.division.global/"
+    },
+    {
+      "id": "tom-dixon",
+      "slug": "tom-dixon",
+      "name": "Tom Dixon",
+      "disciplines": [
+        "industrial",
+        "interior"
+      ],
+      "summary": "Furniture and lighting design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.tomdixon.net/customer-services/contact-us",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://www.tomdixon.net/customer-services/contact-us",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Design company producing furniture, lighting and objects, with a spatial design practice.",
+      "jobQuery": "Tom Dixon",
+      "website": "https://www.tomdixon.net/"
+    },
+    {
+      "id": "marimekko",
+      "slug": "marimekko",
+      "name": "Marimekko",
+      "disciplines": [
+        "fashion",
+        "industrial"
+      ],
+      "summary": "Textile and fashion design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "FI",
+          "region": "Uusimaa",
+          "city": "Helsinki",
+          "sourceUrl": "https://www.marimekko.com/eu_en/m/our-world/our-story",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "fi--uusimaa--helsinki"
+        }
+      ],
+      "source": {
+        "url": "https://www.marimekko.com/eu_en/m/our-world/our-story",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Finnish design house working across printed textiles, clothing and home objects.",
+      "jobQuery": "Marimekko",
+      "website": "https://www.marimekko.com/"
+    },
+    {
+      "id": "the-mill",
+      "slug": "the-mill",
+      "name": "The Mill",
+      "disciplines": [
+        "motion",
+        "visual"
+      ],
+      "summary": "Visual effects and creative production",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://www.themill.com/contact",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://www.themill.com/contact",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Creative production practice working across visual effects, design and moving image.",
+      "jobQuery": "The Mill",
+      "website": "https://www.themill.com/"
     }
   ]
 }
