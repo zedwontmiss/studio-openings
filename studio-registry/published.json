@@ -1229,6 +1229,260 @@
       "overview": "Multimedia studio developing experiential environments and interactive productions.",
       "jobQuery": "Moment Factory",
       "website": "https://momentfactory.com/"
+    },
+    {
+      "id": "studio-dumbar",
+      "slug": "studio-dumbar",
+      "name": "Studio Dumbar",
+      "disciplines": [
+        "visual",
+        "motion"
+      ],
+      "summary": "Visual identity and motion",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "NL",
+          "region": "South Holland",
+          "city": "Rotterdam",
+          "sourceUrl": "https://studiodumbar.com/contact",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "nl--south-holland--rotterdam"
+        }
+      ],
+      "source": {
+        "url": "https://studiodumbar.com/contact",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Design practice combining visual identity systems with motion and digital expression.",
+      "jobQuery": "Studio Dumbar",
+      "website": "https://studiodumbar.com/"
+    },
+    {
+      "id": "experimental-jetset",
+      "slug": "experimental-jetset",
+      "name": "Experimental Jetset",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Graphic design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "NL",
+          "region": "North Holland",
+          "city": "Amsterdam",
+          "sourceUrl": "https://www.jetset.nl/about",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "nl--north-holland--amsterdam"
+        }
+      ],
+      "source": {
+        "url": "https://www.jetset.nl/about",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent graphic design practice working with printed matter, typography and installations.",
+      "jobQuery": "Experimental Jetset",
+      "website": "https://www.jetset.nl/"
+    },
+    {
+      "id": "ordinary-folk",
+      "slug": "ordinary-folk",
+      "name": "Ordinary Folk",
+      "disciplines": [
+        "motion"
+      ],
+      "summary": "Motion and animation",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "British Columbia",
+          "city": "Vancouver",
+          "sourceUrl": "https://www.ordinaryfolk.co/contact",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "ca--british-columbia--vancouver"
+        }
+      ],
+      "source": {
+        "url": "https://www.ordinaryfolk.co/contact",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Vancouver studio producing motion design and animation.",
+      "jobQuery": "Ordinary Folk",
+      "website": "https://www.ordinaryfolk.co/"
+    },
+    {
+      "id": "field-io",
+      "slug": "field-io",
+      "name": "FIELD.IO",
+      "disciplines": [
+        "web",
+        "product",
+        "visual"
+      ],
+      "summary": "Creative technology and experience design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://field.io/profile",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        },
+        {
+          "country": "DE",
+          "region": "Berlin",
+          "city": "Berlin",
+          "sourceUrl": "https://field.io/contact",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "de--berlin--berlin"
+        }
+      ],
+      "source": {
+        "url": "https://field.io/profile",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Design and innovation practice working across intelligent spaces, experiences and products.",
+      "jobQuery": "FIELD.IO",
+      "website": "https://field.io/"
+    },
+    {
+      "id": "manvsmachine",
+      "slug": "manvsmachine",
+      "name": "ManvsMachine",
+      "disciplines": [
+        "motion",
+        "visual"
+      ],
+      "summary": "Motion and creative direction",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://mvsm.com/jobs/2d-motion-designer",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://mvsm.com/jobs/2d-motion-designer",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Design and motion studio working across moving image and creative direction.",
+      "jobQuery": "ManvsMachine",
+      "website": "https://mvsm.com/"
+    },
+    {
+      "id": "territory-studio",
+      "slug": "territory-studio",
+      "name": "Territory Studio",
+      "disciplines": [
+        "motion",
+        "web"
+      ],
+      "summary": "VFX and digital experiences",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://territorystudio.com/location/territory-studio-london/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        }
+      ],
+      "source": {
+        "url": "https://territorystudio.com/location/territory-studio-london/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Creative practice specialising in narrative-led digital experiences, motion and visual effects.",
+      "jobQuery": "Territory Studio",
+      "website": "https://territorystudio.com/"
+    },
+    {
+      "id": "acre",
+      "slug": "acre",
+      "name": "ACRE",
+      "disciplines": [
+        "visual"
+      ],
+      "summary": "Branding and visual identity",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "SG",
+          "region": "Singapore",
+          "city": "Singapore",
+          "sourceUrl": "https://www.acre.design/studio/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "sg--singapore--singapore"
+        }
+      ],
+      "source": {
+        "url": "https://www.acre.design/studio/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Multidisciplinary design office working across branding and visual identity.",
+      "jobQuery": "ACRE",
+      "website": "https://www.acre.design/"
+    },
+    {
+      "id": "nendo",
+      "slug": "nendo",
+      "name": "nendo",
+      "disciplines": [
+        "industrial"
+      ],
+      "summary": "Product and furniture design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "JP",
+          "region": "Tokyo",
+          "city": "Tokyo",
+          "sourceUrl": "https://www.nendo.jp/en/about/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "jp--tokyo--tokyo"
+        }
+      ],
+      "source": {
+        "url": "https://www.nendo.jp/en/about/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Tokyo design practice working across objects, furniture and installations.",
+      "jobQuery": "nendo",
+      "website": "https://www.nendo.jp/en/"
     }
   ]
 }
