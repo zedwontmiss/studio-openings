@@ -15,6 +15,7 @@ export async function onRequest(context) {
   const {hostname, pathname} = new URL(context.request.url);
   if(/^\/weekly(?:\.html|\/index\.html|\/)?$/i.test(pathname)&&!reviewHost(hostname))return new Response('Not found',{status:404,headers:{'cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
   if(hiddenReleasePath(hostname,pathname))return new Response('Not found',{status:404,headers:{'content-type':'text/plain; charset=utf-8','cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
+  if(reviewHost(hostname)&&/^\/weekly(?:\.html|\/index\.html|\/)?$/i.test(pathname)&&['GET','HEAD'].includes(context.request.method)){const u=new URL(context.request.url);u.pathname='/signal';return new Response(null,{status:308,headers:{location:u.href,'cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});}
   const alias=canonicalAlias(pathname,pages);
   if(alias&&['GET','HEAD'].includes(context.request.method)){
     const destination=new URL(context.request.url);destination.pathname=alias;
@@ -44,7 +45,11 @@ export async function onRequest(context) {
         return;
       }
       if(next!==href)el.setAttribute('href',next);
-    }}).transform(new Response(response.body,{status:response.status,statusText:response.statusText,headers}));
+    }}).on('[data-signal-contact]',{element(el){if(!reviewHost(hostname))el.remove();}}).transform(new Response(response.body,{status:response.status,statusText:response.statusText,headers}));
+  }
+  // Newsletter overlay on browsing pages only; no employer, checkout, application or operator forms.
+  if(reviewHost(hostname)&&context.request.method==='GET'&&response.status===200&&headers.get('content-type')?.startsWith('text/html')&&typeof HTMLRewriter!=='undefined'&&(path==='/'||path==='/studio'||path==='/article'||STUDIO_PATHS.includes(path)||ARTICLE_PATHS.includes(path)||path==='/scene'||LOCAL_PATHS.includes(path)||path.startsWith('/disciplines/'))){
+    output=new HTMLRewriter().on('head',{element(el){el.append('<link rel="stylesheet" href="/assets/weekly-overlay.css?v=3">',{html:true});}}).on('body',{element(el){el.append("<div id=\"weekly-overlay\" hidden><section class=\"weekly-dialog\" role=\"dialog\" aria-modal=\"true\" aria-label=\"SIGNAL.\"><button id=\"weekly-close\" type=\"button\" aria-label=\"Close newsletter\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 3L17 17M17 3L3 17\" stroke=\"currentColor\" stroke-width=\"3.5\" fill=\"none\"/></svg></button><iframe id=\"weekly-frame\" title=\"Newsletter subscription\" src=\"about:blank\"></iframe></section></div>"+'<script defer src="/assets/weekly-overlay.js?v=3"></script>',{html:true});}}).transform(output);
   }
   const previewReady = hostname === 'development.studio-openings.pages.dev' && context.env?.PREVIEW_D1_ISOLATED === 'true';
   if (publicPage && response.status === 200 && context.request.method === 'GET' &&
