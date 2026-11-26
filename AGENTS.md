@@ -220,3 +220,5 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 - Owner approved SIGNAL. and sentence 'For the creatively employed and unemployed.' on yellow newsletter flyer. Keep /weekly route and Brevo integration; separate consent and privacy link layout, 22px S/O footer stamp.
 
 - SIGNAL visual follow-up: native checkbox instead of Brevo decorative span (preserve OPT_IN id/name/value/required), 16px kicker, wider headline, regular subline and darker placeholder. Verify provider submission before launch.
+
+- SIGNAL follow-up: bold tagline with 5px headline gap; privacy link in footer between free/unsubscribe and S/O; bold SVG cross at top right on overlay and standalone page (standalone returns to Jobs; embedded cross handled by parent). Keep consent/CAPTCHA unchanged.
