@@ -636,12 +636,16 @@
   }
   function structuredJobQuery(query){
     var q=String(query||'').trim().toLowerCase().replace(/\s+/g,' ');
-    var m=q.match(/^(.+?)\s+jobs?\s+in\s+(.+)$/);
-    if(!m)return null;
-    var labels={"architecture":"Architecture","interior":"Interior design","industrial":"Industrial design","product":"Product design","visual":"Graphic design","motion":"Motion design","fashion":"Fashion","web":"Web design","museum":"Museum","culture":"Arts and culture"},country=m[2],role=Object.keys(labels).filter(function(k){return labels[k].toLowerCase()===m[1];})[0];
+    var labels={"architecture":"Architecture","interior":"Interior design","industrial":"Industrial design","product":"Product design","visual":"Graphic design","motion":"Motion design","fashion":"Fashion","web":"Web design","museum":"Museum","culture":"Arts and culture"};
     var aliases={'us':'US','usa':'US','u.s.':'US','uk':'GB','u.k.':'GB'};
-    var code=aliases[country]||Object.keys(countryNames).filter(function(k){return countryNames[k].toLowerCase()===country;})[0];
-    if(!role||!code)return null;return {role:role,code:code};
+    Object.keys(countryNames).forEach(function(k){aliases[countryNames[k].toLowerCase()]=k;});
+    var roles=Object.keys(labels),places=Object.keys(aliases);
+    for(var i=0;i<roles.length;i++){var role=roles[i],label=labels[role].toLowerCase();
+      for(var j=0;j<places.length;j++){var country=places[j];
+        if(q===label+' '+country||q===country+' '+label||q===label+' jobs in '+country||q===label+' job in '+country)return {role:role,code:aliases[country]};
+      }
+    }
+    return null;
   }
   function eligible(job,verifiedRole,verifiedTags){
     var role=(typeof verifiedRole==='string'&&roleLabels[verifiedRole])?verifiedRole:categoryFor(job);
