@@ -28,8 +28,8 @@ assert.strictEqual(profile({title:'Graphic Designer',description:'creative direc
 assert.strictEqual(profile({title:'Creative Director',description:''}).searchable.includes('Advertising'),false);
 assert(app.includes('searchTag(shortTagLabel(word))'), 'Clickable tags use visible global search');
 assert(app.includes(')?verifiedTags:jobSearchTags(job);'), 'Keyword filters use searchable role terms');
-assert(app.includes('if(direction)return direction.visible;'), 'UI displays three canonical badges');
-assert(app.includes('return allTags?tags:tags.slice(0,3);'), 'Other roles retain existing max-three badge policy');
+assert(app.includes('if(direction)return direction.visible.concat('), 'UI preserves canonical badges and adds evidenced specialties');
+assert(app.includes('return allTags?tags:tags.slice(0,5);'), 'Other roles have max-five visible badges');
 const backend=fs.readFileSync(path.join(root,'functions/api/jobs.js'),'utf8');
 assert(backend.includes('const leadership=directionTags(title,description,role);if(leadership)return leadership;'));
 const ai=fs.readFileSync(path.join(root,'functions/api/ai-jobs.js'),'utf8');

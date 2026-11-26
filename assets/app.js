@@ -71,7 +71,7 @@
     var title=String(job.title||'').toLowerCase();
     var details=(title+' '+String(job.description||job.summary||'')).toLowerCase().slice(0,12000);
     var direction=role==='visual'?directionTagProfile(job):null;
-    if(direction)return direction.visible;
+    if(direction)return direction.visible.concat(direction.searchable.filter(function(t){return ['Brand Strategy','Branding','Marketing','Advertising','Campaigns','Graphic Design'].indexOf(t)>=0&&direction.visible.indexOf(t)<0;})).slice(0,5);
     var primary=ROLE_TAG[role];
     if(role==='fashion' && /\b(?:photograph(?:er|y)|retoucher|photo (?:editor|stylist|producer))\b/.test(title))primary='Photography';
     if(role==='web' && /\bcreative (?:developer|technologist|technology)\b/.test(title))primary='Creative Technology';
@@ -125,7 +125,14 @@
     add('Lumion',/\blumion\b/.test(details));
     add('V-Ray',/\bv[ -]?ray\b/.test(details));
     if(job.source==='NYC Open Data')add('Public Sector',true);
-    return allTags?tags:tags.slice(0,3);
+    // Fill only with truthful listing metadata, never invented skills.
+    add('Senior',/\b(?:senior|sr\.?|principal)\b/.test(title));
+    add('Junior',/\b(?:junior|jr\.?|entry.level)\b/.test(title));
+    add('Lead',/\b(?:lead|head of)\b/.test(title));
+    add('Internship',/\bintern(?:ship)?\b/.test(title));
+    if(tags.length<3&&/^(full-time|part-time|contract|internship)$/i.test(String(job.type||'')))add(String(job.type),true);
+    if(tags.length<3&&/^(remote|hybrid|onsite|on-site)$/i.test(String(job.mode||'')))add(String(job.mode).charAt(0).toUpperCase()+String(job.mode).slice(1),true);
+    return allTags?tags:tags.slice(0,5);
   }
   function jobSearchTags(job){
     var shown=jobKeywords(job,true),lead=categoryFor(job)==='visual'?directionTagProfile(job):null;
@@ -277,7 +284,7 @@
     var rawUrl=field('url',700);
     // Cached fields allow saved vacancies to be filtered when their live feed
     // disappears; do not invent metadata for historical ID-only bookmarks.
-    var tags=Array.isArray(entry.tags)?entry.tags.filter(function(t){return typeof t==='string'&&t.length<=40;}).slice(0,3):[];
+    var tags=Array.isArray(entry.tags)?entry.tags.filter(function(t){return typeof t==='string'&&t.length<=40;}).slice(0,5):[];
     return {id:field('id',240),title:field('title',160),company:field('company',120),
       source:field('source',100),url:safeUrl(rawUrl)?rawUrl:'',savedAt:date,
       role:field('role',24),location:field('location',160),mode:field('mode',30),
@@ -494,7 +501,9 @@
     if(role==='museum'||role==='culture')return 'arts';
     return 'visual';
   }
+  function engineeringTitle(title){return /\b(?:electrical|mechanical|piping|pipeline|plumbing|hvac|mep|instrumentation|structural|civil|substation|power distribution|transmission line|pcb|circuit|controls?|process|fire protection|telecommunications|electromechanical)\s+(?:(?:systems?|design|cad|bim)\s+)?(?:design(?:er| engineer)|engineer|drafter|draftsperson|technician|modeler)\b|\b(?:designer|design engineer|drafter|draftsperson)\s*[-–—,/(:]\s*(?:electrical|mechanical|piping|plumbing|hvac|mep|structural|civil|instrumentation|substation|power distribution|pcb|controls?)\b/i.test(String(title||''));}
   function categoryFor(job) {
+    if(engineeringTitle(job.title))return 'not-creative';
     var r=trim(job.role).toLowerCase(), t=trim(job.title).toLowerCase();
     if(r==='other'){
       if(/museum|exhibit|gallery|curat|heritage|archiv/.test(t))return 'museum';
@@ -627,7 +636,7 @@
   }
   function eligible(job,verifiedRole,verifiedTags){
     var role=(typeof verifiedRole==='string'&&roleLabels[verifiedRole])?verifiedRole:categoryFor(job);
-    if(role==='not-creative')return false;
+    if(engineeringTitle(job.title)||role==='not-creative')return false;
     if(state.city&&(!window.SOAPPLocalGeo||!window.SOAPPLocalGeo.matches(job,state.city)))return false;
     if(state.selectedRoles.length&&!state.selectedRoles.some(function(selected){return selected===role||jobDisciplines(job).indexOf(selected)>=0;}))return false;
     

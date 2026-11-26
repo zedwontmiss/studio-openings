@@ -73,7 +73,9 @@ export function locationOf(raw){
  }
  return null; // No headquarters-based geography guessing.
 }
+import {engineeringTitle} from '../../lib/job-scope.js';
 export function creativeRole(title,description=''){
+ if(engineeringTitle(title))return '';
  if(REJECT.test(title))return '';
  const role=classifyCreative(title,description);
  if(role)return role;
