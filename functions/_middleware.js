@@ -1,7 +1,7 @@
 import {reviewHost,hiddenReleasePath,deferredPath} from '../lib/release-scope.js';
 import {LOCAL_PATHS} from '../lib/local-cities.js';
 import {seedStudioJobs} from '../lib/studio-jobs.js';
-import {canonicalAlias,publicLink} from '../lib/public-routes.js';
+import {canonicalAlias,publicLink,studioExternalLink} from '../lib/public-routes.js';
 import {seedHomepage} from '../lib/public-inventory.js';
 import {STUDIO_PATHS} from '../lib/studio-routes.js';
 import {ARTICLE_PATHS} from '../lib/editorial-routes.js';
@@ -45,6 +45,10 @@ export async function onRequest(context) {
         return;
       }
       if(next!==href)el.setAttribute('href',next);
+      if((path==='/studio'||STUDIO_PATHS.includes(path))&&studioExternalLink(next,context.request.url)){
+        el.setAttribute('target','_blank');
+        el.setAttribute('rel','noopener noreferrer');
+      }
     }}).on('[data-signal-contact]',{element(el){if(!reviewHost(hostname))el.remove();}}).transform(new Response(response.body,{status:response.status,statusText:response.statusText,headers}));
   }
   // Newsletter overlay on browsing pages only; no employer, checkout, application or operator forms.

@@ -11,3 +11,8 @@ console.log('Release scope checks passed.');
 
 import {onRequest} from '../functions/_middleware.js';
 for(const p of ['/scene-guidelines','/scene-contributors','/mumbai']){const r=await onRequest({request:new Request('https://development.studio-openings.pages.dev'+p),env:{},next:()=>{throw Error('Hidden route reached downstream');}});assert.equal(r.status,404);assert.match(r.headers.get('x-robots-tag'),/noindex/);}
+
+import {studioExternalLink} from '../lib/public-routes.js';
+const origin='https://development.studio-openings.pages.dev/studio/shape-architecture';
+for(const link of ['https://example.com/careers','//example.com','https://www.google.com/maps'])assert.equal(studioExternalLink(link,origin),true);
+for(const link of ['/studio','/article','#top','https://s-o.app/studio','https://development.studio-openings.pages.dev/contact','mailto:hello@example.com'])assert.equal(studioExternalLink(link,origin),false);
