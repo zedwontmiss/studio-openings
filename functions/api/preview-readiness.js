@@ -1,0 +1,2 @@
+import {operatorAuthorized,sceneReply} from '../../lib/scene-core.js';import {reviewHost} from '../../lib/release-scope.js';import {previewReadiness} from '../../lib/preview-readiness.js';
+export async function onRequestGet({request,env}){if(!reviewHost(new URL(request.url).hostname)||!env?.JOBS_DB||!operatorAuthorized(request,env))return sceneReply({error:'Authenticated Preview required'},403);try{return sceneReply(await previewReadiness(env));}catch{return sceneReply({error:'Read-only readiness inspection unavailable'},503);}}
