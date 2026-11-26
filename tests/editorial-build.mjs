@@ -12,6 +12,6 @@ assert.throws(()=>compile({articles:[{...sample,related:[{label:'bad',path:'//ev
 assert.throws(()=>compile({articles:[{slug:'private-draft',status:'unpublished',text:'private'}]},index,reader));
 console.log('Editorial compiler, stale outputs, publication and escaping tests passed.');
 
-assert.equal(authorAvatar('Falah Ibrahim').initials,'FI');assert.deepEqual(authorAvatar('Falah Ibrahim'),authorAvatar('Falah Ibrahim'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('<strong>Falah Ibrahim</strong>'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('"author":{"@type":"Person","name":"Falah Ibrahim"}'));
+assert.equal(authorAvatar('ZWM').initials,'ZM');assert.deepEqual(authorAvatar('ZWM'),authorAvatar('ZWM'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('<strong>ZWM</strong>'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('"author":{"@type":"Person","name":"ZWM"}'));
 
 assert.deepEqual(authorAvatar('Studio Openings'),{initials:'S/O',shade:'brand'});assert.ok(read('article.html').includes('id="editorial-magazine"'));assert.ok(read('article.html').includes('SELECTED / OWN WORK'));

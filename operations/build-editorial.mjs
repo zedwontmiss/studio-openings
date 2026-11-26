@@ -14,6 +14,7 @@ function dateLabel(d){return new Intl.DateTimeFormat('en-US',{month:'short',day:
 function validDate(d){assert.match(d,/^\d{4}-\d{2}-\d{2}$/);assert.equal(new Date(d+'T00:00:00Z').toISOString().slice(0,10),d);}
 function fill(template,data){return template.replace(/@@([A-Z]+)@@/g,(_,key)=>{assert.ok(Object.hasOwn(data,key),'Missing template value '+key);return data[key];});}
 export function authorAvatar(name){
+ if(name==='ZWM')return {initials:'ZM',shade:'zwm'};
  if(name==='Studio Openings')return {initials:'S/O',shade:'brand'};
  const words=name.trim().split(/\s+/),initials=(words[0].charAt(0)+(words.length>1?words[words.length-1].charAt(0):'')).toUpperCase();
  const palette=['#111111','#333333','#555555','#777777','#aaaaaa','#cccccc','#eeeeee','#ffffff'];
