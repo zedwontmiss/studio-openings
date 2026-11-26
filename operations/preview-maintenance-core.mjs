@@ -4,11 +4,13 @@ export async function runMaintenance(task,env,fetcher=fetch){
  if(!Object.hasOwn(tasks,task))throw Error('Unknown maintenance task');
  const spec=tasks[task],key=env[spec.secret];
  if(typeof key!=='string'||key.length<32)throw Error('Missing dedicated maintenance secret: '+spec.secret);
+ if(env.SNAPSHOT_SECRET&&env.SNAPSHOT_SECRET===env.INGEST_SECRET)throw Error('Maintenance secrets must be distinct');
  const response=await fetcher(origin+spec.path,{method:'POST',headers:{authorization:'Bearer '+key,'content-type':'application/json'},body:'{}',redirect:'error',signal:AbortSignal.timeout(90000)});
  let data;try{data=await response.json();}catch{throw Error('Maintenance returned invalid JSON (HTTP '+response.status+')');}
  // Do not log credentials, arbitrary remote response content or vacancy data.
  if(!response.ok||data?.ok!==true)throw Error('Maintenance failed (HTTP '+response.status+')');
  if(task==='ingest'&&data.status==='no-approved-source')return {task,status:'no-approved-source'};
+ if(task==='ingest'&&data.retirement!=='double-confirmed')throw Error('Ingestion incomplete; review source health');
  const count=task==='snapshot'?data.count:data.indexed;
  if(!Number.isSafeInteger(count)||count<0||count>100)throw Error('Unexpected maintenance result');
  return {task,status:'ok',count};

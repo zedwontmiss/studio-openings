@@ -3,7 +3,7 @@ import {onRequestGet as ai} from './ai-jobs.js';
 import {onRequestGet as direct} from './direct-jobs.js';
 const reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json','cache-control':'private, no-store'}});
 function authorized(request,env){
- const key=env.INVENTORY_SNAPSHOT_SECRET;if(typeof key!=='string'||key.length<32)return false;
+ const key=env.INVENTORY_SNAPSHOT_SECRET;if(typeof key!=='string'||key.length<32||key===env.OPERATOR_ACCESS_TOKEN||key===env.SOURCING_INGEST_SECRET)return false;
  const a=new TextEncoder().encode(request.headers.get('authorization')||''),b=new TextEncoder().encode('Bearer '+key);
  let diff=a.length^b.length;for(let i=0;i<Math.max(a.length,b.length);i++)diff|=(a[i]||0)^(b[i]||0);return diff===0;
 }

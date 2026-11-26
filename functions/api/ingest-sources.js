@@ -71,7 +71,7 @@ export async function onRequestPost({request,env}){
  // Manual operator sync is available after Preview bootstrap. Scheduled workers
  // require separate explicit activation and may not bypass the operator workflow.
  if(operator(request,env)){if(!originOK(request))return respond({ok:false,error:'Invalid operator origin.'},403);}
- else if(env.SOURCE_INGEST_ENABLED!=='true')return respond({ok:false,error:'Scheduled ingestion is disabled.'},503);
+ else if(env.SOURCE_INGEST_ENABLED!=='true'||env.SOURCING_INGEST_SECRET===env.INVENTORY_SNAPSHOT_SECRET)return respond({ok:false,error:'Scheduled ingestion is disabled or credentials are not distinct.'},503);
  if(!(request.headers.get('content-type')||'').toLowerCase().startsWith('application/json'))return respond({ok:false,error:'JSON required.'},415);
  let payload;try{const raw=await request.text();if(raw.length>1200)throw Error('size');payload=JSON.parse(raw);}catch{return respond({ok:false,error:'Invalid JSON.'},400);}
  if(!payload||typeof payload!=='object'||Array.isArray(payload))return respond({ok:false,error:'Invalid request.'},422);
