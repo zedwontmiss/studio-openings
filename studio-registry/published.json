@@ -3066,6 +3066,210 @@
       "jobQuery": "Antinomy Studio",
       "website": "https://www.antinomy.studio/",
       "foundingYear": 2019
+    },
+    {
+      "id": "tadaima",
+      "slug": "tadaima",
+      "name": "Tadaima",
+      "disciplines": [
+        "industrial",
+        "interior",
+        "culture"
+      ],
+      "summary": "Furniture, objects and creative retail",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "DK",
+          "region": "Capital Region",
+          "city": "Copenhagen",
+          "sourceUrl": "https://tadaimacph.com/studio/about-us",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "dk--capital-region--copenhagen"
+        }
+      ],
+      "source": {
+        "url": "https://tadaimacph.com/studio/about-us",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Copenhagen design practice and concept store bringing together original furniture, art and objects.",
+      "jobQuery": "Tadaima",
+      "website": "https://tadaimacph.com/",
+      "foundingYear": 2022,
+      "foundingYearNote": "Official about page states 2022; external festival and collaborator sources state 2021. Exact year unresolved."
+    },
+    {
+      "id": "ark-forma",
+      "slug": "ark-forma",
+      "name": "Ark Forma",
+      "disciplines": [
+        "interior",
+        "industrial"
+      ],
+      "summary": "Exhibition, interior and furniture design",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "DK",
+          "region": "Capital Region",
+          "city": "Copenhagen",
+          "sourceUrl": "https://arkforma.com/about/",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "dk--capital-region--copenhagen"
+        }
+      ],
+      "source": {
+        "url": "https://arkforma.com/about/",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent practice founded in 2024 by two Royal Danish Academy graduates, working across exhibitions, interiors and furniture.",
+      "jobQuery": "Ark Forma",
+      "website": "https://arkforma.com/",
+      "foundingYear": 2024
+    },
+    {
+      "id": "le-catnip-collective",
+      "slug": "le-catnip-collective",
+      "name": "Le Catnip Collective",
+      "disciplines": [
+        "motion",
+        "product"
+      ],
+      "summary": "Independent game development",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "CA",
+          "region": "Quebec",
+          "city": "Montreal",
+          "sourceUrl": "https://www.lecatnipcollective.com/en/%C3%A0-propos",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "ca--quebec--montreal"
+        }
+      ],
+      "source": {
+        "url": "https://www.lecatnipcollective.com/en/%C3%A0-propos",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Small independent game development studio founded in Montreal in 2023.",
+      "jobQuery": "Le Catnip Collective",
+      "website": "https://www.lecatnipcollective.com/",
+      "foundingYear": 2023
+    },
+    {
+      "id": "studio-yann-gandon",
+      "slug": "studio-yann-gandon",
+      "name": "Studio Yann Gandon",
+      "disciplines": [
+        "industrial"
+      ],
+      "summary": "Furniture and material research",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "DK",
+          "region": "Capital Region",
+          "city": "Copenhagen",
+          "sourceUrl": "https://www.yanngandon.com/info",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "dk--capital-region--copenhagen"
+        }
+      ],
+      "source": {
+        "url": "https://www.yanngandon.com/info",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent design practice researching industrial waste and overlooked materials through furniture and efficient assembly.",
+      "jobQuery": "Studio Yann Gandon",
+      "website": "https://www.yanngandon.com/",
+      "foundingYear": 2023,
+      "foundingYearNote": "Official studio page states 2023; Adorno profile states 2020. Exact year unresolved."
+    },
+    {
+      "id": "atelier-lk",
+      "slug": "atelier-lk",
+      "name": "Atelier LK",
+      "disciplines": [
+        "interior",
+        "industrial",
+        "visual"
+      ],
+      "summary": "Interiors, furniture and creative direction",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "GB",
+          "region": "England",
+          "city": "London",
+          "sourceUrl": "https://atelier-lk.com/Studio-About",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "gb--england--london"
+        },
+        {
+          "country": "US",
+          "region": "New York",
+          "city": "New York",
+          "sourceUrl": "https://atelier-lk.com/Studio-About",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "us--new-york--new-york"
+        }
+      ],
+      "source": {
+        "url": "https://atelier-lk.com/Studio-About",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Interdisciplinary design studio established in 2020, combining interiors, furniture, art curation and creative direction.",
+      "jobQuery": "Atelier LK",
+      "website": "https://atelier-lk.com/",
+      "foundingYear": 2020
+    },
+    {
+      "id": "marie-jagd",
+      "slug": "marie-jagd",
+      "name": "Marie Jagd",
+      "disciplines": [
+        "interior",
+        "industrial"
+      ],
+      "summary": "Furniture, interiors and objects",
+      "aliases": [],
+      "offices": [
+        {
+          "country": "DK",
+          "region": "Capital Region",
+          "city": "Copenhagen",
+          "sourceUrl": "https://mariejagd.dk/pages/about-1",
+          "reviewedOn": "2026-11-26",
+          "kind": "office",
+          "cityId": "dk--capital-region--copenhagen"
+        }
+      ],
+      "source": {
+        "url": "https://mariejagd.dk/pages/about-1",
+        "reviewedOn": "2026-11-26",
+        "reviewStatus": "official-practice-source"
+      },
+      "employerVerified": false,
+      "overview": "Independent practice founded in 2022, working with natural materials and craftsmanship across interiors, furniture and objects.",
+      "jobQuery": "Marie Jagd",
+      "website": "https://mariejagd.dk/",
+      "foundingYear": 2022
     }
   ]
 }
