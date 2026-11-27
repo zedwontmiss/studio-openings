@@ -1,3 +1,4 @@
+import {SIGNAL_ARCHIVE} from '../lib/signal-archive.js';
 import {reviewHost,hiddenReleasePath,deferredPath} from '../lib/release-scope.js';
 import {LOCAL_PATHS} from '../lib/local-cities.js';
 import {seedStudioJobs} from '../lib/studio-jobs.js';
@@ -39,6 +40,7 @@ export async function onRequest(context) {
     headers.delete('content-length');headers.delete('etag');
     headers.set('cache-control','no-store');
     const rewriter=new HTMLRewriter();
+    if(reviewHost(hostname)&&path==='/article'&&SIGNAL_ARCHIVE.length)rewriter.on('.so-signal-square span:first-child',{element(el){el.setInnerContent('#'+SIGNAL_ARCHIVE[SIGNAL_ARCHIVE.length-1].editionNumber);}});
     if(STUDIO_PATHS.includes(path))rewriter.on('.studio-careers',{element(el){el.remove();}});
     output=rewriter.on('a[href]',{element(el){
       const href=el.getAttribute('href'),next=publicLink(href);
