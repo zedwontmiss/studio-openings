@@ -1,5 +1,5 @@
 {
-  "featured": "when-a-design-studio-becomes-a-platform",
+  "featured": null,
   "articles": [
     {
       "slug": "creative-job-search-checklist",
@@ -493,70 +493,7 @@
     },
     {
       "slug": "when-a-design-studio-becomes-a-platform",
-      "title": "When a design studio becomes a platform.",
-      "description": "Tadaima’s Copenhagen retail and design practice offers a way to think about creative independence beyond client commissions.",
-      "category": "Studio",
-      "date": "2026-11-26",
-      "status": "published",
-      "cityIds": [],
-      "blocks": [
-        {
-          "type": "paragraph",
-          "text": "What if the most consequential project of a young design practice is not a commission, but the institution it builds for itself? Copenhagen-based Tadaima offers a useful case through which to consider that question."
-        },
-        {
-          "type": "paragraph",
-          "text": "According to its own account, Tadaima began in 2022 with an online shop, opened a showroom in 2023, presented an exhibition and a collaboration with Fredericia in 2025, and opened its Apartment Store in 2026. The practice combines its own design work with a selection of other makers’ work."
-        },
-        {
-          "type": "heading",
-          "text": "The platform is the project"
-        },
-        {
-          "type": "paragraph",
-          "text": "For a creative practice, a commissioned project generally begins with someone else’s brief. An owned platform introduces another possibility: the practice can decide which subjects to explore, whose work to present and how to communicate with an audience. A shop, journal or exhibition programme can become a framework for those decisions rather than merely an outlet for finished objects."
-        },
-        {
-          "type": "paragraph",
-          "text": "Tadaima also describes its journal as a way of contextualising the work of designers. The interesting relationship here is between making, selecting and explaining. Each activity can reinforce the others, offering audiences more than a catalogue of products."
-        },
-        {
-          "type": "heading",
-          "text": "Independence has costs"
-        },
-        {
-          "type": "paragraph",
-          "text": "An owned platform can offer greater control, but it is not a shortcut to financial independence. Retail can introduce inventory and premises costs; publishing takes sustained editorial effort; exhibitions require production and coordination. These are general trade-offs, not a claim about Tadaima’s finances."
-        },
-        {
-          "type": "paragraph",
-          "text": "For younger practices, the useful question may be smaller: what can we build that creates an ongoing relationship with people who care about our work? A digital publication, a limited-edition object or a recurring gathering may be a starting point. The appropriate scale depends on the resources of the team."
-        },
-        {
-          "type": "heading",
-          "text": "A different measure of relevance"
-        },
-        {
-          "type": "paragraph",
-          "text": "Creative influence need not be measured only by the names on a client list. An independent initiative can also create a context in which other designers are discovered and ideas circulate. That is one reason Studio Openings is interested in the projects and platforms that practices initiate themselves."
-        },
-        {
-          "type": "paragraph",
-          "text": "This is an independent editorial interpretation of Tadaima’s published account, not an interview, site visit, financial assessment or sponsored feature. Primary source: Tadaima, About Us, https://tadaimacph.com/studio/about-us (accessed 26 November 2026)."
-        }
-      ],
-      "related": [
-        {
-          "path": "/studio/tadaima",
-          "label": "Tadaima — studio profile"
-        },
-        {
-          "path": "/studio",
-          "label": "Explore the Studio directory"
-        }
-      ],
-      "author": "ZWM",
-      "series": "OWN WORK"
+      "status": "unpublished"
     }
   ]
 }

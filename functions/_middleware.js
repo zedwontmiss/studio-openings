@@ -16,6 +16,7 @@ const pages = new Set(['/', '/privacy', '/coverage', '/scene', '/scene-guideline
 export async function onRequest(context) {
   const {hostname, pathname} = new URL(context.request.url);
   if(/^\/weekly(?:\.html|\/index\.html|\/)?$/i.test(pathname)&&!reviewHost(hostname))return new Response('Not found',{status:404,headers:{'cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
+  if(/^\/article\/when-a-design-studio-becomes-a-platform(?:\.html|\/index\.html|\/)?$/i.test(pathname))return new Response('Not found',{status:404,headers:{'cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
   if(hiddenReleasePath(hostname,pathname))return new Response('Not found',{status:404,headers:{'content-type':'text/plain; charset=utf-8','cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});
   if(reviewHost(hostname)&&/^\/weekly(?:\.html|\/index\.html|\/)?$/i.test(pathname)&&['GET','HEAD'].includes(context.request.method)){const u=new URL(context.request.url);u.pathname='/signal';return new Response(null,{status:308,headers:{location:u.href,'cache-control':'no-store','x-robots-tag':'noindex, nofollow'}});}
   const alias=canonicalAlias(pathname,pages);
