@@ -30,7 +30,7 @@ export function compile(source,indexTemplate,readerTemplate){
  for(const a of articles){for(const l of a.related.concat(a.blocks.filter(b=>b.type==='links').flatMap(b=>b.links))){if(l.path.startsWith('/article/'))assert.ok(published.has(l.path),'Article link targets an unpublished entry');}}
  const out=new Map(),url=a=>origin+'/article/'+a.slug,href=a=>'/article/'+a.slug;
  const meta=a=>'<p class="editorial-meta">'+esc(a.author||'Studio Openings')+' · <time datetime="'+a.date+'">'+dateLabel(a.date)+'</time></p>';
- const feature=articles.find(a=>a.slug===source.featured)||articles[0];
+ const feature=articles.find(a=>a.slug===source.featured);
  const featureHtml=feature?'<section class="editorial-feature"><div><p class="editorial-kicker">Featured · '+esc(feature.category)+'</p><h2><a href="'+href(feature)+'">'+esc(feature.title)+'</a></h2><p>'+esc(feature.description)+'</p>'+meta(feature)+'<a class="editorial-read" href="'+href(feature)+'">Read article →</a></div><div class="editorial-feature-art" aria-hidden="true"><span>CREATIVE<br>WORK.</span><small>SO / EDITORIAL</small></div></section>':'';
  const tabs=['All',...categories.filter(c=>articles.some(a=>a.category===c))];
  const selected=articles.filter(a=>a!==feature).slice(0,2);
