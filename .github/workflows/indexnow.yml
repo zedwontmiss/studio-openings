@@ -1,0 +1,34 @@
+name: IndexNow public URL notifications
+on:
+  workflow_dispatch:
+    inputs:
+      send:
+        description: Submit live (otherwise dry run)
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: indexnow-production
+  cancel-in-progress: false
+jobs:
+  notify:
+    if: github.event_name == 'workflow_dispatch' || vars.INDEXNOW_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Notify eligible canonical URLs
+        env:
+          INDEXNOW_SEND: ${{ (github.event_name == 'workflow_dispatch' && inputs.send && github.ref == 'refs/heads/main' && vars.INDEXNOW_ENABLED == 'true') || (github.event_name == 'push' && vars.INDEXNOW_ENABLED == 'true') }}
+          INDEXNOW_MODE: ${{ github.event_name == 'workflow_dispatch' && 'seed' || 'delta' }}
+          INDEXNOW_BEFORE: ${{ github.event.before }}
+        run: node operations/indexnow.mjs
