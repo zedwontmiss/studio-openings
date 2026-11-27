@@ -15,3 +15,5 @@ console.log('Editorial compiler, stale outputs, publication and escaping tests p
 assert.equal(authorAvatar('ZWM').initials,'ZM');assert.deepEqual(authorAvatar('ZWM'),authorAvatar('ZWM'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('<strong>ZWM</strong>'));assert.ok(read('article/when-a-design-studio-becomes-a-platform.html').includes('"author":{"@type":"Person","name":"ZWM"}'));
 
 assert.deepEqual(authorAvatar('Studio Openings'),{initials:'S/O',shade:'brand'});assert.ok(read('article.html').includes('id="editorial-magazine"'));assert.ok(read('article.html').includes('SELECTED / OWN WORK'));
+
+assert.ok(read("article.html").includes('class="so-signal-square" data-signal-contact href="/signal"'));

@@ -90,3 +90,6 @@
 .so-editorial-selected .editorial-meta{margin:auto 0 0;padding-top:4px}
 .so-editorial-contribute{justify-content:flex-end}
 @media(max-width:700px){.so-editorial-selected .editorial-meta{margin-top:0;padding-top:0}}
+
+/* SIGNAL subscription tile, stripped on non-review hosts by middleware. */
+.so-signal-square{box-sizing:border-box;flex:0 0 29%;min-width:0;aspect-ratio:1 / 1;background:#FFEE8C;color:#111;display:flex;flex-direction:column;justify-content:space-between;padding:18px;margin:0 12px;text-decoration:none;font:700 13px/1.25 Helvetica,Arial,sans-serif}.so-signal-square strong{font-size:clamp(28px,4vw,64px);letter-spacing:-.055em;line-height:1}.so-signal-square:hover strong{text-decoration:underline}@supports not (aspect-ratio:1 / 1){.so-signal-square{min-height:200px}}@media(max-width:700px){.so-signal-square{width:100%;max-width:320px;margin:0;min-height:180px}.so-signal-square strong{font-size:48px}}
