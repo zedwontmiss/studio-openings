@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {compileSourcingRules} from '../lib/sourcing-decisions.js';
+import {SELECTED_SOURCING_RULES} from '../lib/selected-sourcing-rules.js';
+const root=fileURLToPath(new URL('../',import.meta.url));
+const input=process.argv[2];assert.ok(input,'Usage: node operations/compile-sourcing-decisions.mjs decisions.json [--apply]');
+const batch=JSON.parse(readFileSync(input,'utf8')),registry=JSON.parse(readFileSync(new URL('../studio-registry/published.json',import.meta.url),'utf8'));
+assert.equal(batch.version,1);assert.equal(batch.status,'reviewed-sourcing-decisions');assert.ok(Array.isArray(batch.decisions)&&batch.decisions.length<=5000);
+const changes=compileSourcingRules(batch.decisions,registry.studios),ids=new Set(batch.decisions.map(d=>d.studioId));
+const rules=SELECTED_SOURCING_RULES.filter(r=>!ids.has(r.studioId)).concat(changes).sort((a,b)=>a.studioId.localeCompare(b.studioId));
+console.log(rules.length+' compiled selective holds; fixed owner holds remain independent.');
+if(!process.argv.includes('--apply'))process.exit(0);
+assert.equal(execFileSync('git',['branch','--show-current'],{cwd:root,encoding:'utf8'}).trim(),'development');
+assert.equal(execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim(),'','Clean worktree required');
+writeFileSync(new URL('../lib/selected-sourcing-rules.js',import.meta.url),'// Generated from explicitly reviewed operator sourcing decisions. No new holds by default.\nexport const SELECTED_SOURCING_RULES=Object.freeze('+JSON.stringify(rules)+');\n');
+console.log('Review diff and run tests before committing. No deployment performed.');

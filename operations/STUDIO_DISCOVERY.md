@@ -1,0 +1,10 @@
+# Studio discovery and review
+
+Read-only Preview operator endpoint derives candidates from approved career sources, mapped vacancy cities and published studio identities. No new crawl, D1 table, paid API or auto-publication. Exact normalized name and host grouping; possible name/domain overlaps flagged, not silently merged. Outreach holds excluded. Limits 500 sources/3000 mappings, explicit truncated flag.
+
+Career sources > Find studio candidates > Copy candidate JSON. Keep export private; not a publication file. Vacancy cities are not permanent offices; provider city IDs must not be copied into canonical IDs. Independently verify organization name, website, discipline, careers URL, offices and evidence/date. Do not mark employerVerified without actual verification. Reuse stable IDs for existing matches. Add reviewed records to studio-registry/published.json; regenerate geography, index/profiles, editorial dependencies and sitemap; run tests and inspect Preview. Publication remains explicit repository review. No fabricated descriptions or photos. Candidate employers may not qualify as studios. Resolve city slug collisions before expansion.
+
+Next: review real candidate batch and strict import provenance. No actual candidates observed or new records published.
+
+## Under-ten-year acquisition gate
+New compiler batches must contain a qualifications object keyed by studio ID, with independently reviewed official identity, portfolio, operatingStatus and founding evidence (url, reviewedOn, confirmed), and relationships containing kind, evidence and rationale. Founding date is required at the ten-year boundary unless an explicit established exception is approved. Geographic exceptions require explicit approval and rationale; no bulk emerging-market sourcing. Existing records are grandfathered, not retroactively verified. Dry-run refuses incomplete batches. Qualification data stays in private input, not generated public records. The gate validates evidence metadata and operator attestations, not remote page contents. No automatic crawling or outreach. Existing operator exports need qualification enrichment before compilation.

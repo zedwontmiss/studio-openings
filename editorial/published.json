@@ -1,0 +1,562 @@
+{
+  "featured": "when-a-design-studio-becomes-a-platform",
+  "articles": [
+    {
+      "slug": "creative-job-search-checklist",
+      "title": "A checklist for evaluating creative job openings",
+      "description": "Assess role scope, portfolio expectations, work location and the original application source before applying.",
+      "category": "Career",
+      "date": "2026-11-24",
+      "status": "published",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A job title alone rarely tells you what a creative role involves. Before sending an application, use the original employer posting to check the following details."
+        },
+        {
+          "type": "heading",
+          "text": "1. Read the actual responsibilities"
+        },
+        {
+          "type": "paragraph",
+          "text": "Distinguish concept development from production, management and technical coordination. An architecture role may emphasize documentation or BIM rather than concept design. A creative director may own strategy and team leadership, while a graphic designer may focus on execution. Match the responsibilities to the work you want to do."
+        },
+        {
+          "type": "heading",
+          "text": "2. Check location and eligibility separately"
+        },
+        {
+          "type": "paragraph",
+          "text": "Remote does not necessarily mean worldwide. Confirm permitted countries, time zones, work authorization, office attendance and any relocation requirements. If eligibility is missing, ask rather than assuming it."
+        },
+        {
+          "type": "heading",
+          "text": "3. Match your portfolio to the role"
+        },
+        {
+          "type": "paragraph",
+          "text": "Choose relevant examples that explain your contribution, constraints and outcomes. For architecture, technical drawings and project stages may matter alongside visual work. For motion or VFX, a focused reel may be more relevant than a general portfolio."
+        },
+        {
+          "type": "heading",
+          "text": "4. Compare compensation and contract scope"
+        },
+        {
+          "type": "paragraph",
+          "text": "Check currency, pay period, employment type and whether a figure is gross or net. A freelance day rate cannot be directly compared with annual employee pay without accounting for unpaid time and benefits."
+        },
+        {
+          "type": "heading",
+          "text": "5. Verify the original vacancy"
+        },
+        {
+          "type": "paragraph",
+          "text": "Use the employer's authoritative career page or application system to confirm the opening is current. A directory entry can become outdated between checks. Avoid sending unnecessary sensitive documents to an unverified recipient."
+        },
+        {
+          "type": "heading",
+          "text": "Continue your search"
+        },
+        {
+          "type": "links",
+          "links": [
+            {
+              "label": "Architecture",
+              "path": "/disciplines/architecture"
+            },
+            {
+              "label": "Interiors",
+              "path": "/disciplines/interior"
+            },
+            {
+              "label": "Product / UX",
+              "path": "/disciplines/product"
+            },
+            {
+              "label": "Graphic / Brand",
+              "path": "/disciplines/visual"
+            },
+            {
+              "label": "Motion / 3D",
+              "path": "/disciplines/motion"
+            }
+          ]
+        },
+        {
+          "type": "links",
+          "links": [
+            {
+              "label": "Explore studio career sources",
+              "path": "/studio"
+            },
+            {
+              "label": "Further",
+              "path": "/studio/further"
+            },
+            {
+              "label": "Framestore",
+              "path": "/studio/framestore"
+            },
+            {
+              "label": "Whitney Museum",
+              "path": "/studio/whitney-museum"
+            },
+            {
+              "label": "Browse all jobs",
+              "path": "/"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "path": "/disciplines/architecture",
+          "label": "Browse architecture jobs"
+        },
+        {
+          "path": "/studio",
+          "label": "Browse all studios"
+        }
+      ],
+      "cityIds": []
+    },
+    {
+      "slug": "remote-design-jobs-eligibility",
+      "title": "Remote does not always mean worldwide.",
+      "description": "How to read location restrictions, time zones and employment arrangements in creative job advertisements.",
+      "category": "Career",
+      "date": "2026-11-24",
+      "status": "published",
+      "blocks": [
+        {
+          "type": "heading",
+          "text": "Start with the employer's location language"
+        },
+        {
+          "type": "paragraph",
+          "text": "A remote job can still require residence in a particular country or region. A company might employ workers only where it has payroll infrastructure, or require proximity to clients or regular team meetings. The company's headquarters is not proof of where you can work."
+        },
+        {
+          "type": "heading",
+          "text": "Distinguish the work arrangement from eligibility"
+        },
+        {
+          "type": "paragraph",
+          "text": "Remote describes where the work takes place. Eligibility describes who may apply or where they may be based. Hybrid generally requires some office attendance, but the frequency is employer-specific. Look for explicit country lists, office requirements, travel expectations and time-zone overlap."
+        },
+        {
+          "type": "heading",
+          "text": "Read ambiguous listings conservatively"
+        },
+        {
+          "type": "paragraph",
+          "text": "If a vacancy says remote but gives only an office city, do not assume that the city is the sole eligible location or that every country is eligible. Ask the employer which jurisdictions are supported. A useful question is: Can a person residing in my country apply, and would this be an employee or contractor arrangement?"
+        },
+        {
+          "type": "heading",
+          "text": "Compare the practical terms"
+        },
+        {
+          "type": "paragraph",
+          "text": "Before accepting an offer, confirm working hours, currency, pay period, equipment responsibilities and the applicable contract. A contractor arrangement may shift tax, insurance and unpaid leave responsibilities to you. Obtain appropriate professional advice for cross-border employment questions."
+        }
+      ],
+      "related": [
+        {
+          "path": "/disciplines/product",
+          "label": "Browse product and UX jobs"
+        },
+        {
+          "path": "/disciplines/motion",
+          "label": "Browse motion and 3D jobs"
+        }
+      ],
+      "cityIds": []
+    },
+    {
+      "slug": "architecture-portfolio-role-checklist",
+      "title": "Your architecture portfolio should answer the job brief.",
+      "description": "A practical approach to tailoring project evidence for concept, technical and BIM-focused architecture roles.",
+      "category": "Practice",
+      "date": "2026-11-24",
+      "status": "published",
+      "blocks": [
+        {
+          "type": "heading",
+          "text": "Identify what the practice needs"
+        },
+        {
+          "type": "paragraph",
+          "text": "An architectural designer, technical architect and BIM coordinator may work on the same project but provide different evidence of competence. Read the role's responsibilities before selecting portfolio pages. Separate software familiarity from experience delivering a specific project stage."
+        },
+        {
+          "type": "heading",
+          "text": "Select projects by contribution"
+        },
+        {
+          "type": "paragraph",
+          "text": "For each project, explain the brief, your responsibilities, the team context and the decisions you contributed to. A concept role might benefit from diagrams and iterations. A documentation role might benefit from coordinated drawings and detail development. Show only work you have permission to share."
+        },
+        {
+          "type": "heading",
+          "text": "Make the evidence easy to inspect"
+        },
+        {
+          "type": "paragraph",
+          "text": "Use legible drawings, captions, consistent scales where relevant and a short explanation of the problem solved. Avoid an entire portfolio of polished renders if the vacancy asks for technical coordination. A short, relevant selection can communicate more than an unedited archive."
+        },
+        {
+          "type": "heading",
+          "text": "Check the application instructions"
+        },
+        {
+          "type": "paragraph",
+          "text": "Practices may request a file size limit, a particular format, a cover letter or a professional registration. Confirm these requirements on the original vacancy. Never claim a qualification or individual responsibility you did not hold."
+        }
+      ],
+      "related": [
+        {
+          "path": "/disciplines/architecture",
+          "label": "Browse architecture jobs"
+        },
+        {
+          "path": "/disciplines/interior",
+          "label": "Browse interiors jobs"
+        }
+      ],
+      "cityIds": []
+    },
+    {
+      "slug": "creative-employer-career-pages",
+      "title": "Beyond the job board: finding the original creative employer.",
+      "description": "Why official career pages matter, and how to use a studio directory without confusing discovery with live hiring.",
+      "category": "Studio",
+      "date": "2026-11-24",
+      "status": "published",
+      "blocks": [
+        {
+          "type": "heading",
+          "text": "The employer is the source of truth"
+        },
+        {
+          "type": "paragraph",
+          "text": "A directory helps you discover practices you might not know. It cannot guarantee that a vacancy is still available when you visit. Follow the original employer recruitment page to check the role, location, eligibility and application requirements."
+        },
+        {
+          "type": "heading",
+          "text": "Different studios recruit in different ways"
+        },
+        {
+          "type": "paragraph",
+          "text": "Some practices use a dedicated careers page, while others link to an applicant tracking system. Further has a current careers route under its own name; Framestore links from its careers site to its recruitment board. The Whitney Museum directs applicants through its job-postings page. These examples come from Studio Openings' reviewed career-source directory, not an assertion of active openings."
+        },
+        {
+          "type": "heading",
+          "text": "Build a studio shortlist"
+        },
+        {
+          "type": "paragraph",
+          "text": "Choose employers by the type of work, the role you want and the places where you can work. Review their official projects and recruitment instructions. Keep track of the date you checked the source rather than assuming a historical vacancy remains active."
+        },
+        {
+          "type": "heading",
+          "text": "Use discovery and verification together"
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with the Studio Openings directory and follow each individual profile to the official source. If the job board has related results, inspect those as a separate discovery step. An employer profile is not a paid advertisement or a guarantee of a partnership."
+        }
+      ],
+      "related": [
+        {
+          "path": "/studio/further",
+          "label": "Further"
+        },
+        {
+          "path": "/studio/framestore",
+          "label": "Framestore"
+        },
+        {
+          "path": "/studio/whitney-museum",
+          "label": "Whitney Museum"
+        }
+      ],
+      "cityIds": []
+    },
+    {
+      "slug": "london-creative-studios",
+      "title": "London: where design studios meet cultural institutions",
+      "description": "A selective starting point for finding brand, digital design, architecture, motion and exhibition employers in London.",
+      "category": "Studio",
+      "date": "2026-11-25",
+      "status": "published",
+      "cityIds": [
+        "gb--england--london"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A creative career in London does not have to follow a single discipline. Our directory brings together independent design practices, international production teams and cultural institutions. This is a curated starting point, not a ranking or a comprehensive map of London's creative economy."
+        },
+        {
+          "type": "heading",
+          "text": "Brand and visual identity"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pentagram, DixonBaxi, Ragged Edge, Further and Design Bridge and Partners offer different starting points for exploring brand and visual design. Examine their published projects and look for the balance between strategy, identity systems and production. A portfolio for a branding role should make the underlying design decisions as clear as the finished work."
+        },
+        {
+          "type": "heading",
+          "text": "Digital products and moving images"
+        },
+        {
+          "type": "paragraph",
+          "text": "ustwo is a digital product design entry in our directory; Framestore represents motion and visual effects. These fields often ask for different evidence: product designers can explain interactions and constraints, while motion applicants can show timing, storytelling and their contribution to a reel."
+        },
+        {
+          "type": "heading",
+          "text": "Architecture and exhibition work"
+        },
+        {
+          "type": "paragraph",
+          "text": "Adjaye Associates represents architecture in this selection. Tate, the Victoria and Albert Museum and the Design Museum provide another route into creative work through cultural institutions. Look beyond job titles such as designer: exhibition production, interpretation, digital experiences and technical coordination may also be relevant."
+        },
+        {
+          "type": "heading",
+          "text": "How to use this guide"
+        },
+        {
+          "type": "paragraph",
+          "text": "This selection is based on the London location records in the Studio Openings directory as of 25 November 2026. Follow each profile to its official website or career source. An entry does not establish a current vacancy, a partnership, a salary level or the size of its London office. Check the employer directly before applying."
+        },
+        {
+          "type": "heading",
+          "text": "Explore the studios"
+        },
+        {
+          "type": "links",
+          "links": [
+            {
+              "label": "Pentagram",
+              "path": "/studio/pentagram"
+            },
+            {
+              "label": "DixonBaxi",
+              "path": "/studio/dixonbaxi"
+            },
+            {
+              "label": "Ragged Edge",
+              "path": "/studio/ragged-edge"
+            },
+            {
+              "label": "Further",
+              "path": "/studio/further"
+            },
+            {
+              "label": "Design Bridge and Partners",
+              "path": "/studio/design-bridge-and-partners"
+            },
+            {
+              "label": "ustwo",
+              "path": "/studio/ustwo"
+            },
+            {
+              "label": "Framestore",
+              "path": "/studio/framestore"
+            },
+            {
+              "label": "Adjaye Associates",
+              "path": "/studio/adjaye-associates"
+            },
+            {
+              "label": "Tate",
+              "path": "/studio/tate"
+            },
+            {
+              "label": "Victoria and Albert Museum",
+              "path": "/studio/victoria-and-albert-museum"
+            },
+            {
+              "label": "Design Museum",
+              "path": "/studio/design-museum"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "path": "/studio",
+          "label": "Explore the full Studio directory"
+        },
+        {
+          "path": "/",
+          "label": "Browse current creative openings"
+        }
+      ]
+    },
+    {
+      "slug": "new-york-creative-studios",
+      "title": "New York: creative work beyond the design agency",
+      "description": "Explore architecture, brand design, image production, visual effects and cultural institutions through a selective New York studio guide.",
+      "category": "Studio",
+      "date": "2026-11-25",
+      "status": "published",
+      "cityIds": [
+        "us--new-york--new-york"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A design job search in New York can extend beyond conventional studios. The city records in our directory include architecture, brand design, production and cultural employers. Use this selection to broaden an employer shortlist rather than as a claim about the entire local job market."
+        },
+        {
+          "type": "heading",
+          "text": "Architecture and visual identity"
+        },
+        {
+          "type": "paragraph",
+          "text": "SHoP Architects is an architecture entry, while Further is listed for brand and design. Compare the work shown on their official sites before choosing portfolio examples. Technical project delivery and visual identity require different forms of evidence, even when both involve complex collaboration."
+        },
+        {
+          "type": "heading",
+          "text": "Image production and visual effects"
+        },
+        {
+          "type": "paragraph",
+          "text": "Industrial Color and Framestore are starting points for exploring image production and motion or VFX. Examine role descriptions for the distinction between creative direction, production coordination, technical execution and specialist craft. Do not infer responsibilities from a company name alone."
+        },
+        {
+          "type": "heading",
+          "text": "Museums and galleries"
+        },
+        {
+          "type": "paragraph",
+          "text": "Gagosian, MoMA PS1 and the Whitney Museum are listed under arts, culture or museum-related work. Creative opportunities in institutions can involve exhibitions, production and image-related responsibilities as well as conventional design. The specific vacancy, not the directory category, determines the actual requirements."
+        },
+        {
+          "type": "heading",
+          "text": "A practical shortlist"
+        },
+        {
+          "type": "paragraph",
+          "text": "Select employers whose work matches your skills, then check their original recruitment channels. This guide uses the seven New York directory entries recorded on 25 November 2026. It is not a representative employment survey, a list of currently hiring organizations or a recommendation to relocate. Verify location, eligibility and compensation with each employer."
+        },
+        {
+          "type": "heading",
+          "text": "Explore the studios"
+        },
+        {
+          "type": "links",
+          "links": [
+            {
+              "label": "SHoP Architects",
+              "path": "/studio/shop-architects"
+            },
+            {
+              "label": "Further",
+              "path": "/studio/further"
+            },
+            {
+              "label": "Industrial Color",
+              "path": "/studio/industrial-color"
+            },
+            {
+              "label": "Framestore",
+              "path": "/studio/framestore"
+            },
+            {
+              "label": "Gagosian",
+              "path": "/studio/gagosian"
+            },
+            {
+              "label": "MoMA PS1",
+              "path": "/studio/moma-ps1"
+            },
+            {
+              "label": "Whitney Museum of American Art",
+              "path": "/studio/whitney-museum"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "path": "/studio",
+          "label": "Explore the full Studio directory"
+        },
+        {
+          "path": "/",
+          "label": "Browse current creative openings"
+        }
+      ]
+    },
+    {
+      "slug": "when-a-design-studio-becomes-a-platform",
+      "title": "When a design studio becomes a platform.",
+      "description": "Tadaima’s Copenhagen retail and design practice offers a way to think about creative independence beyond client commissions.",
+      "category": "Studio",
+      "date": "2026-11-26",
+      "status": "published",
+      "cityIds": [],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "What if the most consequential project of a young design practice is not a commission, but the institution it builds for itself? Copenhagen-based Tadaima offers a useful case through which to consider that question."
+        },
+        {
+          "type": "paragraph",
+          "text": "According to its own account, Tadaima began in 2022 with an online shop, opened a showroom in 2023, presented an exhibition and a collaboration with Fredericia in 2025, and opened its Apartment Store in 2026. The practice combines its own design work with a selection of other makers’ work."
+        },
+        {
+          "type": "heading",
+          "text": "The platform is the project"
+        },
+        {
+          "type": "paragraph",
+          "text": "For a creative practice, a commissioned project generally begins with someone else’s brief. An owned platform introduces another possibility: the practice can decide which subjects to explore, whose work to present and how to communicate with an audience. A shop, journal or exhibition programme can become a framework for those decisions rather than merely an outlet for finished objects."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tadaima also describes its journal as a way of contextualising the work of designers. The interesting relationship here is between making, selecting and explaining. Each activity can reinforce the others, offering audiences more than a catalogue of products."
+        },
+        {
+          "type": "heading",
+          "text": "Independence has costs"
+        },
+        {
+          "type": "paragraph",
+          "text": "An owned platform can offer greater control, but it is not a shortcut to financial independence. Retail can introduce inventory and premises costs; publishing takes sustained editorial effort; exhibitions require production and coordination. These are general trade-offs, not a claim about Tadaima’s finances."
+        },
+        {
+          "type": "paragraph",
+          "text": "For younger practices, the useful question may be smaller: what can we build that creates an ongoing relationship with people who care about our work? A digital publication, a limited-edition object or a recurring gathering may be a starting point. The appropriate scale depends on the resources of the team."
+        },
+        {
+          "type": "heading",
+          "text": "A different measure of relevance"
+        },
+        {
+          "type": "paragraph",
+          "text": "Creative influence need not be measured only by the names on a client list. An independent initiative can also create a context in which other designers are discovered and ideas circulate. That is one reason Studio Openings is interested in the projects and platforms that practices initiate themselves."
+        },
+        {
+          "type": "paragraph",
+          "text": "This is an independent editorial interpretation of Tadaima’s published account, not an interview, site visit, financial assessment or sponsored feature. Primary source: Tadaima, About Us, https://tadaimacph.com/studio/about-us (accessed 26 November 2026)."
+        }
+      ],
+      "related": [
+        {
+          "path": "/studio/tadaima",
+          "label": "Tadaima — studio profile"
+        },
+        {
+          "path": "/studio",
+          "label": "Explore the Studio directory"
+        }
+      ],
+      "author": "ZWM",
+      "series": "OWN WORK"
+    }
+  ]
+}

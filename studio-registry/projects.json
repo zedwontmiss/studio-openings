@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "id": "tadaima-apartment-store",
+      "studioIds": [
+        "tadaima"
+      ],
+      "type": "owned-platform",
+      "title": "Apartment Store",
+      "summary": "A studio-operated design retail concept bringing furniture, objects and art into a residential setting.",
+      "url": "https://tadaimacph.com/studio/apartment-store",
+      "relationship": "owner",
+      "status": "candidate",
+      "evidence": [
+        {
+          "url": "https://tadaimacph.com/studio/apartment-store",
+          "kind": "official",
+          "reviewedOn": "2026-11-26",
+          "claim": "Project page identified in earlier acquisition research; ownership and description require source recheck."
+        },
+        {
+          "url": "https://tadaimacph.com/studio/about-us",
+          "kind": "official",
+          "reviewedOn": "2026-11-26",
+          "claim": "Official timeline confirms opening of the Apartment Store in 2026 as a setting for curated pieces and the practice’s own designs."
+        }
+      ],
+      "year": 2026
+    }
+  ]
+}

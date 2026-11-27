@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const app=readFileSync(new URL('../assets/app.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const start=app.indexOf('  function preserveSearchNavigation('),end=app.indexOf('  // Sponsored campaigns',start);
+assert.ok(start>=0&&end>start);
+const state={query:'architect',onlySaved:true},input={value:''};
+let scrolls=0;const frames=[];const nav={href:'https://s-o.app/studio'};const ctx={state,URL,document:{querySelectorAll(){return [nav];}},$:()=>input,render(){},window:{location:{href:'https://s-o.app/'},scrollTo(x,y){assert.equal(x,0);assert.equal(y,0);scrolls++;},requestAnimationFrame(fn){frames.push(fn);}}};
+vm.createContext(ctx);vm.runInContext(app.slice(start,end),ctx);
+ctx.searchTag('Figma');assert.equal(state.query,'architect Figma');assert.equal(input.value,state.query);assert.equal(state.onlySaved,false);assert.equal(new URL(nav.href,'https://s-o.app').searchParams.get('q'),'architect Figma');
+ctx.searchTag('figma');assert.equal(state.query,'architect');
+ctx.searchTag('Adobe CC');assert.equal(state.query,'architect Adobe CC');
+ctx.searchTag('Adobe CC');assert.equal(state.query,'architect');
+while(frames.length)frames.shift()();assert.equal(scrolls,16);
+assert.ok(!html.includes('id="preferences-bar"'));assert.ok(!app.includes('state.keywords'));assert.ok(!app.includes('persistKeywords'));
+console.log('Global tag search checks passed.');

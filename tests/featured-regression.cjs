@@ -14,9 +14,9 @@ function part(start,end){
 }
 const premiumBlock=part('  var featuredById=Object.create(null);','  function loadFeaturedConfig(){');
 function createEngine(sort){
- const state={sort:sort||'relevant'};
+ const state={sort:sort||'relevant',query:'designer'};
  const sortJobs=(a,b)=>a.title.localeCompare(b.title);
- return new Function('state','sortJobs',premiumBlock+'\nreturn {rankedFeed,isFeatured,setFeaturedConfig};')(state,sortJobs);
+ return new Function('state','sortJobs',part('  function effectiveSort(){','  function relevanceScore(job){')+premiumBlock+'\nreturn {rankedFeed,isFeatured,setFeaturedConfig};')(state,sortJobs);
 }
 const day=(delta)=>new Date(Date.now()+delta*86400000).toISOString().slice(0,10);
 const active={startsOn:day(-3),endsOn:day(25),approved:true};
@@ -80,5 +80,9 @@ check(app.includes('var list=rankedFeed(state.jobs.filter(function(job){return e
 check(app.includes('return savedMatchesFilters(item,jobIndex[item.id]);'),'Saved Jobs must filter before sponsored sorting');
 check(app.includes("if(activeFeatured)row.classList.add('is-featured');"),'Saved row receives Featured class');
 check(app.includes("star.textContent='★';star.title='Featured · Sponsored';"),'Saved row star disclosure');
-check(css.includes('.saved-entry.is-featured{background:#fff4bf;'),'Saved Featured background matches baby yellow');
-console.log('PASS: 22 Featured ranking, filtering, expiration, and Saved Jobs assertions');
+check(css.includes('.saved-entry.is-featured{background:#ffee8c;'),'Saved Featured background matches SIGNAL yellow');
+check(css.includes('.job-row.is-featured{background:#ffee8c}'),'Featured job background matches SIGNAL yellow');
+check(css.includes('.job-row.is-featured:hover{background:#ffee8c}'),'Featured hover matches SIGNAL yellow');
+check(css.includes('.saved-library .saved-entry.is-featured{background:#ffee8c}'),'Saved library matches SIGNAL yellow');
+check(css.includes('.featured-inquiry.is-selected{background:#ffee8c;'),'Featured package matches SIGNAL yellow');
+console.log('PASS: 26 Featured ranking, filtering, expiration, and Saved Jobs assertions');

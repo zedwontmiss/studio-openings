@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';import {assessIndex,DIMENSIONS} from '../lib/studio-index.js';import {onRequestGet,onRequestPost} from '../functions/api/studio-index.js';import {hiddenReleasePath} from '../lib/release-scope.js';
+const today='2026-11-26',base={version:'1.0',reviewedOn:today,criteria:{}};
+assert.equal(assessIndex(base,today).relevance.score,null);
+const evidence={url:'https://example.com/project',kind:'official',checkedOn:today,claim:'Fixture project evidence',eventOn:today},c={level:2,reason:'Fixture reason for rubric testing',evidence:[evidence]};
+const full={...base,criteria:Object.fromEntries(DIMENSIONS.map(d=>[d.id,c]))};
+assert.equal(assessIndex(full,today).relevance.score,50);assert.equal(assessIndex(full,today).momentum.score,50);
+assert.equal(assessIndex({...base,criteria:{originality:{...c,level:4}}},today),null);
+assert.equal(assessIndex({...base,criteria:{'recent-output':{...c,evidence:[{...evidence,eventOn:'2024-01-01'}]}}},today),null);
+assert.equal(assessIndex({...base,criteria:{commercial:c}},today),null);
+assert.equal(assessIndex(full,'2027-06-01').relevance.score,null);
+assert.equal(hiddenReleasePath('s-o.app','/studio-index-workshop'),true);
+const req=new Request('https://s-o.app/api/studio-index');assert.equal((await onRequestGet({request:req,env:{}})).status,403);assert.equal((await onRequestPost({request:req,env:{}})).status,403);
+console.log('S/O Index evidence, scoring and access guard passed.');

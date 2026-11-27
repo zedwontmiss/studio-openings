@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {reviewStudio} from '../lib/studio-review.js';
+const c={name:'Example Studio',domain:'example.com',careerURL:'https://example.com/careers',status:'review-required'};
+const today='2026-11-25';
+const r={decision:'approve',identityEvidence:'https://example.com/about',officeEvidenceReviewed:true,creativeScopeReviewed:true,record:{id:'example-studio',slug:'example-studio',name:c.name,website:'https://example.com/',source:{url:c.careerURL,reviewedOn:today},summary:'Brand design',overview:'Independent example brand design practice.',employerVerified:false,disciplines:['visual'],aliases:[],offices:[{country:'GB',region:'England',city:'London',cityId:'gb--england--london',kind:'office',sourceUrl:'https://example.com/contact',reviewedOn:today}]}};
+const result=reviewStudio(c,r,[],today);assert.equal(result.ok,true,JSON.stringify(result));
+assert.equal(reviewStudio(c,{...r,officeEvidenceReviewed:false},[],today).ok,false);
+assert.equal(reviewStudio(c,{...r,record:{...r.record,website:'javascript:alert(1)'}},[],today).ok,false);
+assert.equal(reviewStudio(c,r,[r.record],today).ok,false);
+assert.equal(reviewStudio({...c,status:'identity-conflict'},r,[],today).ok,false);
+assert.equal(reviewStudio(c,{...r,record:{...r.record,offices:[]}},[],today).ok,false);
+assert.equal(reviewStudio(c,{...r,record:{...r.record,source:{...r.record.source,reviewedOn:'2026-02-30'}}},[],today).ok,false);

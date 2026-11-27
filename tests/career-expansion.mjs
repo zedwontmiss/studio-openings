@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {DIRECT_SOURCES,discoverVacancies,normalizeDirect,fetchPage,scanDirect} from '../lib/direct-careers.js';
+import {normalizeFramestore,scanFramestore} from '../lib/framestore-careers.js';
+import {vacancyExcerpt} from '../lib/source-registry-core.js';
+
+const now=Date.parse('2026-11-24T00:00:00Z'),ragged=DIRECT_SOURCES[2],dixon=DIRECT_SOURCES[3];
+const task='You will develop brand identity systems and present design concepts to clients. ';
+const requirement='You have experience with typography, layout, and collaborative design reviews. ';
+const body='<h2>About the role</h2><p>'+task.repeat(10)+'</p><h2>Requirements</h2><p>'+requirement.repeat(10)+'</p>';
+const index='<a href="https://raggededge.com/join/designer">Designer</a><a href="/join/freelancers">Freelancers</a><a href="/join/senior-client-manager">Senior Client Manager</a>';
+const rows=discoverVacancies(index,ragged);assert.equal(rows.length,1);
+const detail='<h1>Designer</h1><a href="https://raggededge.teamtailor.com/jobs/123-designer/applications/new">Apply now</a>'+body+'<h3>Our hiring process</h3><p>Interview at our London studio.</p>';
+assert.equal(normalizeDirect(detail,rows[0],ragged,now).role,'visual');
+assert.equal(normalizeDirect(detail.replace('London studio','New York studio'),rows[0],ragged,now),null);
+assert.equal(normalizeDirect(detail.replace('123-designer','123-senior-designer'),rows[0],ragged,now),null);
+assert.equal(normalizeDirect(detail.replace('https://raggededge.teamtailor.com','https://evil.example'),rows[0],ragged,now),null);
+const dix='<a href="/jobs/123-brand-designer"><span class="Role__title">Brand Designer</span><span class="Role__meta">London · Hybrid</span></a>';
+const row=discoverVacancies(dix,dixon)[0];
+const dd='<h1>Brand Designer</h1><ul><li>London</li><li>Hybrid</li></ul><article>'+body+'</article><a href="https://connect.dixonbaxi.com/jobs/123-brand-designer/applications/new">Apply</a>';
+const job=normalizeDirect(dd,row,dixon,now);assert.equal(job.mode,'hybrid');assert.equal(job.posted,'');
+assert.equal(normalizeDirect(dd.replace('<li>London','<li>Paris'),row,dixon,now),null);
+assert.equal(normalizeDirect(dd.replace('123-brand-designer','124-brand-designer'),row,dixon,now),null);
+const response=html=>new Response(html,{headers:{'content-type':'text/html'}});
+const scanned=await scanDirect(dixon,async url=>response(url===dixon.url?dix:dd),now);assert.equal(scanned.jobs.length,1);
+await assert.rejects(fetchPage(dixon.url,dixon,async(_url,{signal})=>new Promise((resolve,reject)=>signal.addEventListener('abort',()=>reject(Error('Aborted')))),10),/Aborted/);
+
+const raw={id:12,title:'Animator',slug:'animator',status:'published',city:'London',country_code:'GB',location:'London, Greater London, United Kingdom',locations:[{city:'London',country_code:'GB'}],remote:false,hybrid:true,employment_type_code:'contract',careers_url:'https://framestore.recruitee.com/o/animator',careers_apply_url:'https://framestore.recruitee.com/o/animator/c/new',description:body,requirements:requirement.repeat(5),published_at:'2026-11-20 12:00:00 UTC'};
+const frame=normalizeFramestore(raw,now);assert.equal(frame.role,'motion');assert.equal(frame.type,'Contract');assert.equal(frame.posted,'2026-11-20T12:00:00.000Z');
+assert.equal(normalizeFramestore({...raw,hybrid:false,on_site:true},now).mode,'onsite');
+assert.equal(frame.expiresAt,'2026-11-24T06:00:00.000Z');
+for(const patch of [{status:'closed'},{remote:true},{title:'CG Supervisor (Expression of Interest)'},{title:'Freelance: CG - Chicago'},{close_at:'2026-11-23 12:00:00 UTC'},{close_at:'invalid'},{country_code:'US'},{locations:[]},{locations:[...raw.locations,{city:'Mumbai',country_code:'IN'}]},{careers_url:'https://evil.example/job'}])assert.equal(normalizeFramestore({...raw,...patch},now),null,JSON.stringify(patch));
+assert.equal(normalizeFramestore({...raw,close_at:'2026-11-24 02:00:00 UTC'},now).expiresAt,'2026-11-24T02:00:00.000Z');
+const json=data=>new Response(JSON.stringify(data),{headers:{'content-type':'application/json'}});
+assert.equal((await scanFramestore(async()=>json({offers:[raw]}),now)).jobs.length,1);
+assert.deepEqual((await scanFramestore(async()=>json({offers:[]}),now)).jobs,[]);
+await assert.rejects(scanFramestore(async()=>json({error:'blocked'}),now),/layout/);
+await assert.rejects(scanFramestore(async()=>new Response(null,{status:302}),now),/unavailable/);
+
+const excerpt=vacancyExcerpt('<h2>About us</h2><p>'+('We are an established international business. ').repeat(30)+'</p>'+body,950);
+assert.ok(excerpt.includes(task.trim()));assert.ok(excerpt.includes(requirement.trim()));assert.ok(!excerpt.includes('international business'));assert.ok(excerpt.length<=950);assert.match(excerpt,/[.!?]$/);
+assert.ok(!vacancyExcerpt('<h2>Requirements</h2><ul><li><p>'+requirement.repeat(5)+'</p></li></ul>').includes('•\n'));
+assert.equal(vacancyExcerpt('Brief.'),'');
+const granola='<p>'+('Welcome to our company. ').repeat(60)+'</p><h2>IN THIS ROLE, YOU WILL:</h2><p>'+task.repeat(9)+'</p><h2>YOUR BACKGROUND LOOKS SOMETHING LIKE:</h2><p>'+requirement.repeat(9)+'</p><h2>ABOUT THE OPPORTUNITY</h2><p>'+('Our office is bright and welcoming. ').repeat(20)+'</p>';
+const selected=vacancyExcerpt(granola);assert.ok(selected.includes(task.trim()));assert.ok(selected.includes(requirement.trim()));assert.ok(!selected.includes('ABOUT THE OPPORTUNITY'));
+assert.equal(normalizeFramestore({...raw,city:'Mumbai',country_code:'IN',location:'Mumbai, Maharashtra, India',locations:[{city:'Mumbai',country_code:'IN'}]},now),null);
+console.log('Career expansion: verified HTML, exact application links, location, expiry, remote exclusions, timeouts and balanced excerpts passed.');

@@ -1,4 +1,4 @@
-import {fetchOfficialJobs,classifyCreative,specialistTag,sourceExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
+import {fetchOfficialJobs,classifyCreative,specialistTag,vacancyExcerpt,employmentTypeOf} from '../../lib/source-registry-core.js';
 import {POLICY_VERSION,canUseCountry,cityCovered,US_REGIONS} from '../../lib/coverage-policy.js';
 import {outreachHeld} from '../../lib/outreach-policy.js';
 /** Studio Openings v1.0.1 — editorially selected, official AI/creative employer ATS feeds.
@@ -73,7 +73,9 @@ export function locationOf(raw){
  }
  return null; // No headquarters-based geography guessing.
 }
+import {engineeringTitle} from '../../lib/job-scope.js';
 export function creativeRole(title,description=''){
+ if(engineeringTitle(title))return '';
  if(REJECT.test(title))return '';
  const role=classifyCreative(title,description);
  if(role)return role;
@@ -85,7 +87,7 @@ export function normalize(row,source,now){
  const title=clean(row.title,125),role=creativeRole(title,row.description);
  const location=source.locations?.[row.location]||row.location,loc=locationOf(location);
  if(!role||(source.focus&&source.focus!==role)||!loc||!row.uid||!/^https:\/\//.test(String(row.url||'')))return null;
- const description=sourceExcerpt(row.description,950);
+ const description=vacancyExcerpt(row.description,950);
  if(description.length<130)return null;
  const n=Date.parse(row.posted||''),posted=Number.isFinite(n)&&n>946684800000&&n<=now+86400000?new Date(n).toISOString():'';
  const name=source.name,tags=[specialistTag(title,role)||TAGS[role]];
@@ -117,7 +119,7 @@ const HEAD={'content-type':'application/json; charset=utf-8','x-content-type-opt
 export async function onRequestGet({request}){
  const u=new URL(request.url),shard=Number(u.searchParams.get('shard'));
  if(!Number.isInteger(shard)||shard<0||shard>=Math.ceil(SOURCES.length/6))return new Response(JSON.stringify({error:'Invalid source shard'}),{status:400,headers:{...HEAD,'cache-control':'no-store'}});
- const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=8-ai-design&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
+ const key=new Request(u.origin+'/api/ai-jobs?shard='+shard+'&v=9-role-excerpts&geo='+POLICY_VERSION),cache=typeof caches!=='undefined'?caches.default:null;
  if(cache)try{const hit=await cache.match(key);if(hit)return hit;}catch(_){}
  const sources=SOURCES.slice(shard*6,shard*6+6),now=Date.now();
  const outcomes=await Promise.allSettled(sources.map(s=>loadBoard(s,now)));
@@ -128,7 +130,7 @@ export async function onRequestGet({request}){
    for(const job of o.value)if(!seen.has(job.url)){seen.add(job.url);jobs.push(job);}
  });
  if(!ok.length)return new Response(JSON.stringify({error:'Official sources unavailable',failed}),{status:503,headers:{...HEAD,'cache-control':'no-store'}});
- const response=new Response(JSON.stringify({jobs:jobs.slice(0,100),sources:ok,failed,updatedAt:new Date(now).toISOString(),geoPolicy:POLICY_VERSION}),{headers:{...HEAD,'cache-control':'public, max-age=300, s-maxage=14400'}});
+ const response=new Response(JSON.stringify({jobs:jobs.slice(0,100),truncated:jobs.length>100,sources:ok,failed,updatedAt:new Date(now).toISOString(),geoPolicy:POLICY_VERSION}),{headers:{...HEAD,'cache-control':failed.length||jobs.length>100?'public, max-age=60, s-maxage=300':'public, max-age=300, s-maxage=14400'}});
  if(cache)try{await cache.put(key,response.clone());}catch(_){}
  return response;
 }

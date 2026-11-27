@@ -1,0 +1,29 @@
+/* Jobs only: retain the original two-column layout and vertical filters. */
+.sidebar .sidebar-enhanced{display:block;width:100%;padding:0;margin:14px 0}
+.sidebar .sidebar-enhanced>label[hidden],.sidebar .sidebar-enhanced>select[hidden]{display:none!important}
+.sidebar-choice summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:bold;color:#111}
+.sidebar-choice summary::-webkit-details-marker{display:none}
+.sidebar-choice summary:after{content:'+';font-size:15px;font-weight:400;color:#555}
+.sidebar-choice[open] summary:after{content:'−'}
+.sidebar-choice .sidebar-current{display:none}
+.sidebar-enhanced .sidebar-current{display:block;font-size:12px;color:#666;margin-top:6px}
+.sidebar-choice:not([open]) .sidebar-current{display:block}
+.sidebar-choice .sidebar-options{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin:5px 0 0 9px}
+.sidebar-choice:not([open]) .sidebar-options{display:none}
+.sidebar-choice button{background:none;border:0;padding:5px 0;font:12px Helvetica,Arial,sans-serif;text-align:left;color:#111;cursor:pointer}
+.sidebar-choice button[aria-pressed=true]{text-decoration:underline;font-weight:bold}
+.sidebar-choice button:focus,.sidebar-choice summary:focus{outline:none;text-decoration:underline}.sidebar-choice button:focus:not(:focus-visible),.sidebar-choice summary:focus:not(:focus-visible){text-decoration:none}.sidebar-choice button[aria-pressed=true]{text-decoration:underline}
+.sidebar .filter-divider{height:1px;background:#ddd;margin:12px 0}
+.sidebar .filter-actions{justify-content:space-between}
+@media(max-width:730px){.sidebar .discipline-groups{display:block}.sidebar .sidebar-enhanced{margin:12px 0}}
+
+.sidebar .sidebar-choice[open] .sidebar-current{display:none}.sidebar-country-search{width:100%;box-sizing:border-box;margin:6px 0 0;border:0;border-bottom:1px solid #aaa;border-radius:0;background:transparent;color:#111;font:13px Helvetica,Arial,sans-serif;padding:4px 0;-webkit-appearance:none}.sidebar-country-search::placeholder{color:#777}.sidebar-choice:not([open]) .sidebar-country-search,.sidebar-options button[hidden]{display:none!important}.sidebar-country-search:focus{outline:0;border-color:#111}
+
+
+.sidebar .sidebar-enhanced > .sidebar-current{display:block;padding-left:9px;font-size:12px;color:#666;margin-top:6px}
+.sidebar .sidebar-enhanced > .sidebar-current[hidden],.sidebar .sidebar-choice[open] + .sidebar-current{display:none!important}
+
+/* Hide legacy native controls from first paint; only reveal completed enhanced groups. */
+.sidebar .compact-select:not(.sidebar-enhanced){visibility:hidden;min-height:24px}
+.sidebar .compact-select.sidebar-enhanced{visibility:visible}
+.sidebar-fallback .sidebar .compact-select:not(.sidebar-enhanced){visibility:visible}

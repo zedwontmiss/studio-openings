@@ -3,6 +3,7 @@
  * Public employer publication is impossible without a paid job_orders record.
  * No payment provider, credit-card fields, automated invoicing, or email sending.
  */
+import {engineeringTitle} from '../../lib/job-scope.js';
 import {planOf} from '../../lib/paid-plans.js';
 const HEAD={'content-type':'application/json; charset=utf-8','cache-control':'no-store, private','x-content-type-options':'nosniff','referrer-policy':'no-referrer'};
 const reply=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:HEAD});
@@ -70,6 +71,7 @@ async function action(env,input){
   const plan=planOf(row.tier);if(!plan||plan.priceUSD!==row.price_usd)return fail(409,'Invalid paid plan or price.');
   if(input.reviewConfirmed!==true)return fail(422,'Recheck employer, application route and current vacancy before publication.');
   let data;try{data=JSON.parse(row.job_data);}catch{return fail(422,'Invalid job information.');}
+  if(!data||!data.title||engineeringTitle(data.title))return fail(422,'Vacancy is outside creative scope. Reconcile any payment before proceeding.');
   if(data.closesOn && data.closesOn<new Date().toISOString().slice(0,10))return fail(409,'Vacancy already closed.');
   if(plan===planOf('featured')&&env.PREMIUM_ACTIVATION_ENABLED!=='true')return fail(403,'Featured publishing is disabled. Set PREMIUM_ACTIVATION_ENABLED=true only after testing the Featured release.');
   const ops=[

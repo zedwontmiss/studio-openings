@@ -1,0 +1,9 @@
+# Founding Scene contributors
+
+Owner direction: simple local noticeboard; no polls, voting, profiles, followers or mandatory categories. Meetups, rants, criticism, salary comparisons and culture in one feed. No manufactured activity.
+
+Start with London and New York. Target 3–5 willing contributors per city, not guaranteed. Personally approach adult design students, alumni, independent creative collectives and early-career professionals via their public organizational contact channels. Ask permission before following up; no scraping personal contact lists or bulk unsolicited outreach. Explain founder is based in Indonesia, pilot status, voluntary nature and no compensation promise. No quotas, no moderation credentials, no implied employment; paid assignments need separate agreement. Ask what local people actually need. Keep private contact information in existing operator email, restrict access, delete when no longer needed. No contributor database required now. Verify inbound interest and only list public names with affirmative permission. Never manufacture discussion or count. 
+
+First week: identify 10 relevant organizations per city; write 5 personal invitations per city; ask for a short introductory conversation; invite willing people to review the preview and suggest one genuine notice or discussion when posting is safe. Track outreach privately (organization, city, contact channel, permission, reply, next action), not in public repo. Success: real willing contributors and useful feedback, not vanity counts. No outreach has been sent.
+
+Deferred: design overhaul, polls (rejected), structured salary index, public contributor profiles. Data consolidation and inventory reliability remain next engineering priority. Before launch verify consent, legal status of voluntary participation in target jurisdictions, privacy and actual contact delivery.

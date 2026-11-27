@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {findLocal,localPage} from '../lib/local-page.js';
+import {sceneWritesEnabled,verifySceneChallenge} from '../lib/scene-core.js';
+const city=findLocal('london'),request=new Request('https://development.studio-openings.pages.dev/london');
+const env={PREVIEW_D1_ISOLATED:'true',SCENE_ENABLED:'true',SCENE_WRITES_ENABLED:'true',JOBS_DB:{},SCENE_RATE_SECRET:'x'.repeat(32),SCENE_TURNSTILE_SECRET:'test-secret',SCENE_TURNSTILE_SITE_KEY:'test-site'};
+assert.equal(sceneWritesEnabled({request,env}),true);
+assert.equal(sceneWritesEnabled({request,env:{...env,SCENE_TURNSTILE_SECRET:''}}),false);
+assert.equal(sceneWritesEnabled({request:new Request('https://s-o.app/london'),env}),false);
+assert.equal(await verifySceneChallenge({request,env},'proof','topic',async()=>new Response(JSON.stringify({success:true,hostname:'development.studio-openings.pages.dev',action:'scene_topic'}))),true);
+assert.equal(await verifySceneChallenge({request,env},'proof','topic',async()=>new Response(JSON.stringify({success:true,hostname:'development.studio-openings.pages.dev',action:'scene_reply'}))),false);
+assert.ok(!localPage(city).includes('scene-compose.js'));
+const list=localPage(city,{enabled:true,writes:true,siteKey:'test-site',topics:[]});
+assert.ok(list.includes('data-kind="topic"'));assert.ok(list.includes('scene-compose.js'));
+const thread=localPage(city,{enabled:true,writes:true,siteKey:'test-site',topic:{id:'12345678-1234-1234-1234-123456789abc',title:'Test topic',body:'Test body',created_at:'2026-11-25'},replies:[]});
+assert.ok(thread.includes('data-kind="reply"'));assert.ok(thread.includes('data-kind="report"'));
+console.log('Scene composer checks passed.');

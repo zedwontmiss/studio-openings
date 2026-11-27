@@ -19,13 +19,13 @@ assert(src.includes('state.jobs.filter(function(job){return eligible(job);})'),
  'Do not pass eligible directly to Array.filter: callback index/array are not saved metadata');
 const compiled=[
  between('  var roleLabels = {','  var state ='),
- between('  var ROLE_TAG={','  function jobKeywords(job){'),
- between('  function jobKeywords(job){','  // One explicitly assigned colour'),
- between('  function categoryFor(job) {','  function dateLabel(job)'),
+ between('  var ROLE_TAG={','  function jobKeywords(job,allTags){'),
+ between('  function jobKeywords(job,allTags){','  function styleTag('),
+ between('  function engineeringTitle(title)','  function dateLabel(job)'),
  'function trim(v){return String(v||"").trim();}',
- between('  function usMatch(loc)','  function sortJobs(a,b)')
+ between('  function usMatch(loc)','  function effectiveSort()')
 ].join('\n');
-const make=new Function('state',compiled+'\nreturn {eligible,categoryFor,jobKeywords};');
+const make=new Function('state',compiled+'\nreturn {eligible,categoryFor,jobKeywords,jobSearchTags};');
 const jobs=[
  {id:'art',title:'Art Director',company:'Example Graphic Studio',role:'visual',location:'Eligible: United States',mode:'remote',type:'Full-time',salary:'$140k'},
  {id:'ux',title:'Principal UX Designer',company:'Example Game Company',role:'product',location:'Eligible: United States',mode:'remote',type:'Full-time',salary:'$160k',tags:['Product Design','UX/UI']},
@@ -63,8 +63,8 @@ const cases=[
  ['employer search',['ux'],{query:'game company'}]
 ];
 for(const [name,expected,filters] of cases){
- const api=make({...base,...filters});
- assert.deepStrictEqual(jobs.filter(j=>api.eligible(j)).map(j=>j.id),expected,name);
+ const api=make({...base,...filters,query:filters.query||''});
+ assert.deepStrictEqual(jobs.filter(j=>api.eligible(j)&&(!filters.keywords|| (filters.keywordMatch==='all'?filters.keywords.every(k=>api.jobSearchTags(j).includes(k)):filters.keywords.some(k=>api.jobSearchTags(j).includes(k))))).map(j=>j.id),expected,name);
 }
 const filtered=make({...base,selectedRoles:['product'],keywords:['Product Design']});
 const mixed={id:'mixed',title:'Senior Motion & Graphic Designer',role:'visual',company:'Silverback Strategies',location:'United States',mode:'remote'};
@@ -89,3 +89,7 @@ assert.deepStrictEqual(specialty.jobKeywords({role:'fashion',title:'Photographer
 assert.deepStrictEqual(specialty.jobKeywords({role:'fashion',title:'Editorial Photo Retoucher',tags:['Photography']}),['Photography','Retouching']);
 assert.deepStrictEqual(specialty.jobKeywords({role:'web',title:'Creative Developer',tags:['Web Design']}),['Creative Technology']);
 assert.deepStrictEqual(specialty.jobKeywords({role:'web',title:'Web Designer'}),['Web Design']);
+
+const structured=make({...base,query:'Motion design jobs in US'});assert.deepStrictEqual(jobs.filter(j=>structured.eligible(j)).map(j=>j.id),['motion']);const full=make({...base,query:'Motion design jobs in United States'});assert.deepStrictEqual(jobs.filter(j=>full.eligible(j)).map(j=>j.id),['motion']);assert(!full.eligible({title:'Electrical Designer',role:'motion',location:'United States'}));
+
+const canadian=[{id:'ca-product',title:'UX Researcher',role:'product',company:'Studio A',location:'Toronto',geoCountry:'CA'},{id:'world-product',title:'Product Designer',role:'product',company:'Studio B',location:'Worldwide',mode:'remote'},{id:'us-product',title:'Product Designer',role:'product',company:'Studio C',location:'United States'},{id:'ca-motion',title:'Motion Designer',role:'motion',company:'Studio D',location:'Canada'}];for(const q of ['Product design Canada','Canada product design','Product design jobs in Canada'])assert.deepStrictEqual(canadian.filter(j=>make({...base,query:q}).eligible(j)).map(j=>j.id),['ca-product','world-product'],q);assert(!make({...base,query:'Product design Canada Figma'}).eligible(canadian[0]));

@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS commercial_placements (id TEXT PRIMARY KEY, studio_id TEXT NOT NULL, article_slug TEXT, starts_on TEXT NOT NULL, ends_on TEXT NOT NULL, amount_cents INTEGER NOT NULL, payment_reference TEXT, state TEXT NOT NULL CHECK(state IN ('draft','paid','active','ended')), revision INTEGER NOT NULL DEFAULT 1);

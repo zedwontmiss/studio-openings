@@ -1,0 +1,19 @@
+name: Preview inventory health
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 7 * * *'
+permissions:
+  contents: read
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: development
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node operations/warm-public-inventory.mjs

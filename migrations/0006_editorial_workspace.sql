@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS editorial_workspace_drafts (slug TEXT PRIMARY KEY, payload TEXT NOT NULL, state TEXT NOT NULL CHECK(state IN ('draft','reviewed')), revision INTEGER NOT NULL DEFAULT 1, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);

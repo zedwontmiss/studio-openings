@@ -60,7 +60,7 @@ for(const path of ['/about','/disciplines/architecture','/jobs/'+employerId,'/op
 }
 let injected='';
 globalThis.HTMLRewriter=class {
-  on(selector,handler){assert.equal(selector,'head');handler.element({append(value){injected=value;}});return this;}
+  on(selector,handler){if(selector==='head')handler.element({append(value){if(value.includes('/assets/traffic.js'))injected=value;},setInnerContent(){}});else if(selector==='a[href]')handler.element({getAttribute(){return '/scene';},remove(){},setAttribute(){}});else if(selector==='.studio-careers')handler.element({remove(){}});else if(selector==='[data-signal-contact]')handler.element({remove(){}});else if(selector==='body')handler.element({append(){}});else if(selector==='#job-list')handler.element({setInnerContent(){}});else assert.fail('Unexpected selector: '+selector);return this;}
   transform(response){return response;}
 };
 for(const [settings,headers,enabled] of [[env,{},true],[{...env,TRAFFIC_ENABLED:'false'},{},false],[{...env,PREVIEW_D1_ISOLATED:'false'},{},false],[env,{DNT:'1'},false]]){
@@ -137,9 +137,63 @@ assert.equal((await count(event)).status,204);
 await count({...event,event:'apply'});await count({...event,event:'apply'});await count(event,{DNT:'1'});await count(event,{'Sec-GPC':'1'});
 assert.equal((await count(event,{origin:'https://other.example'})).status,403);
 assert.equal((await count({...event,referral:'person@example.com'})).status,422);
-assert.deepEqual(sql.prepare('SELECT event,total FROM traffic_daily ORDER BY event').all().map(r=>[r.event,r.total]),[['apply',2],['view',1],['visit',1]]);
-assert.equal(sql.prepare('SELECT count(*) AS n FROM traffic_daily WHERE job_key=?').get(secondId).n,3);
+assert.deepEqual(sql.prepare('SELECT event,total FROM traffic_daily ORDER BY event').all().map(r=>[r.event,r.total]),[['apply',2],['listing',1],['view',1],['visit',1]]);
+assert.equal(sql.prepare('SELECT count(*) AS n FROM traffic_daily WHERE job_key=?').get(secondId).n,4);
 await count({...event,entry:false,job:'person@example.com'});
 assert.equal(sql.prepare("SELECT COUNT(*) AS n FROM traffic_daily WHERE job_key LIKE '%@%'").get().n,0);
+
+// Exercise real operator endpoints against disposable SQLite only; no money or email.
+const pilotId='SO-TEST-PAYMENT01';
+sql.prepare("INSERT INTO job_submissions(id,status,submission_type,job_title,company,contact_email,job_data) VALUES(?,'pending','employer',?,?,?,?)").run(pilotId,data.title,data.company,'fixture@example.net',JSON.stringify({...data,url:'https://example.com/jobs/payment-pilot'}));
+sql.prepare("INSERT INTO job_orders(submission_id,tier,price_usd,status) VALUES(?,'standard',149,'pending_review')").run(pilotId);
+const paymentAct=(action,extra={})=>operator({env,request:request('/api/operator',{id:pilotId,action,...extra})});
+const visible=async()=> (await (await feed({env})).json()).jobs.some(j=>j.id==='direct-'+pilotId.toLowerCase());
+assert.equal(await visible(),false);
+assert.equal((await paymentAct('publish',{reviewConfirmed:true})).status,409);
+assert.equal((await paymentAct('mark_paid',{paymentConfirmed:true,paymentReference:'FIXTURE-ONLY'})).status,409);
+assert.equal((await paymentAct('review')).status,422);
+assert.equal((await paymentAct('review',{reviewConfirmed:true})).status,200);
+assert.equal((await paymentAct('invoice_sent')).status,422);
+assert.equal((await paymentAct('invoice_sent',{invoiceSentConfirmed:true})).status,200);
+assert.equal((await paymentAct('publish',{reviewConfirmed:true})).status,409);
+assert.equal((await paymentAct('mark_paid',{paymentReference:'FIXTURE-ONLY'})).status,422);
+assert.equal((await paymentAct('mark_paid',{paymentConfirmed:true,paymentReference:'FIXTURE-ONLY'})).status,200);
+assert.equal(await visible(),false);
+assert.equal((await paymentAct('publish',{reviewConfirmed:true})).status,200);
+assert.equal(await visible(),true);
+assert.equal((await paymentAct('publish',{reviewConfirmed:true})).status,409);
+assert.equal((await paymentAct('close',{reviewConfirmed:true})).status,200);
+assert.equal(await visible(),false);
+assert.equal((await page(employerPage,pilotId)).status,404);
+console.log('Manual payment lifecycle fixture passed; no external payment or email.');
+
+// Featured rehearsal uses real submit/operator/feed handlers and disposable SQLite.
+// Only Turnstile's remote response is simulated; no network, payment or email.
+const {onRequestPost:submit}=await import('../functions/api/submit.js');
+const {onRequestGet:featured}=await import('../functions/api/featured-jobs.js');
+const fixtureEnv={...env,TURNSTILE_SECRET_KEY:'fixture-only',SUPPORT_EMAIL:'fixture@example.net',PREMIUM_ACTIVATION_ENABLED:'true'};
+const originalFetch=globalThis.fetch;
+let featuredId;
+try{
+ globalThis.fetch=async(url)=>{assert.equal(String(url),'https://challenges.cloudflare.com/turnstile/v0/siteverify');return Response.json({success:true,hostname:new URL(host).hostname,action:'submit_job'});};
+ const response=await submit({env:fixtureEnv,request:request('/api/submit',{...data,kind:'employer',postingPackage:'featured',contactEmail:'fixture-featured@example.net',permissionChecked:true,turnstileToken:'fixture-token-only',url:'https://example.com/jobs/featured-rehearsal'})});
+ const receipt=await response.json();assert.equal(response.status,201,JSON.stringify(receipt));assert.equal(receipt.priceUSD,349);featuredId=receipt.reference;
+}finally{globalThis.fetch=originalFetch;}
+const actFeatured=(action,extra={},overrides={})=>operator({env:{...fixtureEnv,...overrides},request:request('/api/operator',{id:featuredId,action,...extra})});
+const listed=async()=> (await (await feed({env:fixtureEnv})).json()).jobs.some(j=>j.id==='direct-'+featuredId.toLowerCase());
+const highlighted=async()=> (await (await featured({env:fixtureEnv})).json()).placements.some(j=>j.jobId==='direct-'+featuredId.toLowerCase());
+assert.equal(await listed(),false);assert.equal(await highlighted(),false);
+assert.equal((await actFeatured('review',{reviewConfirmed:true})).status,200);
+assert.equal((await actFeatured('invoice_sent',{invoiceSentConfirmed:true})).status,200);
+assert.equal((await actFeatured('publish',{reviewConfirmed:true})).status,409);
+assert.equal((await actFeatured('mark_paid',{paymentConfirmed:true,paymentReference:'FIXTURE-ONLY'})).status,200);
+assert.equal(await listed(),false);
+assert.equal((await actFeatured('publish',{reviewConfirmed:true},{PREMIUM_ACTIVATION_ENABLED:'false'})).status,403);
+assert.equal((await actFeatured('publish',{reviewConfirmed:true})).status,200);
+assert.equal(await listed(),true);assert.equal(await highlighted(),true);
+assert.equal((await actFeatured('pause')).status,200);assert.equal(await highlighted(),false);assert.equal(await listed(),true);
+assert.equal((await actFeatured('resume')).status,200);assert.equal(await highlighted(),true);
+assert.equal((await actFeatured('close',{reviewConfirmed:true})).status,200);assert.equal(await listed(),false);assert.equal(await highlighted(),false);
+console.log('Featured rehearsal passed: submission, $349 invoice state, payment attestation, activation gate, publication, placement, pause/resume and closure. Disposable SQLite only.');
 sql.close();
 console.log('SQLite integration passed: idempotent migrations, review, operator closure, sitemap, source sync, queue cadence, retry, revocation and coarse analytics.');

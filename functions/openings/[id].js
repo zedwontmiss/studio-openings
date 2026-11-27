@@ -1,3 +1,4 @@
+import {publicHeader,HEADER_CSS} from '../../lib/public-header.js';
 import {sourceSeoJob} from '../../lib/source-seo-policy.js';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const HEAD={'content-type':'text/html; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
@@ -18,8 +19,8 @@ export async function onRequestGet({params,env,request}){
 <title>${esc(job.title)} at ${esc(job.company)} | Studio Openings</title>
 <meta name="description" content="${esc(('Explore the '+job.title+' opening at '+job.company+' in '+job.location+'. Verified source information.').slice(0,155))}">
 <link rel="canonical" href="${origin}/openings/${encodeURIComponent(job.id)}">
-<style>html{font:14px/1.6 Arial,Helvetica,sans-serif;color:#202020}body{max-width:760px;margin:0 auto;padding:0 20px}header{border-bottom:1px solid #ddd;padding:18px 0}header a{font-size:17px;font-weight:bold;text-decoration:none;color:#111}main{padding:25px 0}h1{font-size:27px;line-height:1.25;margin:0 0 6px}.sub{color:#666}.description{border-top:1px solid #ddd;margin-top:22px;padding-top:12px}.description p{margin:0 0 15px}.apply{display:inline-block;padding:11px 17px;background:#111;color:#fff;text-decoration:none;margin:12px 0}footer{border-top:1px solid #ddd;padding:20px 0;color:#777;font-size:12px}</style></head>
-<body><header><a href="/">studio openings</a></header><main>
+<style>html{font:14px/1.6 Helvetica,Arial,sans-serif;color:#202020}body{margin:0}main,footer{max-width:760px;margin-left:auto;margin-right:auto;padding-left:20px;padding-right:20px;box-sizing:border-box}main{padding-top:25px;padding-bottom:25px}h1{font-size:27px;line-height:1.25;margin:0 0 6px}.sub{color:#666}.description{border-top:1px solid #ddd;margin-top:22px;padding-top:12px}.description p{margin:0 0 15px}.apply{display:inline-block;padding:11px 17px;background:#111;color:#fff;text-decoration:none;margin:12px 0}footer{border-top:1px solid #ddd;padding-top:20px;padding-bottom:20px;color:#777;font-size:12px}</style>${HEADER_CSS}</head>
+<body>${publicHeader('jobs')}<main>
 <p class="sub">creative jobs / official careers</p><h1>${esc(job.title)}</h1>
 <p>${esc(job.company)} · ${esc(job.location)}</p>
 <p class="sub">Verified source: ${esc(job.source)} · Last editorial verification: ${esc(job.verifiedAt)}</p>

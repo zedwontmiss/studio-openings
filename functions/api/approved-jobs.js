@@ -1,3 +1,4 @@
+import {engineeringTitle} from '../../lib/job-scope.js';
 import {EMPLOYER_ROWS,activeUntil} from '../../lib/job-lifecycle.js';
 import {eligibleJob} from '../../lib/seo-jobs.js';
 import {remoteEligibility,officeLocation,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
@@ -12,7 +13,7 @@ function publicJob(row,now,nativeEnabled){
  let data;
  try{data=JSON.parse(row.job_data);}catch{return null;}
  if(row.submission_type!=='employer'&&outreachHeld(data?.company,data?.url))return null;
- if(!data||typeof data!=='object'||!ROLES.has(data.role)||!data.title||!data.company||!data.location)return null;
+ if(!data||typeof data!=='object'||!ROLES.has(data.role)||!data.title||engineeringTitle(data.title)||!data.company||!data.location)return null;
  const applicationMethod=data.applicationMethod||'external';
  if(!['external','native','email'].includes(applicationMethod))return null;
  if(applicationMethod==='external'&&!validHTTPS(data.url))return null;
@@ -30,7 +31,7 @@ function publicJob(row,now,nativeEnabled){
   location:short(data.location,90),mode:short(data.mode,12),type:short(data.type,50)||'Not specified',...geoMeta(geo),
   role:data.role,url:applicationMethod==='external'?data.url:'',applicationMethod,
   applicationEmail:applicationMethod==='email'?short(data.applicationEmail,150):'',salary:short(data.salary,75),eligibility:short(data.eligibility,170),applicantLocation:short(data.applicantLocation,100),locationReference:data.locationReference||null,applicantLocationReference:data.applicantLocationReference||null,workAuthorization:data.workAuthorization||'unspecified',visaSponsorship:data.visaSponsorship||'unspecified',
-  description:String(data.description||'').trim(),expiresAt:new Date(end).toISOString(),posted:String(row.created_at||'').slice(0,10),source:'Direct / curated',
+  description:String(data.description||'').trim(),expiresAt:new Date(end).toISOString(),posted:row.submission_type==='employer'?String(row.order_published_at||'').slice(0,10):String(data.posted||''),dateKind:row.submission_type==='employer'?'posted':data.dateKind,source:'Direct / curated',
   verifiedAt:String(verified||'').slice(0,10),descriptionKind:row.submission_type==='employer'?'employer-description':'editorial-summary',detailUrl:eligibleJob(row,now,nativeEnabled)?'/jobs/'+encodeURIComponent(row.id):''
  };
 }

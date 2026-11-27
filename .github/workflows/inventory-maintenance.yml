@@ -1,0 +1,38 @@
+name: Preview inventory maintenance
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: Maintenance task
+        type: choice
+        options:
+          - snapshot
+          - ingest
+        default: snapshot
+  schedule:
+    - cron: '7,17,27,37,47,57 * * * *'
+    - cron: '13,43 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: studio-openings-preview-inventory-maintenance
+  cancel-in-progress: false
+jobs:
+  maintenance:
+    if: vars.PREVIEW_MAINTENANCE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: development
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Refresh one bounded source
+        env:
+          TASK: ${{ github.event_name == 'workflow_dispatch' && inputs.task || github.event.schedule == '13,43 * * * *' && 'ingest' || 'snapshot' }}
+          SNAPSHOT_SECRET: ${{ secrets.INVENTORY_SNAPSHOT_SECRET }}
+          INGEST_SECRET: ${{ secrets.SOURCING_INGEST_SECRET }}
+        run: node operations/run-preview-maintenance.mjs

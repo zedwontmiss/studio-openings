@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {onRequestPost as snapshot} from '../functions/api/refresh-inventory-snapshot.js';
+import {onRequestPost as ingest} from '../functions/api/ingest-sources.js';
+const key='fixture-key-'.repeat(4),other='other-fixture-'.repeat(4);
+const request=(path,token=key)=>new Request('https://development.studio-openings.pages.dev/api/'+path,{method:'POST',headers:{authorization:'Bearer '+token,'content-type':'application/json'},body:'{}'});
+const env={JOBS_DB:{prepare(){assert.fail('Unauthorized request must not access D1');}},PREVIEW_D1_ISOLATED:'true',INVENTORY_SNAPSHOT_ENABLED:'true',SOURCE_INGEST_ENABLED:'true',OPERATOR_ACCESS_TOKEN:other,INVENTORY_SNAPSHOT_SECRET:key,SOURCING_INGEST_SECRET:key};
+assert.equal((await snapshot({request:request('refresh-inventory-snapshot'),env})).status,401);
+assert.equal((await ingest({request:request('ingest-sources'),env})).status,503);
+assert.equal((await snapshot({request:request('refresh-inventory-snapshot',other),env:{...env,INVENTORY_SNAPSHOT_SECRET:other}})).status,401);
+assert.equal((await ingest({request:request('ingest-sources',other),env:{...env,SOURCING_INGEST_SECRET:other}})).status,403);
+console.log('Maintenance credential separation guards passed');

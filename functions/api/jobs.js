@@ -89,7 +89,9 @@ function stripHimalayasAttribution(text){
 function contains(re, title, body) {return re.test(title) || re.test(body);}
 
 /** Return a standardized role and a relevance score, or null to reject. */
+import {engineeringTitle} from '../../lib/job-scope.js';
 function classify(job) {
+ if(engineeringTitle(job.title))return null;
   const title=String(job.title||'').trim();
   const t=title.toLowerCase();
   const description=plainText(job.description,2500).toLowerCase();
@@ -141,7 +143,7 @@ function classify(job) {
     if (hasContext(/\b(?:brand identity|graphic design|visual design|illustrator|adobe creative|photoshop|indesign|print design|typography)\b/))return {role:'visual',relevance:77};
     if (hasContext(/\b(?:interior|furniture|spatial|architectural)\b/))return {role:'interior',relevance:75};
     if (hasContext(/\b(?:motion graphics|animation|vfx|3d art)\b/))return {role:'motion',relevance:75};
-    if (/\bdesign\b/i.test(cats)&&!strongTechEvidence.test(description))return {role:'visual',relevance:67};
+    // Broad upstream design categories alone are insufficient evidence.
   }
   return null;
 }
@@ -178,7 +180,7 @@ function tagsFor(title,description,role){
   add('BIM',/\bbim\b/.test(text));add('Figma',/\bfigma\b/.test(text));
   add('Rhino',/\brhino\b/.test(text));add('SketchUp',/\bsketchup\b/.test(text));
   add('Adobe',/adobe (?:creative|illustrator|photoshop|indesign)/.test(text));
-  return tags.slice(0,3);
+  return tags.slice(0,5);
 }
 
 // The date means something different depending on the upstream:
@@ -291,7 +293,7 @@ async function getSource([name,url]){
 export async function onRequestGet({request}){
   const cache=typeof caches==='undefined'?null:caches.default;
   // Versioned key ensures the improved excerpts are not masked by an old 3-hour cached response.
-  const cacheKey=new Request(new URL('/api/jobs?classifier=v1123-clean-source-credit&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
+  const cacheKey=new Request(new URL('/api/jobs?classifier=v1126-engineering-scope&policy='+POLICY_VERSION,request.url).toString(),{method:'GET'});
   try {
     if(cache){const hit=await cache.match(cacheKey);if(hit)return hit;}
     const responses=await Promise.allSettled(SOURCES.map(getSource));
