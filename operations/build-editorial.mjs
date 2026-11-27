@@ -36,7 +36,7 @@ export function compile(source,indexTemplate,readerTemplate){
  const selected=articles.filter(a=>a!==feature).slice(0,2);
  const lead=feature?'<section class="so-editorial-lead"><p class="so-editorial-eyebrow">SELECTED / '+esc(feature.series||feature.category)+'</p><h2><a href="'+href(feature)+'">'+esc(feature.title)+'</a></h2><p class="so-editorial-deck">'+esc(feature.description)+'</p>'+meta(feature)+'</section>':'';
  const selection=selected.map(a=>'<section class="so-editorial-selected"><h2><a href="'+href(a)+'">'+esc(a.title)+'</a></h2>'+meta(a)+'</section>').join('');
- const magazine=lead+'<div class="so-editorial-selection">'+selection+'<a class="so-signal-square" data-signal-contact href="/signal"><span>studio openings</span><strong>SIGNAL.</strong><span>Subscribe →</span></a></div>';
+ const magazine=lead+'<div class="so-editorial-selection">'+selection+'<a class="so-signal-square" data-signal-contact href="/signal/archive"><span>studio openings</span><strong>SIGNAL.</strong><span>Read SIGNAL →</span></a></div>';
  const cards=articles.map(a=>'<article class="editorial-card" data-category="'+a.category+'"><h2><a href="'+href(a)+'">'+esc(a.title)+'</a></h2><time datetime="'+a.date+'">'+dateLabel(a.date)+'</time><p class="editorial-summary" hidden>'+esc(a.description)+'</p></article>').join('');
  out.set('article.html',fill(indexTemplate,{FEATURE:magazine,TABS:'',CARDS:cards}));
  for(const a of articles){

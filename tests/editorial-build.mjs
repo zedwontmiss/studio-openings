@@ -16,4 +16,6 @@ assert.equal(authorAvatar('ZWM').initials,'ZM');assert.deepEqual(authorAvatar('Z
 
 assert.deepEqual(authorAvatar('Studio Openings'),{initials:'S/O',shade:'brand'});assert.ok(read('article.html').includes('id="editorial-magazine"'));assert.ok(read('article.html').includes('SELECTED / OWN WORK'));
 
-assert.ok(read("article.html").includes('class="so-signal-square" data-signal-contact href="/signal"'));
+assert.ok(read("article.html").includes('class="so-signal-square" data-signal-contact href="/signal/archive"'));
+
+assert.ok(read("article.html").includes("Read SIGNAL →"));
