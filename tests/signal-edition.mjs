@@ -4,3 +4,5 @@ const connected=prepareSignal([],STUDIO_WORKSPACE.studios,EDITORIAL_WORKSPACE_IN
 const empty=prepareSignal([],[],[],now);assert.equal(empty.picks.length,0);assert.equal(empty.reading.length,0);console.log('SIGNAL editorial connection and emerging practice rotation passed.');
 
 const numbered=prepareSignal([],[],[],now,37);assert.equal(numbered.editionNumber,37);assert.ok(numbered.subject.startsWith("SIGNAL. #37"));assert.equal(numbered.readyForReview,false);assert.throws(()=>prepareSignal([],[],[],now,0));assert.equal(connected.editionNumber,null);assert.ok(connected.subject.includes("Draft"));
+
+import {renderSignal} from "../lib/signal-render.js";const entry={title:"A < B",url:"https://example.com/"};const portrait=renderSignal({editionNumber:37,jobs:[entry,entry],picks:[entry,entry],reading:[entry,entry]});assert.ok(portrait.includes("SIGNAL. #37"));assert.ok(portrait.includes("A &lt; B"));assert.ok(portrait.includes("{{ unsubscribe }}"));assert.throws(()=>renderSignal(numbered));
