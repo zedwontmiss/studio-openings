@@ -9,6 +9,7 @@ import {onRequestGet as employerPage} from '../functions/jobs/[id].js';
 import {onRequestGet as sourcePage} from '../functions/openings/[id].js';
 import {onRequest as middleware} from '../functions/_middleware.js';
 import {onRequestGet as feed} from '../functions/api/approved-jobs.js';
+import {onRequestGet as publicInventory} from '../functions/api/public-inventory.js';
 import {onRequestGet as indexed} from '../functions/api/indexed-jobs.js';
 import {sync} from '../functions/api/ingest-sources.js';
 import {timestamp,activeUntil,DAY} from '../lib/job-lifecycle.js';
@@ -195,5 +196,65 @@ assert.equal((await actFeatured('pause')).status,200);assert.equal(await highlig
 assert.equal((await actFeatured('resume')).status,200);assert.equal(await highlighted(),true);
 assert.equal((await actFeatured('close',{reviewConfirmed:true})).status,200);assert.equal(await listed(),false);assert.equal(await highlighted(),false);
 console.log('Featured rehearsal passed: submission, $349 invoice state, payment attestation, activation gate, publication, placement, pause/resume and closure. Disposable SQLite only.');
+
+// Use a non-midnight publication time to catch date-only filtering in the grouped Jobs feed.
+const publishedAt=Date.UTC(2026,0,1,13,45);
+const closeDate='2026-01-12';
+const closeEnd=Date.parse(closeDate+'T00:00:00Z')+DAY;
+const durationEnv={...env,SOURCE_SEO_ENABLED:'false',INDEXED_FEED_ENABLED:'false'};
+const durationFixtures=[
+ {id:'SO-DURATION-STANDARD',tier:'standard',price:149,end:publishedAt+30*DAY},
+ {id:'SO-DURATION-FEATURED',tier:'featured',price:349,end:publishedAt+90*DAY},
+ {id:'SO-DURATION-STANDARD-CLOSE',tier:'standard',price:149,end:closeEnd,closesOn:closeDate},
+ {id:'SO-DURATION-FEATURED-CLOSE',tier:'featured',price:349,end:closeEnd,closesOn:closeDate}
+];
+const iso=ms=>new Date(ms).toISOString();
+for(const {id,tier,price,closesOn} of durationFixtures){
+ const jobData={...data,url:'https://example.com/jobs/'+id,closesOn};
+ sql.prepare("INSERT INTO job_submissions(id,status,job_title,company,contact_email,job_data,created_at,reviewed_at) VALUES(?,'approved',?,?,?,?,?,?)")
+  .run(id,data.title,data.company,'fixture@example.net',JSON.stringify(jobData),iso(publishedAt-2*DAY),iso(publishedAt));
+ sql.prepare("INSERT INTO job_orders(submission_id,tier,price_usd,status,published_at) VALUES(?,?,?,'paid',?)")
+  .run(id,tier,price,iso(publishedAt));
+}
+const realNow=Date.now;
+try{
+ for(const at of [publishedAt-1,publishedAt,closeEnd-1,closeEnd,publishedAt+30*DAY-1,publishedAt+30*DAY,publishedAt+90*DAY-1,publishedAt+90*DAY]){
+  Date.now=()=>at;
+  const publishedJobs=(await (await feed({env:durationEnv})).json()).jobs;
+  const displayedJobs=(await (await publicInventory({env:durationEnv})).json()).sources.find(source=>source.source==='approved').jobs;
+  const sitemapResponse=await sitemap({env:durationEnv});
+  assert.equal(sitemapResponse.status,200);
+  const sitemapXml=await sitemapResponse.text();
+  for(const {id,end} of durationFixtures){
+   const active=at>=publishedAt&&at<end;
+   const label=id+' at '+iso(at);
+   const feedId='direct-'+id.toLowerCase();
+   const entry=publishedJobs.find(job=>job.id===feedId);
+   assert.equal(!!entry,active,label+' approved feed');
+   assert.equal(displayedJobs.some(job=>job.id===feedId),active,label+' grouped feed');
+   assert.equal(sitemapXml.includes('<loc>https://s-o.app/jobs/'+id+'</loc>'),active,label+' sitemap');
+   const detail=await employerPage({params:{id},request:request('/jobs/'+id),env:durationEnv});
+   assert.equal(detail.status,active?200:404,label+' public page');
+   const body=await detail.text();
+   if(active){
+    assert.equal(entry.posted,iso(publishedAt),label+' publication time');
+    assert.equal(entry.expiresAt,iso(end),label+' feed expiry');
+    const schema=JSON.parse(body.match(/<script type="application\/ld\+json">([^<]+)<\/script>/)[1]);
+    assert.equal(schema.validThrough,iso(end-1),label+' JobPosting expiry');
+   }else{
+    assert.doesNotMatch(body,/"@type":"JobPosting"/,label+' expired schema');
+   }
+  }
+ }
+ // A follow-up review after 30 days must not restart the Standard term.
+ const standard=durationFixtures[0];
+ const rechecked=iso(standard.end+DAY);
+ sql.prepare('UPDATE job_submissions SET reviewed_at=? WHERE id=?').run(rechecked,standard.id);
+ Date.now=()=>Date.parse(rechecked);
+ assert.equal((await employerPage({params:{id:standard.id},request:request('/jobs/'+standard.id),env:durationEnv})).status,404);
+}finally{
+ Date.now=realNow;
+}
+console.log('Paid duration boundaries passed across approved and grouped feeds, public job pages, JobPosting expiry and sitemap.');
 sql.close();
 console.log('SQLite integration passed: idempotent migrations, review, operator closure, sitemap, source sync, queue cadence, retry, revocation and coarse analytics.');

@@ -14,12 +14,32 @@ const staticUrls=locations(read('sitemap.xml')),dynamicUrls=locations(await (awa
 const expected=['/','/privacy','/coverage','/post-a-job','/advertise','/about','/contact','/terms','/studio','/article',...STUDIO_PATHS,...STUDIO_LOCATION_PATHS,...ARTICLE_PATHS,...DISCIPLINE_SLUGS.map(s=>'/disciplines/'+s)];
 for(const urls of [staticUrls,dynamicUrls]){
  assert.equal(urls.length,new Set(urls).size,'Duplicate sitemap URL');
- for(const p of expected)assert.ok(urls.includes(origin+p),'Missing sitemap entry '+p);
+ assert.deepEqual(new Set(urls),new Set(expected.map(path=>origin+path)),'Canonical sitemap paths must match exactly');
  for(const url of urls){assert.equal(new URL(url).origin,origin);assert.equal(hiddenReleasePath('s-o.app',new URL(url).pathname),false);}
 }
 const invoke=(host,path,status=200)=>middleware({request:new Request(host+path,{method:'HEAD'}),env:{},next:async()=>new Response(null,{status})});
 for(const p of expected){const prod=await invoke(origin,p);assert.equal(prod.headers.get('x-robots-tag'),null,p);assert.equal(prod.headers.get('link'),'<'+origin+p+'>; rel="canonical"');assert.match((await invoke(preview,p)).headers.get('x-robots-tag'),/noindex/);assert.match((await invoke(origin,p,404)).headers.get('x-robots-tag'),/noindex/);}
 for(const p of ['/social-carousel','/social-carousel.html','/social-carousel/index.html','/social%2Dcarousel','/studio-index-workshop','/studio%2Dindex-workshop','/signal','/s%69gnal','/weekly','/scene','/london']){assert.equal((await invoke(origin,p)).status,404,p);}
 for(const p of ['/operator','/api/studio-index','/api/signal-draft'])assert.match((await invoke(origin,p)).headers.get('x-robots-tag'),/noindex/);
+const missingPage=read('404.html');
+assert.match(missingPage,/<meta name="robots" content="noindex, nofollow">/);
+assert.match(missingPage,/<a href="\/">/);
+assert.doesNotMatch(missingPage,/rel="canonical"/);
+for(const host of [origin,preview]){
+ for(const path of ['/missing-page','/studio/missing-profile','/article/missing-story','/api/missing-route','/assets/missing.js']){
+  const response=await middleware({request:new Request(host+path),env:{},next:async()=>new Response(missingPage,{status:404,headers:{'content-type':'text/html'}})});
+  assert.equal(response.status,404,path);
+  assert.equal(response.headers.get('x-robots-tag'),'noindex, nofollow',path);
+  assert.equal(response.headers.get('link'),null,path);
+  assert.equal(await response.text(),missingPage,path);
+ }
+ for(const path of ['/article/when-a-design-studio-becomes-a-platform','/article/when-a-design-studio-becomes-a-platform.html','/article/when-a-design-studio-becomes-a-platform/','/article/when-a-design-studio-becomes-a-platform/index.html']){
+  assert.equal((await invoke(host,path)).status,404,path);
+ }
+}
+const legacy=await invoke(preview,'/studio.html?q=architecture');
+assert.equal(legacy.status,308);
+assert.equal(legacy.headers.get('location'),preview+'/studio?q=architecture');
+assert.match(read('privacy.html'),/<meta name="description" content="[^"]+">/);
 for(const p of [...STUDIO_PATHS,...STUDIO_LOCATION_PATHS,...ARTICLE_PATHS]){const f=p.slice(1)+'.html';assert.ok(existsSync(new URL('../'+f,import.meta.url)),f);const html=read(f);assert.ok(html.includes('href="'+origin+p+'"'),f+' canonical');assert.ok(!/<meta[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html),f+' noindex');}
 console.log('Launch audit: '+expected.length+' canonical routes; sitemap, headers, generated profiles and preview exclusions checked.');

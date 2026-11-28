@@ -1,5 +1,5 @@
 import {engineeringTitle} from '../../lib/job-scope.js';
-import {EMPLOYER_ROWS,activeUntil} from '../../lib/job-lifecycle.js';
+import {EMPLOYER_ROWS,activeUntil,timestamp} from '../../lib/job-lifecycle.js';
 import {eligibleJob} from '../../lib/seo-jobs.js';
 import {remoteEligibility,officeLocation,geoMeta,POLICY_VERSION} from '../../lib/geo-policy.js';
 import {outreachHeld} from '../../lib/outreach-policy.js';
@@ -21,6 +21,8 @@ function publicJob(row,now,nativeEnabled){
  const verified=row.reviewed_at;
  const end=activeUntil(row,data,now);
  if(!Number.isFinite(end))return null;
+ const employer=row.submission_type==='employer';
+ const posted=employer?new Date(timestamp(row.order_published_at)).toISOString():String(data.posted||'');
  const geo=(data.locationVerified && data.locationReference?.countryCode)?
    {eligible:true,countryCode:data.locationReference.countryCode,raw:data.location}:
    (String(data.mode||'').toLowerCase()==='remote'?remoteEligibility(data.location):officeLocation(data.location));
@@ -31,8 +33,8 @@ function publicJob(row,now,nativeEnabled){
   location:short(data.location,90),mode:short(data.mode,12),type:short(data.type,50)||'Not specified',...geoMeta(geo),
   role:data.role,url:applicationMethod==='external'?data.url:'',applicationMethod,
   applicationEmail:applicationMethod==='email'?short(data.applicationEmail,150):'',salary:short(data.salary,75),eligibility:short(data.eligibility,170),applicantLocation:short(data.applicantLocation,100),locationReference:data.locationReference||null,applicantLocationReference:data.applicantLocationReference||null,workAuthorization:data.workAuthorization||'unspecified',visaSponsorship:data.visaSponsorship||'unspecified',
-  description:String(data.description||'').trim(),expiresAt:new Date(end).toISOString(),posted:row.submission_type==='employer'?String(row.order_published_at||'').slice(0,10):String(data.posted||''),dateKind:row.submission_type==='employer'?'posted':data.dateKind,source:'Direct / curated',
-  verifiedAt:String(verified||'').slice(0,10),descriptionKind:row.submission_type==='employer'?'employer-description':'editorial-summary',detailUrl:eligibleJob(row,now,nativeEnabled)?'/jobs/'+encodeURIComponent(row.id):''
+  description:String(data.description||'').trim(),expiresAt:new Date(end).toISOString(),posted,dateKind:employer?'posted':data.dateKind,source:'Direct / curated',
+  verifiedAt:String(verified||'').slice(0,10),descriptionKind:employer?'employer-description':'editorial-summary',detailUrl:eligibleJob(row,now,nativeEnabled)?'/jobs/'+encodeURIComponent(row.id):''
  };
 }
 export async function onRequestGet({env}){

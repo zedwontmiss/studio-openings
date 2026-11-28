@@ -41,7 +41,7 @@ Use these exact statuses.
 | ID | Work | Status | Evidence or next action |
 | --- | --- | --- | --- |
 | P0-01 | Verify Pages bindings, applied schema and operating boundaries | Blocked | Use scoped read access or redacted dashboard/schema evidence from the operator. No migration or ingestion step until confirmed. |
-| P1-01 | Correct fallback statuses and harden sitemap/canonical/metadata parity | Not started | Reproduce unknown root and nested URLs as Preview tests. Preserve redirects, private APIs and the withdrawn article's 404. |
+| P1-01 | Correct fallback statuses and harden sitemap/canonical/metadata parity | Tested | Reproduced the live Preview fallback, added the native Pages error document, verified 135 static/dynamic canonical URLs, and tested separate vacancy lookup failures locally. Deployed-route verification awaits release approval. |
 | P1-02 | Establish verified vacancy pilot, accurate JobPosting and initial job HTML | Not started | Begin with disposable fixtures. Live pilot depends on P0-01, rights, freshness and owner release approval. |
 | P1-03 | Baseline provenance, freshness, duplicates, taxonomy and request load | Not started | Verify official vacancy and studio evidence with both geographic sourcing layers. Reuse bounded probe and pick one scheduler only after isolation and capacity evidence. |
 | P1-04 | Tie IndexNow to deployed URL lifecycle with retries/deduplication | Not started | Implement validation against fixture/mock and Preview dry runs. Confirm real key body and deployment status before proposing a release. |
@@ -52,6 +52,16 @@ Use these exact statuses.
 | P2-03 | Cost, caching, field performance and commercial readiness | Not started | Capture usage and baseline before tuning. Avoid duplicate schedulers and paid additions. Preserve existing pricing, fulfillment and disclosures. |
 | P3-01 | Evaluate optional conventions such as llms.txt | Not started | Document a real consumer, hypothesis, measurement and maintenance or stop. |
 | G2 | Production deploy, migration, source-SEO/scheduler activation or payment pilot | Awaiting approval | Collect exact candidate evidence and seek approval for the specific action. These gates are independent. |
+
+## Milestone · Correct routes and paid listing duration
+
+- [x] Reproduce HTTP 200 fallback for missing Preview pages, assets and API paths. Add a native Pages 404 document and exercise noindex, canonical headers, legacy redirects and all Tadaima withdrawal aliases locally.
+- [x] Match all 135 static and dynamic canonical URLs exactly. Test that a failed vacancy lookup preserves stable pages and the other eligible vacancy set. Omit the submission-date `lastmod` and add the missing Privacy page description.
+- [x] Start Standard and Featured terms at the exact paid publication time. Test 30- and 90-day boundaries and both plans with an earlier closing date through the approved feed, grouped Jobs feed, public job page, JobPosting expiry and sitemap.
+- [x] Check first and final milliseconds, no publication before the start, no term restart after re-verification, and no active job schema after expiry. Use end of the supplied closing day in UTC for date-only input.
+- [x] Pass 137 JS syntax checks and 82 local suites, including the disposable SQLite boundary rehearsal.
+- [x] Compile Pages Functions and exercise the bundle in local workerd with the native 404 asset setting. All 135 canonical pages served 200 with descriptions and Preview noindex. Twelve missing-route GET/HEAD cases returned 404 and the existing withdrawal, redirect, CSS, RSS and operator API checks passed.
+- [ ] Verify the deployed behavior on an authorized release. This milestone is local-only per owner instruction. Featured sales still require their release checks. IndexNow remains a separate approval.
 
 ## Resume and measurement
 

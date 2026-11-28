@@ -2,16 +2,13 @@ import {SIGNAL_ARCHIVE} from '../lib/signal-archive.js';
 import {reviewHost,hiddenReleasePath,deferredPath} from '../lib/release-scope.js';
 import {LOCAL_PATHS} from '../lib/local-cities.js';
 import {seedStudioJobs} from '../lib/studio-jobs.js';
-import {canonicalAlias,publicLink,studioExternalLink} from '../lib/public-routes.js';
+import {canonicalAlias,INDEXABLE_PAGE_PATHS,publicLink,studioExternalLink} from '../lib/public-routes.js';
 import {seedHomepage} from '../lib/public-inventory.js';
-import {STUDIO_LOCATION_PATHS} from '../lib/studio-locations.js';
 import {STUDIO_PATHS} from '../lib/studio-routes.js';
 import {ARTICLE_PATHS} from '../lib/editorial-routes.js';
-import {DISCIPLINE_SLUGS} from '../lib/discipline-pages.js';
 import {applyOutreachPolicy} from '../lib/outreach-policy.js';
 
-const pages = new Set(['/', '/privacy', '/coverage', '/scene', '/scene-guidelines', '/scene-contributors', '/post-a-job', '/advertise', '/about', '/contact', '/terms', '/studio', '/article', ...ARTICLE_PATHS, ...STUDIO_PATHS, ...STUDIO_LOCATION_PATHS, ...LOCAL_PATHS,
-  ...DISCIPLINE_SLUGS.map(slug => '/disciplines/' + slug)]);
+const pages = new Set([...INDEXABLE_PAGE_PATHS, '/scene', '/scene-guidelines', '/scene-contributors', ...LOCAL_PATHS]);
 
 export async function onRequest(context) {
   const {hostname, pathname} = new URL(context.request.url);
