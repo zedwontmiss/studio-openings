@@ -3,7 +3,6 @@
 html{scroll-behavior:smooth}
 body{margin:0;color:var(--text);background:#fff;font:13px/1.38 Helvetica,Arial,sans-serif}
 button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-underline-offset:2px}a:hover{color:#555}
-a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #222;outline-offset:2px}
 [hidden]{display:none!important}
 .shell{max-width:1200px;margin:auto;padding:0 22px}
 .site-header{background:#f8f8f8;border-bottom:1px solid #cfcfcf}.nav-inner{height:43px;display:flex;align-items:center;justify-content:space-between;gap:14px}
@@ -138,7 +137,6 @@ body.drawer-open{overflow:hidden}
 #submission-form>label,#submission-form>.submission-two>label{display:block;min-width:0;font-size:11px;font-weight:bold;color:#454545;margin:0 0 12px}
 #submission-form input:not([type="checkbox"]):not([type="radio"]),#submission-form select,#submission-form textarea{display:block;width:100%;background:#fff;color:#222;border:1px solid #c9c9c9;border-radius:0;margin-top:5px;font-size:12px;min-height:34px;padding:7px 9px;font-family:Helvetica,Arial,sans-serif}
 #submission-form textarea{resize:vertical;min-height:78px;line-height:1.45}
-#submission-form input:focus-visible,#submission-form select:focus-visible,#submission-form textarea:focus-visible{outline:2px solid #222;outline-offset:1px}
 .submission-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .submission-consent{border-top:1px solid #e7e7e7;margin:4px 0 13px;padding-top:12px}
 .submission-consent label{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:#555;line-height:1.45}
@@ -240,8 +238,9 @@ body.drawer-open{overflow:hidden}
 }
 #submission-form .submission-consent.so-invalid-field{padding:11px 9px;border:1px solid #cf6a61;background:#fff8f7}
 #submission-form .submission-consent.so-invalid-field .so-field-error{margin-top:7px}
-#submission-form input[aria-invalid="true"]:focus-visible,
-#submission-form select[aria-invalid="true"]:focus-visible{outline:2px solid #b42318;outline-offset:1px}
+#submission-form input[aria-invalid="true"]:focus,
+#submission-form select[aria-invalid="true"]:focus,
+#submission-form textarea[aria-invalid="true"]:focus{box-shadow:inset 0 0 0 1px #b42318,0 2px 0 currentColor}
 /* Preserve vacancy paragraph breaks and actual bullet lines, including blank lines. */
 .drawer-description #drawer-description-text{white-space:pre-wrap;line-height:1.7;font-size:12.5px;color:#333}
 

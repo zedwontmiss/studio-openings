@@ -148,6 +148,13 @@ Use these exact statuses.
 - [ ] Confirm the two public guide URLs in Google Search Console when property access is available. Carry the prior baseline forward for impressions and clicks.
 - [ ] Review the shortlisted projects and outreach wording before publishing profiles or contacting creators.
 
+## Milestone · Studio browsing and public click feedback
+
+- [x] Reproduce the closing filter and black square when choosing Product / UX / UI.
+- [x] Keep the Studio filter open for every category selection, including All. Verify the list's starting position and the manual close control at 320, 375 and 1280 px.
+- [x] Replace public click and tap outlines with a visible line for keyboard focus. Verify keyboard category selection and shared navigation in Chromium.
+- [ ] Confirm the development deployment and recheck the live Preview. Review on the owner's MacBook before production promotion.
+
 ## Resume and measurement
 
 1. Read `AGENTS.md` and fetch current development/main refs. Keep the November baseline immutable and add changed evidence to this file with date, SHA, environment and relevant source links.
