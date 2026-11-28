@@ -25,6 +25,16 @@ var d=root.document,select=d.getElementById('studio-discipline'),details=d.getEl
 if(!select||!details||!host||!current||!fallback)return;
 root.SOAPPStudioUnified={matches:function(row,q){var title=row.querySelector('h2'),hidden=row.querySelector('p');return matches((title?title.textContent:'')+' '+(hidden?hidden.getAttribute('data-aliases')||'':''),row.getAttribute('data-locations'),q);}};
 function update(){Array.prototype.forEach.call(host.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-value')===select.value?'true':'false');});current.textContent=select.value?' / '+select.options[select.selectedIndex].textContent:'';if(root.SOAPPGlobalSearch)root.SOAPPGlobalSearch.refresh();}
-Array.prototype.forEach.call(select.options,function(o){var b=d.createElement('button');b.type='button';b.textContent=o.value?o.textContent:'All';b.setAttribute('data-value',o.value);b.addEventListener('click',function(){select.value=o.value;update();details.open=false;details.querySelector('summary').focus();});host.appendChild(b);});
+Array.prototype.forEach.call(select.options,function(option){
+ var button=d.createElement('button');
+ button.type='button';
+ button.textContent=option.value?option.textContent:'All';
+ button.setAttribute('data-value',option.value);
+ button.addEventListener('click',function(){
+  select.value=option.value;
+  update();
+ });
+ host.appendChild(button);
+});
 select.hidden=true;fallback.hidden=true;details.hidden=false;update();
 })(typeof window!=='undefined'?window:globalThis);
