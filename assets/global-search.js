@@ -43,7 +43,8 @@ if(demoHost)fetch('/api/sponsored-studios',{credentials:'same-origin',cache:'no-
 function norm(v){return String(v||'').toLowerCase().replace(/\s+/g,' ').trim();}
 function matches(text,ids,query){
  var catalog=root.SOAPPSearchTopics;
- return catalog.matchesText(text+' '+catalog.labels(ids||[]),query);
+ var topic=catalog.fromQuery(query);
+ return !!(topic&&ids&&ids.indexOf(topic.id)!==-1)||catalog.matchesText(text+' '+catalog.labels(ids||[]),query);
 }
 function rowTopics(row){return (row.getAttribute('data-topics')||'').split(/\s+/);}
 // Homepage previews only: matched highlights first, then title relevance.
@@ -61,16 +62,19 @@ function parse(html,s){var doc=new DOMParser().parseFromString(html,'text/html')
 function locationMatches(row){var locations=(row.getAttribute('data-locations')||'').split(';');return locations.some(function(loc){return (!country||!country.value||loc.split('|')[0]===country.value)&&(!city||!city.value||loc===city.value);});}
 function draw(){
  directory.classList.toggle('global-query-active',!!last);
+ var topic=root.SOAPPSearchTopics.fromQuery(last);
+ searchShell.classList.toggle('so-discipline-query',!!(topic&&topic.guideQuery&&norm(topic.label)!==last));
  if(kind){
   var magazine=document.getElementById('editorial-magazine');
   if(magazine)magazine.hidden=!!last;
   var rows=document.querySelectorAll(kind==='studio'?'#studio-list li':'#editorial-list article'),visible=0;
   var studioSearch=kind==='studio'&&root.SOAPPStudioUnified;
+  var searchText=!studioSearch||last.indexOf(',')===-1||!!(topic&&topic.discipline);
   Array.prototype.forEach.call(rows,function(row){
    var text=row.textContent+' '+(row.getAttribute('data-category')||'')+' '+(row.getAttribute('data-discipline')||'');
    // Comma-delimited locations must still match one verified office.
    var matched=!last||(studioSearch&&studioSearch.matches(row,last))||
-    ((!studioSearch||last.indexOf(',')===-1)&&matches(text,rowTopics(row),last));
+    (searchText&&matches(text,rowTopics(row),last));
    var discipline=localSelect&&localSelect.value;
    row.hidden=!matched||(kind==='studio'&&!locationMatches(row))||!!(discipline&&(row.getAttribute('data-discipline')||'').split(/\s+/).indexOf(discipline)===-1);
    if(!row.hidden)visible++;

@@ -12,6 +12,7 @@
 .global-result-group a:hover{text-decoration:underline}
 
 @media(max-width:730px){.global-search input#search{font-size:32px;padding-bottom:5px}.global-search{border-bottom-width:3px}.global-result-group{flex-basis:100%;padding-right:0;margin-bottom:8px}}
+@media(max-width:560px){.global-search.so-discipline-query input#search{font-size:calc(5.6vw - .5px)}}
 
 /* A live query uses its own inline feedback in place of feed chrome. */
 .global-query-active .global-feed-status,.global-query-active #empty-state,.global-query-active #system-message,.global-query-active #feed-progress,.global-query-active #feed-end,.global-query-active #list-footnote,.global-query-active .discipline-seo-links,.global-query-active #job-link-message{display:none!important}

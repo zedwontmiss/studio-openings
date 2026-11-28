@@ -26,6 +26,19 @@ for(const query of ['b','BR','BR-','bra','brand','  BrAnD   D  ','brand des','br
 assert.equal(topics.matchesText(brandText,'brand developer'),false);
 assert.equal(topics.matchesText('São Paulo, Brazil','sao br'),true);
 for(const topic of topics.topics)assert.equal(topics.fromQuery(topic.label),topic,'Every pill must reach its exact topic');
+for(const topic of topics.topics.filter(topic=>topic.guideQuery)){
+ for(const phrase of [topic.guideQuery,topic.guideQuery.replace(/[,/]/g,'').replace('&','and')]){
+  const start=phrase.search(/[ ,]/);
+  for(let end=start+1;end<=phrase.length;end++){
+   const query=phrase.slice(0,end);
+   if(!/[\s,/&]/.test(query.trim()))continue;
+   assert.equal(topics.fromQuery(query),topic,query);
+  }
+ }
+}
+assert.equal(topics.fromQuery('motion, 3d animatio')?.discipline,'motion');
+assert.equal(topics.fromQuery('motion 3d asset'),undefined);
+assert.equal(topics.fromQuery('br'),undefined);
 assert.equal(topics.matchesDiscipline(topics.fromQuery('Brand Design'),['visual'],'Branding agency'),true);
 assert.equal(topics.matchesDiscipline(topics.fromQuery('Brand Design'),['visual'],'Graphic designer'),false);
 assert.equal(studioTopicIds({...raggedEdge,offices:[{...raggedEdge.offices[0],kind:'gallery'}]}).includes('london'),false);
