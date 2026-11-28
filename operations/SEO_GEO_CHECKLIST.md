@@ -97,7 +97,7 @@ Use these exact statuses.
 - [x] Render the same reviewed topics in the article header and article search. Include recorded city and country for the New York and London guides.
 - [x] Review each of the six published articles and assign topics grounded in its text. Check that the generated reader and search index agree for every article.
 - [x] Allow topic labels on reviewed editorial imports and verify that Remote still searches current vacancies.
-- [ ] Verify the article headers and click-through search on the exact Cloudflare Preview.
+- [x] Verify Preview commit `484f56a` on 28 November 2026. All 83 local suites, 139 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46107974356), and Cloudflare Pages passed. Live Chromium verified all six headers at 320 and 1280 px, New York and Remote tag links, and Brand Design and Portfolio searches. The HTTP audit passed for all 135 sitemap pages.
 - [ ] Review the New York guide in Safari.
 
 ## Resume and measurement
