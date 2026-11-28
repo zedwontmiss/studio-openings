@@ -8,6 +8,8 @@ Select six solo creatives or small independent teams. Cover graphic design or ty
 
 Base each invitation on a specific project and offer a short editorial profile, a link to the creator's work and a chance to check facts. Track verified profiles, replies, voluntary introductions and profile or portfolio visits before extending the group. Hold actual outreach until the owner approves the recipients and text.
 
+Write the first note like a short personal message. Open with a detail from the work, make the offer in one sentence and give the reader an easy way to say yes. Offer to share the draft first. Keep the signature to the sender's name.
+
 ## Discovery and evidence
 - Verify official identity, location, portfolio, founding date (year alone is insufficient at the ten-year boundary), and operating status before publication.
 - Use direct discovery, graduate exhibitions, festivals, editorial coverage and collaborator credits.

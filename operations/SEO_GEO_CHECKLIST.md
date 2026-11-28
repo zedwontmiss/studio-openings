@@ -125,7 +125,7 @@ Use these exact statuses.
 - [x] Audit content and internal links for the six canonical examples. Architecture, Culture, Industrial, Museum and Motion show distinct but brief HTML guidance and a filtered Jobs link. Their main areas measure 126–144 words including the other-discipline link list. They contain no individual job links. Each has 10–12 distinct incoming sitemap pages, mainly the other discipline pages. Culture, Industrial and Museum have the homepage as their only incoming page outside the discipline section. The employer posting page has one incoming rendered HTML link from the sitemap pages, on Advertise.
 - [x] Add distinct early-career guidance and relevant studio and article links to the Motion and Culture pilot pages. Add direct links back from the London and New York articles. Preserve the existing canonical URLs and Jobs filters.
 - [x] Verify Preview commit `df3fd49` on 28 November 2026. All 83 local suites, 140 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46116633380) and Cloudflare Pages passed. Live Chromium passed six viewport checks at 320, 375 and 1280 px and 16 navigation checks. HTTP checks verified both guides and all ten linked studio and article pages, Preview noindex, production canonicals and 135-URL sitemap parity.
-- [ ] Review the Motion and Culture pilots in the owner's browser before a separate public release.
+- [x] Receive the owner's approval for public release of the Motion and Culture pilots and reviewed search flow.
 - [ ] Use subsequent Google inspections to measure the pilots after an approved public release. The original audit did not isolate the cause of Google's indexing decision.
 - [ ] Confirm whether the eight `noindex` examples are intentional exclusions before changing directives.
 
@@ -138,7 +138,15 @@ Use these exact statuses.
 - [x] Reproduce the owner's `motion, 3d animatio` failure. Match unambiguous unfinished discipline phrases through the same category data as their complete forms. Preserve ordinary single-word matching and clear-search recovery for unrelated queries.
 - [x] Add regression coverage for intermediate prefixes across all ten disciplines, punctuation variants, category membership and Studio results. Test forward typing and backspacing in Chromium with fixture inventory.
 - [x] Verify Preview commit `4fa5a04` on 28 November 2026. All 83 local suites, 140 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46118449316) and Cloudflare Pages passed. Live Chromium replayed 384 typing and backspace steps for Motion and Culture at 320 and 1280 px without losing results mid-phrase. Near-complete Jobs results matched the complete phrase. Studio navigation, genuinely empty search recovery and the previous `brand des` example passed.
-- [ ] Review the visible search phrase and backspacing flow before public release.
+- [x] Receive the owner's approval of the visible search phrase and backspacing flow.
+
+## Milestone · Public Motion and Culture release
+
+- [x] Promote the explicitly approved guides, reciprocal article links and shared discipline search. Correct the first-occurrence ampersand replacement flagged in a test fixture. All 83 local suites, 140 JavaScript syntax checks, GitHub Actions, CodeQL and Cloudflare Pages passed on the exact candidate.
+- [x] Verify Production commit `b19e3a7`, Pages deployment `cd728d27-ad60-462d-9ea1-ebd0e949441b`, on 28 November 2026. Confirm both reciprocal article links, all 135 canonical sitemap URLs, correct robots headers and IndexNow absence. Recheck 384 typing and backspace steps on the live site at phone and desktop widths.
+- [x] Prepare a six-project editorial shortlist and a short project-first outreach draft for owner review.
+- [ ] Confirm the two public guide URLs in Google Search Console when property access is available. Carry the prior baseline forward for impressions and clicks.
+- [ ] Review the shortlisted projects and outreach wording before publishing profiles or contacting creators.
 
 ## Resume and measurement
 
