@@ -665,6 +665,11 @@
     if(!matchesType(job,state.type))return false;
     if(state.hasPay&&!trim(job.salary))return false;
     var searchableTags=Array.isArray(verifiedTags)?verifiedTags:jobSearchTags(job);
+    var topics=window.SOAPPSearchTopics,topic=topics&&topics.fromQuery(state.query);
+    if(topic){
+      if(topic.city)return !!window.SOAPPLocalGeo&&window.SOAPPLocalGeo.matches(job,topic.city);
+      return topics.matchesDiscipline(topic,[role].concat(jobDisciplines(job)),[job.title,searchableTags.join(' ')].join(' '));
+    }
     var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,searchableTags.join(' '),searchableTags.map(shortTagLabel).join(' ')].join(' ').toLowerCase();
     var structured=structuredJobQuery(state.query);
     if(structured)return (role===structured.role||jobDisciplines(job).indexOf(structured.role)>=0)&&countryMatch(job,structured.code);

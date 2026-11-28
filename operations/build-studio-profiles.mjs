@@ -2,6 +2,7 @@ import {LOCAL_CITIES} from '../lib/local-cities.js';
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {DISCIPLINES} from '../lib/discipline-pages.js';
+import {renderTopicPills,studioTopicIds} from './search-topic-pills.mjs';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const countries={AU:'Australia',CA:'Canada',GB:'United Kingdom',IN:'India',US:'United States'};
 function renderProfile(s,template,disciplines){
@@ -10,7 +11,8 @@ function renderProfile(s,template,disciplines){
  const cityLinks=new Map(LOCAL_CITIES.map(c=>[c.id,'/'+c.slug]));
  const locations=s.offices.length?'<section class="studio-locations"><h2>Locations</h2><ul>'+s.offices.map(o=>'<li data-city-id="'+esc(o.cityId)+'">'+(cityLinks.has(o.cityId)?'<a href="'+esc(cityLinks.get(o.cityId))+'">'+esc(o.city)+' ↗</a>':'<span>'+esc(o.city)+'</span>')+'<span class="studio-location-meta"><small>'+esc(countries[o.country]||o.country)+'</small><a class="studio-map-link" href="'+esc('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([s.name,o.city,o.region,countries[o.country]||o.country].filter(Boolean).join(', ')))+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc('Search map for '+s.name+' in '+o.city)+'">map ↗</a></span></li>').join('')+'</ul></section>':'';
  const main='<main class="studio-public-profile"><a class="studio-back" href="/studio">studio / '+esc(s.summary)+'</a><h1>'+esc(s.name)+'</h1><p class="studio-specialism">'+esc(s.summary)+'</p><a class="studio-website" href="'+esc(website)+'" rel="noopener noreferrer">'+esc(website.replace(/^https:\/\/(?:www\.)?/,'').replace(/\/$/,''))+' ↗</a><p class="studio-intro">'+esc(s.overview)+'</p>'+locations+'<section id="studio-associated-jobs" aria-label="Open positions" hidden></section><section class="studio-careers"><h2>Careers</h2><a href="'+esc(s.source.url)+'" rel="noopener noreferrer">Explore opportunities ↗</a></section><p class="studio-disclosure">Independent directory. <a href="/contact">Suggest an update</a>.</p></main>';
- return template.replace(/@@(TITLE|DESCRIPTION|CANONICAL|MAIN)@@/g,(_,k)=>({TITLE:esc(s.name+' — Studio Openings'),DESCRIPTION:esc(s.overview),CANONICAL:url,MAIN:main})[k]);
+ const pilot=s.slug==='ragged-edge'?main.replace('</h1>','</h1>'+renderTopicPills(studioTopicIds(s))).replace('href="/contact">Suggest an update','href="/contact#studio-correction">Suggest an update'):main;
+ return template.replace(/@@(TITLE|DESCRIPTION|CANONICAL|MAIN)@@/g,(_,k)=>({TITLE:esc(s.name+' — Studio Openings'),DESCRIPTION:esc(s.overview),CANONICAL:url,MAIN:pilot})[k]);
 }
 const file=p=>new URL('../'+p,import.meta.url),read=p=>readFileSync(file(p),'utf8');
 const records=JSON.parse(read('studio-registry/published.json')).studios;

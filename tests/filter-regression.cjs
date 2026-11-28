@@ -25,7 +25,10 @@ const compiled=[
  'function trim(v){return String(v||"").trim();}',
  between('  function usMatch(loc)','  function effectiveSort()')
 ].join('\n');
-const make=new Function('state',compiled+'\nreturn {eligible,categoryFor,jobKeywords,jobSearchTags};');
+const browser={SOAPPSearchTopics:require('../assets/search-topics.js')};
+new Function('window',fs.readFileSync(path.join(__dirname,'..','assets','local-geo.js'),'utf8'))(browser);
+const createFilters=new Function('state','window',compiled+'\nreturn {eligible,categoryFor,jobKeywords,jobSearchTags};');
+const make=state=>createFilters(state,browser);
 const jobs=[
  {id:'art',title:'Art Director',company:'Example Graphic Studio',role:'visual',location:'Eligible: United States',mode:'remote',type:'Full-time',salary:'$140k'},
  {id:'ux',title:'Principal UX Designer',company:'Example Game Company',role:'product',location:'Eligible: United States',mode:'remote',type:'Full-time',salary:'$160k',tags:['Product Design','UX/UI']},

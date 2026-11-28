@@ -66,6 +66,15 @@ Use these exact statuses.
 - [x] Confirm in Chromium that the Product Design Canada query loads results and that a listing drawer opens and closes without a script error or horizontal overflow.
 - [ ] Review Jobs usability on the owner's existing Safari using [the Preview search link](https://development.studio-openings.pages.dev/?q=Product%20design%20Canada). Paid duration boundaries passed in disposable SQLite. Production verification and Featured highlighting still require release checks. IndexNow remains separately gated.
 
+## Milestone · Shared topics and studio corrections
+
+- [x] Reproduce the narrow-screen header overflow and keep the wordmark, primary navigation, Advertise, and S/O on one row. Use the active navigation link as the section indicator at phone widths.
+- [x] Add Brand Design and London pills to Ragged Edge, plus London, Brand Design and Architecture to the London guide. Connect them to existing search across Jobs, Studio and Article. A London job match requires worksite evidence.
+- [x] Give About a founder introduction and a direct path to studio corrections. Put the correction email first on Contact and combine the editorial prompts.
+- [x] Pass all 83 local suites and generated-file checks. The Chromium fixture passed 72 viewport/page checks, typed and linked query parity, tab navigation, and the studio correction link.
+- [ ] Confirm the exact Cloudflare Preview deployment and repeat the live layout and navigation checks.
+- [ ] Review the pills and correction flow on the owner's existing Safari.
+
 ## Resume and measurement
 
 1. Read `AGENTS.md` and fetch current development/main refs. Keep the November baseline immutable and add changed evidence to this file with date, SHA, environment and relevant source links.
