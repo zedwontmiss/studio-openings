@@ -166,7 +166,8 @@ Use these exact statuses.
 - [x] Verify that `http://s-o.app/` returns a permanent HTTP 301 redirect to `https://s-o.app/`, and that the HTTPS homepage and Product guide each return 200 with a self-canonical.
 - [x] Record that the owner saw “No data” in the 28-day Queries report. The six sitewide impressions remain documented in the total and Pages reports. No query-level baseline is available.
 - [x] Replace the automatic character cut-off for discipline meta descriptions with complete lead sentences. Product is the only discipline that recorded impressions in this baseline. Motion and Culture keep their curated descriptions.
-- [ ] Confirm the updated descriptions on Preview before any production release.
+- [x] Verify Preview commit `7946a4c` on 28 November 2026. All 83 local suites, 140 JavaScript syntax checks, GitHub Actions and Cloudflare Pages passed. Live checks covered all ten discipline descriptions, canonical URLs, Preview noindex and matching page content and links.
+- [ ] Review the description change for production.
 - [ ] Compare that baseline with the next 28-day period before expanding the pilot. Measure Bing visibility and actual site visits separately when reports are available.
 
 ## Resume and measurement
