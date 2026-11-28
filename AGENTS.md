@@ -2,7 +2,7 @@
 
 ## Mission and working style
 Build and operate https://s-o.app, a minimal, global job index for **all** design and creative disciplines: architecture, interiors, landscape, industrial/furniture, product/UX/UI, graphic/branding, art and creative direction, motion/3D/VFX/games, fashion/photography, web/creative technology, museums and arts/culture.
-User is a non-technical solo founder, targeting global and US audiences. Favor zero-cost tools, minimal dependencies and meaningful autonomous progress. **Do not repeatedly ask for screenshots or manual steps that can be verified through GitHub/CI or automated browser tests.** Only ask when credentials, external account creation, owner approval or the production-release decision is required. Respond in concise Indonesian and report evidence, not guesses.
+User is a non-technical solo founder, targeting global and US audiences. Favor zero-cost tools, minimal dependencies and meaningful autonomous progress. **Do not repeatedly ask for screenshots or manual steps that can be verified through GitHub/CI or automated browser tests.** Only ask when credentials, external account creation, owner approval or the production-release decision is required. Respond in concise English and cite verified evidence.
 
 ## Hard release and UI constraints
 - GitHub repository: `zedwontmiss/studio-openings`. Work **only on `development`**, Cloudflare Pages Preview: `https://development.studio-openings.pages.dev/`. `main` deploys Production: `https://s-o.app/`. **Never push to or merge into `main` without explicit user approval.**
@@ -27,6 +27,12 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - Before every commit: run JS syntax checks and `node tests/descriptions.mjs`, `node tests/disciplines.mjs`, `node tests/seo-jobs.mjs`, `node tests/source-seo.mjs`. Add regression tests for new feeds/changes.
 - CI: `.github/workflows/validate-sources.yml`. GitHub Actions build passing is distinct from Cloudflare Preview build passing; verify BOTH when possible before calling a change deployed. Do not conceal failures.
 - Prefer **one cohesive tested commit or PR per feature** rather than numerous incremental pushes that trigger email floods. Do not claim unverified live behavior is fixed.
+
+### Owner review format
+
+- **What changed** — Describe the user-facing change in plain English and identify the tested commit and environment.
+- **Preview link and review steps** — Verify the exact Cloudflare Preview first, then provide a direct link and a few short browser steps. Handle automated tests, backend checks and GitHub yourself. Ask the owner to review usability and appearance in their existing Safari on the 2011 MacBook Pro.
+- **Milestone and Studio Openings progress** — Summarize what the milestone improves for Studio Openings and the next dependency or decision. Show the completed checklist items and pending checks in each milestone update. Record evidence and status in [the active milestone checklist](operations/SEO_GEO_CHECKLIST.md). Keep Preview approval, production approval and external sends independent.
 
 ## Next chapter — distribution without spam
 - Product goal: verified active job -> useful canonical SEO page -> channel-specific approved content -> attributable traffic -> apply clicks -> employer value.

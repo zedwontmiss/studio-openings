@@ -61,7 +61,8 @@ Use these exact statuses.
 - [x] Check first and final milliseconds, no publication before the start, no term restart after re-verification, and no active job schema after expiry. Use end of the supplied closing day in UTC for date-only input.
 - [x] Pass 137 JS syntax checks and 82 local suites, including the disposable SQLite boundary rehearsal.
 - [x] Compile Pages Functions and exercise the bundle in local workerd with the native 404 asset setting. All 135 canonical pages served 200 with descriptions and Preview noindex. Twelve missing-route GET/HEAD cases returned 404 and the existing withdrawal, redirect, CSS, RSS and operator API checks passed.
-- [ ] Verify the deployed behavior on an authorized release. This milestone is local-only per owner instruction. Featured sales still require their release checks. IndexNow remains a separate approval.
+- [x] Record the owner's Preview-only approval and standard review format in [AGENTS.md](../AGENTS.md).
+- [ ] Verify the exact Cloudflare Preview deployment and live route and sitemap behavior. Featured sales still require their release checks, including highlighting. Production and IndexNow require separate approval.
 
 ## Resume and measurement
 
