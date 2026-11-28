@@ -25,7 +25,7 @@ const compiled=[
  'function trim(v){return String(v||"").trim();}',
  between('  function usMatch(loc)','  function effectiveSort()')
 ].join('\n');
-const browser={SOAPPSearchTopics:require('../assets/search-topics.js')};
+const browser={SOAPPSearchTopics:require('../assets/search-topics.js').create(require('../assets/studio-topic-data.js'))};
 new Function('window',fs.readFileSync(path.join(__dirname,'..','assets','local-geo.js'),'utf8'))(browser);
 const createFilters=new Function('state','window',compiled+'\nreturn {eligible,categoryFor,jobKeywords,jobSearchTags};');
 const make=state=>createFilters(state,browser);
@@ -62,6 +62,9 @@ const cases=[
  ['full-time',['art','ux','prod','arch'],{type:'full-time'}],
  ['salary disclosed',['art','ux','prod','arch'],{hasPay:true}],
  ['United States',['art','ux','prod','motion','arch'],{region:'us'}],
+ ['United States topic',['art','ux','prod','motion','arch'],{query:'United States'}],
+ ['New York topic',['motion','arch'],{query:'NEW YORK'}],
+ ['London topic',['museum'],{query:'London'}],
  ['title search',['prod'],{query:'design systems'}],
  ['employer search',['ux'],{query:'game company'}]
 ];
@@ -81,6 +84,10 @@ assert(make({...base,region:'ca'}).eligible({title:'Designer',role:'visual',loca
 assert(!make({...base,region:'ca'}).eligible({title:'Designer',role:'visual',location:'Los Angeles, CA',geoCountry:'US'}));
 assert(!make({...base,region:'gb'}).eligible({title:'Designer',role:'visual',location:'Europe',locationKind:'eligibility'}));
 assert(make({...base,region:'gb'}).eligible({title:'Designer',role:'visual',location:'Worldwide',mode:'remote',locationKind:'eligibility'}));
+assert(make({...base,query:'Brand Design'}).eligible({...jobs[0],title:'Senior Brand Designer'}));
+assert(!make({...base,query:'Brand Design'}).eligible({...jobs[0],title:'Graphic Designer'}));
+assert(make({...base,query:'brand'}).eligible({...jobs[0],title:'Senior Brand Designer'}));
+assert(make({...base,query:'Mumbai'}).eligible({title:'Designer',role:'visual',location:'Mumbai, India'}));
 assert(filtered.eligible(jobs[1],1,jobs),'Numeric callback override must be ignored for an actual Product job');
 assert(!filtered.eligible(jobs[0],1,jobs),'Numeric callback override must not pass a Visual job');
 assert(filtered.eligible(jobs[1],'product',['Product Design','UX/UI']),'Saved snapshot override must work');

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {DISCIPLINE_SLUGS} from '../lib/discipline-pages.js';
-import {studioTopicIds,topicAttributes} from './search-topic-pills.mjs';
+import {renderGeographicTopics,studioTopicIds,topicAttributes} from './search-topic-pills.mjs';
 const file=p=>new URL('../'+p,import.meta.url);
 const read=p=>readFileSync(file(p),'utf8');
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -28,5 +28,7 @@ assert.ok(pattern.test(html));
 const next=html.replace(pattern,(_,a,b)=>a+renderRows(data.studios)+b);
 const search=JSON.stringify(data.studios.slice().sort((a,b)=>a.name.localeCompare(b.name,'en')).map(s=>({path:'/studio/'+s.slug,title:s.name,text:searchText(s),topicIds:studioTopicIds(s)})))+'\n';
 if(process.argv.includes('--check'))assert.equal(read('assets/studio-search.json'),search,'Studio search index out of sync');else writeFileSync(file('assets/studio-search.json'),search);
+const geography='assets/studio-topic-data.js';
+if(process.argv.includes('--check'))assert.equal(read(geography),renderGeographicTopics(),'Geographic topics are out of sync');else writeFileSync(file(geography),renderGeographicTopics());
 if(process.argv.includes('--check'))assert.equal(html,next,'Studio index out of sync');else writeFileSync(file('studio.html'),next);
 console.log('Studio registry index verified.');

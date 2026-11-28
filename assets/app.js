@@ -615,8 +615,8 @@
   function usMatch(loc) {return /\b(us|usa|united states|washington|california|new york|ny|dc|norfolk|salisbury|americas|worldwide|global)\b/i.test(loc);}
   function worldwideMatch(loc){return /\b(worldwide|anywhere|all countries|global)\b/i.test(loc);}
   var countryNames={US:'United States',CA:'Canada',GB:'United Kingdom',CH:'Switzerland',DE:'Germany',FR:'France',NL:'Netherlands',BE:'Belgium',LU:'Luxembourg',AT:'Austria',IE:'Ireland',DK:'Denmark',SE:'Sweden',NO:'Norway',FI:'Finland',IS:'Iceland',SG:'Singapore',AU:'Australia',NZ:'New Zealand',AE:'United Arab Emirates',SA:'Saudi Arabia',QA:'Qatar',JP:'Japan',KR:'South Korea',CY:'Cyprus',IT:'Italy',ES:'Spain'};
-  function countryMatch(job,code){
-    var location=trim(job.location),country=countryNames[code];if(!country)return false;
+  function countryMatch(job,code,label){
+    var location=trim(job.location),country=countryNames[code]||label;if(!country)return false;
     if(String(job.geoCountry||'').toUpperCase()===code)return true;
     if(new RegExp('\\b'+country+'\\b','i').test(location))return true;
     if(code==='GB'&&/\b(?:UK|U\.K\.|England|Scotland|Wales|Northern Ireland)\b/i.test(location))return true;
@@ -667,7 +667,8 @@
     var searchableTags=Array.isArray(verifiedTags)?verifiedTags:jobSearchTags(job);
     var topics=window.SOAPPSearchTopics,topic=topics&&topics.fromQuery(state.query);
     if(topic){
-      if(topic.city)return !!window.SOAPPLocalGeo&&window.SOAPPLocalGeo.matches(job,topic.city);
+      if(topic.cityId)return !!window.SOAPPLocalGeo&&window.SOAPPLocalGeo.matches(job,topic);
+      if(topic.country)return countryMatch(job,topic.country,topic.label);
       return topics.matchesDiscipline(topic,[role].concat(jobDisciplines(job)),[job.title,searchableTags.join(' ')].join(' '));
     }
     var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,searchableTags.join(' '),searchableTags.map(shortTagLabel).join(' ')].join(' ').toLowerCase();
@@ -1084,7 +1085,6 @@
   function render(){
     preserveSearchNavigation();
     var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href=window.location.hostname==='development.studio-openings.pages.dev'&&city.slug!=='mumbai'?'/'+city.slug:'/?filters=1&city='+encodeURIComponent(city.slug)+'#jobs';}
-    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.onlySaved?'':state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
     feedBusy=false;
@@ -1100,6 +1100,7 @@
     // Array.filter passes (job, index, array). Do not forward index/array as
     // Saved Jobs' optional verified role and tags override parameters.
     var list=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
+    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.onlySaved?'':state.query,list.length,state.feedStatus);
     $('system-message').hidden=true;
     $('list-footnote').hidden=true;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
@@ -1263,6 +1264,7 @@
     // Offline preview only. Production always reads the operator-controlled file.
     setFeaturedConfig(window.STUDIO_OPENINGS_FEATURED_PREVIEW||null);
     state.jobs=(window.STUDIO_OPENINGS_REVIEW_JOBS||[]).filter(displayableJob).map(function(j,i){j.reviewOrder=i;return j;});
+    state.feedStatus='ready';
     $('system-message').hidden=false;$('system-message').textContent='REVIEW SNAPSHOT · Official firm vacancies reviewed 17 Nov 2026. Their availability may change.';
     $('updated-label').textContent='Offline source review';
     $('list-footnote').textContent='Click a listing to open its details without changing the results layout. The complete description and application steps remain on the original site. Snapshot status can change.';
@@ -1381,5 +1383,6 @@
   }
   function startJobFeed(){if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();}
   if(savedViewFromUrl()){state.onlySaved=true;render();}
+  else if(state.query&&window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query,0,state.feedStatus);
   startJobFeed();
 })();

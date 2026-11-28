@@ -75,6 +75,15 @@ Use these exact statuses.
 - [x] Confirm Preview commit `4597d7d` with [green GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46104155647) and Cloudflare Pages. Live Chromium passed 48 layout checks across eight pages and six widths from 320 to 1280 px, pill and tab search, and the correction link. Verified Preview noindex, canonicals, and sitemap parity.
 - [ ] Review the pills and correction flow on the owner's existing Safari.
 
+## Milestone · Studio tags and search recovery
+
+- [x] Generate linked city, country and creative-focus pills across the 100 published profiles using verified office locations and published focus. Use one pill for Singapore and distinguish an office from a gallery or museum.
+- [x] Suggest shared topics as users type across Jobs, Studio and Article. Recognize BR, BR- and brand as prefixes for Brand Design. Apply the full label on selection and keep ordinary text results updating.
+- [x] Provide a clear-search action when a query has no results. Wait for Jobs, Studio and Article sources to finish before reporting a combined miss on Jobs.
+- [x] Exercise topic links, keyboard selection, clear-search recovery, delayed sources, and unavailable jobs in Chromium using fixtures. Layout passed at five viewport widths from 320 to 1280 px.
+- [ ] Verify the deployed Preview search and profile on Cloudflare Pages.
+- [ ] Review the 2x4 pills, Brand Design suggestion and clear-search action in the owner's Safari.
+
 ## Resume and measurement
 
 1. Read `AGENTS.md` and fetch current development/main refs. Keep the November baseline immutable and add changed evidence to this file with date, SHA, environment and relevant source links.
