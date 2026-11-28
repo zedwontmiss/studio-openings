@@ -5,6 +5,8 @@ import locations from '../assets/studio-topic-data.js';
 import {articleTopicIds,renderTopicPills,studioTopicIds} from '../operations/search-topic-pills.mjs';
 
 const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
+const pillStylesheet='href="/assets/topic-pills.css?v=1"';
+assert.match(read('assets/topic-pills.css'),/\.so-topic-pills a\s*\{[^}]*border:\s*1px solid/);
 const {studios}=JSON.parse(read('studio-registry/published.json'));
 const raggedEdge=studios.find(studio=>studio.slug==='ragged-edge');
 const twoByFour=studios.find(studio=>studio.slug==='2x4');
@@ -39,7 +41,10 @@ for(const article of articles.filter(article=>article.status==='published')){
  const ids=articleTopicIds(article);
  assert.ok(ids.length,article.slug+' must have linked topics');
  const pills=renderTopicPills(ids);
- assert.ok(read('article/'+article.slug+'.html').includes(pills),article.slug);
+ const html=read('article/'+article.slug+'.html');
+ assert.ok(html.includes(pillStylesheet),article.slug);
+ assert.ok(html.includes(pills),article.slug);
+ if(ids.length>1)assert.ok(pills.includes('</a> <a '),article.slug);
  assert.ok(read('article.html').includes('data-topics="'+ids.join(' ')+'"><h2><a href="/article/'+article.slug+'"'),article.slug);
 }
 assert.ok(read('studio/ragged-edge.html').includes(renderTopicPills(studioIds.filter(id=>id!=='graphic-design'))));
@@ -50,6 +55,7 @@ for(const studio of studios){
  const path='/studio/'+studio.slug;
  assert.deepEqual(search.find(row=>row.path===path).topicIds,ids,path);
  assert.ok(html.includes('class="so-topic-pills"'),path);
+ assert.ok(html.includes(pillStylesheet),path);
  const distinctCityIds=offices.filter(office=>office.city!==byId.get('country-'+office.country.toLowerCase()).label).map(office=>office.cityId);
  assert.equal(ids.filter(id=>byId.get(id).cityId).length,new Set(distinctCityIds).size,path);
  assert.equal(ids.filter(id=>byId.get(id).country&&!byId.get(id).cityId).length,new Set(offices.map(office=>office.country)).size,path);

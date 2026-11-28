@@ -58,5 +58,5 @@ export function renderTopicPills(ids=[]){
  return '<nav class="so-topic-pills" aria-label="Search by topic">'+ids.map(id=>{
   const {label}=byId.get(id);
   return '<a href="/?q='+encodeURIComponent(label)+'">'+escapeHtml(label)+'</a>';
- }).join('')+'</nav>';
+ }).join(' ')+'</nav>';
 }
