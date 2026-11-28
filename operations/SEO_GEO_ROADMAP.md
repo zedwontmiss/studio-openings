@@ -1,0 +1,85 @@
+# Studio Openings SEO and GEO roadmap
+
+Baseline 28 November 2026. The [audit](SEO_GEO_AUDIT_2026-11-28.md) contains evidence. The [checklist](SEO_GEO_CHECKLIST.md) tracks status and dependencies. The [readiness report](SEO_GEO_PRODUCTION_READINESS.md) supplies test and rollback gates.
+
+P0 applies to release safety or a confirmed critical incident. P1 covers core discovery, correctness and reliability. P2 improves discovery and operations once data and measurement are ready. P3 is optional and needs a defined evidence threshold. There is no confirmed P0 outage in the audited baseline.
+
+## P0-01 · Verify live operating boundaries
+
+- **Current condition** — Both branch deploy checks succeeded and two D1 resources exist. Current Pages binding IDs, applied schemas, active Worker routes, security controls and account quotas remain unverified.
+- **Proposed change** — Read Pages production and Preview settings, current deployed refs and actual `JOBS_DB` binding IDs. Run existing authenticated GET diagnostics or read-only metadata queries. Record schema versions/differences, active cron owner, flag names and redacted usage totals. Keep secret values, applicants and commercial records out of audit output.
+- **Benefit and dependencies** — Makes safe Preview testing, feature activation and rollback possible. Requires scoped Cloudflare/operator access. The public crawl can continue independently.
+- **Risk and cost** — Low for read-only checks. A misbound Preview write would affect Production. No added infrastructure.
+- **Acceptance** — Explicit evidence identifies the pinned deployment and different current binding IDs. The required tables, columns, indexes, triggers and view are known for features under test. Verify prior rollback target preserves article withdrawal. Record active schedulers and budgets.
+
+## P1-01 · Return accurate HTTP responses and canonical metadata
+
+- **Current condition** — The 135 sitemap URLs passed. Sampled unknown URLs returned HTTP 200/home/noindex. Dynamic and static sitemaps duplicate route inventories. Dynamic D1 failure affects the entire sitemap. Some aliases intentionally redirect.
+- **Proposed change** — Add true unknown-path 404 handling while preserving real routes, aliases, assets and APIs. Share generated public path inventory and regression-check against deployed eligibility. Define explicit degraded-mode behavior so an unavailable job query cannot silently serve stale vacancies or permanently hide stable pages. Derive sitemap `lastmod` from verified significant content updates or omit it. Add diagnostics for mismatches, invalid URLs and broken internal links.
+- **Benefit and dependencies** — Cleaner crawl signals, fewer fallback copies, and easier release verification. Route/metadata work can begin with local and Preview fixtures. Live D1 cases depend on P0-01.
+- **Risk and cost** — Medium due to shared middleware and Pages fallbacks. Keep bounded, indexed eligibility queries and reuse existing generators. No new service.
+- **Acceptance** — Unknown roots/nested paths and absent future URL families return 404. Approved routes and redirects preserve their prior behavior. Production sitemap contains exactly canonical indexable pages. Deployed checks cover expiry, withdrawals, content updates and transient D1 failure. Tadaima article stays 404.
+
+## P1-02 · Establish a verified vacancy pilot and accurate JobPosting
+
+- **Current condition** — Browser inventory exists, with zero canonical job URLs in the live sitemap. Employer JobPosting and permissioned source HTML exist in code. Current JobPosting date is submission creation and description is capped. Sourced pages have no JobPosting and require independent review.
+- **Proposed change** — Reuse the employer paid/publication pipeline for a bounded cohort of genuine listings. Record the original employer posting date when supported, verify description completeness/reuse, apply path, worksite and remote applicant eligibility, and share an authoritative expiry state across feed, HTML, markup and sitemap. For permissioned third-party sources, keep the existing independent evidence and freshness gate. Extend homepage/discipline server HTML through the existing capped inventory renderer when eligible live rows exist. Preserve canonical identity and saved/drawer behavior across changes.
+- **Benefit and dependencies** — Discoverable, trustworthy vacancies with fewer stale applications. Requires P0-01 before a live D1 pilot, P1-01 route checks, verified employer or source rights, and owner-approved release. Production source rollout requires a separate approval.
+- **Risk and cost** — High if stale data, incorrect listings or expired paid placement is exposed. Use disposable fixtures, a small real cohort and existing Pages/D1. Measure additional sitemap reads and render cost.
+- **Acceptance** — Review each pilot vacancy in its official source. A verified active job has one self-canonical 200 URL, useful initial HTML and working apply path. JobPosting, where appropriate, passes Google Rich Results and visible-content comparison. New/update/expire/close/withdraw flows match detail, feed, sitemap and structured data. Repeat tests for missing/unknown dates and legitimate 100% remote restrictions. Standard, Featured, original close dates and the 30-day vacancy recheck still work. [Google JobPosting](https://developers.google.com/search/docs/appearance/structured-data/job-posting)
+
+## P1-03 · Make source freshness and load measurable
+
+- **Current condition** — Browser startup observed 25 API requests. Snapshot and worker candidates exist, recent maintenance jobs skipped, indexed feed returned disabled, and the scope of all official vacancies was unverified.
+- **Proposed change** — Use the existing bounded coverage/health probe for an auditable baseline of active, expired, duplicate, unresolved-location and partial-source records. Verify a representative sample against employer ATS/official pages. Use canonical provider identity and original apply identity for deduplication. Once isolated Preview is verified, pick one existing scheduler, verify lease/retry behavior and consolidate validated snapshot delivery while keeping current fallbacks. Protect last-good data with expiry and revocation gates. Continue both geographic sourcing layers and current outreach holds.
+- **Benefit and dependencies** — Reliable current inventory, less manual triage and lower per-view fan-out. Requires P0-01 for authenticated DB work and trusted mappings. Can run in parallel with P1-01 and the fixture portion of P1-02.
+- **Risk and cost** — Medium to high. Incomplete scans must never mass-close records or prolong expired roles. Measure cold/warm requests, D1 rows, freshness and rate-limit events per job and visitor. Bound retries and concurrency, use existing quotas and choose a single cadence.
+- **Acceptance** — One heartbeat and failure log per source/shard. Sample coverage by all ten disciplines and geography with freshness, unique vacancies, eligibility and original-link results. Complete/incomplete scans, timeouts, duplicate source links, pending/revoked entities and historical saved records pass. Consolidated delivery materially reduces API fan-out in repeatable before/after tests while preserving visible inventory, sort and fallback.
+
+## P1-04 · Finish IndexNow delivery and verify it before activation
+
+- **Current condition** — Key and script exist on development, and seed/delta dry runs work. Public Production serves fallback HTML at the key path. Static diffs miss D1 changes and cannot prove deployment or removals. No durable retry/deduplication exists.
+- **Proposed change** — Gate on verified deploy completion or explicit approved operator dispatch. Validate HTTPS key response body, action eligibility and expected status for adds/updates/removals. Keep static semantic fingerprints and derive dynamic changes from the same bounded lifecycle or reconciler that serves the sitemap. Store normalized URL, action, content revision, sent time, attempt and result with idempotent leases, recorded retries and final error visibility. Back off on transient/429 responses. Alert on persistent invalid key/host payload. Test with a mock receiver and dry-run Preview.
+- **Benefit and dependencies** — Reliable discovery hints for partners and faster notice of changes, including removals. Relies on P1-01 route truth, P1-02/P1-03 for dynamic job events and explicit owner approval for any live send.
+- **Risk and cost** — Medium. Mixed deployment state, duplicates and unbounded writes can waste crawl and D1 budget. Start with the current script and scale a narrow durable queue only once dynamic events exist.
+- **Acceptance** — Production preflight GET returns 200 text with exact key. Verified current, removed and private URLs are handled correctly. Retries are bounded and repeated events deduplicate. Preview/private addresses cannot be submitted. Operator can confirm partner 200/202 and submission telemetry. Index acceptance and ranking are measured independently. [IndexNow protocol](https://www.indexnow.org/documentation)
+
+## P1-05 · Baseline search and store release/security health
+
+- **Current condition** — No current console reports, field Web Vitals, D1 cost/traffic or live commercial baseline were available. Existing tests and health workflows omit live canonical/sitemap parity and authenticated crawler telemetry. Public operator shell exists with protected APIs.
+- **Proposed change** — Record console coverage, sitemap state, sample URL inspections, organic query/page exports and AI Performance if available. Add bounded route/sitemap/schema and link-health checks to existing CI/health flows, including simulated adds/updates/removals and rollback. Inspect WAF/bot settings, credential lifecycle, operator framing/CSP in report-only first, HSTS policy, rate limits and retention. Use aggregated metrics with privacy settings and bounded writes.
+- **Benefit and dependencies** — Finds changes in crawlability, source health, spend and trust before they affect the whole site. Needs console access or exports and relevant Cloudflare controls. Tests can proceed locally.
+- **Risk and cost** — Low for read-only measurement, medium for header changes due to Turnstile, scripts and Preview integrations. Small bounded CI and request budget. No new analytics vendor needed.
+- **Acceptance** — Stored baseline supplies URL-group coverage, non-branded impressions/clicks and checked exclusions over a fixed window. Monitoring distinguishes data unavailable, zero and regression. Alerts identify route/source/dataset with actionable error, provide a rollback trigger, and avoid raw identifiers. Operator and public forms work after any hardening.
+
+## P2-01 · Pilot a small set of demand-backed landing pages
+
+- **Current condition** — Ten editorial discipline pages, nine studio-city pages and 270 country query links are working. Verified stable supply for combined job intents is unknown. Global exact country/role matching already worked in the Canada test.
+- **Proposed change** — Reuse the canonical geography, query parser, studio generators and an eligible public job read model. Start with at most a few routes supported by observed demand and recurring supply. Evaluate Canada product jobs, US motion jobs, Denmark architecture studios and hospitality studios. Treat London architecture, Australian Revit and remote interiors as research candidates until data supports a pilot. For each intended route define a minimum inventory/diversity and sustained freshness window. A starting job eligibility proposal is five eligible vacancies from three employers across four weekly checks with meaningful page-specific context. Calibrate with data and include qualified smaller firms. Studio hubs can use at least five verified profiles as the current city model does, with distinct context and authoritative location evidence.
+- **Benefit and dependencies** — Sustainable searchable landing pages that help people find actual listings or studios. Needs P1-02/03 verified supply, P1-05 demand, and shared filters.
+- **Risk and cost** — Medium. Avoid mirrored, empty or threshold-flapping pages, ambiguous remote geography and crawl multiplication. Use curated allowlists, static directory pages and bounded cached reads. No volume target or new service.
+- **Acceptance** — Every pilot has a unique task, stable self-canonical URL, validated factual context and an explicit thin/empty policy. Use a grace window for temporary supply loss, with sitemap removal/noindex for sustained ineligibility and 404/410 for withdrawn routes. Equivalent URL, typed query in either order and manual filters return the same eligible IDs with documented sort behavior. Query facets stay outside indexing. Search and approved layout pass regression checks.
+
+## P2-02 · Strengthen public entities, editorial citations and referrals
+
+- **Current condition** — Public studio and city facts are present in HTML with limited structured entities. Article and WebSite markup exist. Exact employer-to-studio association is limited and gated. Default share images and AI referral breakdown are missing.
+- **Proposed change** — Add stable studio IDs and supported Organization/Place data from verified offices and sources. Link eligible jobs and articles through exact reviewed evidence. Improve metadata generation and representative share images only with rights and existing design. Date verified sector insights and publish sample/methodology/source links. Add validated privacy-preserving AI referral groups and track unknown/direct separately, with classification tests.
+- **Benefit and dependencies** — Easier factual retrieval, citation and relevant internal navigation. Requires P1-03 verified job/studio evidence, P1-05 analytics baseline and a reviewable publication pipeline.
+- **Risk and cost** — Low infrastructure cost with static generation. Wrong attribution or inferred relationships have substantial trust cost. Require provenance, editorial review and a correction route.
+- **Acceptance** — Sample HTML and parsed JSON-LD agree on named entities, office evidence, canonical IDs and relationships. Real published links preserve the existing UI. Aggregate insights have definitions, source mix, coverage and limitations. Referral tests recognize supported origins with zero leakage of raw URLs. Bing AI citations and reported referral outcomes can be tracked separately.
+
+## P2-03 · Reduce recurring resource use and protect the commercial path
+
+- **Current condition** — Lab loads were responsive while feeds continued. Live quotas, field CWV and invoice/payment outcomes are unverified. Shared middleware rewrites pages and serves HTML `no-store`.
+- **Proposed change** — Use P1-03 evidence to select high-impact caching for public immutable/versioned templates and validated feed artifacts while retaining freshness, noindex, private routes and revalidation. Measure request/inventory latency with field data when available. Exercise a supervised real commercial pilot after independent approval and use the existing order/reconciliation path. Keep sponsorship disclosure and Signal accent.
+- **Benefit and dependencies** — Lower cost per view, less feed delay and commercial confidence. Requires scoped dashboard usage, P0-01 and P1-03. Real operator/provider flows require a separate decision.
+- **Risk and cost** — Medium due to caching stale or host-specific content and money handling. Use existing Pages, D1, Cache API and test fixtures. Plan upgrades require explicit cost review.
+- **Acceptance** — Record before/after p75 field LCP, INP and CLS where available, related lab timings, request count, CPU/rows and spend. No regression in layout, search, saved/opened/viewed state, existing mobile/desktop, or Featured display. Rollback recovers current canonical and job withdrawal state. Existing supported checkout, fulfillment and expiry behave as written.
+
+## P3-01 · Evaluate optional discovery conventions
+
+- **Current condition** — `/llms.txt` serves fallback HTML and no consuming client has been identified. No AI-citation trend has been measured.
+- **Proposed change** — Fix fallback under P1-01. Consider an optional curated file or public feed only after identifying a consuming agent, a measurable question and a bounded upkeep plan. Compare a fixed, date-stamped sample of cited URLs, known crawler visits and actual referrals.
+- **Benefit and dependencies** — Tests a defined discovery question without duplicating established SEO infrastructure. Depends on crawlable HTML and P1-05 measurement.
+- **Risk and cost** — Low infrastructure cost, with maintenance drift and misinterpretation risks. Keep the experiment optional and time-boxed.
+- **Acceptance** — Document consumer, baseline, duration, expected source handling and removal rule. Preserve robots intent and canonical content. Stop if the signal cannot be measured. [Google AI optimization guidance](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
