@@ -15,7 +15,6 @@ html,body{font-family:Helvetica,Arial,sans-serif}button,input,select,textarea{fo
 .so-utility-more summary{cursor:pointer;font-size:12px}
 .so-utility-pop{position:absolute;z-index:30;right:0;top:100%;width:170px;border:1px solid #bbb;background:#fff;padding:8px 12px}
 .so-utility-pop a{display:block;padding:7px 0}
-.so-public-header a:focus,.so-public-header summary:focus{outline:2px solid #222;outline-offset:2px}
 @media(max-width:730px){.so-header-shell{padding:0 13px}.so-public-header .so-brand{font-size:14px}.so-utility-desktop{display:none}.so-utility-more{display:block}.so-primary,.so-utility{font-size:11px}.so-primary a,.so-utility>a{margin-left:10px}.so-utility-more{margin-left:10px}.so-utility-more summary{font-size:11px}}
 @media(max-width:370px){.so-header-shell{padding:0 10px}.so-public-header .so-brand{font-size:12px}.so-primary,.so-utility,.so-utility-more summary{font-size:10px}.so-primary a,.so-utility>a,.so-utility-more{margin-left:7px}}
 
@@ -58,8 +57,28 @@ main.editorial-reader .editorial-prose{font-size:18px;line-height:1.7}
 @media(max-width:730px){.so-public-header .so-about-mark{font-size:14px;margin-left:10px}}
 @media(max-width:370px){.so-public-header .so-about-mark{font-size:12px;margin-left:7px}.so-primary a,.so-utility>a,.so-utility-more{margin-left:5px}.so-public-header .so-brand{font-size:11px}}
 
-/* Pointer focus should not leave a box; retain the keyboard focus indicator. */
-.so-public-header a:focus:not(:focus-visible),.so-public-header summary:focus:not(:focus-visible){outline:none}
+/* A line below the control keeps keyboard focus visible in older browsers too. */
+a:focus,button:focus,summary:focus,[role="button"]:focus,
+input:focus,select:focus,textarea:focus{
+ outline:none;
+ box-shadow:0 2px 0 currentColor;
+}
+a,button,summary,[role="button"],input[type="button"],input[type="submit"],input[type="reset"]{
+ -webkit-tap-highlight-color:transparent;
+}
+a:focus:not(:focus-visible),button:focus:not(:focus-visible),summary:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible),input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),textarea:focus:not(:focus-visible){
+ box-shadow:none;
+}
+@media(forced-colors:active){
+ a:focus-visible,button:focus-visible,summary:focus-visible,[role="button"]:focus-visible,
+ input:focus-visible,select:focus-visible,textarea:focus-visible{
+  forced-color-adjust:none;
+  background-color:Highlight;
+  color:HighlightText;
+ }
+}
 
 /* Reserve fixed link slots regardless of active font weight. */
 .so-primary a,.so-utility>a,.so-utility-desktop>a{display:inline-block;flex:none;text-align:center}

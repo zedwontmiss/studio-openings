@@ -86,7 +86,7 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 
 - Studio index is one alphabetical vertical column on all screen sizes. Header studio openings wordmark stays far left and links home. S/O logo sits far right and links to About; no duplicate About text in desktop or mobile utility navigation. Jobs also links home.
 
-- Keep compact Studio list spacing; suppress mouse-only header focus outline but preserve visible keyboard focus.
+- Keep compact Studio list spacing. On public pages, links, buttons and disclosures have no click or tap ring; use the shared underline for keyboard focus.
 
 - Navigation must not shift between active pages: reserve link widths, primary product links bold with active underline, utility links regular. Remove Copy filters and separate discipline clear, retain one Reset and Saved jobs. Opening any vacancy resets drawer scroll only. Preserve visible search query when switching primary tabs.
 
@@ -153,7 +153,7 @@ Added /api/public-inventory for approved/indexed/editorial batches, preserving i
 
 - Studio geographic filter: owner prefers Excel-like country, region, city autocomplete, case-insensitive prefix matching, comma/Enter completion, keyboard/touch support. Native country/city selects retained hidden as generated data and fallback. No invented geography. Scope Studio only for initial review.
 
-- Owner clarified OMA-inspired Studio: one existing large search for firm names, aliases, country, state/region or city; no location dropdown or second input. Category is sole filter, text-based collapsible + category. No changes to Jobs or Article search scope. Preview currently observed stale; verify Pages deployment before claiming live.
+- Owner clarified OMA-inspired Studio: one existing large search for firm names, aliases, country, state/region or city; no location dropdown or second input. Category is the sole filter. Keep the disclosure open and retain focus on the selected option after any category choice, including All. The CATEGORY heading still toggles the disclosure. No changes to Jobs or Article search scope. Preview currently observed stale; verify Pages deployment before claiming live.
 
 - Owner approved OMA-inspired filter layout: fixed left FILTER label, right-hand horizontal expandable text controls and option grids. Jobs and Studio only. Preserve eligibility, saved actions and existing featured priority. Automatic sort = Latest when no query, Relevance with query; explicit overrides persist until reset. No CV personalization.
 
