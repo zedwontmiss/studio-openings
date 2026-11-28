@@ -23,9 +23,9 @@ Use these exact statuses.
 | A2 Public technical SEO and discovery baseline | Verified in production | All 135 live sitemap URLs fetched. All 200/self-canonical, zero URL/title duplicates or noindex. Unknown-route fallbacks reproduced separately. |
 | A3 Tadaima article withdrawal | Verified in production | Four article variants returned 404/noindex. No article slug in sitemap, article index, rotation or feed. Main withdrawal `c48d5a7`. |
 | A4 Preview indexing and release scope | Tested | Sampled exact branch Preview noindex, canonical production sitemap and city/Scene/SIGNAL gating. Main and Preview Pages GitHub checks succeeded for the audited heads. |
-| A5 Live Pages/D1 settings, schema, worker, security and billed usage | Blocked | Two D1 resources exist. Pages and Worker Routes reads and D1 SQL received 403. Read current binding IDs and schema, rules, active schedules, account limits. See P0-01. |
+| A5 Live Pages/D1 settings, schema, worker, security and billed usage | Blocked | The owner's Cloudflare screenshot shows Production `JOBS_DB` assigned to `studio-openings-db`. The Preview assignment, applied schema, active rules and usage remain open. See P0-01. |
 | A6 Git schema and lifecycle evidence | Tested | Nine migrations and three Preview SQL files loaded into disposable SQLite. Main/development each passed 82 suites including payment, expiry and source policy. |
-| A7 Google and Bing account evidence | Blocked | DNS verification tag and public sitemap observed. Console status, submission dates, live inspection, request history, selected canonicals and actual indexing/traffic remain unverified. |
+| A7 Google and Bing account evidence | In progress | The owner supplied the first Google Search Console Pages, Sitemaps and Performance reports. The exclusion breakdown, URL inspections and Bing evidence remain open. |
 | A8 Development documentation | Implemented | Audit, roadmap, checklist and production readiness documents are present in this repository. |
 | T1 Discipline and studio-location pages | Verified in production | Ten discipline routes, nine studio-city routes, 100 studio profiles and 270 homepage query links. Where query URLs differ, the home canonical applies. |
 | T2 Grounded global discipline/country search | Verified in production | Existing footer query link returned the compact form. On one live Chromium session the compact, reverse and natural-language forms gave five identical visible job rows in order. Broader parity follows P2-01. |
@@ -40,13 +40,13 @@ Use these exact statuses.
 
 | ID | Work | Status | Evidence or next action |
 | --- | --- | --- | --- |
-| P0-01 | Verify Pages bindings, applied schema and operating boundaries | Blocked | Use scoped read access or redacted dashboard/schema evidence from the operator. No migration or ingestion step until confirmed. |
+| P0-01 | Verify Pages bindings, applied schema and operating boundaries | Blocked | Production assignment documented. Read the Preview `JOBS_DB` assignment and applied schema before work that depends on database isolation. |
 | P1-01 | Correct fallback statuses and harden sitemap/canonical/metadata parity | Verified in production | Production commit `ef8738d` passed all 135 canonical targets, twelve missing-route GET/HEAD checks and existing aliases on 28 November 2026. |
 | P1-02 | Establish verified vacancy pilot, accurate JobPosting and initial job HTML | Not started | Begin with disposable fixtures. Live pilot depends on P0-01, rights, freshness and owner release approval. |
 | P1-03 | Baseline provenance, freshness, duplicates, taxonomy and request load | Not started | Verify official vacancy and studio evidence with both geographic sourcing layers. Reuse bounded probe and pick one scheduler only after isolation and capacity evidence. |
 | P1-04 | Tie IndexNow to deployed URL lifecycle with retries/deduplication | Not started | Implement validation against fixture/mock and Preview dry runs. Confirm real key body and deployment status before proposing a release. |
 | G1 | Production IndexNow flag or live sends | Awaiting approval | Requires P1-04 acceptance and separate explicit authorization. |
-| P1-05 | Search/report baseline, live check coverage and observed security controls | In progress | Public crawl and lab baselines recorded. Protected Console reports, WAF/bot, budget, latency and retention checks still pending. |
+| P1-05 | Search/report baseline, live check coverage and observed security controls | In progress | Public crawl, lab baseline and the first Google report totals recorded. Google exclusion details, Bing evidence, WAF/bot rules, budget and retention checks remain open. |
 | P2-01 | Coverage- and demand-gated programmatic landing pages | Not started | Prioritize genuine distinct intent with recurring eligible inventory and bidirectional query/link parity. Keep existing search and layout. |
 | P2-02 | Entity relations, metadata, sourced insights and AI referral measures | Not started | Preserve editorial independence, audited official-source evidence, template generation and privacy constraints. |
 | P2-03 | Cost, caching, field performance and commercial readiness | Not started | Capture usage and baseline before tuning. Avoid duplicate schedulers and paid additions. Preserve existing pricing, fulfillment and disclosures. |
@@ -109,6 +109,16 @@ Use these exact statuses.
 - [x] Check all 135 public canonical routes, missing-route responses, the Tadaima withdrawal, and IndexNow key absence. Live Chromium passed partial search, article tags, saved jobs, job drawer, and external Apply link checks. The employer form loaded. The paid listing expiry boundaries were tested with disposable fixtures.
 - [ ] Check the tagged New York guide and partial search in the owner's usual MacBook browser.
 - [ ] Establish the search visibility baseline and review the first six emerging practices across six media. The editorial pilot and outreach are separate from the public code release.
+
+## Milestone · Owner browser and account evidence
+
+- [x] Reproduce the owner's plain topic links by serving the older cached masthead stylesheet. Give article and studio pills an independent stylesheet URL and add separators in the unstyled HTML.
+- [x] Record the owner's first Google Search Console screenshots on 28 November 2026. The Pages report updated 23 November shows one indexed and 19 non-indexed URLs across five reasons. Google last read the successful sitemap on 27 November and reported 136 discovered URLs. The three-month Search results view shows six impressions, zero clicks and average position 6.5. These reports use different dates and scopes.
+- [x] Compare sitemap versions. The earlier production tree listed 136 locations. The Tadaima withdrawal removed one and the currently deployed sitemap has 135 URLs. Google's screenshot supplies the last-read date and count but no URL list.
+- [x] Record the Production `JOBS_DB` assignment to `studio-openings-db` from the owner's Cloudflare screenshot.
+- [x] Verify production commit `165d51b`, Pages deployment `16a14918-8fc7-4920-9279-c2407b4c09a5`, on 28 November 2026. All 83 local suites, Actions and CodeQL passed. Live Chromium passed 16 visual checks with the older stylesheet at 320 and 1280 px, the unstyled spacing fallback and the New York search link. The 135 public canonical URLs passed the HTTP audit again.
+- [ ] Recheck the pills in the owner's MacBook browser.
+- [ ] Review the five Google exclusion reasons and confirm the Cloudflare Preview assignment.
 
 ## Resume and measurement
 
