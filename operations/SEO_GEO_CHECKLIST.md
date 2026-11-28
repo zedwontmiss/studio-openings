@@ -135,7 +135,10 @@ Use these exact statuses.
 - [x] Use the same category match for the clicked phrase and the same text typed by hand. Allow everyday punctuation variants such as `motion 3d animation`. Keep older checkbox-filter URLs working.
 - [x] Verify the longest tested phrases fit the search field on narrow screens. Check that clearing the search releases the category.
 - [x] Verify Preview commit `fe7f154` on 28 November 2026. All 83 local suites, 140 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46117762499) and Cloudflare Pages passed. HTTP checks verified all ten guide links, Preview noindex and production canonicals. Live Chromium checked four disciplines at 320, 375 and 1280 px, including full phrase visibility, click-versus-type job results, punctuation variants, clearing the field and legacy filters.
-- [ ] Review the visible search phrase and retyping flow before public release.
+- [x] Reproduce the owner's `motion, 3d animatio` failure. Match unambiguous unfinished discipline phrases through the same category data as their complete forms. Preserve ordinary single-word matching and clear-search recovery for unrelated queries.
+- [x] Add regression coverage for intermediate prefixes across all ten disciplines, punctuation variants, category membership and Studio results. Test forward typing and backspacing in Chromium with fixture inventory.
+- [ ] Verify the unfinished-query correction on the live Cloudflare Preview.
+- [ ] Review the visible search phrase and backspacing flow before public release.
 
 ## Resume and measurement
 

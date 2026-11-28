@@ -41,19 +41,37 @@
   function create(places){
     var topics=focus.concat(editorial,places||[]);
     var byLabel=Object.create(null),byId=Object.create(null);
-    var byGuideQuery=Object.create(null),queryByDiscipline=Object.create(null);
+    var byGuideQuery=Object.create(null),byGuidePrefix=Object.create(null),queryByDiscipline=Object.create(null);
+    function addGuidePrefixes(phrase,topic){
+      var firstSpace=phrase.indexOf(' ');
+      if(firstSpace<0)return;
+      for(var end=firstSpace;end<phrase.length;end++){
+        var prefix=phrase.slice(0,end).trim();
+        var previous=byGuidePrefix[prefix];
+        // An ambiguous prefix should fall through to ordinary search.
+        if(previous!==topic)byGuidePrefix[prefix]=previous===undefined?topic:null;
+      }
+    }
     topics.forEach(function(topic){
       var label=normalize(topic.label);
       if(!byLabel[label])byLabel[label]=topic;
       byId[topic.id]=topic;
       if(topic.guideQuery){
-        byGuideQuery[guideKey(normalize(topic.guideQuery))]=topic;
+        var guide=normalize(topic.guideQuery);
+        var key=guideKey(guide);
+        byGuideQuery[key]=topic;
         queryByDiscipline[topic.discipline]=topic.guideQuery;
+        addGuidePrefixes(key,topic);
+        addGuidePrefixes(normalize(guide.replace(/[,/]/g,' ').replace(/&/g,' and ')),topic);
       }
     });
     function fromQuery(query){
       var normalized=normalize(query);
-      return byLabel[normalized]||byGuideQuery[guideKey(normalized)];
+      var key=guideKey(normalized);
+      var exact=byLabel[normalized]||byGuideQuery[key];
+      // Single words can still match titles, employers and locations as usual.
+      if(exact||!/[ ,/&]/.test(normalized))return exact;
+      return byGuidePrefix[key]||undefined;
     }
     function disciplineQuery(discipline){
       return queryByDiscipline[discipline];

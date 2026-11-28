@@ -119,11 +119,16 @@ for(const discipline of ['architecture','interior','industrial','product','visua
  const original=make({...base,selectedRoles:[discipline]});
  const expected=categoryInventory.filter(job=>original.eligible(job)).map(job=>job.id);
  assert.ok(expected.length,discipline);
- for(const typed of [query,query.toLowerCase().replace(/[,/&]/g,' ')]){
+ for(const typed of [query,query.slice(0,-1),query.toLowerCase().replace(/[,/&]/g,' ')]){
   const search=make({...base,query:typed});
   assert.deepStrictEqual(categoryInventory.filter(job=>search.eligible(job)).map(job=>job.id),expected,typed);
  }
 }
+for(const query of ['motion,','motion, 3','motion, 3d','motion, 3d animatio','motion, 3d animation']){
+ const search=make({...base,query});
+ assert.deepStrictEqual(categoryInventory.filter(job=>search.eligible(job)).map(job=>job.id),['motion','mixed'],query);
+}
+assert.equal(categoryInventory.some(job=>make({...base,query:'motion 3d nonexistent'}).eligible(job)),false);
 assert(filtered.eligible(jobs[1],1,jobs),'Numeric callback override must be ignored for an actual Product job');
 assert(!filtered.eligible(jobs[0],1,jobs),'Numeric callback override must not pass a Visual job');
 assert(filtered.eligible(jobs[1],'product',['Product Design','UX/UI']),'Saved snapshot override must work');

@@ -14,7 +14,8 @@ for(const [query,expected] of [['b',3],['br',2],['BR-',2],['bra',2],['brand',1],
 }
 assert.equal(ctx.previewMatches(searchable,'Articles','brand developer',{}).length,0);
 const topics=[{kind:'Studios',title:'Animation studio',text:'Independent creative practice',topicIds:['motion-design'],path:'/studio/animation'}];
-for(const query of ['Motion, 3D & Animation','motion 3d animation','motion, 3d and animation']){
+for(const query of ['Motion, 3D & Animation','motion, 3d animatio','motion 3d animation','motion, 3d and animation']){
  const matches=ctx.previewMatches(searchable.concat(topics),'Studios',query,{});
  assert.deepEqual(Array.from(matches,result=>result.path),['/studio/animation']);
 }
+assert.equal(ctx.previewMatches(topics,'Studios','motion 3d nonexistent',{}).length,0);
