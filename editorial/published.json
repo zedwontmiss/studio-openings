@@ -397,6 +397,10 @@
         {
           "path": "/",
           "label": "Browse current creative openings"
+        },
+        {
+          "path": "/disciplines/motion",
+          "label": "Motion and animation careers"
         }
       ]
     },
@@ -494,6 +498,10 @@
         {
           "path": "/",
           "label": "Browse current creative openings"
+        },
+        {
+          "path": "/disciplines/culture",
+          "label": "Arts and cultural production careers"
         }
       ]
     },
