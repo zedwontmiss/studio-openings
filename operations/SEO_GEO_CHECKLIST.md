@@ -82,14 +82,14 @@ Use these exact statuses.
 - [x] Provide a clear-search action when a query has no results. Wait for Jobs, Studio and Article sources to finish before reporting a combined miss on Jobs.
 - [x] Exercise topic links, keyboard selection, clear-search recovery, delayed sources, and unavailable jobs in Chromium using fixtures. Layout passed at five viewport widths from 320 to 1280 px.
 - [x] Verify Preview commit `40d007b` on 28 November 2026. All 83 local suites and 139 JavaScript syntax checks passed, as did [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46105707973) and Cloudflare Pages. Live Chromium passed the topic, navigation and clear-search flows and 20 page/viewport checks. All 135 sitemap URLs returned 200 with production canonicals, descriptions and Preview noindex.
-- [ ] Review the 2x4 pills, Brand Design suggestion and clear-search action in the owner's Safari.
+- [ ] Review the 2x4 profile pills and clear-search action in the owner's Safari. The following milestone removed the suggestion row.
 
 ## Milestone · Live search without suggestions
 
 - [x] Remove the suggestion row and its pills from Jobs, Studio, and Article. Keep the topic links on studio and article detail pages.
 - [x] Match partial queries against actual record text and verified topic labels. Check the progression from single letters through `brand des` and `brand design`, including case-insensitive input and the `BR-` example.
 - [x] Keep clear-search recovery for genuinely empty results and preserve the existing verified-location rules for complete geographic queries.
-- [ ] Verify the exact deployment and run the search interaction on Cloudflare Preview.
+- [x] Verify Preview commit `c06b4c0` on 28 November 2026. All 83 local suites, 139 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46107365377) and Cloudflare Pages passed. Live Chromium confirmed the typing sequence, search recovery, tab navigation and profile links at 320 and 1280 px. The HTTP audit found all 135 canonical Preview pages healthy with noindex headers.
 - [ ] Review live typing in the owner's Safari.
 
 ## Resume and measurement
