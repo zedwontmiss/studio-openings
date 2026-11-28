@@ -615,8 +615,8 @@
   function usMatch(loc) {return /\b(us|usa|united states|washington|california|new york|ny|dc|norfolk|salisbury|americas|worldwide|global)\b/i.test(loc);}
   function worldwideMatch(loc){return /\b(worldwide|anywhere|all countries|global)\b/i.test(loc);}
   var countryNames={US:'United States',CA:'Canada',GB:'United Kingdom',CH:'Switzerland',DE:'Germany',FR:'France',NL:'Netherlands',BE:'Belgium',LU:'Luxembourg',AT:'Austria',IE:'Ireland',DK:'Denmark',SE:'Sweden',NO:'Norway',FI:'Finland',IS:'Iceland',SG:'Singapore',AU:'Australia',NZ:'New Zealand',AE:'United Arab Emirates',SA:'Saudi Arabia',QA:'Qatar',JP:'Japan',KR:'South Korea',CY:'Cyprus',IT:'Italy',ES:'Spain'};
-  function countryMatch(job,code){
-    var location=trim(job.location),country=countryNames[code];if(!country)return false;
+  function countryMatch(job,code,label){
+    var location=trim(job.location),country=countryNames[code]||label;if(!country)return false;
     if(String(job.geoCountry||'').toUpperCase()===code)return true;
     if(new RegExp('\\b'+country+'\\b','i').test(location))return true;
     if(code==='GB'&&/\b(?:UK|U\.K\.|England|Scotland|Wales|Northern Ireland)\b/i.test(location))return true;
@@ -642,6 +642,7 @@
   }
   function structuredJobQuery(query){
     var q=String(query||'').trim().toLowerCase().replace(/\s+/g,' ');
+    if(q.indexOf(' ')===-1)return null;
     var labels={"architecture":"Architecture","interior":"Interior design","industrial":"Industrial design","product":"Product design","visual":"Graphic design","motion":"Motion design","fashion":"Fashion","web":"Web design","museum":"Museum","culture":"Arts and culture"};
     var aliases={'us':'US','usa':'US','u.s.':'US','uk':'GB','u.k.':'GB'};
     Object.keys(countryNames).forEach(function(k){aliases[countryNames[k].toLowerCase()]=k;});
@@ -664,11 +665,26 @@
     if(state.mode!=='all'&&trim(job.mode).toLowerCase()!==state.mode)return false;
     if(!matchesType(job,state.type))return false;
     if(state.hasPay&&!trim(job.salary))return false;
-    var searchableTags=Array.isArray(verifiedTags)?verifiedTags:jobSearchTags(job);
-    var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,searchableTags.join(' '),searchableTags.map(shortTagLabel).join(' ')].join(' ').toLowerCase();
+    if(!state.query)return true;
+    var topics=window.SOAPPSearchTopics,topic=topics&&topics.fromQuery(state.query);
+    if(topic&&topic.cityId)return !!window.SOAPPLocalGeo&&window.SOAPPLocalGeo.matches(job,topic);
+    if(topic&&topic.country)return countryMatch(job,topic.country,topic.label);
     var structured=structuredJobQuery(state.query);
     if(structured)return (role===structured.role||jobDisciplines(job).indexOf(structured.role)>=0)&&countryMatch(job,structured.code);
-    return !state.query||state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
+    var searchableTags=Array.isArray(verifiedTags)?verifiedTags:jobSearchTags(job);
+    var evidence=[job.title,searchableTags.join(' ')].join(' ');
+    var labels='';
+    if(topics){
+      var disciplines=[role].concat(jobDisciplines(job));
+      if(topic&&topic.discipline)return topics.matchesDiscipline(topic,disciplines,evidence);
+      labels=topics.disciplineLabels(disciplines,evidence);
+    }
+    // The broad "Graphic / Brand" filter does not establish branding work.
+    var categoryLabel=role==='visual'?'Graphic':roleLabels[role];
+    var hay=[evidence,job.company,job.location,job.type,job.mode,job.eligibility,categoryLabel,job.seniority,searchableTags.map(shortTagLabel).join(' '),labels].join(' ');
+    if(topics)return topics.matchesText(hay,state.query);
+    hay=hay.toLowerCase();
+    return state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
   }
   function effectiveSort(){return state.sort==='auto'?(state.query&&!structuredJobQuery(state.query)?'relevant':'newest'):state.sort;}
   function relevanceScore(job){
@@ -1079,7 +1095,6 @@
   function render(){
     preserveSearchNavigation();
     var cityLabel=$('local-job-scope');if(cityLabel){var city=window.SOAPPLocalGeo&&window.SOAPPLocalGeo.find(state.city);cityLabel.hidden=!city;if(city)cityLabel.querySelector('a').textContent=city.city+' ↗';if(city)cityLabel.querySelector('a').href=window.location.hostname==='development.studio-openings.pages.dev'&&city.slug!=='mumbai'?'/'+city.slug:'/?filters=1&city='+encodeURIComponent(city.slug)+'#jobs';}
-    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.onlySaved?'':state.query);
     feedVersion++;
     if(feedTimer!==null){clearTimeout(feedTimer);feedTimer=null;}
     feedBusy=false;
@@ -1095,6 +1110,7 @@
     // Array.filter passes (job, index, array). Do not forward index/array as
     // Saved Jobs' optional verified role and tags override parameters.
     var list=rankedFeed(state.jobs.filter(function(job){return eligible(job);}));
+    if(window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.onlySaved?'':state.query,list.length,state.feedStatus);
     $('system-message').hidden=true;
     $('list-footnote').hidden=true;
     savedExplain.textContent=savedStorageOk?'Saved privately in this browser only. No account or cross-device sync.':'Browser storage is unavailable. Saves may disappear when you close this page.';
@@ -1258,6 +1274,7 @@
     // Offline preview only. Production always reads the operator-controlled file.
     setFeaturedConfig(window.STUDIO_OPENINGS_FEATURED_PREVIEW||null);
     state.jobs=(window.STUDIO_OPENINGS_REVIEW_JOBS||[]).filter(displayableJob).map(function(j,i){j.reviewOrder=i;return j;});
+    state.feedStatus='ready';
     $('system-message').hidden=false;$('system-message').textContent='REVIEW SNAPSHOT · Official firm vacancies reviewed 17 Nov 2026. Their availability may change.';
     $('updated-label').textContent='Offline source review';
     $('list-footnote').textContent='Click a listing to open its details without changing the results layout. The complete description and application steps remain on the original site. Snapshot status can change.';
@@ -1376,5 +1393,6 @@
   }
   function startJobFeed(){if(window.STUDIO_OPENINGS_PREVIEW_MODE===true||location.protocol==='file:'||location.protocol==='about:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')loadReview();else loadLive();}
   if(savedViewFromUrl()){state.onlySaved=true;render();}
+  else if(state.query&&window.SOAPPGlobalSearch)window.SOAPPGlobalSearch.update(state.query,0,state.feedStatus);
   startJobFeed();
 })();

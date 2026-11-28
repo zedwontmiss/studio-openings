@@ -32,25 +32,37 @@ assert.ok(!schema.applicantLocationRequirements,'worldwide jobs must not invent 
 assert.equal(eligibleJob({...approved,status:'pending'},now),null);
 assert.equal(eligibleJob({...approved,submission_type:'source'},now),null);
 assert.equal(eligibleJob({...approved,order_status:'unpaid'},now),null);
-assert.equal(eligibleJob({...approved,reviewed_at:dbDate(now-40*DAY)},now),null);
+assert.equal(eligibleJob({...approved,reviewed_at:null},now),null);
 assert.equal(eligibleJob({...approved,order_published_at:dbDate(now-40*DAY)},now),null);
 assert.equal(eligibleJob({...approved,job_data:JSON.stringify({...data,closesOn:isoDate(now-2*DAY)})},now),null);
 assert.equal(eligibleJob({...approved,job_data:JSON.stringify({...data,description:'Too short'})},now),null);
 
 function envFor(rows){
  return {PUBLIC_CANONICAL_HOST:'s-o.app',JOBS_DB:{prepare(sql){
-   return {bind(){return {first:async()=>rows[0]||null};},all:async()=>({results:rows})};
+   return {bind(){return {first:async()=>rows[0]||null,all:async()=>({results:rows})};}};
  }}};
 }
-const env=envFor([approved,{...record(),id:'SO-TEST-EXPIRED',reviewed_at:dbDate(now-40*DAY)}]);
+const expired={...record(),id:'SO-TEST-EXPIRED',created_at:dbDate(now-41*DAY),reviewed_at:dbDate(now-40*DAY),order_published_at:dbDate(now-40*DAY)};
+const env=envFor([approved,approved,expired]);
 const site=await renderSitemap({request:new Request('https://development.studio-openings.pages.dev/sitemap.xml'),env});
 const xml=await site.text();
 assert.equal(site.status,200);
-const locations=new Set(Array.from(xml.matchAll(/<loc>([^<]+)<\/loc>/g),match=>match[1]));
+const jobUrls=Array.from(xml.matchAll(/<loc>([^<]+)<\/loc>/g),match=>match[1]);
+const locations=new Set(jobUrls);
+assert.equal(jobUrls.length,locations.size,'Duplicate employer records must not duplicate URLs');
+assert.doesNotMatch(xml,/<lastmod>/,'Submission date cannot stand in for content modification date');
 assert.ok(locations.has('https://s-o.app/jobs/'+id),'valid employer job must appear');
 assert.ok(!locations.has('https://s-o.app/jobs/SO-TEST-EXPIRED'),'expired job must be excluded');
 assert.ok(locations.has('https://s-o.app/disciplines/architecture'),'architecture category must be discoverable');
 for(const location of locations)assert.equal(new URL(location).origin,'https://s-o.app');
+const sourceUnavailable=await renderSitemap({env:{...env,SOURCE_SEO_ENABLED:'true',JOBS_DB:{
+ prepare(sql){
+  if(sql.includes('reviewed_source_jobs'))throw new Error('Temporary source query failure');
+  return env.JOBS_DB.prepare(sql);
+ }
+}}});
+assert.equal(sourceUnavailable.status,200);
+assert.equal(await sourceUnavailable.text(),xml,'A failed source lookup must preserve stable pages and eligible employer jobs');
 const rendered=await renderJob({params:{id},env,request:new Request('https://development.studio-openings.pages.dev/jobs/'+id)});
 assert.equal(rendered.status,200);
 assert.equal(rendered.headers.get('x-robots-tag'),'noindex, nofollow');

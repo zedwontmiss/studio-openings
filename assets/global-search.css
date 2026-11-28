@@ -13,9 +13,13 @@
 
 @media(max-width:730px){.global-search input#search{font-size:32px;padding-bottom:5px}.global-search{border-bottom-width:3px}.global-result-group{flex-basis:100%;padding-right:0;margin-bottom:8px}}
 
-/* A live query shows only actual matches, not empty-state copy or feed chrome. */
+/* A live query uses its own inline feedback in place of feed chrome. */
 .global-query-active .global-feed-status,.global-query-active #empty-state,.global-query-active #system-message,.global-query-active #feed-progress,.global-query-active #feed-end,.global-query-active #list-footnote,.global-query-active .discipline-seo-links,.global-query-active #job-link-message{display:none!important}
 
+.search-empty-message{display:flex;flex-wrap:wrap;align-items:center;margin:0 0 12px;font:400 13px/1.5 Helvetica,Arial,sans-serif;color:#444}
+.search-empty-message[hidden]{display:none}
+.search-empty-message button{margin-left:8px;padding:3px 0;border:0;font:inherit;font-weight:700;color:#111;background:#fff;cursor:pointer;text-decoration:underline}
+.search-empty-message button:focus{outline:1px solid #111;outline-offset:2px}
 
 
 /* Studio and article matches appear above the intact jobs grid. */

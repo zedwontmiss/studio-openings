@@ -23,7 +23,11 @@ assert.equal(sourceSeoJob({...row(),miss_count:1},now),null);
 assert.equal(sourceSeoJob({...row(),verified_at:null},now),null,'feed claims alone never authorize publishing');
 assert.equal(sourceSeoJob(row({...job,expiresAt:new Date(now-hour).toISOString()}),now),null);
 const makeEnv=(enabled='true')=>({SOURCE_SEO_ENABLED:enabled,PUBLIC_CANONICAL_HOST:'s-o.app',JOBS_DB:{
- prepare(){return {bind(){return {first:async()=>row()};},all:async()=>({results:[row()]})};}
+ prepare(sql){
+  const results=sql.includes('reviewed_source_jobs')?[row()]:[];
+  const statement={first:async()=>results[0],all:async()=>({results})};
+  return {...statement,bind:()=>statement};
+ }
 }});
 const p=await seoPage({params:{id},env:makeEnv(),request:new Request('https://development.studio-openings.pages.dev/openings/'+id)});
 assert.equal(p.status,200);
@@ -37,4 +41,15 @@ const s=await sitemap({request:new Request('https://development.studio-openings.
 assert.ok((await s.text()).includes('https://s-o.app/openings/'+id));
 const s2=await sitemap({request:new Request('https://s-o.app/sitemap.xml'),env:makeEnv('false')});
 assert.ok(!(await s2.text()).includes('/openings/'+id));
+const employerUnavailable=await sitemap({env:{SOURCE_SEO_ENABLED:'true',JOBS_DB:{
+ prepare(sql){
+  if(!sql.includes('reviewed_source_jobs'))throw new Error('Temporary employer query failure');
+  return {all:async()=>({results:[row(),row()]})};
+ }
+}}});
+assert.equal(employerUnavailable.status,200);
+assert.equal(employerUnavailable.headers.get('cache-control'),'no-store');
+const degradedUrls=Array.from((await employerUnavailable.text()).matchAll(/<loc>([^<]+)<\/loc>/g),match=>match[1]);
+assert.ok(degradedUrls.includes('https://s-o.app/studio'));
+assert.equal(degradedUrls.filter(url=>url==='https://s-o.app/openings/'+id).length,1);
 console.log('Source SEO rights, freshness, expiry, Preview and rollout tests passed.');

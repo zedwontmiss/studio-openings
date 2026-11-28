@@ -7,7 +7,7 @@ const root=fileURLToPath(new URL('../',import.meta.url)),file=p=>new URL('../'+p
 const input=process.argv[2];assert.ok(input,'Usage: node operations/publish-editorial-batch.mjs batch.json [--apply]');
 const batch=JSON.parse(readFileSync(input,'utf8')),registry=JSON.parse(read('editorial/published.json')),today=new Date().toISOString().slice(0,10);
 assert.equal(batch.version,1);assert.equal(batch.status,'reviewed-independent-editorial');assert.ok(Array.isArray(batch.articles)&&batch.articles.length>0&&batch.articles.length<=500);
-const allowed=['slug','title','description','category','date','status','blocks','related','cityIds'];
+const allowed=['slug','title','description','category','date','status','blocks','related','cityIds','searchTopics'];
 for(const a of batch.articles){assert.ok(Object.keys(a).every(k=>allowed.includes(k)));assert.equal(a.status,'published');assert.ok(a.date<=today);assert.ok(a.blocks.every(b=>['paragraph','heading'].includes(b.type)&&Object.keys(b).every(k=>['type','text'].includes(k))));}
 const next={...registry,articles:registry.articles.concat(batch.articles)};
 compile(next,read('editorial/index.template.html'),read('editorial/reader.template.html'));

@@ -2,7 +2,7 @@
 
 ## Mission and working style
 Build and operate https://s-o.app, a minimal, global job index for **all** design and creative disciplines: architecture, interiors, landscape, industrial/furniture, product/UX/UI, graphic/branding, art and creative direction, motion/3D/VFX/games, fashion/photography, web/creative technology, museums and arts/culture.
-User is a non-technical solo founder, targeting global and US audiences. Favor zero-cost tools, minimal dependencies and meaningful autonomous progress. **Do not repeatedly ask for screenshots or manual steps that can be verified through GitHub/CI or automated browser tests.** Only ask when credentials, external account creation, owner approval or the production-release decision is required. Respond in concise Indonesian and report evidence, not guesses.
+User is a non-technical solo founder, targeting global and US audiences. Favor zero-cost tools, minimal dependencies and meaningful autonomous progress. **Do not repeatedly ask for screenshots or manual steps that can be verified through GitHub/CI or automated browser tests.** Only ask when credentials, external account creation, owner approval or the production-release decision is required. Respond in concise English and cite verified evidence.
 
 ## Hard release and UI constraints
 - GitHub repository: `zedwontmiss/studio-openings`. Work **only on `development`**, Cloudflare Pages Preview: `https://development.studio-openings.pages.dev/`. `main` deploys Production: `https://s-o.app/`. **Never push to or merge into `main` without explicit user approval.**
@@ -28,6 +28,12 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 - CI: `.github/workflows/validate-sources.yml`. GitHub Actions build passing is distinct from Cloudflare Preview build passing; verify BOTH when possible before calling a change deployed. Do not conceal failures.
 - Prefer **one cohesive tested commit or PR per feature** rather than numerous incremental pushes that trigger email floods. Do not claim unverified live behavior is fixed.
 
+### Owner review format
+
+- **What changed** — Describe the user-facing change in plain English and identify the tested commit and environment.
+- **Preview link and review steps** — Verify the exact Cloudflare Preview first, then provide a direct link and a few short browser steps. Keep GitHub links in the technical checklist. Ask the owner to review usability and appearance in their existing Safari on the 2011 MacBook Pro.
+- **Milestone and Studio Openings progress** — Summarize what the milestone improves for Studio Openings and the next dependency or decision. Show the completed checklist items and pending checks in each milestone update. Record evidence and status in [the active milestone checklist](operations/SEO_GEO_CHECKLIST.md). Keep Preview approval, production approval and external sends independent.
+
 ## Next chapter — distribution without spam
 - Product goal: verified active job -> useful canonical SEO page -> channel-specific approved content -> attributable traffic -> apply clicks -> employer value.
 - Founder prefers creative niche communities and small-studio email outreach, NOT a vibe-coder/founder-launch narrative or LinkedIn-first strategy.
@@ -43,7 +49,7 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 1. Inspect code, current branches and recent commits; do not reconstruct project from scratch.
 2. Make a sensible plan internally and execute bounded tasks without unnecessary clarification.
 3. Run tests and fix errors before reporting completion; if environment cannot run something, say so plainly.
-4. Save changes to `development` and provide one concise Indonesian progress report: what changed, exact commit/PR, tests and next actionable item.
+4. Save changes to `development` and follow the owner review format above.
 5. Never make a production merge or purchase/enable APIs or social automation without owner authorization.
 
 ## Product expansion and handoff (24 November 2026)
@@ -54,9 +60,11 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 
 - Homepage global search: the existing #search input is the oversized Helvetica Bold SEARCH HERE field, not a decorative heading. Search jobs with existing filters and match published studio/article index entries via internal links. No oversized global header. Preserve this field and compact nav. Next design pass: shared grid, margins, spacing and typography hierarchy across pages; do not change before owner review.
 
-- Owner confirmed live search should show only matches as characters are typed, no result counts, empty/loading copy, dropdown, or submit button. Keep black underline, native caret and Helvetica Bold input. Empty query restores default job board. Never reintroduce empty-result messaging during a live query. Job filters remain applicable to jobs; search current published index entries only.
+- Live search narrows the displayed results from the first character. Match each partial term against the record's searchable text and verified topic labels regardless of capitalization, including incomplete phrases such as `brand des`. Search has no suggestions or suggestion pills. Show compact clear-search feedback after an active query settles with zero results. Keep the black underline, native caret and Helvetica Bold input. Keep results free of counts, loading copy, dropdowns and submit buttons. An empty query restores the default board with existing filters.
 
-- Global search results are title-only for studios and articles, displayed above the existing job grid only when matching. Job listing structure, metadata, filters, sorting and saved controls remain visible and functional during active search; no job matches leaves the listing area blank without hiding the filters. No horizontal separators between individual entries in jobs/studio/article lists; whitespace separates entries. Red title treatment is reserved for approved paid studio/article placements with explicit visible sponsorship disclosure; no fake sponsorships or automatic payment activation. Existing Featured Job terms and yellow treatment remain unchanged.
+- On article detail pages, render topic links below the description. Use the same reviewed topics for the article index and search, including city and country where the article has a recorded local association.
+
+- Global search results are title-only for studios and articles, displayed above the existing job grid only when matching. Job listing structure, metadata, filters, sorting and saved controls remain visible and functional during active search. No horizontal separators between individual entries in jobs/studio/article lists; whitespace separates entries. Red title treatment is reserved for approved paid studio/article placements with explicit visible sponsorship disclosure; no fake sponsorships or automatic payment activation. Existing Featured Job terms and yellow treatment remain unchanged.
 
 - Job board: all filters, sorting, keyword controls and saved jobs belong in the left sidebar. Current listings uses the same 12px bold hierarchy as Discipline. Hide feed-fetch timestamp, remove horizontal job list/row dividers; keep the global search underline and existing job metadata.
 

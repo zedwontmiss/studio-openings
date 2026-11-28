@@ -5,8 +5,10 @@
  function find(slug){return cities.filter(function(c){return c.slug===slug;})[0]||null;}
  var countries={US:['united states','usa','us'],GB:['united kingdom','uk','gb','england'],CA:['canada','ca'],AU:['australia','au'],IN:['india','in']};
  var regions={bristol:['england','bristol'],'new-york':['new york','ny'],'los-angeles':['california','ca'],chicago:['illinois','il'],london:['england','greater london'],montreal:['quebec','qc'],melbourne:['victoria','vic'],mumbai:['maharashtra','mh'],'san-francisco':['california','ca'],portland:['oregon','or'],toronto:['ontario','on'],vancouver:['british columbia','bc'],victoria:['british columbia','bc']};
- function matches(job,slug){
-  var c=find(slug);if(!c||!job)return false;
+ function matches(job,scope){
+  if(!scope||!job)return false;
+  var c=typeof scope==='string'?find(scope):cities.filter(function(city){return city.id===scope.cityId;})[0]||scope;
+  if(!c)return false;
   var location=normalize(job.location),kind=normalize(job.locationKind),mode=normalize(job.mode);
   if(kind==='eligibility'||mode==='remote'||/\b(?:remote|worldwide|global|eligible)\b/.test(location))return false;
   var ref=job.locationReference;
@@ -18,8 +20,8 @@
   // An exact city plus independently reported country or a recognized region
   // is required. Do not treat a mention in employer, title or description as geography.
   // Reject conflicting country/region tokens even if another token agrees.
-  var regionTokens=regions[slug]||[normalize(c.region)];
-  var countryTokens=countries[c.country]||[normalize(c.country)];
+  var regionTokens=regions[c.slug]||[normalize(c.region)];
+  var countryTokens=countries[c.country]||[normalize(c.countryName),normalize(c.country)];
   var tail=parts.slice(1),allowed=countryTokens.concat(regionTokens);
   if(tail.some(function(v){return allowed.indexOf(v)<0;}))return false;
   // CA alone is ambiguous between California and Canada; require country evidence.
