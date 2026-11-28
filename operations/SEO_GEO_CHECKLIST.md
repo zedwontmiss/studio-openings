@@ -41,7 +41,7 @@ Use these exact statuses.
 | ID | Work | Status | Evidence or next action |
 | --- | --- | --- | --- |
 | P0-01 | Verify Pages bindings, applied schema and operating boundaries | Blocked | Use scoped read access or redacted dashboard/schema evidence from the operator. No migration or ingestion step until confirmed. |
-| P1-01 | Correct fallback statuses and harden sitemap/canonical/metadata parity | Deployed | Preview commit `d91bfa9` passed Cloudflare Pages and Actions. Verified all 135 canonical targets, twelve missing-route GET/HEAD checks and existing aliases on the live Preview. Production release approval is separate. |
+| P1-01 | Correct fallback statuses and harden sitemap/canonical/metadata parity | Verified in production | Production commit `ef8738d` passed all 135 canonical targets, twelve missing-route GET/HEAD checks and existing aliases on 28 November 2026. |
 | P1-02 | Establish verified vacancy pilot, accurate JobPosting and initial job HTML | Not started | Begin with disposable fixtures. Live pilot depends on P0-01, rights, freshness and owner release approval. |
 | P1-03 | Baseline provenance, freshness, duplicates, taxonomy and request load | Not started | Verify official vacancy and studio evidence with both geographic sourcing layers. Reuse bounded probe and pick one scheduler only after isolation and capacity evidence. |
 | P1-04 | Tie IndexNow to deployed URL lifecycle with retries/deduplication | Not started | Implement validation against fixture/mock and Preview dry runs. Confirm real key body and deployment status before proposing a release. |
@@ -99,6 +99,16 @@ Use these exact statuses.
 - [x] Allow topic labels on reviewed editorial imports and verify that Remote still searches current vacancies.
 - [x] Verify Preview commit `484f56a` on 28 November 2026. All 83 local suites, 139 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46107974356), and Cloudflare Pages passed. Live Chromium verified all six headers at 320 and 1280 px, New York and Remote tag links, and Brand Design and Portfolio searches. The HTTP audit passed for all 135 sitemap pages.
 - [ ] Review the New York guide in Safari.
+
+## Milestone · Reviewed public release
+
+- [x] Capture the previous healthy production commit `c48d5a7` and Pages deployment `f9319b7c-3310-4a4a-bac2-a6b6ed2a35f4`. The owner explicitly approved promotion of the reviewed changes.
+- [x] Build release `ef8738d` from the current production base plus the reviewed development tree. Exclude all four staged IndexNow files. The workflow, migration, and worker paths were unchanged.
+- [x] Pass 83 local suites, 139 JavaScript syntax checks, GitHub Actions and CodeQL, and the candidate Cloudflare deployment. Run the route and live Chromium checks against the candidate before promotion.
+- [x] Confirm production Pages deployment `43ae5435-7c65-4d9d-bbb8-af0f15547111` and verify the deployed search file byte for byte on 28 November 2026.
+- [x] Check all 135 public canonical routes, missing-route responses, the Tadaima withdrawal, and IndexNow key absence. Live Chromium passed partial search, article tags, saved jobs, job drawer, and external Apply link checks. The employer form loaded. The paid listing expiry boundaries were tested with disposable fixtures.
+- [ ] Check the tagged New York guide and partial search in the owner's usual MacBook browser.
+- [ ] Establish the search visibility baseline and review the first six emerging practices across six media. The editorial pilot and outreach are separate from the public code release.
 
 ## Resume and measurement
 

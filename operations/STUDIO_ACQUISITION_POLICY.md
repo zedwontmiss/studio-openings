@@ -2,6 +2,12 @@
 
 Owner direction: build financial or social capital through discovery of independent creative practices, primarily established less than ten years ago. Preserve existing geographic tiers and multidisciplinary scope. Directory inclusion and editorial independence are not conditional on payment.
 
+## First editorial group
+
+Select six solo creatives or small independent teams. Cover graphic design or type, photography or film, animation or motion, games or creative technology, objects or textiles, and experimental art. Source across multiple regions through graduate shows, artist-run spaces, residency cohorts and indie showcases. Confirm years in practice through an official biography or first-person confirmation. Use the founding date when the subject is the practice itself.
+
+Base each invitation on a specific project and offer a short editorial profile, a link to the creator's work and a chance to check facts. Track verified profiles, replies, voluntary introductions and profile or portfolio visits before extending the group. Hold actual outreach until the owner approves the recipients and text.
+
 ## Discovery and evidence
 - Verify official identity, location, portfolio, founding date (year alone is insufficient at the ten-year boundary), and operating status before publication.
 - Use direct discovery, graduate exhibitions, festivals, editorial coverage and collaborator credits.
