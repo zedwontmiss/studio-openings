@@ -81,7 +81,7 @@ Use these exact statuses.
 - [x] Suggest shared topics as users type across Jobs, Studio and Article. Recognize BR, BR- and brand as prefixes for Brand Design. Apply the full label on selection and keep ordinary text results updating.
 - [x] Provide a clear-search action when a query has no results. Wait for Jobs, Studio and Article sources to finish before reporting a combined miss on Jobs.
 - [x] Exercise topic links, keyboard selection, clear-search recovery, delayed sources, and unavailable jobs in Chromium using fixtures. Layout passed at five viewport widths from 320 to 1280 px.
-- [ ] Verify the deployed Preview search and profile on Cloudflare Pages.
+- [x] Verify Preview commit `40d007b` on 28 November 2026. All 83 local suites and 139 JavaScript syntax checks passed, as did [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46105707973) and Cloudflare Pages. Live Chromium passed the topic, navigation and clear-search flows and 20 page/viewport checks. All 135 sitemap URLs returned 200 with production canonicals, descriptions and Preview noindex.
 - [ ] Review the 2x4 pills, Brand Design suggestion and clear-search action in the owner's Safari.
 
 ## Resume and measurement
