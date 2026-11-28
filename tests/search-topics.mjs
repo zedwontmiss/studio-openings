@@ -27,7 +27,7 @@ assert.equal(topics.matchesText(brandText,'brand developer'),false);
 assert.equal(topics.matchesText('São Paulo, Brazil','sao br'),true);
 for(const topic of topics.topics)assert.equal(topics.fromQuery(topic.label),topic,'Every pill must reach its exact topic');
 for(const topic of topics.topics.filter(topic=>topic.guideQuery)){
- for(const phrase of [topic.guideQuery,topic.guideQuery.replace(/[,/]/g,'').replace('&','and')]){
+ for(const phrase of [topic.guideQuery,topic.guideQuery.replace(/[,/]/g,'').replace(/&/g,'and')]){
   const start=phrase.search(/[ ,]/);
   for(let end=start+1;end<=phrase.length;end++){
    const query=phrase.slice(0,end);
