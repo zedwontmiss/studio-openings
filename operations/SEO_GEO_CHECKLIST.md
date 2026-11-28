@@ -137,7 +137,7 @@ Use these exact statuses.
 - [x] Verify Preview commit `fe7f154` on 28 November 2026. All 83 local suites, 140 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46117762499) and Cloudflare Pages passed. HTTP checks verified all ten guide links, Preview noindex and production canonicals. Live Chromium checked four disciplines at 320, 375 and 1280 px, including full phrase visibility, click-versus-type job results, punctuation variants, clearing the field and legacy filters.
 - [x] Reproduce the owner's `motion, 3d animatio` failure. Match unambiguous unfinished discipline phrases through the same category data as their complete forms. Preserve ordinary single-word matching and clear-search recovery for unrelated queries.
 - [x] Add regression coverage for intermediate prefixes across all ten disciplines, punctuation variants, category membership and Studio results. Test forward typing and backspacing in Chromium with fixture inventory.
-- [ ] Verify the unfinished-query correction on the live Cloudflare Preview.
+- [x] Verify Preview commit `4fa5a04` on 28 November 2026. All 83 local suites, 140 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46118449316) and Cloudflare Pages passed. Live Chromium replayed 384 typing and backspace steps for Motion and Culture at 320 and 1280 px without losing results mid-phrase. Near-complete Jobs results matched the complete phrase. Studio navigation, genuinely empty search recovery and the previous `brand des` example passed.
 - [ ] Review the visible search phrase and backspacing flow before public release.
 
 ## Resume and measurement
