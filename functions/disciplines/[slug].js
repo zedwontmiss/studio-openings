@@ -12,7 +12,8 @@ export async function onRequestGet({params,request}){
  const url=new URL(request.url),preview=url.hostname!=='s-o.app';
  const canonical='https://s-o.app/disciplines/'+slug;
  const guide=DISCIPLINE_GUIDES[slug];
- const description=esc(guide?.description||item.intro.slice(0,155));
+ const summary=guide?.description||item.intro.match(/^.+?\.(?=\s|$)/)?.[0]||item.intro;
+ const description=esc(summary);
  const intro=esc(item.intro),name=esc(item.name),tip=esc(item.advice);
  const links=DISCIPLINE_SLUGS.filter(k=>k!==slug).map(k=>'<a href="/disciplines/'+k+'">'+esc(DISCIPLINES[k].label)+'</a>').join(' · ');
  const focus=item.focus.map(x=>'<li>'+esc(x)+'</li>').join('');

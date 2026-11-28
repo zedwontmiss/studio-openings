@@ -164,7 +164,9 @@ Use these exact statuses.
 - [x] Record the owner's 28 November confirmation that both the Motion and Culture guides are indexed.
 - [x] Record the 28-day Search Console Pages breakdown from the owner's 28 November screenshot. The HTTP homepage, HTTPS homepage, and `https://s-o.app/disciplines/product` each had two impressions and zero clicks. Those were all three rows. Motion and Culture had no recorded impressions or clicks in this report.
 - [x] Verify that `http://s-o.app/` returns a permanent HTTP 301 redirect to `https://s-o.app/`, and that the HTTPS homepage and Product guide each return 200 with a self-canonical.
-- [ ] Check the Search Console Queries tab for any reported search terms. Check Product separately as the only discipline guide with impressions in the baseline.
+- [x] Record that the owner saw “No data” in the 28-day Queries report. The six sitewide impressions remain documented in the total and Pages reports. No query-level baseline is available.
+- [x] Replace the automatic character cut-off for discipline meta descriptions with complete lead sentences. Product is the only discipline that recorded impressions in this baseline. Motion and Culture keep their curated descriptions.
+- [ ] Confirm the updated descriptions on Preview before any production release.
 - [ ] Compare that baseline with the next 28-day period before expanding the pilot. Measure Bing visibility and actual site visits separately when reports are available.
 
 ## Resume and measurement
