@@ -145,7 +145,7 @@ Use these exact statuses.
 - [x] Promote the explicitly approved guides, reciprocal article links and shared discipline search. Correct the first-occurrence ampersand replacement flagged in a test fixture. All 83 local suites, 140 JavaScript syntax checks, GitHub Actions, CodeQL and Cloudflare Pages passed on the exact candidate.
 - [x] Verify Production commit `b19e3a7`, Pages deployment `cd728d27-ad60-462d-9ea1-ebd0e949441b`, on 28 November 2026. Confirm both reciprocal article links, all 135 canonical sitemap URLs, correct robots headers and IndexNow absence. Recheck 384 typing and backspace steps on the live site at phone and desktop widths.
 - [x] Prepare a six-project editorial shortlist and a short project-first outreach draft for owner review.
-- [ ] Confirm the two public guide URLs in Google Search Console when property access is available. Carry the prior baseline forward for impressions and clicks.
+- [x] Owner confirmed both public guide URLs are indexed in Google Search Console on 28 November 2026. See the organic search baseline below.
 - [ ] Review the shortlisted projects and outreach wording before publishing profiles or contacting creators.
 
 ## Milestone · Studio browsing and public click feedback
@@ -160,8 +160,9 @@ Use these exact statuses.
 ## Milestone · Organic search and traffic baseline
 
 - [x] Confirm that the live Motion and Culture guides are in the sitemap and have reciprocal editorial links. All 135 sitemap URLs passed the production crawl. The Cloudflare Web Analytics beacon is present on the homepage.
-- [x] Carry forward the 28 November Search Console screenshot, with six impressions and zero clicks over three months. Use that screenshot as historical evidence.
-- [ ] Obtain fresh read-only Search Console data. Inspect the two guide URLs and record index status, last crawl, and the first 28-day impressions and clicks by page and query. The current connection exposes no Search Console property data.
+- [x] Record the 28-day Google Web Search baseline from the owner's 28 November 2026 screenshot. Sitewide totals are six impressions, zero clicks, 0% CTR, and average position 6.5.
+- [x] Record the owner's 28 November confirmation that both the Motion and Culture guides are indexed.
+- [ ] Check the Search Console Performance Pages and Queries tabs to see which pages and search terms generated impressions. Capture Motion and Culture impressions and clicks separately before comparing with the next 28-day period.
 - [ ] Compare that baseline with the next 28-day period before expanding the pilot. Measure Bing visibility and actual site visits separately when reports are available.
 
 ## Resume and measurement
