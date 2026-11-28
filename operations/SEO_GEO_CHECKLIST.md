@@ -162,7 +162,9 @@ Use these exact statuses.
 - [x] Confirm that the live Motion and Culture guides are in the sitemap and have reciprocal editorial links. All 135 sitemap URLs passed the production crawl. The Cloudflare Web Analytics beacon is present on the homepage.
 - [x] Record the 28-day Google Web Search baseline from the owner's 28 November 2026 screenshot. Sitewide totals are six impressions, zero clicks, 0% CTR, and average position 6.5.
 - [x] Record the owner's 28 November confirmation that both the Motion and Culture guides are indexed.
-- [ ] Check the Search Console Performance Pages and Queries tabs to see which pages and search terms generated impressions. Capture Motion and Culture impressions and clicks separately before comparing with the next 28-day period.
+- [x] Record the 28-day Search Console Pages breakdown from the owner's 28 November screenshot. The HTTP homepage, HTTPS homepage, and `https://s-o.app/disciplines/product` each had two impressions and zero clicks. Those were all three rows. Motion and Culture had no recorded impressions or clicks in this report.
+- [x] Verify that `http://s-o.app/` returns a permanent HTTP 301 redirect to `https://s-o.app/`, and that the HTTPS homepage and Product guide each return 200 with a self-canonical.
+- [ ] Check the Search Console Queries tab for any reported search terms. Check Product separately as the only discipline guide with impressions in the baseline.
 - [ ] Compare that baseline with the next 28-day period before expanding the pilot. Measure Bing visibility and actual site visits separately when reports are available.
 
 ## Resume and measurement
