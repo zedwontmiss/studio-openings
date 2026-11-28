@@ -154,7 +154,15 @@ Use these exact statuses.
 - [x] Keep the Studio filter open for every category selection, including All. Verify the list's starting position and the manual close control at 320, 375 and 1280 px.
 - [x] Replace public click and tap outlines with a visible line for keyboard focus. Verify keyboard category selection and shared navigation in Chromium.
 - [x] Verify development commit `dcc6bd0` on 28 November 2026. All 83 local suites and 140 JavaScript syntax checks passed. GitHub Actions and Cloudflare Pages passed. Live Preview Chromium passed all eleven category choices at 320, 375 and 1280 px, touch selection, manual collapse, keyboard activation, public links and the article Copy link button. The Preview assets matched development and `/studio` returned `noindex, nofollow`.
-- [ ] Review the Cloudflare Preview in the owner's MacBook browser before production promotion.
+- [x] Receive the owner's approval to release. Production commit `0478560` matched the reviewed release tree and Cloudflare Pages deployment `2c3203b0-e0c5-40a6-abab-a046d9e68d1d` succeeded on 28 November 2026.
+- [x] Recheck all eleven Studio category choices, pointer and keyboard focus, and public article actions in live Chromium. All seven updated public assets matched the release tree and 135 of 135 sitemap URLs returned HTTP 200 with self-canonicals. The production IndexNow key path returned HTTP 404.
+
+## Milestone · Organic search and traffic baseline
+
+- [x] Confirm that the live Motion and Culture guides are in the sitemap and have reciprocal editorial links. All 135 sitemap URLs passed the production crawl. The Cloudflare Web Analytics beacon is present on the homepage.
+- [x] Carry forward the 28 November Search Console screenshot, with six impressions and zero clicks over three months. Use that screenshot as historical evidence.
+- [ ] Obtain fresh read-only Search Console data. Inspect the two guide URLs and record index status, last crawl, and the first 28-day impressions and clicks by page and query. The current connection exposes no Search Console property data.
+- [ ] Compare that baseline with the next 28-day period before expanding the pilot. Measure Bing visibility and actual site visits separately when reports are available.
 
 ## Resume and measurement
 
