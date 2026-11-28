@@ -51,6 +51,9 @@ for(const slug of DISCIPLINE_SLUGS){
     assert.ok(reciprocalArticle.includes('href="/disciplines/'+slug+'"'));
   }else{
     assert.ok(!html.includes('<h2>Explore these practices</h2>'));
+    const description=html.match(/<meta name="description" content="([^"]+)">/)?.[1];
+    assert.equal(description,listing.intro.split('. ')[0]+'.',slug+' uses the complete lead sentence');
+    assert.ok(html.includes('property="og:description" content="'+description+'"'));
   }
 }
 const missing=await handler({params:{slug:'unknown'},request:{url:'https://s-o.app/disciplines/unknown'}});
