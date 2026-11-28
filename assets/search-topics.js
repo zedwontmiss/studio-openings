@@ -13,6 +13,12 @@
     {id:'museum',label:'Museum',discipline:'museum'},
     {id:'arts-and-culture',label:'Arts and Culture',discipline:'culture'}
   ];
+  var editorial=[
+    {id:'job-search',label:'Job Search'},
+    {id:'remote',label:'Remote'},
+    {id:'portfolio',label:'Portfolio'},
+    {id:'studio-careers',label:'Studio Careers'}
+  ];
 
   function normalize(query){
     return String(query||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ');
@@ -29,7 +35,7 @@
   }
 
   function create(places){
-    var topics=focus.concat(places||[]);
+    var topics=focus.concat(editorial,places||[]);
     var byLabel=Object.create(null),byId=Object.create(null);
     topics.forEach(function(topic){
       var label=normalize(topic.label);

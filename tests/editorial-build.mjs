@@ -9,6 +9,8 @@ const output=compile({articles:[sample,{slug:'not-public',status:'unpublished'}]
 assert.ok(output.has('article/fixture-sample.html'));assert.ok(!output.has('article/not-public.html'));assert.equal(output.get('article/fixture-sample.html').includes('<img src=x onerror=alert(1)>'),false);
 assert.throws(()=>compile({articles:[{...sample,slug:'../escape'}]},index,reader));
 assert.throws(()=>compile({articles:[{...sample,related:[{label:'bad',path:'//evil.example'}]}]},index,reader));
+assert.throws(()=>compile({articles:[{...sample,searchTopics:'remote'}]},index,reader),/topics must be a list/);
+assert.throws(()=>compile({articles:[{...sample,searchTopics:['unregistered']}]},index,reader),/Invalid or duplicate search topic/);
 assert.throws(()=>compile({articles:[{slug:'private-draft',status:'unpublished',text:'private'}]},index,reader));
 console.log('Editorial compiler, stale outputs, publication and escaping tests passed.');
 

@@ -92,6 +92,14 @@ Use these exact statuses.
 - [x] Verify Preview commit `c06b4c0` on 28 November 2026. All 83 local suites, 139 JavaScript syntax checks, [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46107365377) and Cloudflare Pages passed. Live Chromium confirmed the typing sequence, search recovery, tab navigation and profile links at 320 and 1280 px. The HTTP audit found all 135 canonical Preview pages healthy with noindex headers.
 - [ ] Review live typing in the owner's Safari.
 
+## Milestone · Article topic links
+
+- [x] Render the same reviewed topics in the article header and article search. Include recorded city and country for the New York and London guides.
+- [x] Review each of the six published articles and assign topics grounded in its text. Check that the generated reader and search index agree for every article.
+- [x] Allow topic labels on reviewed editorial imports and verify that Remote still searches current vacancies.
+- [ ] Verify the article headers and click-through search on the exact Cloudflare Preview.
+- [ ] Review the New York guide in Safari.
+
 ## Resume and measurement
 
 1. Read `AGENTS.md` and fetch current development/main refs. Keep the November baseline immutable and add changed evidence to this file with date, SHA, environment and relevant source links.

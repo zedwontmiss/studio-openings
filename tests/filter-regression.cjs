@@ -65,6 +65,7 @@ const cases=[
  ['United States topic',['art','ux','prod','motion','arch'],{query:'United States'}],
  ['New York topic',['motion','arch'],{query:'NEW YORK'}],
  ['London topic',['museum'],{query:'London'}],
+ ['Remote article topic',['art','ux','prod'],{query:'Remote'}],
  ['title search',['prod'],{query:'design systems'}],
  ['employer search',['ux'],{query:'game company'}]
 ];

@@ -39,9 +39,11 @@ export function studioTopicIds(studio){
 }
 
 export function articleTopicIds(article){
+ const explicit=article.searchTopics??[];
+ assert.ok(Array.isArray(explicit),'Article search topics must be a list');
  const offices=LOCAL_CITIES.filter(place=>(article.cityIds||[]).includes(place.id));
  const geographic=offices.flatMap(place=>[cityId(place),countryId(place.country)]).filter(id=>byId.has(id));
- return [...new Set([...(article.searchTopics||[]),...geographic])];
+ return [...new Set([...geographic,...explicit])];
 }
 
 export function topicAttributes(ids=[]){

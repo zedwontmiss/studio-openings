@@ -62,6 +62,8 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 
 - Live search narrows the displayed results from the first character. Match each partial term against the record's searchable text and verified topic labels regardless of capitalization, including incomplete phrases such as `brand des`. Search has no suggestions or suggestion pills. Show compact clear-search feedback after an active query settles with zero results. Keep the black underline, native caret and Helvetica Bold input. Keep results free of counts, loading copy, dropdowns and submit buttons. An empty query restores the default board with existing filters.
 
+- On article detail pages, render topic links below the description. Use the same reviewed topics for the article index and search, including city and country where the article has a recorded local association.
+
 - Global search results are title-only for studios and articles, displayed above the existing job grid only when matching. Job listing structure, metadata, filters, sorting and saved controls remain visible and functional during active search. No horizontal separators between individual entries in jobs/studio/article lists; whitespace separates entries. Red title treatment is reserved for approved paid studio/article placements with explicit visible sponsorship disclosure; no fake sponsorships or automatic payment activation. Existing Featured Job terms and yellow treatment remain unchanged.
 
 - Job board: all filters, sorting, keyword controls and saved jobs belong in the left sidebar. Current listings uses the same 12px bold hierarchy as Discipline. Hide feed-fetch timestamp, remove horizontal job list/row dividers; keep the global search underline and existing job metadata.

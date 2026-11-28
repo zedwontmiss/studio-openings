@@ -3,6 +3,7 @@
   "articles": [
     {
       "slug": "creative-job-search-checklist",
+      "searchTopics": ["job-search", "portfolio"],
       "title": "A checklist for evaluating creative job openings",
       "description": "Assess role scope, portfolio expectations, work location and the original application source before applying.",
       "category": "Career",
@@ -122,6 +123,7 @@
     },
     {
       "slug": "remote-design-jobs-eligibility",
+      "searchTopics": ["remote", "job-search"],
       "title": "Remote does not always mean worldwide.",
       "description": "How to read location restrictions, time zones and employment arrangements in creative job advertisements.",
       "category": "Career",
@@ -175,6 +177,7 @@
     },
     {
       "slug": "architecture-portfolio-role-checklist",
+      "searchTopics": ["architecture", "portfolio"],
       "title": "Your architecture portfolio should answer the job brief.",
       "description": "A practical approach to tailoring project evidence for concept, technical and BIM-focused architecture roles.",
       "category": "Practice",
@@ -228,6 +231,7 @@
     },
     {
       "slug": "creative-employer-career-pages",
+      "searchTopics": ["studio-careers", "job-search"],
       "title": "Beyond the job board: finding the original creative employer.",
       "description": "Why official career pages matter, and how to use a studio directory without confusing discovery with live hiring.",
       "category": "Studio",
@@ -398,6 +402,7 @@
     },
     {
       "slug": "new-york-creative-studios",
+      "searchTopics": ["brand-design", "architecture", "museum"],
       "title": "New York: creative work beyond the design agency",
       "description": "Explore architecture, brand design, image production, visual effects and cultural institutions through a selective New York studio guide.",
       "category": "Studio",

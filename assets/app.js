@@ -676,7 +676,7 @@
     var labels='';
     if(topics){
       var disciplines=[role].concat(jobDisciplines(job));
-      if(topic)return topics.matchesDiscipline(topic,disciplines,evidence);
+      if(topic&&topic.discipline)return topics.matchesDiscipline(topic,disciplines,evidence);
       labels=topics.disciplineLabels(disciplines,evidence);
     }
     // The broad "Graphic / Brand" filter does not establish branding work.

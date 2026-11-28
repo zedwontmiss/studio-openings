@@ -10,7 +10,9 @@ const raggedEdge=studios.find(studio=>studio.slug==='ragged-edge');
 const twoByFour=studios.find(studio=>studio.slug==='2x4');
 const topics=topicSearch.create(locations);
 const byId=new Map(topics.topics.map(topic=>[topic.id,topic]));
-const guide=JSON.parse(read('editorial/published.json')).articles.find(article=>article.slug==='london-creative-studios');
+const articles=JSON.parse(read('editorial/published.json')).articles;
+const guide=articles.find(article=>article.slug==='london-creative-studios');
+const newYorkGuide=articles.find(article=>article.slug==='new-york-creative-studios');
 const studioIds=studioTopicIds(raggedEdge);
 assert.deepEqual(studioIds,['london','country-gb','brand-design','graphic-design']);
 assert.deepEqual(studioTopicIds(twoByFour).map(id=>byId.get(id).label),['New York','United States','Interior Design','Graphic Design','Web Design']);
@@ -30,10 +32,17 @@ assert.throws(()=>renderTopicPills(['unknown']),/Invalid or duplicate/);
 const search=JSON.parse(read('assets/studio-search.json'));
 assert.deepEqual(search.find(row=>row.path==='/studio/ragged-edge').topicIds,studioIds);
 assert.ok(read('studio.html').includes('data-topics="london country-gb brand-design graphic-design"><a class="studio-profile-link" href="/studio/ragged-edge"'));
-assert.deepEqual(articleTopicIds(guide),['london','brand-design','architecture','country-gb']);
-assert.ok(read('article.html').includes('data-topics="london brand-design architecture country-gb"><h2><a href="/article/london-creative-studios"'));
+assert.deepEqual(articleTopicIds(guide),['london','country-gb','brand-design','architecture']);
+assert.deepEqual(articleTopicIds(newYorkGuide).map(id=>byId.get(id).label),['New York','United States','Brand Design','Architecture','Museum']);
+assert.deepEqual(articleTopicIds({...newYorkGuide,searchTopics:undefined}),['city-us--new-york--new-york','country-us']);
+for(const article of articles.filter(article=>article.status==='published')){
+ const ids=articleTopicIds(article);
+ assert.ok(ids.length,article.slug+' must have linked topics');
+ const pills=renderTopicPills(ids);
+ assert.ok(read('article/'+article.slug+'.html').includes(pills),article.slug);
+ assert.ok(read('article.html').includes('data-topics="'+ids.join(' ')+'"><h2><a href="/article/'+article.slug+'"'),article.slug);
+}
 assert.ok(read('studio/ragged-edge.html').includes(renderTopicPills(studioIds.filter(id=>id!=='graphic-design'))));
-assert.ok(read('article/london-creative-studios.html').includes(renderTopicPills(guide.searchTopics)));
 for(const studio of studios){
  const html=read('studio/'+studio.slug+'.html');
  const ids=studioTopicIds(studio);
