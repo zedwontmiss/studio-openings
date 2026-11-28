@@ -72,7 +72,7 @@ Use these exact statuses.
 - [x] Add Brand Design and London pills to Ragged Edge, plus London, Brand Design and Architecture to the London guide. Connect them to existing search across Jobs, Studio and Article. A London job match requires worksite evidence.
 - [x] Give About a founder introduction and a direct path to studio corrections. Put the correction email first on Contact and combine the editorial prompts.
 - [x] Pass all 83 local suites and generated-file checks. The Chromium fixture passed 72 viewport/page checks, typed and linked query parity, tab navigation, and the studio correction link.
-- [ ] Confirm the exact Cloudflare Preview deployment and repeat the live layout and navigation checks.
+- [x] Confirm Preview commit `4597d7d` with [green GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46104155647) and Cloudflare Pages. Live Chromium passed 48 layout checks across eight pages and six widths from 320 to 1280 px, pill and tab search, and the correction link. Verified Preview noindex, canonicals, and sitemap parity.
 - [ ] Review the pills and correction flow on the owner's existing Safari.
 
 ## Resume and measurement
