@@ -41,7 +41,7 @@ Use these exact statuses.
 | ID | Work | Status | Evidence or next action |
 | --- | --- | --- | --- |
 | P0-01 | Verify Pages bindings, applied schema and operating boundaries | Blocked | Use scoped read access or redacted dashboard/schema evidence from the operator. No migration or ingestion step until confirmed. |
-| P1-01 | Correct fallback statuses and harden sitemap/canonical/metadata parity | Tested | Reproduced the live Preview fallback, added the native Pages error document, verified 135 static/dynamic canonical URLs, and tested separate vacancy lookup failures locally. Deployed-route verification awaits release approval. |
+| P1-01 | Correct fallback statuses and harden sitemap/canonical/metadata parity | Deployed | Preview commit `d91bfa9` passed Cloudflare Pages and Actions. Verified all 135 canonical targets, twelve missing-route GET/HEAD checks and existing aliases on the live Preview. Production release approval is separate. |
 | P1-02 | Establish verified vacancy pilot, accurate JobPosting and initial job HTML | Not started | Begin with disposable fixtures. Live pilot depends on P0-01, rights, freshness and owner release approval. |
 | P1-03 | Baseline provenance, freshness, duplicates, taxonomy and request load | Not started | Verify official vacancy and studio evidence with both geographic sourcing layers. Reuse bounded probe and pick one scheduler only after isolation and capacity evidence. |
 | P1-04 | Tie IndexNow to deployed URL lifecycle with retries/deduplication | Not started | Implement validation against fixture/mock and Preview dry runs. Confirm real key body and deployment status before proposing a release. |
@@ -62,7 +62,9 @@ Use these exact statuses.
 - [x] Pass 137 JS syntax checks and 82 local suites, including the disposable SQLite boundary rehearsal.
 - [x] Compile Pages Functions and exercise the bundle in local workerd with the native 404 asset setting. All 135 canonical pages served 200 with descriptions and Preview noindex. Twelve missing-route GET/HEAD cases returned 404 and the existing withdrawal, redirect, CSS, RSS and operator API checks passed.
 - [x] Record the owner's Preview-only approval and standard review format in [AGENTS.md](../AGENTS.md).
-- [ ] Verify the exact Cloudflare Preview deployment and live route and sitemap behavior. Featured sales still require their release checks, including highlighting. Production and IndexNow require separate approval.
+- [x] Verify the exact Cloudflare Preview deployment. On 28 November 2026, `d91bfa9` passed [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46101954068) and the Cloudflare Pages check. All 135 sitemap targets returned 200, expected canonicals, descriptions and noindex. Twelve missing-path GET/HEAD checks and four withdrawn article aliases returned 404. Redirect, protected operator API, CSS, RSS and feed checks passed.
+- [x] Confirm in Chromium that the Product Design Canada query loads results and that a listing drawer opens and closes without a script error or horizontal overflow.
+- [ ] Review Jobs usability on the owner's existing Safari using [the Preview search link](https://development.studio-openings.pages.dev/?q=Product%20design%20Canada). Paid duration boundaries passed in disposable SQLite. Production verification and Featured highlighting still require release checks. IndexNow remains separately gated.
 
 ## Resume and measurement
 
