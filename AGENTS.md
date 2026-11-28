@@ -49,7 +49,7 @@ User is a non-technical solo founder, targeting global and US audiences. Favor z
 1. Inspect code, current branches and recent commits; do not reconstruct project from scratch.
 2. Make a sensible plan internally and execute bounded tasks without unnecessary clarification.
 3. Run tests and fix errors before reporting completion; if environment cannot run something, say so plainly.
-4. Save changes to `development` and provide one concise Indonesian progress report: what changed, exact commit/PR, tests and next actionable item.
+4. Save changes to `development` and follow the owner review format above.
 5. Never make a production merge or purchase/enable APIs or social automation without owner authorization.
 
 ## Product expansion and handoff (24 November 2026)
