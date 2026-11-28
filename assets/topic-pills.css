@@ -1,0 +1,23 @@
+.so-topic-pills {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 8px 0 12px;
+}
+
+.so-topic-pills a {
+  display: inline-block;
+  margin: 0 6px 5px 0;
+  padding: 3px 8px;
+  border: 1px solid #bdbdbd;
+  border-radius: 999px;
+  color: #333;
+  font: 12px/1.25 Helvetica, Arial, sans-serif;
+  text-decoration: none;
+}
+
+.so-topic-pills a:hover,
+.so-topic-pills a:focus {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
