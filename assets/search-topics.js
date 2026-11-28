@@ -22,23 +22,30 @@
     return disciplines.indexOf(topic.discipline)>=0&&(!topic.evidence||topic.evidence.test(text));
   }
 
+  function matchesText(text,query){
+    var hay=normalize(text);
+    var terms=normalize(query).replace(/(\S)[-–—]+$/,'$1').split(' ');
+    return terms.every(function(term){return hay.indexOf(term)!==-1;});
+  }
+
   function create(places){
     var topics=focus.concat(places||[]);
-    var byLabel=Object.create(null);
-    var labels=topics.map(function(topic){
+    var byLabel=Object.create(null),byId=Object.create(null);
+    topics.forEach(function(topic){
       var label=normalize(topic.label);
       if(!byLabel[label])byLabel[label]=topic;
-      return label;
+      byId[topic.id]=topic;
     });
     function fromQuery(query){
       return byLabel[normalize(query)];
     }
-    function suggest(query){
-      var prefix=normalize(query).replace(/[-–—]+$/,'').trim();
-      if(prefix.length<2||fromQuery(prefix))return [];
-      return topics.filter(function(topic,index){return labels[index].indexOf(prefix)===0;}).slice(0,4);
+    function labels(ids){
+      return ids.map(function(id){return byId[id]?byId[id].label:'';}).join(' ');
     }
-    return {topics:topics,fromQuery:fromQuery,suggest:suggest,matchesDiscipline:matchesDiscipline};
+    function disciplineLabels(disciplines,text){
+      return focus.filter(function(topic){return matchesDiscipline(topic,disciplines,text);}).map(function(topic){return topic.label;}).join(' ');
+    }
+    return {topics:topics,fromQuery:fromQuery,labels:labels,disciplineLabels:disciplineLabels,matchesDiscipline:matchesDiscipline,matchesText:matchesText};
   }
   if(typeof module!=='undefined'&&module.exports)module.exports={create:create};
   else root.SOAPPSearchTopics=create(root.SOAPPGeographicTopics);

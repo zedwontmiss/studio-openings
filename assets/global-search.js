@@ -7,57 +7,25 @@ if(!kind&&(!panel||!results))return;
 var sources=[{path:'/studio',name:'Studios',prefix:'/studio/',selector:'#studio-list li',heading:'h2'},{path:'/article',name:'Articles',prefix:'/article/',selector:'#editorial-list article',heading:'h2'}],last='',items=[];
 var pendingSources=kind?0:sources.length,unavailableSources=0,jobsStatus='loading',jobCount=0;
 var searchShell=input.parentNode,composing=false;
-var assistance=document.createElement('div'),suggestions=document.createElement('div'),empty=document.createElement('div'),message=document.createElement('span');
-assistance.className='search-assistance';
-suggestions.className='search-topic-suggestions';
-suggestions.setAttribute('role','group');
-suggestions.setAttribute('aria-label','Suggested topics');
-suggestions.hidden=true;
-var suggestionLabel=document.createElement('span');
-suggestionLabel.textContent='Suggested topics';
-suggestionLabel.setAttribute('aria-hidden','true');
+var empty=document.createElement('div'),message=document.createElement('span'),clear=document.createElement('button');
 empty.className='search-empty-message';
 message.setAttribute('role','status');
 empty.hidden=true;
-var clear=searchButton('Clear search','','search-clear');
+clear.type='button';
+clear.textContent='Clear search';
+clear.addEventListener('click',function(){
+ input.focus();
+ input.value='';
+ input.dispatchEvent(new Event('input',{bubbles:true}));
+});
 empty.appendChild(message);
 empty.appendChild(clear);
-assistance.appendChild(suggestions);
-assistance.appendChild(empty);
-searchShell.parentNode.insertBefore(assistance,searchShell.nextSibling);
+searchShell.parentNode.insertBefore(empty,searchShell.nextSibling);
 
-function searchButton(label,query,className){
- var button=document.createElement('button');
- button.type='button';
- button.className=className;
- button.textContent=label;
- button.addEventListener('click',function(){
-  input.focus();
-  input.value=query;
-  input.dispatchEvent(new Event('input',{bubbles:true}));
- });
- return button;
-}
-var suggestionKey='';
-function drawAssistance(feedback){
- var catalog=root.SOAPPSearchTopics;
- var topics=last&&!composing&&catalog?catalog.suggest(last):[];
- var key=topics.map(function(topic){return topic.id;}).join(' ');
- if(key!==suggestionKey){
-  suggestionKey=key;
-  suggestions.textContent='';
-  suggestions.hidden=!key;
-  if(key){
-   suggestions.appendChild(suggestionLabel);
-   topics.forEach(function(topic){suggestions.appendChild(searchButton(topic.label,topic.label,'search-topic'));});
-  }
- }
- var text=last&&!composing&&!key?feedback:'';
- if(!text)empty.hidden=true;
- if(text!==message.textContent){
-  empty.hidden=!text;
-  message.textContent=text;
- }
+function drawFeedback(feedback){
+ var text=last&&!composing?feedback:'';
+ empty.hidden=!text;
+ if(text!==message.textContent)message.textContent=text;
 }
 
 // Synthetic placements exist only on the exact owner-review hostname.
@@ -73,10 +41,9 @@ function markSponsored(node){if(node.getAttribute('data-real-sponsor'))return;no
 function markStudioRows(){if(kind!=='studio')return;Array.prototype.forEach.call(document.querySelectorAll('#studio-list a[href]'),function(a){if(sponsoredPaths[a.getAttribute('href')])markSponsored(a.querySelector('h2')||a);});}
 if(demoHost)fetch('/api/sponsored-studios',{credentials:'same-origin',cache:'no-store'}).then(function(r){return r.json();}).then(function(d){(d.placements||[]).forEach(function(p){if(/^\/studio\/[a-z0-9-]+$/.test(p.path))sponsoredPaths[p.path]=true;});markStudioRows();draw();}).catch(function(){});
 function norm(v){return String(v||'').toLowerCase().replace(/\s+/g,' ').trim();}
-function matches(text,query){return norm(query).split(' ').every(function(t){return norm(text).indexOf(t)!==-1;});}
-function matchesTopic(ids,query){
- var topic=root.SOAPPSearchTopics&&root.SOAPPSearchTopics.fromQuery(query);
- return !!topic&&Array.isArray(ids)&&ids.indexOf(topic.id)!==-1;
+function matches(text,ids,query){
+ var catalog=root.SOAPPSearchTopics;
+ return catalog.matchesText(text+' '+catalog.labels(ids||[]),query);
 }
 function rowTopics(row){return (row.getAttribute('data-topics')||'').split(/\s+/);}
 // Homepage previews only: matched highlights first, then title relevance.
@@ -84,7 +51,7 @@ function rowTopics(row){return (row.getAttribute('data-topics')||'').split(/\s+/
 function previewMatches(items,kind,query,sponsoredPaths){
  var q=norm(query),tokens=q.split(' ');
  if(!q)return [];
- return items.filter(function(i){return i.kind===kind&&(matchesTopic(i.topicIds,q)||matches(i.text,q));}).map(function(i,index){
+ return items.filter(function(i){return i.kind===kind&&matches(i.text,i.topicIds,q);}).map(function(i,index){
   var title=norm(i.title),score=title===q?1000:title.indexOf(q)===0?500:title.indexOf(q)!==-1?250:0;
   tokens.forEach(function(t){if(title.indexOf(t)!==-1)score+=10;});
   return {item:i,index:index,highlight:i.demo||sponsoredPaths[i.path]?1:0,score:score};
@@ -98,14 +65,17 @@ function draw(){
   var magazine=document.getElementById('editorial-magazine');
   if(magazine)magazine.hidden=!!last;
   var rows=document.querySelectorAll(kind==='studio'?'#studio-list li':'#editorial-list article'),visible=0;
+  var studioSearch=kind==='studio'&&root.SOAPPStudioUnified;
   Array.prototype.forEach.call(rows,function(row){
    var text=row.textContent+' '+(row.getAttribute('data-category')||'')+' '+(row.getAttribute('data-discipline')||'');
-   var matched=!last||matchesTopic(rowTopics(row),last)||(kind==='studio'&&root.SOAPPStudioUnified?root.SOAPPStudioUnified.matches(row,last):matches(text,last));
+   // Comma-delimited locations must still match one verified office.
+   var matched=!last||(studioSearch&&studioSearch.matches(row,last))||
+    ((!studioSearch||last.indexOf(',')===-1)&&matches(text,rowTopics(row),last));
    var discipline=localSelect&&localSelect.value;
    row.hidden=!matched||(kind==='studio'&&!locationMatches(row))||!!(discipline&&(row.getAttribute('data-discipline')||'').split(/\s+/).indexOf(discipline)===-1);
    if(!row.hidden)visible++;
   });
-  drawAssistance(visible?'':kind==='studio'?'No studios found.':'No articles found.');
+  drawFeedback(visible?'':kind==='studio'?'No studios found.':'No articles found.');
   return;
  }
  results.textContent='';
@@ -135,7 +105,7 @@ function draw(){
  if(settled&&!jobCount&&panel.hidden){
   feedback=jobsStatus==='error'||unavailableSources?'Some results are temporarily unavailable.':'No results found.';
  }
- drawAssistance(feedback);
+ drawFeedback(feedback);
 }
 if(!kind)sources.forEach(function(s){
  var studio=s.name==='Studios';

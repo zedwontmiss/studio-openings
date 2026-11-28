@@ -17,8 +17,10 @@ assert.deepEqual(studioTopicIds(twoByFour).map(id=>byId.get(id).label),['New Yor
 assert.deepEqual(guide.searchTopics,['london','brand-design','architecture']);
 assert.equal(topics.fromQuery('  BRAND   DESIGN ').id,'brand-design');
 assert.equal(topics.fromQuery('Brand Design London'),undefined);
-for(const query of ['BR','BR-','brand','  BrAnD   D  '])assert.equal(topics.suggest(query)[0].id,'brand-design');
-for(const query of ['','B','Brand Design','qznotopic'])assert.deepEqual(topics.suggest(query),[]);
+const brandText=topics.labels(['brand-design']);
+for(const query of ['b','BR','BR-','bra','brand','  BrAnD   D  ','brand des','brand design'])assert.equal(topics.matchesText(brandText,query),true,query);
+assert.equal(topics.matchesText(brandText,'brand developer'),false);
+assert.equal(topics.matchesText('São Paulo, Brazil','sao br'),true);
 for(const topic of topics.topics)assert.equal(topics.fromQuery(topic.label),topic,'Every pill must reach its exact topic');
 assert.equal(topics.matchesDiscipline(topics.fromQuery('Brand Design'),['visual'],'Branding agency'),true);
 assert.equal(topics.matchesDiscipline(topics.fromQuery('Brand Design'),['visual'],'Graphic designer'),false);

@@ -87,6 +87,23 @@ assert(make({...base,region:'gb'}).eligible({title:'Designer',role:'visual',loca
 assert(make({...base,query:'Brand Design'}).eligible({...jobs[0],title:'Senior Brand Designer'}));
 assert(!make({...base,query:'Brand Design'}).eligible({...jobs[0],title:'Graphic Designer'}));
 assert(make({...base,query:'brand'}).eligible({...jobs[0],title:'Senior Brand Designer'}));
+const liveSearchJobs=[
+ {...jobs[0],id:'buck',title:'Illustrator',company:'Buck'},
+ {...jobs[0],id:'brazil',title:'Project Architect',company:'Studio North',role:'architecture',mode:'onsite',location:'Brazil'},
+ {...jobs[0],id:'brand',title:'Senior Brand Designer',company:'Studio South'},
+ {...jobs[0],id:'brand-lead',title:'Creative Director, Branding',company:'Studio West'}
+];
+for(const [query,expected] of [
+ ['b',['buck','brazil','brand','brand-lead']],
+ ['br',['brazil','brand','brand-lead']],
+ ['bra',['brazil','brand','brand-lead']],
+ ['brand',['brand','brand-lead']],
+ ['brand des',['brand','brand-lead']],
+ ['brand design',['brand','brand-lead']]
+]){
+ const search=make({...base,query});
+ assert.deepStrictEqual(liveSearchJobs.filter(job=>search.eligible(job)).map(job=>job.id),expected,query);
+}
 assert(make({...base,query:'Mumbai'}).eligible({title:'Designer',role:'visual',location:'Mumbai, India'}));
 assert(filtered.eligible(jobs[1],1,jobs),'Numeric callback override must be ignored for an actual Product job');
 assert(!filtered.eligible(jobs[0],1,jobs),'Numeric callback override must not pass a Visual job');

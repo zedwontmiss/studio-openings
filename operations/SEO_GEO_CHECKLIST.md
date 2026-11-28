@@ -84,6 +84,14 @@ Use these exact statuses.
 - [x] Verify Preview commit `40d007b` on 28 November 2026. All 83 local suites and 139 JavaScript syntax checks passed, as did [GitHub Actions](https://github.com/zedwontmiss/studio-openings/actions/runs/46105707973) and Cloudflare Pages. Live Chromium passed the topic, navigation and clear-search flows and 20 page/viewport checks. All 135 sitemap URLs returned 200 with production canonicals, descriptions and Preview noindex.
 - [ ] Review the 2x4 pills, Brand Design suggestion and clear-search action in the owner's Safari.
 
+## Milestone · Live search without suggestions
+
+- [x] Remove the suggestion row and its pills from Jobs, Studio, and Article. Keep the topic links on studio and article detail pages.
+- [x] Match partial queries against actual record text and verified topic labels. Check the progression from single letters through `brand des` and `brand design`, including case-insensitive input and the `BR-` example.
+- [x] Keep clear-search recovery for genuinely empty results and preserve the existing verified-location rules for complete geographic queries.
+- [ ] Verify the exact deployment and run the search interaction on Cloudflare Preview.
+- [ ] Review live typing in the owner's Safari.
+
 ## Resume and measurement
 
 1. Read `AGENTS.md` and fetch current development/main refs. Keep the November baseline immutable and add changed evidence to this file with date, SHA, environment and relevant source links.

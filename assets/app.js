@@ -642,6 +642,7 @@
   }
   function structuredJobQuery(query){
     var q=String(query||'').trim().toLowerCase().replace(/\s+/g,' ');
+    if(q.indexOf(' ')===-1)return null;
     var labels={"architecture":"Architecture","interior":"Interior design","industrial":"Industrial design","product":"Product design","visual":"Graphic design","motion":"Motion design","fashion":"Fashion","web":"Web design","museum":"Museum","culture":"Arts and culture"};
     var aliases={'us':'US','usa':'US','u.s.':'US','uk':'GB','u.k.':'GB'};
     Object.keys(countryNames).forEach(function(k){aliases[countryNames[k].toLowerCase()]=k;});
@@ -664,17 +665,26 @@
     if(state.mode!=='all'&&trim(job.mode).toLowerCase()!==state.mode)return false;
     if(!matchesType(job,state.type))return false;
     if(state.hasPay&&!trim(job.salary))return false;
-    var searchableTags=Array.isArray(verifiedTags)?verifiedTags:jobSearchTags(job);
+    if(!state.query)return true;
     var topics=window.SOAPPSearchTopics,topic=topics&&topics.fromQuery(state.query);
-    if(topic){
-      if(topic.cityId)return !!window.SOAPPLocalGeo&&window.SOAPPLocalGeo.matches(job,topic);
-      if(topic.country)return countryMatch(job,topic.country,topic.label);
-      return topics.matchesDiscipline(topic,[role].concat(jobDisciplines(job)),[job.title,searchableTags.join(' ')].join(' '));
-    }
-    var hay=[job.title,job.company,job.location,job.type,job.mode,job.eligibility,roleLabels[role],job.seniority,searchableTags.join(' '),searchableTags.map(shortTagLabel).join(' ')].join(' ').toLowerCase();
+    if(topic&&topic.cityId)return !!window.SOAPPLocalGeo&&window.SOAPPLocalGeo.matches(job,topic);
+    if(topic&&topic.country)return countryMatch(job,topic.country,topic.label);
     var structured=structuredJobQuery(state.query);
     if(structured)return (role===structured.role||jobDisciplines(job).indexOf(structured.role)>=0)&&countryMatch(job,structured.code);
-    return !state.query||state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
+    var searchableTags=Array.isArray(verifiedTags)?verifiedTags:jobSearchTags(job);
+    var evidence=[job.title,searchableTags.join(' ')].join(' ');
+    var labels='';
+    if(topics){
+      var disciplines=[role].concat(jobDisciplines(job));
+      if(topic)return topics.matchesDiscipline(topic,disciplines,evidence);
+      labels=topics.disciplineLabels(disciplines,evidence);
+    }
+    // The broad "Graphic / Brand" filter does not establish branding work.
+    var categoryLabel=role==='visual'?'Graphic':roleLabels[role];
+    var hay=[evidence,job.company,job.location,job.type,job.mode,job.eligibility,categoryLabel,job.seniority,searchableTags.map(shortTagLabel).join(' '),labels].join(' ');
+    if(topics)return topics.matchesText(hay,state.query);
+    hay=hay.toLowerCase();
+    return state.query.toLowerCase().split(/\s+/).every(function(part){return hay.indexOf(part)!==-1;});
   }
   function effectiveSort(){return state.sort==='auto'?(state.query&&!structuredJobQuery(state.query)?'relevant':'newest'):state.sort;}
   function relevanceScore(job){
