@@ -153,7 +153,8 @@ Use these exact statuses.
 - [x] Reproduce the closing filter and black square when choosing Product / UX / UI.
 - [x] Keep the Studio filter open for every category selection, including All. Verify the list's starting position and the manual close control at 320, 375 and 1280 px.
 - [x] Replace public click and tap outlines with a visible line for keyboard focus. Verify keyboard category selection and shared navigation in Chromium.
-- [ ] Confirm the development deployment and recheck the live Preview. Review on the owner's MacBook before production promotion.
+- [x] Verify development commit `dcc6bd0` on 28 November 2026. All 83 local suites and 140 JavaScript syntax checks passed. GitHub Actions and Cloudflare Pages passed. Live Preview Chromium passed all eleven category choices at 320, 375 and 1280 px, touch selection, manual collapse, keyboard activation, public links and the article Copy link button. The Preview assets matched development and `/studio` returned `noindex, nofollow`.
+- [ ] Review the Cloudflare Preview in the owner's MacBook browser before production promotion.
 
 ## Resume and measurement
 
