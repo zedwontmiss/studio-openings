@@ -2,16 +2,16 @@
   'use strict';
   var focus=[
     {id:'brand-design',label:'Brand Design',discipline:'visual',evidence:/\bbrand(?:ing)?\b/i},
-    {id:'architecture',label:'Architecture',discipline:'architecture'},
-    {id:'interior-design',label:'Interior Design',discipline:'interior'},
-    {id:'industrial-design',label:'Industrial Design',discipline:'industrial'},
-    {id:'product-design',label:'Product Design',discipline:'product'},
-    {id:'graphic-design',label:'Graphic Design',discipline:'visual'},
-    {id:'motion-design',label:'Motion Design',discipline:'motion'},
-    {id:'fashion',label:'Fashion',discipline:'fashion'},
-    {id:'web-design',label:'Web Design',discipline:'web'},
-    {id:'museum',label:'Museum',discipline:'museum'},
-    {id:'arts-and-culture',label:'Arts and Culture',discipline:'culture'}
+    {id:'architecture',label:'Architecture',discipline:'architecture',guideQuery:'Architecture & Landscape'},
+    {id:'interior-design',label:'Interior Design',discipline:'interior',guideQuery:'Interior & Spatial Design'},
+    {id:'industrial-design',label:'Industrial Design',discipline:'industrial',guideQuery:'Industrial & Furniture Design'},
+    {id:'product-design',label:'Product Design',discipline:'product',guideQuery:'Product Design & UX'},
+    {id:'graphic-design',label:'Graphic Design',discipline:'visual',guideQuery:'Graphic, Branding & Art Direction'},
+    {id:'motion-design',label:'Motion Design',discipline:'motion',guideQuery:'Motion, 3D & Animation'},
+    {id:'fashion',label:'Fashion',discipline:'fashion',guideQuery:'Fashion & Photography'},
+    {id:'web-design',label:'Web Design',discipline:'web',guideQuery:'Web Design & Creative Technology'},
+    {id:'museum',label:'Museum',discipline:'museum',guideQuery:'Museum & Exhibition Design'},
+    {id:'arts-and-culture',label:'Arts and Culture',discipline:'culture',guideQuery:'Arts & Cultural Production'}
   ];
   var editorial=[
     {id:'job-search',label:'Job Search'},
@@ -22,6 +22,10 @@
 
   function normalize(query){
     return String(query||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ');
+  }
+
+  function guideKey(normalizedQuery){
+    return normalizedQuery.replace(/[,/&]|\band\b/g,' ').replace(/\s+/g,' ').trim();
   }
 
   function matchesDiscipline(topic,disciplines,text){
@@ -37,13 +41,22 @@
   function create(places){
     var topics=focus.concat(editorial,places||[]);
     var byLabel=Object.create(null),byId=Object.create(null);
+    var byGuideQuery=Object.create(null),queryByDiscipline=Object.create(null);
     topics.forEach(function(topic){
       var label=normalize(topic.label);
       if(!byLabel[label])byLabel[label]=topic;
       byId[topic.id]=topic;
+      if(topic.guideQuery){
+        byGuideQuery[guideKey(normalize(topic.guideQuery))]=topic;
+        queryByDiscipline[topic.discipline]=topic.guideQuery;
+      }
     });
     function fromQuery(query){
-      return byLabel[normalize(query)];
+      var normalized=normalize(query);
+      return byLabel[normalized]||byGuideQuery[guideKey(normalized)];
+    }
+    function disciplineQuery(discipline){
+      return queryByDiscipline[discipline];
     }
     function labels(ids){
       return ids.map(function(id){return byId[id]?byId[id].label:'';}).join(' ');
@@ -51,7 +64,7 @@
     function disciplineLabels(disciplines,text){
       return focus.filter(function(topic){return matchesDiscipline(topic,disciplines,text);}).map(function(topic){return topic.label;}).join(' ');
     }
-    return {topics:topics,fromQuery:fromQuery,labels:labels,disciplineLabels:disciplineLabels,matchesDiscipline:matchesDiscipline,matchesText:matchesText};
+    return {topics:topics,fromQuery:fromQuery,disciplineQuery:disciplineQuery,labels:labels,disciplineLabels:disciplineLabels,matchesDiscipline:matchesDiscipline,matchesText:matchesText};
   }
   if(typeof module!=='undefined'&&module.exports)module.exports={create:create};
   else root.SOAPPSearchTopics=create(root.SOAPPGeographicTopics);

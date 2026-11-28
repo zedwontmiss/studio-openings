@@ -1,8 +1,10 @@
 import {publicHeader,HEADER_CSS} from '../../lib/public-header.js';
 import {DISCIPLINES,DISCIPLINE_SLUGS} from '../../lib/discipline-pages.js';
 import {DISCIPLINE_GUIDES} from '../../lib/discipline-guides.js';
+import searchTopics from '../../assets/search-topics.js';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const HEAD={'content-type':'text/html; charset=utf-8','cache-control':'public, max-age=600','x-content-type-options':'nosniff'};
+const {disciplineQuery}=searchTopics.create();
 const resourceLinks=items=>items.map(({path,label,detail})=>'<li><a href="'+esc(path)+'">'+esc(label)+'</a>'+(detail?' · '+esc(detail):'')+'</li>').join('');
 export async function onRequestGet({params,request}){
  const slug=String(params?.slug||'').toLowerCase(),item=DISCIPLINES[slug];
@@ -14,7 +16,7 @@ export async function onRequestGet({params,request}){
  const intro=esc(item.intro),name=esc(item.name),tip=esc(item.advice);
  const links=DISCIPLINE_SLUGS.filter(k=>k!==slug).map(k=>'<a href="/disciplines/'+k+'">'+esc(DISCIPLINES[k].label)+'</a>').join(' · ');
  const focus=item.focus.map(x=>'<li>'+esc(x)+'</li>').join('');
- const listUrl='/?discipline='+encodeURIComponent(slug)+'#jobs';
+ const listUrl='/?q='+encodeURIComponent(disciplineQuery(slug))+'#jobs';
  const guideHtml=guide?`
 ${guide.sections.map(({title,text})=>'<h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>').join('')}
 <h2>Explore these practices</h2><ul>${resourceLinks(guide.studios)}</ul>

@@ -4,12 +4,14 @@ import {onRequestGet as renderSitemap} from '../functions/sitemap.xml.js';
 import {DISCIPLINE_GUIDES} from '../lib/discipline-guides.js';
 import {STUDIO_PATHS} from '../lib/studio-routes.js';
 import {ARTICLE_PATHS} from '../lib/editorial-routes.js';
+import searchTopics from '../assets/search-topics.js';
 
 const data=readFileSync('lib/discipline-pages.js','utf8');
 const {DISCIPLINES,DISCIPLINE_SLUGS}=await import('data:text/javascript;base64,'+Buffer.from(data).toString('base64'));
 const {onRequestGet:handler}=await import('../functions/disciplines/[slug].js');
 
 assert.equal(DISCIPLINE_SLUGS.length,10);
+const topics=searchTopics.create();
 assert.deepEqual(Object.keys(DISCIPLINE_GUIDES).sort(),['culture','motion']);
 const home=readFileSync('index.html','utf8');
 const app=readFileSync('assets/app.js','utf8');
@@ -27,7 +29,10 @@ for(const slug of DISCIPLINE_SLUGS){
   assert.equal(preview.headers.get('x-robots-tag'),'noindex, nofollow');
   const html=await preview.text();
   assert.ok(html.includes('https://s-o.app/disciplines/'+slug));
-  assert.ok(html.includes('/?discipline='+slug+'#jobs'));
+  const query=topics.disciplineQuery(slug);
+  assert.equal(query,listing.name.replace(/ Jobs$/,''));
+  assert.equal(topics.fromQuery(query)?.discipline,slug);
+  assert.ok(html.includes('href="/?q='+encodeURIComponent(query)+'#jobs"'));
   assert.ok(!html.includes('"@type":"JobPosting"'),'editorial pages are not vacancy pages');
   const guide=DISCIPLINE_GUIDES[slug];
   if(guide){

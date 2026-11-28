@@ -129,6 +129,14 @@ Use these exact statuses.
 - [ ] Use subsequent Google inspections to measure the pilots after an approved public release. The original audit did not isolate the cause of Google's indexing decision.
 - [ ] Confirm whether the eight `noindex` examples are intentional exclusions before changing directives.
 
+## Milestone · Discipline phrases in Jobs search
+
+- [x] Give all ten discipline guides a Jobs link that fills the global search field with the guide's readable discipline phrase.
+- [x] Use the same category match for the clicked phrase and the same text typed by hand. Allow everyday punctuation variants such as `motion 3d animation`. Keep older checkbox-filter URLs working.
+- [x] Verify the longest tested phrases fit the search field on narrow screens. Check that clearing the search releases the category.
+- [ ] Verify the exact Cloudflare Preview deployment and browser flow.
+- [ ] Review the visible search phrase and retyping flow before public release.
+
 ## Resume and measurement
 
 1. Read `AGENTS.md` and fetch current development/main refs. Keep the November baseline immutable and add changed evidence to this file with date, SHA, environment and relevant source links.

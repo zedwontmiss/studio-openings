@@ -106,6 +106,24 @@ for(const [query,expected] of [
  assert.deepStrictEqual(liveSearchJobs.filter(job=>search.eligible(job)).map(job=>job.id),expected,query);
 }
 assert(make({...base,query:'Mumbai'}).eligible({title:'Designer',role:'visual',location:'Mumbai, India'}));
+const categoryInventory=jobs.concat([
+ {id:'interior',title:'Interior Designer',role:'interior'},
+ {id:'industrial',title:'Furniture Designer',role:'industrial'},
+ {id:'culture',title:'Cultural Producer',role:'culture'},
+ {id:'fashion',title:'Fashion Photographer',role:'fashion'},
+ {id:'web',title:'Creative Developer',role:'web'},
+ {id:'mixed',title:'Motion Designer and Graphic Designer',role:'visual'}
+]);
+for(const discipline of ['architecture','interior','industrial','product','visual','motion','fashion','web','museum','culture']){
+ const query=browser.SOAPPSearchTopics.disciplineQuery(discipline);
+ const original=make({...base,selectedRoles:[discipline]});
+ const expected=categoryInventory.filter(job=>original.eligible(job)).map(job=>job.id);
+ assert.ok(expected.length,discipline);
+ for(const typed of [query,query.toLowerCase().replace(/[,/&]/g,' ')]){
+  const search=make({...base,query:typed});
+  assert.deepStrictEqual(categoryInventory.filter(job=>search.eligible(job)).map(job=>job.id),expected,typed);
+ }
+}
 assert(filtered.eligible(jobs[1],1,jobs),'Numeric callback override must be ignored for an actual Product job');
 assert(!filtered.eligible(jobs[0],1,jobs),'Numeric callback override must not pass a Visual job');
 assert(filtered.eligible(jobs[1],'product',['Product Design','UX/UI']),'Saved snapshot override must work');
