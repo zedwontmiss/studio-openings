@@ -167,7 +167,7 @@ Use these exact statuses.
 - [x] Record that the owner saw “No data” in the 28-day Queries report. The six sitewide impressions remain documented in the total and Pages reports. No query-level baseline is available.
 - [x] Replace the automatic character cut-off for discipline meta descriptions with complete lead sentences. Product is the only discipline that recorded impressions in this baseline. Motion and Culture keep their curated descriptions.
 - [x] Verify Preview commit `7946a4c` on 28 November 2026. All 83 local suites, 140 JavaScript syntax checks, GitHub Actions and Cloudflare Pages passed. Live checks covered all ten discipline descriptions, canonical URLs, Preview noindex and matching page content and links.
-- [ ] Review the description change for production.
+- [x] Receive the owner's release approval and verify production commit `cfaface` on 28 November 2026. The production tree matched the approved release candidate. Cloudflare Pages deployment `aefaf7e8-2930-4a76-a675-e597bf0a291c` passed. All ten live discipline pages served the expected descriptions and self-canonicals with indexing allowed. The sitemap retained the same 135 URLs.
 - [ ] Compare that baseline with the next 28-day period before expanding the pilot. Measure Bing visibility and actual site visits separately when reports are available.
 
 ## Resume and measurement
